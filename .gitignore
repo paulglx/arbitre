@@ -1,4 +1,6 @@
 inventory.yaml
+inventory.ini
+/fileuploads
 
 # Django
 *.log
