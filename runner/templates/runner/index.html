@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrap demo</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  </head>
+  <body>
+
+	<nav class="navbar bg-light">
+		<div class="container-fluid">
+		<span class="navbar-brand mb-0 h1">
+			{{ exercise }}
+		</span>
+		</div>
+	</nav>
+
+	<div class="container w-50 p-3">
+
+	<p class="lead">
+		{{ statement }}
+	</p>
+	
+	{% if test_results %}
+
+	<ul class="list-group">
+
+		<li class="bg-light list-group-item d-flex justify-content-between align-items-start">
+			<span class="fw-bold">{{ filename }}</span><span class="text-secondary">submitted by <u>{{owner}}</u></span>
+		</li>
+
+		{% for test in test_results %}
+
+			<li class="list-group-item d-flex justify-content-between align-items-start">
+			<div class="ms-2 me-auto">
+				<div class="fw-bold">{{ test.name }}</div>
+				<span class="font-monospace">{{ test.stdout }}</span>
+			</div>
+
+			<span class="badge bg-secondary rounded-pill">{{test.time}} s</span>
+			&nbsp;
+			{% if test.success %}
+				<span class="badge bg-success rounded-pill">Success</span>
+			{% else %}
+				<span class="badge bg-danger rounded-pill">Fail</span>
+			{% endif %}
+			
+			</li>
+
+		{% endfor %}
+
+	</ul>
+
+	{% else %}
+		<p>No test results have been returned.</p>
+	{% endif %}
+
+	</div> 
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script> 
+  </body>
+</html>
