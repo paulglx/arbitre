@@ -1,8 +1,17 @@
-from django.urls import path
+from django.urls import path, re_path, include
+from rest_framework.routers import DefaultRouter
 
 from . import views
 
+router = DefaultRouter()
+router.register(r'exercises', views.ExerciseViewSet)
+router.register(r'submissions', views.SubmissionViewSet)
+
 urlpatterns = [
     # ex: /polls/
-    path('<int:file_id>/run', views.run, name='run'),
+    #run tests
+    path('<int:submission_id>/results', views.results, name='results'),
+
+    #exercises
+    re_path(r'^', include(router.urls))
 ]
