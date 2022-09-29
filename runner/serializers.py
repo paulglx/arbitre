@@ -1,12 +1,10 @@
-from itertools import tee
-from re import T
 from .models import Exercise, Submission, Test, TestResult
 from rest_framework import serializers
 
 class ExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
-        fields = ['title, statement']
+        fields = ['title', 'statement']
 
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
