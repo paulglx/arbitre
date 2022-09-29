@@ -50,6 +50,8 @@
 
 		{% endfor %}
 
+		<form action="" method="post">{% csrf_token %}<input type="submit" class="btn btn-primary" value="Run again"></input></form>
+
 	</ul>
 
 	{% else %}
