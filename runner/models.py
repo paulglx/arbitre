@@ -2,6 +2,7 @@ import json
 from django.db import models
 import requests
 
+from .tasks import run_camisole
 
 # Create your models here.
 class Exercise(models.Model):
@@ -41,14 +42,24 @@ class Submission(models.Model):
 
         test_object = json.loads(test_objects[0])
 
-        data = {}
-        data['lang'] = 'python'
-        data.update(test_object) #only run the first test : this is temporary !
+        lang = 'python'
+        #data.update(test_object) #only run the first test : this is temporary !
         with open(filename, 'r') as f:
-            data['source'] = f.read()
+            source = f.read()
 
-        r = requests.post(url, json=data)
-        camisole_response = json.loads(r.text)
+        task_result = run_camisole.delay(
+            lang=lang,
+            source=source,
+            tests=test_object
+        )
+        print("waiting", end="")
+        while not task_result.ready():
+            print(".",end="")
+        print("")
+
+        print(task_result)
+
+        camisole_response = json.loads(task_result.text)
 
         test_results = []
 
