@@ -57,9 +57,9 @@ class Submission(models.Model):
             print(".",end="")
         print("")
 
-        print(task_result)
+        print("[TASK RETURNED:]",task_result.get())
 
-        camisole_response = json.loads(task_result.text)
+        camisole_response = json.loads(task_result.get())
 
         test_results = []
 
