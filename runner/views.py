@@ -32,7 +32,6 @@ def results(request, submission_id):
     exercise = Exercise.objects.get(pk=submission.exercise.id)
 
     test_results = TestResult.objects.filter(submission=submission)
-    print(test_results.values())
 
     page_context:dict = {}
 
