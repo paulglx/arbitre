@@ -25,8 +25,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         submission = self.get_object()
         submission.save()
 
-        
-
 def results(request, submission_id):
     template = loader.get_template('runner/index.html')
 

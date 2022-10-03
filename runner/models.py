@@ -2,8 +2,6 @@ import json
 from django.db import models
 import requests
 
-from .tasks import run_camisole
-
 # Create your models here.
 class Exercise(models.Model):
     """
@@ -17,7 +15,11 @@ class Exercise(models.Model):
 
 class Test(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    rules = models.TextField()
+    name = models.CharField(max_length=255, default="")
+    stdin = models.TextField(default="")
+    stdout = models.TextField(default="")
+
+from .tasks import run_camisole
     
 class Submission(models.Model):
     """
@@ -32,53 +34,17 @@ class Submission(models.Model):
 
     def save(self, *args, **kwargs):
 
+        #Save submission to database
         super(Submission, self).save(*args, **kwargs)
 
-        url = "http://oasis:1234/run"
-        submission = self
-        filename = submission.file.path
-        #tests_object = json.loads(exercise.tests)
-        test_objects = [dic["rules"] for dic in list(Test.objects.all().values('rules'))]
+        tests = Test.objects.filter(exercise = self.exercise)
 
-        test_object = json.loads(test_objects[0])
-
-        lang = 'python'
-        #data.update(test_object) #only run the first test : this is temporary !
-        with open(filename, 'r') as f:
-            source = f.read()
-
-        task_result = run_camisole.delay(
-            lang=lang,
-            source=source,
-            tests=test_object
-        )
-        print("waiting", end="")
-        while not task_result.ready():
-            print(".",end="")
-        print("")
-
-        print("[TASK RETURNED:]",task_result.get())
-
-        camisole_response = json.loads(task_result.get())
-
-        test_results = []
-
-        for test in camisole_response["tests"]:
-            expected_stdout = next(initial_test for initial_test in test_object["tests"] if initial_test["name"] == test["name"])["stdout"]
-            test_results.append(test)
-
-            existing_result = TestResult.objects.filter(submission = submission, exercise_test = Test.objects.all()[0])
-
-            test_result = TestResult(
-                id = existing_result.first().id if existing_result else None,
-                submission = submission,
-                exercise_test = Test.objects.all()[0],
-                stdout = test["stdout"],
-                success = test["stdout"] == expected_stdout,
-                time = round(test["meta"]["wall-time"],2),
-                memory = test["meta"]["cg-mem"]
+        for test in tests :
+            #Add camisole task to queue
+            run_camisole.delay(
+                submission_id = self.id,
+                test_id = test.id
             )
-            test_result.save()
 
 class TestResult(models.Model):
     """
@@ -86,10 +52,11 @@ class TestResult(models.Model):
     """
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     exercise_test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    running = models.BooleanField(default=False)
     stdout = models.CharField(max_length=255, default="")
     success = models.BooleanField(default=False)
-    time = models.FloatField()
-    memory = models.IntegerField()
+    time = models.FloatField(default=-1)
+    memory = models.IntegerField(default=-1)
 
     class Meta:
         unique_together = ('submission','exercise_test')

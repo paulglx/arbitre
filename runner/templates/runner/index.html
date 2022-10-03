@@ -34,14 +34,19 @@
 
 			<li class="list-group-item d-flex justify-content-between align-items-start">
 			<div class="ms-2 me-auto">
-				<div class="fw-bold">{{ test.name }}</div>
-				<span class="font-monospace">{{ test.stdout }}</span>
+				<div class="fw-bold">{{ test.exercise_test.name }}</div>
+				{% if test.running %}
+					<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+				{% else %}
+					<span class="font-monospace">{{ test.stdout }}</span>
+				{% endif %}
 			</div>
-
-			<span class="badge bg-secondary rounded-pill">{{test.time}} s</span>
 			&nbsp;
 			{% if test.success %}
+				<span class="badge bg-secondary rounded-pill">{{test.time}} s</span>&nbsp;
 				<span class="badge bg-success rounded-pill">Success</span>
+			{% elif test.running %}
+			<span class="badge bg-secondary rounded-pill">Running</span>
 			{% else %}
 				<span class="badge bg-danger rounded-pill">Fail</span>
 			{% endif %}
@@ -49,8 +54,6 @@
 			</li>
 
 		{% endfor %}
-
-		<form action="" method="post">{% csrf_token %}<input type="submit" class="btn btn-primary" value="Run again"></input></form>
 
 	</ul>
 
