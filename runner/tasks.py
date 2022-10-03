@@ -4,67 +4,6 @@ import json
 
 #app = Celery('arbitre', backend='redis://localhost:6379', broker='redis://localhost:6379')
 
-"""
-
-#@app.task
-@shared_task
-def run_camisole(submission):
-    #Run tests on submission
-
-    tests_to_run_list = Test.objects.filter(exercise = submission.exercise)
-
-    print("## TESTS TO RUN :\n", tests_to_run_list.values())
-
-    existing_result = TestResult.objects.filter(submission = submission, exercise_test = Test.objects.all()[0])
-
-    test_result = TestResult(
-            id = existing_result.first().id if existing_result else None,
-            running = True,
-    )
-
-    filename = submission.file.path
-    with open(filename, 'r') as f:
-            source = f.read()
-
-    lang = 'python' #TODO add language choices to Submission model
-
-    #TODO get tests correctly
-    test_objects = [dic["rules"] for dic in list(Test.objects.filter(exercise = submission.exercise).values('rules'))]
-
-    print("[(tasks.py) TEST OBJECTS :]\n",test_objects)
-
-    test_object = test_objects[0]
-
-    url = "http://oasis:1234/run"
-    data = {
-        "lang":lang, 
-        "source":source,
-        "tests":test_object
-    }
-    response = requests.post(url, json=data)
-
-    camisole_response = response.get()
-
-    for test in camisole_response["tests"]:
-
-        #TODO correctly get existing test result for submission and test
-
-        expected_stdout = next(initial_test for initial_test in tests["tests"] if initial_test["name"] == test["name"])["stdout"]
-
-        test_result = TestResult(
-            id = existing_result.first().id if existing_result else None,
-            submission = submission,
-            exercise_test = Test.objects.all()[0],
-            running=False,
-            stdout = test["stdout"],
-            success = test["stdout"] == expected_stdout,
-            time = round(test["meta"]["wall-time"],2),
-            memory = test["meta"]["cg-mem"]
-        )
-        test_result.save()
-
-"""
-
 #@app.task
 @shared_task
 def add(x,y):
@@ -113,9 +52,6 @@ def run_camisole(submission_id, test_id) -> None:
 
     response = json.loads(response_object.text)["tests"][0]
     #This is because of the response's format : {'success': True, 'tests': [{ ... }]}
-
-    print("WHAT WE WANT:", test.stdout)
-    print("WHAT WE GOT:",response["stdout"])
 
     #Save the complete test results into the database
     post_test_result = TestResult(
