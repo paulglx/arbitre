@@ -1,7 +1,10 @@
 import requests
-from celery import shared_task
+from celery import Celery, shared_task
 
-@shared_task()
+#app = Celery('arbitre', backend='redis://localhost:6379', broker='redis://localhost:6379')
+
+#@app.task
+@shared_task
 def run_camisole(lang, source, tests):
     url = "http://oasis:1234/run"
     data = {
@@ -12,6 +15,7 @@ def run_camisole(lang, source, tests):
     response = requests.post(url, json=data)
     return response
 
-@shared_task()
+#@app.task
+@shared_task
 def add(x,y):
     return x+y
