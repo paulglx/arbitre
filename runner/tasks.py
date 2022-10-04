@@ -1,5 +1,6 @@
 import requests
 from celery import Celery, shared_task
+from django.urls import reverse
 import json
 
 #app = Celery('arbitre', backend='redis://localhost:6379', broker='redis://localhost:6379')
@@ -53,15 +54,16 @@ def run_camisole(submission_id, test_id) -> None:
     response = json.loads(response_object.text)["tests"][0]
     #This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
-    #Save the complete test results into the database
-    post_test_result = TestResult(
-        id = pre_test_result.id,
-        submission = submission,
-        exercise_test = test,
-        running=False,
-        stdout = response["stdout"],
-        success = response["stdout"] == test.stdout,
-        time = response["meta"]["wall-time"],
-        memory = response["meta"]["cg-mem"]
-    )
-    post_test_result.save()
+    post_data = {
+        'id' : pre_test_result.id,
+        'submission' : submission,
+        'exercise_test' : test,
+        'running' : False,
+        'stdout' : response["stdout"],
+        'success' : response["stdout"] == test.stdout,
+        'time' : response["meta"]["wall-time"],
+        'memory' : response["meta"]["cg-mem"]
+    }
+    #POST
+    url = reverse("testresults")
+    r = requests.post(url, data=post_data)
