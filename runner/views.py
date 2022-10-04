@@ -25,6 +25,14 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         submission = self.get_object()
         submission.save()
 
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+
+class TestResultViewSet(viewsets.ModelViewSet):
+    queryset = TestResult.objects.all()
+    serializer_class = TestResultSerializer
+
 def results(request, submission_id):
     template = loader.get_template('runner/index.html')
 
