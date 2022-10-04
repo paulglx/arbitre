@@ -1,7 +1,6 @@
-from enum import auto
 from django.template import loader
 from django.http import HttpResponse
-from rest_framework import permissions, renderers, viewsets
+from rest_framework import renderers, viewsets
 from rest_framework.decorators import action
 
 from runner.serializers import *
