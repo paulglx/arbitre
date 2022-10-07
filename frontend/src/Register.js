@@ -45,12 +45,32 @@ const Register = () => {
         setErrMsg('');
     }, [user, pwd])
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        //Check data again (hack: button can be enabled via JS)
+        if(!USER_REGEX.test(user) || !PWD_REGEX.test(pwd)) {
+            setErrMsg("Invalid Entry");
+            return;
+        }
+        
+        //TODO fetch token to API
+        setSuccess(true);
+    }
+
     return (
+        <>
+        {success ? (
+            <section>
+                <h1>Success!</h1>
+            </section>
+        ) : (
+
         <section>
 
             <p ref={errRef} classname={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
             <h1>Register</h1>
-            <form>
+
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="username">
                     Username
                     <span className={validName ? "valid" : "hide"}> ✓ </span>
@@ -97,8 +117,18 @@ const Register = () => {
                     Sign Up
                 </button>
 
+                <p>
+                    Already registered? <br/>
+                    <span className="line">
+                        { /* TODO add router link */}
+                        <a href="#">Sign In</a>
+                    </span>
+                </p>
+
             </form>
         </section>
+        )}
+        </>
     )
 }
 
