@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect, useContext } from "react";
-import AuthContext from "../context/authProvider";
+import useAuth from "../hooks/useAuth";
 import axios from '../api/axios'
 
 const LOGIN_URL = '/api/auth/token/'
 
 const Login = () => {
 
-    const { setAuth } = useContext(AuthContext)
+    const { setAuth } = useAuth();
 
     //Accessibility : this allows focusing on components, e.g for screen readers
     const userRef = useRef();
