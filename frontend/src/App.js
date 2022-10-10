@@ -1,3 +1,4 @@
+import Editor from './components/Editor';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import Login from './components/Login';
@@ -18,9 +19,13 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        {/* Protected routes */}
-        <Route element={<RequireAuth />}>
+        {/* Protected routes. Codes : 1=student, 2=prof */}
+        <Route element={<RequireAuth allowedRoles={[1,2,3]}/>}>
           <Route path="/" element={<Home />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[2,3]}/>}>
+          <Route path="editor" element={<Editor />} />
         </Route>
 
         {/* Catch all */}
