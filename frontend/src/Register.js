@@ -91,7 +91,6 @@ const Register = () => {
             ) : (
 
                 <section>
-
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                     <h1>Register</h1>
 
@@ -141,16 +140,16 @@ const Register = () => {
                         <button type="submit" disabled={!validName || !validPwd ? true : false}>
                             Sign Up
                         </button>
+                    </form>
 
-                        <p>
+                    <p>
                             Already registered? <br />
                             <span className="line">
                                 { /* TODO add router link */}
-                                <a href="#">Sign In</a>
+                                <a href="#">Login</a>
                             </span>
-                        </p>
+                    </p>
 
-                    </form>
                 </section>
             )}
         </>
