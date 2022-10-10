@@ -48,6 +48,7 @@ const Login = () => {
 
             console.log(JSON.stringify(response?.data));
             const accessToken = response?.data?.access;
+            const refreshToken = response?.data?.refresh;
 
             const groupResponse = await axios.post(
                 GROUPS_URL,
@@ -60,7 +61,7 @@ const Login = () => {
             const groups = groupResponse?.data?.groups;
             console.log(groups);
 
-            setAuth({user, accessToken, roles:groups})
+            setAuth({user, accessToken, refreshToken, roles:groups})
             setUser('');
             setPwd('');
             navigate(from, {replace: true}); //navigate back to page before login prompt
