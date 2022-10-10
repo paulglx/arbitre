@@ -4,6 +4,8 @@ import useAuth from "../hooks/useAuth";
 import axios from '../api/axios'
 
 const LOGIN_URL = '/api/auth/token/'
+const GROUPS_URL = '/api/auth/users/groups'
+
 
 const Login = () => {
 
@@ -46,7 +48,19 @@ const Login = () => {
 
             console.log(JSON.stringify(response?.data));
             const accessToken = response?.data?.access;
-            setAuth({user, accessToken})
+
+            const groupResponse = await axios.post(
+                GROUPS_URL,
+                JSON.stringify({username: user}),
+                {
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+
+            const groups = groupResponse?.data?.groups;
+            console.log(groups);
+
+            setAuth({user, accessToken, roles:groups})
             setUser('');
             setPwd('');
             navigate(from, {replace: true}); //navigate back to page before login prompt
@@ -93,14 +107,14 @@ const Login = () => {
                     required
                 />
 
-                <button onClick="submit">Login</button>
+                <button>Login</button>
             </form>
 
             <p>
                 Need an account?<br />
                 <span className="line">
                     { /* TODO add router link */}
-                    <a href="#">Sign Up</a>
+                    <Link to="/register">Sign Up</Link>
                 </span>
             </p>
 
