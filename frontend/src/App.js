@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import Login from './components/Login';
 import Missing from './components/Missing';
 import Register from './components/Register';
+import RequireAuth from './components/RequireAuth';
 import Unauthorized from './components/Unauthorized';
 
 import { Routes, Route } from 'react-router-dom';
@@ -18,7 +19,9 @@ function App() {
         <Route path="unauthorized" element={<Unauthorized />} />
 
         {/* Protected routes */}
-        <Route path="/" element={<Home />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/" element={<Home />} />
+        </Route>
 
         {/* Catch all */}
         <Route path="*" element={<Missing />} />
