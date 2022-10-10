@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import React from 'react';
 import axios from '../api/axios';
 
@@ -145,8 +146,7 @@ const Register = () => {
                     <p>
                             Already registered? <br />
                             <span className="line">
-                                { /* TODO add router link */}
-                                <a href="#">Login</a>
+                                <Link to="/login">Login</Link>
                             </span>
                     </p>
 
