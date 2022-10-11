@@ -14,9 +14,9 @@ media
 *.retry
 
 # OSX
-*/.DS_Store
-*/.AppleDouble
-*/.LSOverride
+*.DS_Store
+*.AppleDouble
+*.LSOverride
 
 # Python
 *.py[cod] 
