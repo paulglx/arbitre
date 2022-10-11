@@ -19,6 +19,7 @@ function App() {
         {/* Public routes */}
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="home" element={<Home />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
         {/* Protected routes. Codes : 1=student, 2=prof */}
