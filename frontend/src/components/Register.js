@@ -55,7 +55,7 @@ const Register = () => {
 
         //POST with API
         try {
-            const response = await axios.post(
+            await axios.post(
                 REGISTER_URL,
                 JSON.stringify({username : user, password : pwd}),
                 {
@@ -64,7 +64,6 @@ const Register = () => {
                 }
             );
             setSuccess(true);
-            // clear input fields
             setUser('');
             setPwd('');
         } catch (err) {
