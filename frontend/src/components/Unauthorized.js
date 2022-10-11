@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Unauthorized = () => {
   return (
-    <div>404 - Unauthorized</div>
+    <div>403 - Unauthorized</div>
   )
 }
 
