@@ -59,9 +59,9 @@ const Login = () => {
             );
 
             const groups = groupResponse?.data?.groups;
-            console.log(groups);
+            const roles = groups.map(group => group.id)
 
-            setAuth({user, accessToken, refreshToken, roles:groups})
+            setAuth({user, accessToken, refreshToken, roles})
             setUser('');
             setPwd('');
             navigate(from, {replace: true}); //navigate back to page before login prompt
