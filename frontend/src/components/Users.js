@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 const Users = () => {
 	const [users, setUsers] = useState();
 	const axiosPrivate = useAxiosPrivate();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -17,6 +20,7 @@ const Users = () => {
 				isMounted && setUsers(response.data); //if isMounter : set users...
 			} catch (err) {
 				console.error(err);
+				navigate('/login', { state: { from: location }, replace: true }) //Back to login with history preservation
 			}
 		}
 
@@ -26,7 +30,7 @@ const Users = () => {
 			isMounted = false;
 			controller.abort();
 		}
-	}, [axiosPrivate])
+	}, [axiosPrivate, location, navigate])
 
 	return (
 		<article>
@@ -40,6 +44,7 @@ const Users = () => {
 			) : (
 				<p>No users to display</p>
 			)}
+			<Link to="/home">Home</Link>
 		</article>
 	);
 };
