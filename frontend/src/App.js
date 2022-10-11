@@ -19,12 +19,12 @@ function App() {
         {/* Public routes */}
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="users" element={<Users />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
         {/* Protected routes. Codes : 1=student, 2=prof */}
-        <Route element={<RequireAuth allowedRoles={[1,2,3]}/>}>
+        <Route element={<RequireAuth allowedRoles={[1,2,3]} />}>
           <Route path="/" element={<Home />} />
+          <Route path="users" element={<Users />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={[2,3]}/>}>
