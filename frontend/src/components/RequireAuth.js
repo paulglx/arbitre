@@ -5,7 +5,7 @@ const RequireAuth = ({allowedRoles}) => {
     const { auth } = useAuth();
     const location = useLocation();
 
-    {/* TODO correctly get roles */}
+    /* TODO correctly get roles */
     console.log("context:");
     console.log(auth)
 
