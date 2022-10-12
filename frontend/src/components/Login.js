@@ -49,7 +49,6 @@ const Login = () => {
             console.log(JSON.stringify(response?.data));
             const accessToken = response?.data?.access;
             const refreshToken = response?.data?.refresh;
-
             const groupResponse = await axios.post(
                 GROUPS_URL,
                 JSON.stringify({username: user}),
