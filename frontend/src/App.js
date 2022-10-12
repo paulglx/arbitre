@@ -5,10 +5,11 @@ import Layout from './components/Layout';
 import Login from './components/Login';
 import Missing from './components/Missing';
 import Register from './components/Register';
-import RequireAuth from './components/RequireAuth';
 import Unauthorized from './components/Unauthorized';
 import Users from './components/Users';
 
+import PersistLogin from './components/PersistLogin';
+import RequireAuth from './components/RequireAuth';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -22,18 +23,12 @@ function App() {
         <Route path="home" element={<Home />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        {/* Protected routes. Codes : 1=student, 2=prof */}
-        <Route element={<RequireAuth allowedRoles={[1,2,3]} />}>
-          <Route path="/" element={<Home />} />
-          <Route path="users" element={<Users />} />
-        </Route>
-
-        <Route element={<RequireAuth allowedRoles={[2,3]}/>}>
-          <Route path="editor" element={<Editor />} />
-        </Route>
-
-        <Route element={<RequireAuth allowedRoles={[3]}/>}>
-          <Route path="admin" element={<Admin />} />
+        {/* Protected routes. Codes : 1=student, 2=prof, 3=admin */}
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={[1,2,3]} />}>
+            <Route path="/" element={<Home />} />
+            <Route path="users" element={<Users />} />
+          </Route>
         </Route>
 
         {/* Catch all */}
