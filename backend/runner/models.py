@@ -22,7 +22,7 @@ class Submission(models.Model):
     """
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    file = models.FileField(upload_to="fileuploads")
+    file = models.FileField(upload_to="uploads")
     owner = models.CharField(max_length=255, default="John Doe")
 
     def __str__(self):
@@ -35,9 +35,12 @@ class Submission(models.Model):
 
         tests = Test.objects.filter(exercise=self.exercise)
 
-        for test in tests:
-            # Add camisole task to queue
-            run_camisole.delay(submission_id=self.id, test_id=test.id)
+        with self.file.open(mode='rb') as f:
+            file_content = f.read().decode()
+
+            for test in tests:
+                # Add camisole task to queue
+                run_camisole.delay(submission_id=self.id, test_id=test.id, file_content=file_content)
 
 
 class Test(models.Model):

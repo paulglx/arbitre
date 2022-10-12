@@ -1,6 +1,6 @@
 *inventory.yaml
 *inventory.ini
-*fileuploads
+*uploads
 
 # Django
 *.log

@@ -5,7 +5,7 @@ import json
 
 
 @shared_task
-def run_camisole(submission_id, test_id) -> None:
+def run_camisole(submission_id, test_id, file_content) -> None:
     """
     Runs one test on a submission, and stores the result in the database.
     """
@@ -13,28 +13,25 @@ def run_camisole(submission_id, test_id) -> None:
     from runner.models import Test, Submission, TestResult
 
     test = Test.objects.get(pk=test_id)
-    submission = Submission.objects.get(pk=submission_id)
+    #submission = Submission.objects.get(pk=submission_id)
 
-    # Check if there is already a result for this (submission, test) pair
-    existing_test_result = TestResult.objects.filter(
-        submission=submission, exercise_test=test
-    ).first()
+    base_url = "http://localhost:8000/runner/api"
+    post_url = f"{base_url}/testresults/"
 
     # Save the empty test result with "running" status
-    pre_test_result = TestResult(
-        id=existing_test_result.id if existing_test_result else None,
-        submission=submission,
-        exercise_test=test,
-        running=True,
-    )
-    pre_test_result.save()
+    before_data = {
+        "submission": submission_id,
+        "exercise_test": test_id,
+        "running": True
+    }
+    requests.post(post_url, data=before_data)
+
+    requests.get(f"{base_url}/")
 
     # Configure the data used to run camisole
     camisole_server_url = "http://oasis:1234/run"
-    lang = "python"  # TODO add language choices
-    filename = submission.file.path
-    with open(filename, "r") as f:
-        source = f.read()
+    lang = "python"  # TODO add language choices:
+    source = file_content
 
     response_object = requests.post(
         camisole_server_url,
@@ -46,19 +43,17 @@ def run_camisole(submission_id, test_id) -> None:
     )
 
     response = json.loads(response_object.text)["tests"][0]
+
     # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
     # Save results to database using REST API
-    post_data = {
-        "id": pre_test_result.id,
-        "submission": submission,
-        "exercise_test": test,
+    after_data = {
+        "submission": submission_id,
+        "exercise_test": test_id,
         "running": False,
         "stdout": response["stdout"],
         "success": response["stdout"] == test.stdout,
         "time": response["meta"]["wall-time"],
         "memory": response["meta"]["cg-mem"],
     }
-    # POST
-    url = reverse("testresults")
-    r = requests.post(url, data=post_data)
+    requests.post(post_url, data=after_data)

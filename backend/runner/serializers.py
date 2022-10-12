@@ -1,5 +1,6 @@
 from .models import Exercise, Submission, Test, TestResult
-from rest_framework import serializers
+from rest_framework import serializers, validators
+import copy
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
@@ -17,10 +18,48 @@ class SubmissionSerializer(serializers.ModelSerializer):
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
-        fields = ["exercise", "name", "stdin", "stdout"]
-
-
+        fields = ["id", "exercise", "name", "stdin", "stdout"]
 class TestResultSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = TestResult
-        fields = ["submission", "exercise_test", "running", "stdout", "success", "time", "memory"]
+        fields = ["id", "submission", "exercise_test", "running", "stdout", "success", "time", "memory"]
+
+    def run_validators(self, value):
+        for validator in copy.copy(self.validators):
+            if isinstance(validator, validators.UniqueTogetherValidator):
+                self.validators.remove(validator)
+        super(TestResultSerializer, self).run_validators(value)
+
+    def create(self, request):
+        print(request)
+        testresult, created = TestResult.objects.get_or_create(
+            submission=request["submission"],
+            exercise_test=request["exercise_test"],
+
+            defaults={
+                'submission':request["submission"],
+                'exercise_test':request["exercise_test"],
+            }
+        )
+
+        print(testresult)
+
+        #for field in self.Meta.fields:
+        #    if testresult[str(field)] in request:
+        #        testresult.field = request[field]
+        testresult.running = request["running"]
+        if testresult.running:
+            testresult.stdout = ""
+            testresult.success = False
+            testresult.time = -1
+            testresult.memory = -1
+        else:
+            testresult.stdout = request["stdout"]
+            testresult.success = request["success"]
+            testresult.time = request["time"]
+            testresult.memory = request["memory"]
+
+        testresult.save()
+
+        return testresult
