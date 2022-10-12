@@ -6,11 +6,11 @@ const RequireAuth = ({allowedRoles}) => {
     const location = useLocation();
 
     /* TODO correctly get roles */
-    console.log("context:");
-    console.log(auth)
+    //console.log("context:");
+    //console.log(auth)
 
-    console.log("find result:");
-    console.log(auth?.roles?.find(role => allowedRoles?.includes(role)));
+    //console.log("find result:");
+    //console.log(auth?.roles?.find(role => allowedRoles?.includes(role)));
 
     //Send users to login page if not logged in
     return (

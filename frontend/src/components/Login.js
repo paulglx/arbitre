@@ -46,10 +46,9 @@ const Login = () => {
                 }
             );
 
-            console.log(JSON.stringify(response?.data));
             const accessToken = response?.data?.access;
             const refreshToken = response?.data?.refresh;
-            const groupResponse = await axios.post(
+            const roles = await axios.get(
                 GROUPS_URL,
                 JSON.stringify({username: user}),
                 {
@@ -57,8 +56,7 @@ const Login = () => {
                 }
             );
 
-            const groups = groupResponse?.data?.groups;
-            const roles = groups.map(group => group.id)
+            console.log("Roles:",roles)
 
             setAuth({user, accessToken, refreshToken, roles})
             setUser('');
