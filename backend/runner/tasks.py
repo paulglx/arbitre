@@ -1,7 +1,7 @@
-import requests
 from celery import shared_task
-from django.urls import reverse
+from django.core import serializers
 import json
+import requests
 
 
 @shared_task
@@ -10,14 +10,13 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     Runs one test on a submission, and stores the result in the database.
     """
 
-    from runner.models import Test, Submission, TestResult
-
-    test = Test.objects.get(pk=test_id)
-    #submission = Submission.objects.get(pk=submission_id)
+    from runner.models import Submission, Test, TestResult
 
     base_url = "http://localhost:8000/runner/api"
     post_url = f"{base_url}/testresults/"
 
+    test = json.loads(requests.get(f"{base_url}/tests/{test_id}/").content)
+    
     # Save the empty test result with "running" status
     before_data = {
         "submission": submission_id,
@@ -38,7 +37,7 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         json={
             "lang": lang,
             "source": source,
-            "tests": [{"name": test.name, "stdin": test.stdin}],
+            "tests": [{"name": test["name"], "stdin": test["stdin"]}],
         },
     )
 
@@ -52,7 +51,7 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         "exercise_test": test_id,
         "running": False,
         "stdout": response["stdout"],
-        "success": response["stdout"] == test.stdout,
+        "success": response["stdout"] == test["stdout"],
         "time": response["meta"]["wall-time"],
         "memory": response["meta"]["cg-mem"],
     }
