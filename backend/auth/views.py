@@ -1,8 +1,22 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User, Group
 from django.http import HttpResponse, JsonResponse
-from django.views import View
-from rest_framework import permissions, serializers, viewsets
+from rest_framework import permissions, serializers, viewsets, status
 from rest_framework.decorators import APIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
+class LogoutView(APIView):
+
+    def post(self, request):
+        try:
+            refreshToken = request.data["refresh_token"]
+            token = RefreshToken(refreshToken)
+            token.blacklist()
+
+            return Response("Logout successful", status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response("Logout error", status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,12 +40,20 @@ class UserGroup(APIView):
     Get the group(s) that an user belongs to.
     """
 
-    http_method_names = ['post']
 
+
+    """
     def post(self, request, *args, **kwargs):
         user = User.objects.get(username=request.data.get('username'))
         groups = user.groups.all().values()
         return JsonResponse({"groups":list(groups)})
+    """
+
+    http_method_names = ['get']
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse(list(self.request.user.groups.all().values()), safe=False)
+    
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

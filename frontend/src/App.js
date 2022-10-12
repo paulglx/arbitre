@@ -1,5 +1,3 @@
-import Admin from './components/Admin';
-import Editor from './components/Editor';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import Login from './components/Login';
