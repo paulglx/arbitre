@@ -7,6 +7,7 @@ const useRefreshToken = () => {
 
     const refresh = async () => {
 
+        console.log("OMG i'm refreshing! :p with rtoken:", refreshToken)
         const response = await axios.post('api/auth/token/refresh/', 
         JSON.stringify({refresh:refreshToken}),
         {

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import useLogout from "../hooks/useLogout";
 
 const Users = () => {
 	const [users, setUsers] = useState();
 	const axiosPrivate = useAxiosPrivate();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const logout = useLogout();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -32,6 +34,11 @@ const Users = () => {
 		}
 	}, [axiosPrivate, location, navigate])
 
+	const signOut = async () => {
+		await logout();
+		navigate('/')
+	} 
+
 	return (
 		<article>
 			<h2>Users List</h2>
@@ -45,6 +52,9 @@ const Users = () => {
 				<p>No users to display</p>
 			)}
 			<Link to="/home">Home</Link>
+			<button onClick={signOut}>
+				Sign out
+			</button>
 		</article>
 	);
 };
