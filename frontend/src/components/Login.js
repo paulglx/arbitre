@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import axios from '../api/axios'
+import useInput from "../hooks/useInput";
+import useToggle from "../hooks/useToggle";
 
 const LOGIN_URL = '/api/auth/token/'
 const GROUPS_URL = '/api/auth/users/groups'
@@ -9,7 +11,7 @@ const GROUPS_URL = '/api/auth/users/groups'
 
 const Login = () => {
 
-    const { setAuth } = useAuth();
+    const { setAuth, persist, setPersist } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,9 +21,10 @@ const Login = () => {
     const userRef = useRef();
     const errRef = useRef();
 
-    const [user, setUser] = useState('');
+    const [user, resetUser, userAttributes] = useInput('user', ''); //useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
+    const [check, toggleCheck] = useToggle('persist', false);
 
     //Focus on component on pageload
     useEffect(() => {
@@ -48,6 +51,7 @@ const Login = () => {
 
             const accessToken = response?.data?.access;
             const refreshToken = response?.data?.refresh;
+
             const groupResponse = await axios.post(
                 GROUPS_URL,
                 JSON.stringify({username: user}),
@@ -55,12 +59,11 @@ const Login = () => {
                     headers: { 'Content-Type': 'application/json' }
                 }
             );
-
             const groups = groupResponse?.data?.groups;
             const roles = groups.map(group => group.id)
 
             setAuth({user, accessToken, refreshToken, roles})
-            setUser('');
+            resetUser(); //setUser('');
             setPwd('');
             navigate(from, {replace: true}); //navigate back to page before login prompt
 
@@ -78,6 +81,14 @@ const Login = () => {
         }
     }
 
+    /* const togglePersist = () => {
+        setPersist(prev => !prev);
+    }
+
+    useEffect(() => {
+        localStorage.setItem("persist", persist);
+    }, [persist]) */
+
     return (
         <section>
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
@@ -90,8 +101,9 @@ const Login = () => {
                     id="username"
                     ref={userRef}
                     autoComplete="off"
-                    onChange={(e) => setUser(e.target.value)}
-                    value={user}
+                    //onChange={(e) => setUser(e.target.value)}
+                    //value={user}
+                    {...userAttributes}
                     required
                 />
 
@@ -107,6 +119,16 @@ const Login = () => {
                 />
 
                 <button>Login</button>
+
+                <div>
+                    <input 
+                        type="checkbox"
+                        id="persist"
+                        onChange={toggleCheck}
+                        checked={check}
+                    />
+                    <label htmlFor="persist">Remember me</label>
+                </div>
             </form>
 
             <p>

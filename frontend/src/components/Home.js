@@ -7,19 +7,11 @@ const Home = () => {
   const navigate = useNavigate();
   const logout = useLogout();
 
-  const signOut = async () => {
-    await logout();
-    navigate('/')
-  } 
-
   return (
     <div>
         <h1>Home</h1>
         <Link to="/users">Users</Link>
         <br />
-        <button onClick={signOut}>
-          Sign out
-        </button>
     </div>
   )
 }
