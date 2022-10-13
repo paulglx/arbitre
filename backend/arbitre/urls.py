@@ -34,7 +34,7 @@ urlpatterns = [
     path('runner/', include('runner.urls')),
     path('api/auth/', include(router.urls)), #Contains : /users
     path('api/auth/users/groups', UserGroup.as_view(), name='user_groups'),
-    path('api/auth/logout', LogoutView.as_view(), name='logout'),
+    path('api/auth/logout/', LogoutView.as_view(), name='logout'),
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -1,22 +1,28 @@
-from django.contrib.auth.models import User, Group
-from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.models import User
+from django.http import JsonResponse
 from rest_framework import permissions, serializers, viewsets, status
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 
 
 class LogoutView(APIView):
+    #permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request):
-        try:
-            refreshToken = request.data["refresh_token"]
-            token = RefreshToken(refreshToken)
-            token.blacklist()
+    def post(self, request, *args, **kwargs):
+        ### Lets you log everyone out
 
-            return Response("Logout successful", status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response("Logout error", status=status.HTTP_400_BAD_REQUEST)
+        # if self.request.data.get('all'):
+        #     token: OutstandingToken
+        #     for token in OutstandingToken.objects.filter(user=request.user):
+        #         _, _ = BlacklistedToken.objects.get_or_create(token=token)
+        #     return Response({"status": "OK, goodbye, all refresh tokens blacklisted"})
+        
+        refresh_token = self.request.data.get('refresh')
+        token = RefreshToken(token=refresh_token)
+        token.blacklist()
+        return Response({"status": "OK, goodbye"})
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -40,19 +46,12 @@ class UserGroup(APIView):
     Get the group(s) that an user belongs to.
     """
 
+    http_method_names = ['post']
 
-
-    """
     def post(self, request, *args, **kwargs):
         user = User.objects.get(username=request.data.get('username'))
         groups = user.groups.all().values()
         return JsonResponse({"groups":list(groups)})
-    """
-
-    http_method_names = ['get']
-
-    def get(self, request, *args, **kwargs):
-        return JsonResponse(list(self.request.user.groups.all().values()), safe=False)
     
 
 class UserViewSet(viewsets.ModelViewSet):
