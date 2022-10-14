@@ -4,9 +4,9 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register(r'submissions', views.SubmissionViewSet)
-router.register(r'tests', views.TestViewSet)
-router.register(r'testresults', views.TestResultViewSet, basename="testresults")
+router.register(r'submission', views.SubmissionViewSet)
+router.register(r'test', views.TestViewSet)
+router.register(r'testresult', views.TestResultViewSet, basename="testresults")
 
 urlpatterns = [
     # ex: /polls/
