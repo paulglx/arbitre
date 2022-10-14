@@ -1,10 +1,8 @@
 import { useParams } from "react-router-dom";
-
 import { useGetExerciseQuery } from "../features/courses/exerciseApiSlice";
-import { useGetSessionQuery } from "../features/courses/sessionApiSlice";
-import { useGetCourseQuery } from "../features/courses/courseApiSlice";
-
-import { Container, Navbar, ListGroup } from "react-bootstrap";
+import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
+import { Container, Navbar, Form, Button } from "react-bootstrap";
+import { store } from "../app/store";
 
 const Exercise = () => {
 
@@ -20,6 +18,30 @@ const Exercise = () => {
 
     const session = exercise?.session
     const course = session?.course
+
+    const [createSubmission] = useCreateSubmissionMutation();
+
+    const handleSubmit = async (e : any) => {
+        e.preventDefault();
+
+        const form=e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+        }
+
+        const state:any=store.getState()
+        const data = {
+            exercise:exercise.id,
+            file:form.file.files[0],
+            owner:state?.user
+        }
+        console.log("(create submission) Data to send:", data)
+
+        const createSubmissionResponse = await createSubmission(data).unwrap()
+
+        console.log("Response:",createSubmissionResponse)
+
+    }
 
     return isLoading ? (
         <p>Loading...</p>
@@ -39,6 +61,22 @@ const Exercise = () => {
                 {exercise.description}
             </blockquote>
         </Container>
+
+        <br />
+
+        <h4>Submit your work</h4>
+        <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
+            <Form.Group controlId="formFile" className="mb-3">
+                <Form.Label>Submission file</Form.Label>
+                <Form.Control required type="file" name="file"/>
+                <Form.Text className="text-muted">You are logged in as <u>John Doe</u></Form.Text>
+            </Form.Group>
+
+            <Button variant="primary" type="submit">
+                Submit
+            </Button>
+        </Form>
+
     </Container>
     )
 }
