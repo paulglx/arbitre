@@ -24,20 +24,23 @@ const Exercise = () => {
     const handleSubmit = async (e : any) => {
         e.preventDefault();
 
-        const form=e.currentTarget;
+        console.log(e);
+
+        const form=e.target[0];
         if (form.checkValidity() === false) {
             e.stopPropagation();
         }
 
-        const state:any=store.getState()
-        const data = {
-            exercise:exercise.id,
-            file:form.file.files[0],
-            owner:state?.user
-        }
-        console.log("(create submission) Data to send:", data)
+        console.log(form.files[0])
+        
+        var formData = new FormData();
+        formData.append("exercise", exercise.id)
+        formData.append("file", form.files[0])
+        formData.append("owner", '1')
+        
+        console.log("(create submission) Data to send:", formData)
 
-        const createSubmissionResponse = await createSubmission(data).unwrap()
+        const createSubmissionResponse = await createSubmission(formData).unwrap()
 
         console.log("Response:",createSubmissionResponse)
 
