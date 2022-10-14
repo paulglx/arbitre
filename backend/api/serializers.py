@@ -6,12 +6,25 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = '__all__'
 
+class MinimalCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['id', 'title']
+
 class SessionSerializer(serializers.ModelSerializer):
+    course = MinimalCourseSerializer();
     class Meta:
         model = Session
         fields = '__all__'
 
+class MinimalSessionSerializer(serializers.ModelSerializer):
+    course = MinimalCourseSerializer();
+    class Meta:
+        model = Session
+        fields = ['id', 'title', 'course']
+
 class ExerciseSerializer(serializers.ModelSerializer):
+    session = MinimalSessionSerializer();
     class Meta:
         model = Exercise
         fields = '__all__'

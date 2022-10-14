@@ -6,7 +6,7 @@ import { useGetCourseQuery } from "../features/courses/courseApiSlice";
 
 import { Container, Navbar, ListGroup } from "react-bootstrap";
 
-const Exercise = () => {
+const Session = () => {
 
     const { id }:any = useParams();
 
@@ -16,12 +16,27 @@ const Exercise = () => {
         isSuccess,
         isError,
         error
-    } = useGetExerciseQuery({id});
+    } = useGetExerciseQuery({});
 
-    const session = exercise?.session
-    const course = session?.course
+    const {
+        data: session,
+        isLoading: sessionIsLoading,
+        isSuccess: sessionIsSuccess,
+        isError: sessionIsError,
+        error: sessionError
+    } = useGetSessionQuery({id});
 
-    return isLoading ? (
+    const {
+        data: course,
+        isLoading: courseIsLoading,
+        isSuccess: courseIsSuccess,
+        isError: courseIsError,
+        error: courseError
+    } = useGetCourseQuery({id});
+
+    console.log(exercise, session)
+
+    return isLoading || sessionIsLoading || courseIsLoading ? (
         <p>Loading...</p>
     ):(
     <Container>
