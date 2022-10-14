@@ -1,6 +1,7 @@
 from django.template import loader
 from django.http import HttpResponse
 from rest_framework import renderers, viewsets
+from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from runner.serializers import *
@@ -22,6 +23,14 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
+
+    def list(self, request, *args, **kwarg):
+        print(request.query_params.get("submission_id"))
+        submission_id=request.query_params.get("submission_id")
+        if(submission_id):
+            return Response(TestResult.objects.filter(submission_id=submission_id).values())
+        else:
+            return Response(TestResult.objects.all().values())
 
 def results(request, submission_id):
     template = loader.get_template('runner/index.html')
