@@ -3,12 +3,6 @@ from rest_framework import serializers, validators
 import copy
 
 
-class ExerciseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Exercise
-        fields = ["title", "statement"]
-
-
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission

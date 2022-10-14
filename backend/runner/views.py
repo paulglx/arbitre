@@ -5,15 +5,6 @@ from rest_framework.decorators import action
 
 from runner.serializers import *
 from .models import *
-import requests
-import json
-
-class ExerciseViewSet(viewsets.ModelViewSet):
-    """
-    List all exercises (GET), or create a new exercise (POST).
-    """
-    queryset = Exercise.objects.all()
-    serializer_class = ExerciseSerializer
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()

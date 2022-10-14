@@ -22,11 +22,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: {...username}
             })
-        })
+        }),
     })
 })
 
 export const {
     useLoginMutation,
     useRegisterMutation,
-    useGetGroupsMutation } = authApiSlice;
+    useGetGroupsMutation 
+} = authApiSlice;

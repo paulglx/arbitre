@@ -1,20 +1,8 @@
-import json
+from api.models import Exercise
+from django.contrib.auth.models import User
 from django.db import models
-import requests
+
 from .tasks import run_camisole
-
-# Create your models here.
-class Exercise(models.Model):
-    """
-    The exercise given to the student
-    """
-
-    title = models.CharField(max_length=255)
-    statement = models.TextField()
-
-    def __str__(self):
-        return self.title
-
 
 class Submission(models.Model):
     """
@@ -23,7 +11,7 @@ class Submission(models.Model):
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     file = models.FileField(upload_to="uploads")
-    owner = models.CharField(max_length=255, default="John Doe")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.file.name
@@ -43,6 +31,7 @@ class Submission(models.Model):
                 run_camisole.delay(submission_id=self.id, test_id=test.id, file_content=file_content)
 
 
+# Create your models here
 class Test(models.Model):
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)

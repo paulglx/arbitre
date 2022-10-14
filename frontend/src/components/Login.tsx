@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRef, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 import { useDispatch } from 'react-redux'
 import { setCredentials } from '../features/auth/authSlice'
@@ -13,6 +13,9 @@ const Login = () => {
     const [pwd, setPwd] = useState('')
     const [errMsg, setErrMsg] = useState('')
     const navigate = useNavigate()
+
+    const location = useLocation()
+    const from = location.state?.from?.pathname || "/"
 
     const [login, { isLoading }] = useLoginMutation()
     const [getGroups] = useGetGroupsMutation();
@@ -39,7 +42,7 @@ const Login = () => {
             dispatch(setCredentials({ ...userData, user, roles }))
             setUser('')
             setPwd('')
-            navigate('/welcome')
+            navigate(from, { replace: true });
         } catch (err:any) {
             if (!err?.status) {
                 // isLoading: true until timeout occurs
