@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Submission, Exercise, Test, TestResult
+from .models import Submission, Test, TestResult
+from api.models import Exercise, Session, Course
 
 # Register your models here.
 
@@ -7,9 +8,12 @@ class TestInline(admin.StackedInline):
     model = Test
     extra = 1
 class ExerciseAdmin(admin.ModelAdmin):
-    fields = ['title','statement']
+    fields = ['session','title','description']
     inlines = [TestInline]
 
-admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(Submission)
 admin.site.register(TestResult)
+
+admin.site.register(Exercise, ExerciseAdmin)
+admin.site.register(Session)
+admin.site.register(Course)

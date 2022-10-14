@@ -17,7 +17,8 @@ Including another URLconf
 from email.mime import base
 from django.contrib import admin
 from django.urls import path, include
-from auth.views import UserViewSet, UserGroup, LogoutView
+from api.auth.views import UserViewSet, UserGroup, LogoutView
+from api.views import ExerciseViewSet, SessionViewSet, CourseViewSet
 
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
@@ -26,13 +27,20 @@ from rest_framework_simplejwt.views import (
 )
 
 #Auth router
+auth_router = routers.DefaultRouter()
+auth_router.register(r'users', UserViewSet)
+
+#Models API router
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+router.register(r'exercise', ExerciseViewSet)
+router.register(r'session', SessionViewSet)
+router.register(r'course', CourseViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('runner/', include('runner.urls')),
-    path('api/auth/', include(router.urls)), #Contains : /users
+    path('api/', include(router.urls)), #Contains : /exercise, /session, /course
+    path('api/auth/', include(auth_router.urls)), #Contains : /users
     path('api/auth/users/groups', UserGroup.as_view(), name='user_groups'),
     path('api/auth/logout/', LogoutView.as_view(), name='logout'),
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
