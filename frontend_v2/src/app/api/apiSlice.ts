@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import { createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setCredentials, logOut } from '../../features/auth/authSlice';
 
 const baseQuery = fetchBaseQuery({
@@ -13,7 +14,7 @@ const baseQuery = fetchBaseQuery({
     }
 })
 
-const baseQueryWithReauth = async (args, api, extraOptions) => {
+const baseQueryWithReauth = async (args:string | FetchArgs, api:BaseQueryApi, extraOptions:{}) => {
     let result = await baseQuery(args, api, extraOptions);
 
     if (result?.error?.status === 403) { //originalStatus instead of status ?
@@ -21,7 +22,8 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         const refreshResult = await baseQuery('/api/auth/token/refresh/', api, extraOptions)
         console.log(refreshResult)
         if (refreshResult?.data) {
-            const user = api.getState().auth.user
+            const state:any = api.getState()
+            const user = state.auth.user
             //store new token
             api.dispatch(setCredentials({
                 ...refreshResult.data,
