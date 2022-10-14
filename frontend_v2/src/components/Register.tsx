@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { useDispatch } from 'react-redux'
 import { setCredentials } from '../features/auth/authSlice'
-import { useLoginMutation, useGetGroupsMutation } from '../features/auth/authApiSlice'
+import { useLoginMutation, useRegisterMutation } from '../features/auth/authApiSlice'
 
-const Login = () => {
+const Register = () => {
     const userRef = useRef<any>()
     const errRef = useRef<any>()
     const [user, setUser] = useState('')
@@ -14,8 +14,8 @@ const Login = () => {
     const [errMsg, setErrMsg] = useState('')
     const navigate = useNavigate()
 
-    const [login, { isLoading }] = useLoginMutation()
-    const [getGroups] = useGetGroupsMutation();
+    const [register, {isLoading}] = useRegisterMutation();
+
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -30,16 +30,8 @@ const Login = () => {
         e.preventDefault()
 
         try {
-            const userData = await login({ username:user, password:pwd }).unwrap()
-            const groupsData = await getGroups({ username:user }).unwrap()
-            const roles = groupsData.groups.map((g:any) => g.id);
-
-            console.log(roles)
-
-            dispatch(setCredentials({ ...userData, user, roles }))
-            setUser('')
-            setPwd('')
-            navigate('/welcome')
+            const registerResponse = await (register({ username:user, password:pwd }))
+            console.log(registerResponse);
         } catch (err:any) {
             if (!err?.status) {
                 // isLoading: true until timeout occurs
@@ -62,7 +54,7 @@ const Login = () => {
         <section className="login">
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
 
-            <h1>Employee Login</h1>
+            <h1>Create account</h1>
 
             <form onSubmit={handleSubmit}>
                 <label htmlFor="username">Username:</label>
@@ -91,4 +83,4 @@ const Login = () => {
 
     return content
 }
-export default Login
+export default Register
