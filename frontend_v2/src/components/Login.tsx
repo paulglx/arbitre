@@ -29,7 +29,7 @@ const Login = () => {
         e.preventDefault()
 
         try {
-            const userData = await login({ user, pwd }).unwrap()
+            const userData = await login({ username:user, password:pwd }).unwrap()
             dispatch(setCredentials({ ...userData, user }))
             setUser('')
             setPwd('')
