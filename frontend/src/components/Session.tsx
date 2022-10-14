@@ -1,22 +1,11 @@
 import { useParams } from "react-router-dom";
-
-import { useGetExerciseQuery } from "../features/courses/exerciseApiSlice";
 import { useGetSessionQuery } from "../features/courses/sessionApiSlice";
-import { useGetCourseQuery } from "../features/courses/courseApiSlice";
-
+import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { Container, Navbar, ListGroup } from "react-bootstrap";
 
 const Session = () => {
 
     const { id }:any = useParams();
-
-    const {
-        data: exercise,
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    } = useGetExerciseQuery({});
 
     const {
         data: session,
@@ -27,16 +16,16 @@ const Session = () => {
     } = useGetSessionQuery({id});
 
     const {
-        data: course,
-        isLoading: courseIsLoading,
-        isSuccess: courseIsSuccess,
-        isError: courseIsError,
-        error: courseError
-    } = useGetCourseQuery({id});
+        data: exercises,
+        isLoading: exercisesIsLoading,
+        isSuccess: exercisesIsSuccess,
+        isError: exercisesIsError,
+        error: exercisesError
+    } = useGetExercisesOfSessionQuery({id});
 
-    console.log(exercise, session)
+    const course = session?.course
 
-    return isLoading || sessionIsLoading || courseIsLoading ? (
+    return sessionIsLoading || exercisesIsLoading  ? (
         <p>Loading...</p>
     ):(
     <Container>
@@ -49,13 +38,27 @@ const Session = () => {
         <br />
 
         <Container>
-            <h1>{exercise.title}</h1>
+            <h1>{session.title}</h1>
             <blockquote>
-                {exercise.description}
+                {session.description}
             </blockquote>
+
+            <h2>Exercises</h2>
+            <ListGroup>
+                {exercises.map((exercise:any) => {
+                    return <ListGroup.Item
+                        action
+                        variant="light"
+                        href={"/exercise/"+exercise.id}
+                    >
+                        {exercise.title}
+                    </ListGroup.Item>
+                })}
+            </ListGroup>
+
         </Container>
     </Container>
     )
 }
 
-export default Exercise
+export default Session
