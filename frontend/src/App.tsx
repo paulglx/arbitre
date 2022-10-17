@@ -10,6 +10,7 @@ import RequireAuth from "./components/RequireAuth";
 import Session from "./components/Session";
 import Welcome from "./components/Welcome";
 import Exercise from "./components/Exercise";
+import TestResult from "./components/TestResult";
 
 function App() {
 	return (
@@ -20,9 +21,10 @@ function App() {
 				<Route index element={<Public/>} />
 				<Route path="login" element={<Login/>} />
 				<Route path="register" element={<Register/>} />
-				<Route path="exercise/:id" element={<Exercise/>} />
 				<Route path="session/:id" element={<Session/>} />
 				<Route path="course/:id" element={<Course/>} />
+				<Route path="exercise/:id" element={<Exercise/>} />
+				<Route path="exercise/:id/results" element={<TestResult/>} />
 
 				{/* Protected routes */}
 				<Route element={<RequireAuth/>}>

@@ -6,7 +6,7 @@ import { store } from "../app/store";
 
 const Exercise = () => {
 
-    const { id }:any = useParams();
+    const { id } : any = useParams();
 
     const {
         data: exercise,
@@ -37,7 +37,7 @@ const Exercise = () => {
         formData.append("exercise", exercise.id)
         formData.append("file", form.files[0])
         formData.append("owner", '1')
-        
+
         console.log("(create submission) Data to send:", formData)
 
         const createSubmissionResponse = await createSubmission(formData).unwrap()
