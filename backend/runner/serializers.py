@@ -39,6 +39,7 @@ class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         fields = '__all__'
+        depth = 1
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
