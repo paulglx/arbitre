@@ -11,7 +11,7 @@ class TestSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = ["exercise", "file", "owner"]
+        fields = '__all__'
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
@@ -22,15 +22,15 @@ class SubmissionSerializer(serializers.ModelSerializer):
     def create(self, request):
         submission, created = Submission.objects.get_or_create(
             exercise=request["exercise"],
-            file=request["file"],
             owner=request["owner"],
 
             defaults={
                 'exercise':request["exercise"],
-                'file':request["file"],
                 'owner':request["owner"],
             }
         )
+
+        submission.file = request["file"]
 
         submission.save()
         return submission
@@ -72,5 +72,4 @@ class TestResultSerializer(serializers.ModelSerializer):
             testresult.memory = request["memory"]
 
         testresult.save()
-
         return testresult
