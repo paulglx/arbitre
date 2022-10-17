@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useGetExerciseQuery } from "../features/courses/exerciseApiSlice";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
-import { Container, Navbar, Form, Button } from "react-bootstrap";
+import { Container, Navbar, Form, Button, Breadcrumb } from "react-bootstrap";
+import Header from "./Header";
 import TestResult from "./TestResult";
 
 const Exercise = () => {
@@ -40,15 +41,22 @@ const Exercise = () => {
 
     return isLoading ? (
         <p>Loading...</p>
-    ):(
-    <Container>
-        <Navbar bg="light" expand="lg">
-            <Container>
-                <Navbar.Brand href={"/course/"+course.id}>{course.title}</Navbar.Brand> {session.title}
-            </Container>
-        </Navbar>
+    ):(<>
 
-        <br />
+    <Header />
+
+    <Container>
+
+        <Container>
+            <Breadcrumb>
+                <Breadcrumb.Item href={"/course/"+course.id}>
+                    {course.title}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    {session.title}
+                </Breadcrumb.Item>
+            </Breadcrumb>
+        </Container>
 
         <Container>
             <h1>{exercise.title}</h1>
@@ -59,7 +67,7 @@ const Exercise = () => {
 
         <br />
 
-        <Container className="w-50 p-3">
+        <Container className="w-75 p-3">
 
         <h4>Submit your work</h4>
         <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
@@ -81,7 +89,7 @@ const Exercise = () => {
         </Container>
 
     </Container>
-    )
+    </>)
 }
 
 export default Exercise
