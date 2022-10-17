@@ -12,19 +12,19 @@ class MinimalCourseSerializer(serializers.ModelSerializer):
         fields = ['id', 'title']
 
 class SessionSerializer(serializers.ModelSerializer):
-    course = MinimalCourseSerializer();
+    course = MinimalCourseSerializer()
     class Meta:
         model = Session
         fields = '__all__'
 
 class MinimalSessionSerializer(serializers.ModelSerializer):
-    course = MinimalCourseSerializer();
+    course = MinimalCourseSerializer()
     class Meta:
         model = Session
         fields = ['id', 'title', 'course']
 
 class ExerciseSerializer(serializers.ModelSerializer):
-    session = MinimalSessionSerializer();
+    session = MinimalSessionSerializer()
     class Meta:
         model = Exercise
         fields = '__all__'
