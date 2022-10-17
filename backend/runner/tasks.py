@@ -13,9 +13,9 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     from runner.models import Submission, Test, TestResult
 
     base_url = "http://localhost:8000/runner/api"
-    post_url = f"{base_url}/testresults/"
+    post_url = f"{base_url}/testresult/"
 
-    test = json.loads(requests.get(f"{base_url}/tests/{test_id}/").content)
+    test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
     
     # Save the empty test result with "running" status
     before_data = {
@@ -24,8 +24,6 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         "running": True
     }
     requests.post(post_url, data=before_data)
-
-    requests.get(f"{base_url}/")
 
     # Configure the data used to run camisole
     camisole_server_url = "http://oasis:1234/run"
@@ -46,6 +44,7 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
     # Save results to database using REST API
+
     after_data = {
         "submission": submission_id,
         "exercise_test": test_id,
@@ -55,4 +54,5 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         "time": response["meta"]["wall-time"],
         "memory": response["meta"]["cg-mem"],
     }
+    print("data to send:",after_data)
     requests.post(post_url, data=after_data)

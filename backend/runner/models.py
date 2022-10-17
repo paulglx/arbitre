@@ -29,6 +29,9 @@ class Submission(models.Model):
             for test in tests:
                 # Add camisole task to queue
                 run_camisole.delay(submission_id=self.id, test_id=test.id, file_content=file_content)
+    
+    class Meta:
+        unique_together = ("exercise", "owner")
 
 
 # Create your models here
