@@ -11,7 +11,8 @@ router.register(r'testresult', views.TestResultViewSet, basename="testresults")
 urlpatterns = [
     # ex: /polls/
     #run tests
-    path('<int:submission_id>/results', views.results, name='results'),
+    # TODO remove this path once the react front is working
+    #path('<int:submission_id>/results', views.results, name='results'),
 
     #exercises
     re_path('api/', include(router.urls))
