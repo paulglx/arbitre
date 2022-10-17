@@ -20,7 +20,7 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
         }),
         getSubmissionTestResults: builder.query({
             query: params => ({
-                url: `/runner/api/testresult?submission_id=${params.submission_id}`,
+                url: `/runner/api/testresult?exercise_id=${params.exercise_id}&owner=${params.owner}`,
                 method: 'GET',
             })
         }),

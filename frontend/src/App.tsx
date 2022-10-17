@@ -24,7 +24,7 @@ function App() {
 				<Route path="session/:id" element={<Session/>} />
 				<Route path="course/:id" element={<Course/>} />
 				<Route path="exercise/:id" element={<Exercise/>} />
-				<Route path="exercise/:id/results" element={<TestResult/>} />
+				<Route path="exercise/:exercise_id/results" element={<TestResult/>} />
 
 				{/* Protected routes */}
 				<Route element={<RequireAuth/>}>
