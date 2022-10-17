@@ -2,11 +2,11 @@ import { useParams } from "react-router-dom";
 import { useGetExerciseQuery } from "../features/courses/exerciseApiSlice";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { Container, Navbar, Form, Button } from "react-bootstrap";
-import { store } from "../app/store";
+import TestResult from "./TestResult";
 
 const Exercise = () => {
 
-    const { id } : any = useParams();
+    const { exercise_id } : any = useParams();
 
     const {
         data: exercise,
@@ -14,7 +14,7 @@ const Exercise = () => {
         isSuccess,
         isError,
         error
-    } = useGetExerciseQuery({id});
+    } = useGetExerciseQuery({id:exercise_id});
 
     const session = exercise?.session
     const course = session?.course
@@ -71,6 +71,10 @@ const Exercise = () => {
                 Submit
             </Button>
         </Form>
+
+        <br />
+        
+        <TestResult />
 
     </Container>
     )
