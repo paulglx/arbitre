@@ -7,6 +7,8 @@ const TestResult = () => {
 
     const { exercise_id } : any = useParams();
     const owner = 1;
+    //TODO get real owner name
+    const owner_name = "John Doe";
 
     const [resultsExist, setResultsExist] = useState(false);
 
@@ -53,13 +55,15 @@ const TestResult = () => {
     return resultsExist ? (
         <ListGroup>
             <ListGroup.Item className='bg-light d-flex justify-content-between align-items-start'>
-                <span className='fw-bold'>Test results</span>
+                {/* Get filename*/}
+                <span className='fw-bold'>{testResults[0].submission.file.split("/").pop()}</span>
+                <span className="text-secondary">submitted by <u>{owner_name}</u></span>
             </ListGroup.Item>
 
             {testResults.map((result:any) => (
                 <ListGroup.Item className='d-flex justify-content-between align-items-start'>
                     <div className='ms-2 me-auto'>
-                        <div className="fw-bold">(test name)</div>
+                        <div className="fw-bold">{result.exercise_test.name}</div>
                         {testResultContent(result)}
                     </div>
                     {statusPillContent(result)}
@@ -68,7 +72,7 @@ const TestResult = () => {
 
         </ListGroup>
     ) : (
-        <div>Submit your code to see the test results</div>
+        <></>
     )
 }
 
