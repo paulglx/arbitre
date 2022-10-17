@@ -3,21 +3,42 @@ from rest_framework import serializers, validators
 import copy
 
 
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = ["id", "exercise", "name", "stdin", "stdout"]
+
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
         fields = ["exercise", "file", "owner"]
 
+    def run_validators(self, value):
+        for validator in copy.copy(self.validators):
+            if isinstance(validator, validators.UniqueTogetherValidator):
+                self.validators.remove(validator)
+        super(SubmissionSerializer, self).run_validators(value)
 
-class TestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Test
-        fields = ["id", "exercise", "name", "stdin", "stdout"]
+    def create(self, request):
+        submission, created = Submission.objects.get_or_create(
+            exercise=request["exercise"],
+            file=request["file"],
+            owner=request["owner"],
+
+            defaults={
+                'exercise':request["exercise"],
+                'file':request["file"],
+                'owner':request["owner"],
+            }
+        )
+
+        submission.save()
+        return submission
+
 class TestResultSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = TestResult
-        fields = ["id", "submission", "exercise_test", "running", "stdout", "success", "time", "memory"]
+        fields = '__all__'
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
@@ -26,6 +47,7 @@ class TestResultSerializer(serializers.ModelSerializer):
         super(TestResultSerializer, self).run_validators(value)
 
     def create(self, request):
+        print("SERIALIZER create")
         print(request)
         testresult, created = TestResult.objects.get_or_create(
             submission=request["submission"],
@@ -36,12 +58,7 @@ class TestResultSerializer(serializers.ModelSerializer):
                 'exercise_test':request["exercise_test"],
             }
         )
-
-        print(testresult)
-
-        #for field in self.Meta.fields:
-        #    if testresult[str(field)] in request:
-        #        testresult.field = request[field]
+        
         testresult.running = request["running"]
         if testresult.running:
             testresult.stdout = ""

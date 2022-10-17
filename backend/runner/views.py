@@ -1,5 +1,5 @@
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework import renderers, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -11,11 +11,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
 
-    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    def refresh(self, request, *args, **kwargs):
-        submission = self.get_object()
-        submission.save()
-
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
@@ -24,13 +19,12 @@ class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
 
-    def list(self, request, *args, **kwarg):
-        print(request.query_params.get("submission_id"))
-        submission_id=request.query_params.get("submission_id")
-        if(submission_id):
-            return Response(TestResult.objects.filter(submission_id=submission_id).values())
-        else:
-            return Response(TestResult.objects.all().values())
+    def get_queryset(self):
+        exercise_id = self.request.query_params.get('exercise_id')
+        owner = self.request.query_params.get('owner')
+        if (exercise_id and owner):
+            return self.queryset.filter(submission__exercise_id=exercise_id, submission__owner=owner)
+        return super().get_queryset()
 
 def results(request, submission_id):
     template = loader.get_template('runner/index.html')
