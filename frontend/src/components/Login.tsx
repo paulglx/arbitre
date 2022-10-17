@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux'
 import { setCredentials } from '../features/auth/authSlice'
 import { useLoginMutation, useGetGroupsMutation } from '../features/auth/authApiSlice'
 
+import '../login-register.css'
+
 const Login = () => {
     const userRef = useRef<any>()
     const errRef = useRef<any>()
@@ -62,33 +64,55 @@ const Login = () => {
     const handlePwdInput = (e:any) => setPwd(e.target.value)
 
     const content = isLoading ? <h1>Loading...</h1> : (
-        <section className="login">
+
+        <section className="login text-center bg-light border rounded">
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+            <div className="form-signin w-100 m-auto">
+                <form onSubmit={handleSubmit}>
 
-            <h1>Employee Login</h1>
+                <br />
 
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    ref={userRef}
-                    value={user}
-                    onChange={handleUserInput}
-                    autoComplete="off"
-                    required
-                />
+                <h2 className='fw-bold border border-3 rounded-pill packed-border border-dark'>ARBITRE</h2>
 
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    onChange={handlePwdInput}
-                    value={pwd}
-                    required
-                />
-                <button>Sign In</button>
-            </form>
+                <br />
+
+                <h3 className="mb-3 fw-normal">Welcome back</h3>
+
+                <br />
+
+                    <div className="form-floating">
+                    <input
+                            className="form-control"
+                            type="text"
+                            id="username"
+                            ref={userRef}
+                            value={user}
+                            onChange={handleUserInput}
+                            autoComplete="off"
+                            required
+                        />
+                        <label htmlFor="username">Username:</label>
+                    </div>
+
+                    <div className="form-floating">
+                        <input
+                            className='form-control'
+                            type="password"
+                            id="password"
+                            onChange={handlePwdInput}
+                            value={pwd}
+                            required
+                        />
+                        <label htmlFor="password">Password:</label>
+                    </div>
+
+                    <br />
+
+                    <button className='w-100 btn btn-lg btn-primary'>Sign In</button>
+                </form>
+
+                <p className="mt-5 mb-3 text-muted">2022 - WIP</p>
+            </div>
         </section>
     )
 
