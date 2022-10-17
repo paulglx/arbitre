@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
 const TestResult = () => {
 
-    const { id } : any = useParams();
+    const { exercise_id } : any = useParams();
+    const owner = 1;
+
+    const [resultsExist, setResultsExist] = useState(false);
 
     const {
         data: testResult,
@@ -12,13 +15,16 @@ const TestResult = () => {
         isSuccess,
         isError,
         error
-    } = useGetSubmissionTestResultsQuery({submission_id:id});
+    } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id, owner:owner});
 
+    useEffect(() => {
+        setResultsExist( typeof testResult !== 'undefined' && testResult.length > 0 )
+    }, [testResult])
 
-    console.log(testResult)
-
-    return (    
-        <></>
+    return resultsExist ? (    
+        <div>Coucou</div>
+    ) : (
+        <div>Submit your code to see the test results</div>
     )
 }
 

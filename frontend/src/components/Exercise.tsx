@@ -24,25 +24,17 @@ const Exercise = () => {
     const handleSubmit = async (e : any) => {
         e.preventDefault();
 
-        console.log(e);
-
         const form=e.target[0];
         if (form.checkValidity() === false) {
             e.stopPropagation();
         }
-
-        console.log(form.files[0])
         
         var formData = new FormData();
         formData.append("exercise", exercise.id)
         formData.append("file", form.files[0])
         formData.append("owner", '1')
 
-        console.log("(create submission) Data to send:", formData)
-
-        const createSubmissionResponse = await createSubmission(formData).unwrap()
-
-        console.log("Response:",createSubmissionResponse)
+        await createSubmission(formData).unwrap()
 
     }
 
