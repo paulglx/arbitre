@@ -23,7 +23,7 @@ function App() {
 				<Route path="register" element={<Register/>} />
 				<Route path="session/:id" element={<Session/>} />
 				<Route path="course/:id" element={<Course/>} />
-				<Route path="exercise/:id" element={<Exercise/>} />
+				<Route path="exercise/:exercise_id" element={<Exercise/>} />
 				<Route path="exercise/:exercise_id/results" element={<TestResult/>} />
 
 				{/* Protected routes */}
