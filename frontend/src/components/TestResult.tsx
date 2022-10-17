@@ -22,20 +22,25 @@ const TestResult = () => {
         setResultsExist( typeof testResults !== 'undefined' && testResults.length > 0 )
     }, [testResults])
     
-    const testResultContent = (running:boolean, stdout:string) => {
-        if (running) {
+    const testResultContent = (result:any) => {
+        if (result.running) {
             return <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         } else {
-            return <span className="font-monospace">{ stdout }</span>
+            return <span className="font-monospace">{ result.stdout }</span>
         }
     }
 
-    const statusPillContent = (success:boolean, time:number) => {
-        if(success) {
+    const statusPillContent = (result:any) => {
+        if(result.success) {
             return (<>
-                <span className="badge bg-secondary rounded-pill">{time} s</span>
+                <span className="badge bg-secondary rounded-pill">{result.time} s</span>
                 &nbsp;
                 <span className="badge bg-success rounded-pill">Success</span>
+            </>)
+        }
+        else if (result.running) {
+            return (<>
+                <span className="badge bg-secondary rounded-pill">Running</span>
             </>)
         }
         else {
@@ -55,9 +60,9 @@ const TestResult = () => {
                 <ListGroup.Item className='d-flex justify-content-between align-items-start'>
                     <div className='ms-2 me-auto'>
                         <div className="fw-bold">(test name)</div>
-                        {testResultContent(result.running, result.stdout)}
+                        {testResultContent(result)}
                     </div>
-                    {statusPillContent(result.success, result.time)}
+                    {statusPillContent(result)}
                 </ListGroup.Item>
             ))}
 

@@ -59,6 +59,8 @@ const Exercise = () => {
 
         <br />
 
+        <Container className="w-50 p-3">
+
         <h4>Submit your work</h4>
         <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
             <Form.Group controlId="formFile" className="mb-3">
@@ -75,6 +77,8 @@ const Exercise = () => {
         <br />
         
         <TestResult />
+
+        </Container>
 
     </Container>
     )
