@@ -12,9 +12,23 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
                     body: data
             })}
         }),
+        getSubmission: builder.query({
+            query: params => ({
+                url: `/runner/api/submission/${params.submission_id}`,
+                method: 'GET',
+            })
+        }),
+        getSubmissionTestResults: builder.query({
+            query: params => ({
+                url: `/runner/api/testresult?submission_id=${params.submission_id}`,
+                method: 'GET',
+            })
+        }),
     })
 })
 
 export const {
     useCreateSubmissionMutation,
+    useGetSubmissionQuery,
+    useGetSubmissionTestResultsQuery
 } = submissionApiSlice;
