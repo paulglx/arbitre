@@ -44,7 +44,11 @@ const Login = () => {
             dispatch(setCredentials({ ...userData, user, roles }))
             setUser('')
             setPwd('')
-            navigate(from, { replace: true });
+            if (from === "/") {
+                navigate("/courses")
+            } else {
+                navigate(from, { replace: true });
+            }
         } catch (err:any) {
             if (!err?.status) {
                 // isLoading: true until timeout occurs
@@ -70,15 +74,9 @@ const Login = () => {
             <div className="form-signin w-100 m-auto">
                 <form onSubmit={handleSubmit}>
 
-                <br />
-
-                <h2 className='fw-bold border border-3 rounded-pill packed-border border-dark'>ARBITRE</h2>
-
-                <br />
-
                 <h3 className="mb-3 fw-normal">Welcome back</h3>
 
-                <br />
+                    <br />
 
                     <div className="form-floating">
                     <input
@@ -109,6 +107,7 @@ const Login = () => {
                     <br />
 
                     <button className='w-100 btn btn-lg btn-primary'>Sign In</button>
+                    <a href="/register">No account yet ?</a>
                 </form>
 
                 <p className="mt-5 mb-3 text-muted">2022 - WIP</p>
