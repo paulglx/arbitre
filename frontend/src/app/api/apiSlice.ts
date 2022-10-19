@@ -6,9 +6,9 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8000',
     credentials: 'include',
     prepareHeaders: (headers:Headers, { getState }:any) => {
-        const token = getState().auth.token;
-        if (token) {
-            headers.set("authorization", `Bearer ${token}`)
+        const refreshToken = getState().auth.refreshToken;
+        if (refreshToken) {
+            headers.set("authorization", `Bearer ${refreshToken}`)
         }
         return headers
     }
@@ -18,7 +18,7 @@ const baseQueryWithReauth = async (args:string | FetchArgs, api:BaseQueryApi, ex
     let result = await baseQuery(args, api, extraOptions);
 
     if (result?.error?.status === 403 || result?.error?.status === 401) { //originalStatus instead of status ?
-        console.log('sending refresh token');
+        console.log('sending refreshtoken');
         const refreshResult = await baseQuery('/api/auth/token/refresh/', api, extraOptions)
         console.log(refreshResult)
         if (refreshResult?.data) {
@@ -40,5 +40,6 @@ const baseQueryWithReauth = async (args:string | FetchArgs, api:BaseQueryApi, ex
 
 export const apiSlice = createApi({
     baseQuery: baseQueryWithReauth,
+    refetchOnMountOrArgChange:true,
     endpoints: builder => ({})
 })
