@@ -40,7 +40,7 @@ const Exercise = () => {
     }
 
     return isLoading ? (
-        <p>Loading...</p>
+        <></>
     ):(<>
 
     <Header />
