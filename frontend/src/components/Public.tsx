@@ -9,7 +9,7 @@ const Public = () => {
     const state = store.getState()
 
     const loginRegisterBlock = (state:any) => {
-        if (state?.auth?.token === null) {
+        if (state?.auth?.user === null) {
             return <Login />
         }
         else {

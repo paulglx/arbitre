@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGetSessionQuery } from "../features/courses/sessionApiSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
-import { Container, Navbar, ListGroup } from "react-bootstrap";
+import { Container, Navbar, ListGroup, Breadcrumb } from "react-bootstrap";
 import Header from "./Header";
 
 const Session = () => {
@@ -31,12 +31,20 @@ const Session = () => {
     ):(<>
 
     <Header />
+        
     <Container>
-        <Navbar bg="light" expand="lg">
-            <Container>
-                <Navbar.Brand href={"/course/"+course.id}>{course.title}</Navbar.Brand> {session.title}
-            </Container>
-        </Navbar>
+            <Breadcrumb>
+                <Breadcrumb.Item href="/courses">
+                    Courses
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={"/course/"+course.id}>
+                    {course.title}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    {session.title}
+                </Breadcrumb.Item>
+            </Breadcrumb>
+        </Container>
 
         <br />
 
@@ -60,7 +68,6 @@ const Session = () => {
             </ListGroup>
 
         </Container>
-    </Container>
     </>)
 }
 
