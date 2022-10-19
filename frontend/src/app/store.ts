@@ -1,4 +1,4 @@
-import { configureStore, createStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./api/apiSlice";
 import authReducer from "../features/auth/authSlice"
 import { persistStore, persistReducer } from "redux-persist";
@@ -24,15 +24,3 @@ export const store = configureStore({
 export default store
 
 export const Persistor = persistStore(store)
-
-/*
-export const store = configureStore({
-    reducer: {
-        [apiSlice.reducerPath]: apiSlice.reducer,
-        auth: authReducer
-    },
-    middleware: getDefaultMiddleware =>
-        getDefaultMiddleware().concat(apiSlice.middleware),
-    devTools: true, //TODO remove before prod
-})
-*/
