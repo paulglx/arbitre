@@ -10,9 +10,10 @@ class Course(models.Model):
     A course, that includes sessions, owned by a teacher
     """
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='%(class)s_courses_owner')
     title = models.CharField(max_length=255)
     description = models.TextField()
+    students = models.ManyToManyField(User, related_name='%(class)s_courses_students')
 
     def __str__(self):
         return self.title
