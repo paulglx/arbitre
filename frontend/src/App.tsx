@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Course from "./components/Course";
+import Courses from "./components/Courses";
 import Layout from "./components/Layout";
 import Login from "./components/Login";
 import Users from "./components/Users";
@@ -9,7 +10,6 @@ import Public from "./components/Public";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
 import Session from "./components/Session";
-import Welcome from "./components/Welcome";
 import Exercise from "./components/Exercise";
 import TestResult from "./components/TestResult";
 
@@ -25,10 +25,10 @@ function App() {
 
 				{/* Protected routes */}
 				<Route element={<RequireAuth/>}>
-					<Route path="welcome" element={<Welcome/>} />
 					<Route path="users" element={<Users/>} />
-					<Route path="session/:id" element={<Session/>} />
+					<Route path="courses/" element={<Courses />} />
 					<Route path="course/:id" element={<Course/>} />
+					<Route path="session/:id" element={<Session/>} />
 					<Route path="exercise/:exercise_id" element={<Exercise/>} />
 					<Route path="exercise/:exercise_id/results" element={<TestResult/>} />
 				</Route>
