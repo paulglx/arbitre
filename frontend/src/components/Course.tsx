@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useGetCourseQuery } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
 import { Container, Navbar, ListGroup } from "react-bootstrap";
+import Header from "./Header";
 
 const Course = () => {
 
@@ -24,8 +25,11 @@ const Course = () => {
     } = useGetSessionsOfCourseQuery({course_id:id})
 
     return courseIsLoading || sessionsIsLoading  ? (
-        <p>Loading...</p>
-    ):(
+        <></>
+    ):(<>
+
+    <Header />
+
     <Container>
         <Navbar bg="light" expand="lg">
             <Container>
@@ -56,7 +60,7 @@ const Course = () => {
 
         </Container>
     </Container>
-    )
+    </>)
 }
 
 export default Course

@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useGetSessionQuery } from "../features/courses/sessionApiSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { Container, Navbar, ListGroup } from "react-bootstrap";
+import Header from "./Header";
 
 const Session = () => {
 
@@ -26,8 +27,10 @@ const Session = () => {
     const course = session?.course
 
     return sessionIsLoading || exercisesIsLoading  ? (
-        <p>Loading...</p>
-    ):(
+        <></>
+    ):(<>
+
+    <Header />
     <Container>
         <Navbar bg="light" expand="lg">
             <Container>
@@ -58,7 +61,7 @@ const Session = () => {
 
         </Container>
     </Container>
-    )
+    </>)
 }
 
 export default Session
