@@ -8,7 +8,7 @@ const Public = () => {
 
     const state = store.getState()
 
-    const loginRegisterBlock:JSX.Element = (state:any) => {
+    const loginRegisterBlock = (state:any) => {
         if (state?.auth?.token === null) {
             return <Login />
         }
