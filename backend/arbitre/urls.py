@@ -34,7 +34,7 @@ auth_router.register(r'users', UserViewSet)
 router = routers.DefaultRouter()
 router.register(r'exercise', ExerciseViewSet)
 router.register(r'session', SessionViewSet)
-router.register(r'course', CourseViewSet)
+router.register(r'course', CourseViewSet, basename='course')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

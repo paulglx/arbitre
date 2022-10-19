@@ -11,9 +11,13 @@ class ExerciseAdmin(admin.ModelAdmin):
     fields = ['session','title','description']
     inlines = [TestInline]
 
+class CourseAdmin(admin.ModelAdmin):
+    fields = ['owner', 'title','description', 'students']
+    filter_horizontal = ['students',]
+
 admin.site.register(Submission)
 admin.site.register(TestResult)
 
 admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(Session)
-admin.site.register(Course)
+admin.site.register(Course, CourseAdmin)
