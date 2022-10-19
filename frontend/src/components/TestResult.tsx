@@ -60,8 +60,8 @@ const TestResult = () => {
                 <span className="text-secondary">submitted by <u>{owner_name}</u></span>
             </ListGroup.Item>
 
-            {testResults.map((result:any) => (
-                <ListGroup.Item className='d-flex justify-content-between align-items-start'>
+            {testResults.map((result:any, i:number) => (
+                <ListGroup.Item className='d-flex justify-content-between align-items-start' key={i}>
                     <div className='ms-2 me-auto'>
                         <div className="fw-bold">{result.exercise_test.name}</div>
                         {testResultContent(result)}

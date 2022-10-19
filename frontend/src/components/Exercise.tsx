@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useGetExerciseQuery } from "../features/courses/exerciseApiSlice";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { Container, Navbar, Form, Button, Breadcrumb } from "react-bootstrap";
+import store from "../app/store";
 import Header from "./Header";
 import TestResult from "./TestResult";
 
@@ -19,6 +20,7 @@ const Exercise = () => {
 
     const session = exercise?.session
     const course = session?.course
+    const username = store.getState().auth?.user;
 
     const [createSubmission] = useCreateSubmissionMutation();
 
@@ -47,16 +49,22 @@ const Exercise = () => {
 
     <Container>
 
-        <Container>
-            <Breadcrumb>
-                <Breadcrumb.Item href={"/course/"+course.id}>
-                    {course.title}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active>
-                    {session.title}
-                </Breadcrumb.Item>
-            </Breadcrumb>
-        </Container>
+        <Breadcrumb>
+            <Breadcrumb.Item href="/courses">
+                Courses
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href={"/course/"+course.id}>
+                {course.title}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href={"/session/"+session.id}>
+                {session.title}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>
+                {exercise.title}
+            </Breadcrumb.Item>
+        </Breadcrumb>
+
+        <br />
 
         <Container>
             <h1>{exercise.title}</h1>
@@ -74,7 +82,7 @@ const Exercise = () => {
             <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Submission file</Form.Label>
                 <Form.Control required type="file" name="file"/>
-                <Form.Text className="text-muted">You are logged in as <u>John Doe</u></Form.Text>
+                <Form.Text className="text-muted">You are logged in as <u>{username}</u></Form.Text>
             </Form.Group>
 
             <Button variant="primary" type="submit">

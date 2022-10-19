@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGetCourseQuery } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { Container, Navbar, ListGroup } from "react-bootstrap";
+import { Container, Navbar, ListGroup, Breadcrumb } from "react-bootstrap";
 import Header from "./Header";
 
 const Course = () => {
@@ -30,16 +30,19 @@ const Course = () => {
 
     <Header />
 
-    <Container>
-        <Navbar bg="light" expand="lg">
-            <Container>
-                <Navbar.Brand href={"/course/"+course.id}>{course.title}</Navbar.Brand>
-            </Container>
-        </Navbar>
-
-        <br />
-
         <Container>
+
+            <Breadcrumb>
+                <Breadcrumb.Item href="/courses">
+                    Courses
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    {course.title}
+                </Breadcrumb.Item>
+            </Breadcrumb>
+
+            <br />
+
             <h1>{course.title}</h1>
             <blockquote>
                 {course.description}
@@ -59,7 +62,6 @@ const Course = () => {
             </ListGroup>
 
         </Container>
-    </Container>
     </>)
 }
 
