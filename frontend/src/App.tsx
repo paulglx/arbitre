@@ -4,6 +4,7 @@ import Course from "./components/Course";
 import Layout from "./components/Layout";
 import Login from "./components/Login";
 import Users from "./components/Users";
+import NotFound from "./components/NotFound";
 import Public from "./components/Public";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
@@ -31,6 +32,9 @@ function App() {
 					<Route path="exercise/:exercise_id" element={<Exercise/>} />
 					<Route path="exercise/:exercise_id/results" element={<TestResult/>} />
 				</Route>
+
+				{/* 404 page when no routes match*/}
+				<Route path="*" element={<NotFound />} />
 
 			</Route>
 		</Routes>
