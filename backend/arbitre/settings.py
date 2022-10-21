@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "api.apps.ApiConfig",
     "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -38,11 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "rest_framework_simplejwt",
+    "drf_yasg",
     "rest_framework_simplejwt.token_blacklist",
+    "rest_framework_simplejwt",
+    "rest_framework",
     "runner.apps.RunnerConfig",
-    "api.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [
