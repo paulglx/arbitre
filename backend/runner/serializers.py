@@ -23,14 +23,14 @@ class SubmissionSerializer(serializers.ModelSerializer):
         submission, created = Submission.objects.get_or_create(
             exercise=request["exercise"],
             owner=request["owner"],
+            file=request["file"],
 
             defaults={
                 'exercise':request["exercise"],
                 'owner':request["owner"],
+                'file':request["file"],
             }
         )
-
-        submission.file = request["file"]
 
         submission.save()
         return submission
