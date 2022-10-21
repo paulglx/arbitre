@@ -10,7 +10,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
         }),
         getExercisesOfSession: builder.query({
             query: params => ({
-                url: `/api/exercise?session_id=${params.session_id}/`,
+                url: `/api/exercise?session_id=${params.session_id}`,
                 method: 'GET',
             })
         }),

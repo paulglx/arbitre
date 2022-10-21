@@ -42,8 +42,8 @@ auth_router.register(r'users', UserViewSet)
 
 #Models API router
 router = routers.DefaultRouter()
-router.register(r'exercise', ExerciseViewSet)
-router.register(r'session', SessionViewSet)
+router.register(r'exercise', ExerciseViewSet, basename='exercise')
+router.register(r'session', SessionViewSet, basename='session')
 router.register(r'course', CourseViewSet, basename='course')
 
 urlpatterns = [

@@ -10,7 +10,7 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
         }),
         getSessionsOfCourse: builder.query({
             query: params => ({
-                url: `/api/session?course_id=${params.course_id}/`,
+                url: `/api/session?course_id=${params.course_id}`,
                 method: 'GET',
             })
         }),

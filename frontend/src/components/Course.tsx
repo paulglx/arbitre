@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGetCourseQuery } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { Container, Navbar, ListGroup, Breadcrumb } from "react-bootstrap";
+import { Container, ListGroup, Breadcrumb } from "react-bootstrap";
 import Header from "./Header";
 
 const Course = () => {
@@ -24,7 +24,15 @@ const Course = () => {
         error: sessionsError
     } = useGetSessionsOfCourseQuery({course_id:id})
 
-    return courseIsLoading || sessionsIsLoading  ? (
+    if(courseIsError || sessionsIsError) {
+        return (
+            <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/courses" className='text-decoration-none'>⬅ Back to courses</a></h3>
+            </div>
+        )
+    }
+
+    return courseIsLoading || sessionsIsLoading ? (
         <></>
     ):(<>
 
