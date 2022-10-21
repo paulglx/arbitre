@@ -31,7 +31,6 @@ const Register = () => {
 
         try {
             const registerResponse = await (register({ username:user, password:pwd }))
-            console.log(registerResponse);
         } catch (err:any) {
             if (!err?.status) {
                 // isLoading: true until timeout occurs

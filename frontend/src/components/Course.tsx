@@ -58,11 +58,12 @@ const Course = () => {
 
             <h2>Sessions</h2>
             <ListGroup>
-                {sessions.map((session:any) => {
+                {sessions.map((session:any, i:number) => {
                     return <ListGroup.Item
                         action
                         variant="light"
                         href={"/session/"+session.id}
+                        key={i}
                     >
                         {session.title}
                     </ListGroup.Item>
