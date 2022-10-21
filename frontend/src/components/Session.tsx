@@ -64,11 +64,12 @@ const Session = () => {
 
             <h2>Exercises</h2>
             <ListGroup>
-                {exercises.map((exercise:any) => {
+                {exercises.map((exercise:any, i:number) => {
                     return <ListGroup.Item
                         action
                         variant="light"
                         href={"/exercise/"+exercise.id}
+                        key={i}
                     >
                         {exercise.title}
                     </ListGroup.Item>

@@ -39,8 +39,6 @@ const Login = () => {
             const groupsData = await getGroups({ username:user }).unwrap()
             const roles = groupsData.groups.map((g:any) => g.id);
 
-            console.log(roles)
-
             dispatch(setCredentials({ ...userData, user, roles }))
             setUser('')
             setPwd('')

@@ -19,7 +19,6 @@ const Header = () => {
         const refresh = store.getState().auth?.refreshToken
         logout({refresh})
         dispatch(logOut({}))
-
         navigate('/')
     }
 

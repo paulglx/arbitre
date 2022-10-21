@@ -17,7 +17,9 @@ export const store = configureStore({
         auth: persistedAuthReducer
     },
     middleware: getDefaultMiddleware =>
-        getDefaultMiddleware().concat(apiSlice.middleware),
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }).concat(apiSlice.middleware),
     devTools: true, //TODO remove before prod
 })
 
