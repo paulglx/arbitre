@@ -24,7 +24,7 @@ const Public = () => {
             <Container className="p-3">
                     <div className="ms-auto w-50">
                         <h2 className='fw-bold border border-3 rounded-pill packed-border border-dark'>ARBITRE</h2>
-                        <h5>an open source code judge</h5>
+                        <h3>an open source code judge</h3>
                     </div>
             </Container>
 
