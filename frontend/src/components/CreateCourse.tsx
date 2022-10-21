@@ -12,7 +12,7 @@ const CreateCourse = () => {
 
     return (
         <Container className="d-flex align-items-center vh-100">
-            <Container>
+            <Container className="text-wrap text-break">
 
                 <h1>{title}</h1>
 
