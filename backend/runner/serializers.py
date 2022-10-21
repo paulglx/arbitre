@@ -36,9 +36,12 @@ class SubmissionSerializer(serializers.ModelSerializer):
         return submission
 
 class TestResultSerializer(serializers.ModelSerializer):
+    #Fixes depth=1 ignoring fields
+    submission_pk = serializers.PrimaryKeyRelatedField(queryset=Submission.objects.all(), source='submission', write_only=True)
+    exercise_test_pk = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source='exercise_test', write_only=True)
     class Meta:
         model = TestResult
-        fields = '__all__'
+        fields = ('submission', 'submission_pk', 'exercise_test', 'exercise_test_pk', 'running', 'stdout', 'success', 'time', 'memory')
         depth = 1
 
     def run_validators(self, value):
