@@ -14,16 +14,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from email.mime import base
+from api.auth.views import LogoutView, UserGroup, UserViewSet
+from api.views import CourseViewSet, ExerciseViewSet, SessionViewSet
 from django.contrib import admin
-from django.urls import path, include
-from api.auth.views import UserViewSet, UserGroup, LogoutView
-from api.views import ExerciseViewSet, SessionViewSet, CourseViewSet
+from django.urls import include, path, re_path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import routers, permissions
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
-from rest_framework import routers
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
+#Swagger
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Arbitre API",
+      default_version='0.1.0',
+      description="Arbitre is an automated exercises correction platform.",
+      contact=openapi.Contact(email="paul.guilloux@telecom-sudparis.eu"),
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny], #TODO allow admins only in prod
 )
 
 #Auth router
@@ -45,4 +55,7 @@ urlpatterns = [
     path('api/auth/logout/', LogoutView.as_view(), name='logout'),
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    #Swagger
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
