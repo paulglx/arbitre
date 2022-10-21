@@ -19,8 +19,8 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     
     # Save the empty test result with "running" status
     before_data = {
-        "submission": submission_id,
-        "exercise_test": test_id,
+        "submission_pk": submission_id,
+        "exercise_test_pk": test_id,
         "running": True
     }
     requests.post(post_url, data=before_data)
@@ -46,8 +46,8 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     # Save results to database using REST API
 
     after_data = {
-        "submission": submission_id,
-        "exercise_test": test_id,
+        "submission_pk": submission_id,
+        "exercise_test_pk": test_id,
         "running": False,
         "stdout": response["stdout"],
         "success": response["stdout"] == test["stdout"],
