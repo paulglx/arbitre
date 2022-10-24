@@ -1,6 +1,7 @@
 *inventory.yaml
 *inventory.ini
 *uploads
+*tests-examples/*
 
 # Django
 *.log
