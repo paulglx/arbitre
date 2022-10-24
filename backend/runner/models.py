@@ -4,6 +4,7 @@ from django.db import models
 
 from .tasks import run_camisole
 
+
 class Submission(models.Model):
     """
     The stored code file that will be judged
@@ -23,13 +24,15 @@ class Submission(models.Model):
 
         tests = Test.objects.filter(exercise=self.exercise)
 
-        with self.file.open(mode='rb') as f:
+        with self.file.open(mode="rb") as f:
             file_content = f.read().decode()
 
             for test in tests:
                 # Add camisole task to queue
-                run_camisole.delay(submission_id=self.id, test_id=test.id, file_content=file_content)
-    
+                run_camisole.delay(
+                    submission_id=self.id, test_id=test.id, file_content=file_content
+                )
+
     class Meta:
         unique_together = ("exercise", "owner")
 
@@ -41,7 +44,7 @@ class Test(models.Model):
     name = models.CharField(max_length=255, default="")
     stdin = models.TextField(default="")
     stdout = models.TextField(default="")
-    #TODO add all test criterias
+    # TODO add all test criterias
 
     def __str__(self):
         return self.name + " (" + str(self.exercise) + ")"
@@ -64,4 +67,11 @@ class TestResult(models.Model):
         unique_together = ("submission", "exercise_test")
 
     def __str__(self):
-        return self.submission.exercise.title + " : " + self.exercise_test.name + " (" + str(self.submission.owner) + ")"
+        return (
+            self.submission.exercise.title
+            + " : "
+            + self.exercise_test.name
+            + " ("
+            + str(self.submission.owner)
+            + ")"
+        )

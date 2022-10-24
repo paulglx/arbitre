@@ -1,8 +1,6 @@
-
 from operator import mod
 from django.db import models
 from django.contrib.auth.models import User
-
 
 
 class Course(models.Model):
@@ -10,13 +8,16 @@ class Course(models.Model):
     A course, that includes sessions, owned by a teacher
     """
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='%(class)s_courses_owner')
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="%(class)s_courses_owner"
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
-    students = models.ManyToManyField(User, related_name='%(class)s_courses_students')
+    students = models.ManyToManyField(User, related_name="%(class)s_courses_students")
 
     def __str__(self):
         return self.title
+
 
 class Session(models.Model):
     """

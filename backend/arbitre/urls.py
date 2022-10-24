@@ -21,41 +21,48 @@ from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers, permissions
-from rest_framework_simplejwt.views import (TokenObtainPairView,
-                                            TokenRefreshView)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-#Swagger
+# Swagger
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Arbitre API",
-      default_version='0.1.0',
-      description="Arbitre is an automated exercises correction platform.",
-      contact=openapi.Contact(email="paul.guilloux@telecom-sudparis.eu"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny], #TODO allow admins only in prod
+    openapi.Info(
+        title="Arbitre API",
+        default_version="0.1.0",
+        description="Arbitre is an automated exercises correction platform.",
+        contact=openapi.Contact(email="paul.guilloux@telecom-sudparis.eu"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],  # TODO allow admins only in prod
 )
 
-#Auth router
+# Auth router
 auth_router = routers.DefaultRouter()
-auth_router.register(r'users', UserViewSet)
+auth_router.register(r"users", UserViewSet)
 
-#Models API router
+# Models API router
 router = routers.DefaultRouter()
-router.register(r'exercise', ExerciseViewSet, basename='exercise')
-router.register(r'session', SessionViewSet, basename='session')
-router.register(r'course', CourseViewSet, basename='course')
+router.register(r"exercise", ExerciseViewSet, basename="exercise")
+router.register(r"session", SessionViewSet, basename="session")
+router.register(r"course", CourseViewSet, basename="course")
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('runner/', include('runner.urls')),
-    path('api/', include(router.urls)), #Contains : /exercise, /session, /course
-    path('api/auth/', include(auth_router.urls)), #Contains : /users
-    path('api/auth/users/groups', UserGroup.as_view(), name='user_groups'),
-    path('api/auth/logout/', LogoutView.as_view(), name='logout'),
-    path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    #Swagger
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path("admin/", admin.site.urls),
+    path("runner/", include("runner.urls")),
+    path("api/", include(router.urls)),  # Contains : /exercise, /session, /course
+    path("api/auth/", include(auth_router.urls)),  # Contains : /users
+    path("api/auth/users/groups", UserGroup.as_view(), name="user_groups"),
+    path("api/auth/logout/", LogoutView.as_view(), name="logout"),
+    path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # Swagger
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    re_path(
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
 ]
