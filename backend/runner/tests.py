@@ -20,3 +20,19 @@ class UserTest(TestCase):
     def test_auth(self):
         user = authenticate(username="testuser", password="testpwd")
         self.assertNotEqual(user, None)
+
+    def test_auth_fail_wrong_password(self):
+        user = authenticate(username="testuser", password="testpwd2")
+        self.assertEqual(user, None)
+
+    def test_auth_fail_wrong_user(self):
+        user = authenticate(username="testuser2", password="testpwd")
+        self.assertEqual(user, None)
+
+    def test_auth_fail_wrong_user_and_password(self):
+        user = authenticate(username="testuser2", password="testpwd2")
+        self.assertEqual(user, None)
+
+    def test_auth_fail_no_data_provided(self):
+        user = authenticate(username="", password="")
+        self.assertEqual(user, None)
