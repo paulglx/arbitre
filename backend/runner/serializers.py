@@ -1,4 +1,4 @@
-from .models import Exercise, Submission, Test, TestResult
+from .models import Submission, Test, TestResult
 from rest_framework import serializers, validators
 import copy
 

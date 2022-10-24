@@ -1,11 +1,10 @@
-from django.template import loader
-from django.http import HttpResponse, JsonResponse
-from rest_framework import renderers, viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
-
-from runner.serializers import *
-from .models import *
+from rest_framework import viewsets
+from .models import Submission, Test, TestResult
+from runner.serializers import (
+    SubmissionSerializer,
+    TestResultSerializer,
+    TestSerializer,
+)
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
