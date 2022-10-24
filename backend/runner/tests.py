@@ -10,7 +10,7 @@ class UserTest(TestCase):
     """
 
     def setUp(self):
-        user = User.objects.create_user("testuser", "test@test.tst", "testpwd")
+        user = User.objects.create_user("testuser", "test@test.test", "testpwd")
         user.save()
 
     def tearDown(self):
