@@ -1,5 +1,4 @@
 from celery import shared_task
-from django.core import serializers
 import json
 import requests
 
@@ -9,8 +8,6 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     """
     Runs one test on a submission, and stores the result in the database.
     """
-
-    from runner.models import Submission, Test, TestResult
 
     base_url = "http://localhost:8000/runner/api"
     post_url = f"{base_url}/testresult/"
