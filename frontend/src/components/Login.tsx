@@ -43,7 +43,7 @@ const Login = () => {
             setUser('')
             setPwd('')
             if (from === "/") {
-                navigate("/courses")
+                navigate("/course")
             } else {
                 navigate(from, { replace: true });
             }

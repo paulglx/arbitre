@@ -14,7 +14,7 @@ const Public = () => {
         }
         else {
             return (<>
-                <p>You are logged in as {state?.auth?.user}. <br /><a href="/courses">See courses</a></p>
+                <p>You are logged in as {state?.auth?.user}. <br /><a href="/course">See course</a></p>
             </>)
         }
     }

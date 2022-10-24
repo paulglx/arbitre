@@ -27,8 +27,8 @@ const Header = () => {
             <Container>
                 <Navbar.Brand href={"/"} className="fw-bold">Arbitre</Navbar.Brand>
                 <DropdownButton title={username} align="end">
-                        <Dropdown.Item href="/courses">Courses</Dropdown.Item>
-                        <Dropdown.Item href="/exercises">Submissions</Dropdown.Item>
+                        <Dropdown.Item href="/course">Courses</Dropdown.Item>
+                        <Dropdown.Item href="/exercise">Submissions</Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item as="button" onClick={signout}>Sign Out</Dropdown.Item>
                 </DropdownButton>
