@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 
-from .serializers import *
-from .models import *
+from .serializers import CourseSerializer, SessionSerializer, ExerciseSerializer
+from .models import Course, Session, Exercise
 
 
 class CourseViewSet(viewsets.ModelViewSet):
