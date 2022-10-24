@@ -16,12 +16,12 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
-    
+
     # Save the empty test result with "running" status
     before_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
-        "running": True
+        "running": True,
     }
     requests.post(post_url, data=before_data)
 
@@ -54,5 +54,5 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         "time": response["meta"]["wall-time"],
         "memory": response["meta"]["cg-mem"],
     }
-    print("data to send:",after_data)
+    print("data to send:", after_data)
     requests.post(post_url, data=after_data)

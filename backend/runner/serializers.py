@@ -8,10 +8,11 @@ class TestSerializer(serializers.ModelSerializer):
         model = Test
         fields = ["id", "exercise", "name", "stdin", "stdout"]
 
+
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = '__all__'
+        fields = "__all__"
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
@@ -24,24 +25,39 @@ class SubmissionSerializer(serializers.ModelSerializer):
             exercise=request["exercise"],
             owner=request["owner"],
             file=request["file"],
-
             defaults={
-                'exercise':request["exercise"],
-                'owner':request["owner"],
-                'file':request["file"],
-            }
+                "exercise": request["exercise"],
+                "owner": request["owner"],
+                "file": request["file"],
+            },
         )
 
         submission.save()
         return submission
 
+
 class TestResultSerializer(serializers.ModelSerializer):
-    #Fixes depth=1 ignoring fields
-    submission_pk = serializers.PrimaryKeyRelatedField(queryset=Submission.objects.all(), source='submission', write_only=True)
-    exercise_test_pk = serializers.PrimaryKeyRelatedField(queryset=Test.objects.all(), source='exercise_test', write_only=True)
+    # Fixes depth=1 ignoring fields
+    submission_pk = serializers.PrimaryKeyRelatedField(
+        queryset=Submission.objects.all(), source="submission", write_only=True
+    )
+    exercise_test_pk = serializers.PrimaryKeyRelatedField(
+        queryset=Test.objects.all(), source="exercise_test", write_only=True
+    )
+
     class Meta:
         model = TestResult
-        fields = ('submission', 'submission_pk', 'exercise_test', 'exercise_test_pk', 'running', 'stdout', 'success', 'time', 'memory')
+        fields = (
+            "submission",
+            "submission_pk",
+            "exercise_test",
+            "exercise_test_pk",
+            "running",
+            "stdout",
+            "success",
+            "time",
+            "memory",
+        )
         depth = 1
 
     def run_validators(self, value):
@@ -56,13 +72,12 @@ class TestResultSerializer(serializers.ModelSerializer):
         testresult, created = TestResult.objects.get_or_create(
             submission=request["submission"],
             exercise_test=request["exercise_test"],
-
             defaults={
-                'submission':request["submission"],
-                'exercise_test':request["exercise_test"],
-            }
+                "submission": request["submission"],
+                "exercise_test": request["exercise_test"],
+            },
         )
-        
+
         testresult.running = request["running"]
         if testresult.running:
             testresult.stdout = ""
