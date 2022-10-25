@@ -1,6 +1,12 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { test, expect } from '@playwright/test';
 
+test('Main page loads', async ({ page }) => {
+  await page.goto('http://localhost:3000');
+  const title = await page.textContent('h1');
+  expect(title).toBe('ARBITRE');
+});
+
 test('Register, Logout, Login, Logout', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   await page.getByRole('tab', { name: 'Register' }).click();
