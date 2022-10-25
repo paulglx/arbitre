@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "react-bootstrap";
+import { Container, Tabs, Tab } from "react-bootstrap";
 import Register from "./Register";
 import Login from "./Login";
 import store from "../app/store";
@@ -10,7 +10,16 @@ const Public = () => {
 
     const loginRegisterBlock = (state:any) => {
         if (state?.auth?.user === null) {
-            return <Login />
+            return (
+                <Tabs defaultActiveKey='login' id='login-register-tab' className='mb-3' variant="pills">
+                    <Tab eventKey='login' title='Login'>
+                        <Login />
+                    </Tab>
+                    <Tab eventKey='register' title='Register'>
+                        <Register />
+                    </Tab>
+                </Tabs>
+            )
         }
         else {
             return (<>
