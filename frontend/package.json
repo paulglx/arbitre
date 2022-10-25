@@ -13,7 +13,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "redux-persist": "^6.0.0",
     "typescript": "^4.8.4"
   },
@@ -42,7 +42,7 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^18.11.5",
-    "@playwright/test": "^1.27.1"
+    "@playwright/test": "^1.27.1",
+    "@types/node": "^18.11.5"
   }
 }

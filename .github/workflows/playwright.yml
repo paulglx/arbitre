@@ -35,7 +35,7 @@ jobs:
     #   working-directory: backend
 
     - name: Run Django and Run Playwright tests
-      run:
+      run: |
         cd backend
         python manage.py runserver &
         cd ../frontend
