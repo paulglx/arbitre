@@ -28,12 +28,12 @@ jobs:
       run: npx playwright install --with-deps
       working-directory: frontend
 
-    - name: Run Django server in background
-      env:
-        DJANGO_ALLOW_ASYNC_UNSAFE: 1
-      run:
-        python manage.py runserver &
-      working-directory: backend
+    # - name: Run Django server in background
+    #   env:
+    #     DJANGO_ALLOW_ASYNC_UNSAFE: 1
+    #   run:
+    #     python manage.py runserver &
+    #   working-directory: backend
 
     - name: Run Playwright tests
       run:
