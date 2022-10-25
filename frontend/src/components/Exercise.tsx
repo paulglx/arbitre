@@ -44,7 +44,7 @@ const Exercise = () => {
     if(isError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The exercise you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/courses" className='text-decoration-none'>⬅ Back to courses</a></h3>
+                <h3>The exercise you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
             </div>
         )
     }
@@ -58,7 +58,7 @@ const Exercise = () => {
     <Container>
 
         <Breadcrumb>
-            <Breadcrumb.Item href="/courses">
+            <Breadcrumb.Item href="/course">
                 Courses
             </Breadcrumb.Item>
             <Breadcrumb.Item href={"/course/"+course.id}>

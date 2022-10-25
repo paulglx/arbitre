@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
     sans-serif !important;
   -webkit-font-smoothing: antialiased;
@@ -36,4 +36,8 @@ ol.breadcrumb a {
 
 ol.breadcrumb li.active {
   color: var(--bs-gray-dark);
+}
+
+.arbitre {
+  font-weight: 900 !important;
 }

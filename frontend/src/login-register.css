@@ -26,7 +26,8 @@
   
   .packed-border {
     width: fit-content;
-    padding-left:10px;
-    padding-right:10px;
+    margin:-3px;
+    padding-left:15px;
+    padding-right:15px;
     text-align: center;
   }

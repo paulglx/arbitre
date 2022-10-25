@@ -27,7 +27,7 @@ const Course = () => {
     if(courseIsError || sessionsIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/courses" className='text-decoration-none'>⬅ Back to courses</a></h3>
+                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
             </div>
         )
     }
@@ -41,7 +41,7 @@ const Course = () => {
         <Container>
 
             <Breadcrumb>
-                <Breadcrumb.Item href="/courses">
+                <Breadcrumb.Item href="/course">
                     Courses
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>
