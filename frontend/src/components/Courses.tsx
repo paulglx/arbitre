@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, ListGroup } from 'react-bootstrap'
 import { useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from '../features/auth/authSlice';
+import { selectCurrentUser, selectCurrentRoles } from '../features/auth/authSlice';
 import Header from './Header'
 
 const Courses = () => {
@@ -16,6 +16,20 @@ const Courses = () => {
     } = useGetAllCoursesQuery({});
 
     const user = useSelector(selectCurrentUser)
+    const roles = useSelector(selectCurrentRoles)
+
+    const teacherContent = (roles:number[]) => {
+        return roles?.includes(2) ? (
+            <ListGroup.Item
+                action
+                variant="light"
+                href="/course/create"
+                key='create'
+            >
+                &nbsp; Create Course
+            </ListGroup.Item>
+        ) : <></>
+    }
 
     return courseIsLoading ? (<></>) : (<>
         <Header />
@@ -29,13 +43,13 @@ const Courses = () => {
                 {courses.map((course:any, i:number) => {
                     return <ListGroup.Item
                         action
-                        variant="light"
                         href={"/course/"+course.id}
                         key={i}
                     >
                         {course.title}
                     </ListGroup.Item>
                 })}
+                {teacherContent(roles)}
             </ListGroup>
         </Container>
     </>)

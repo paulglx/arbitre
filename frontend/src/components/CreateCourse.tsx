@@ -1,6 +1,7 @@
 import React from 'react'
-import { Container, Form } from 'react-bootstrap'
+import { Button, Container, Form } from 'react-bootstrap'
 import { useState } from 'react'
+import {ArrowLeftIcon} from '@primer/octicons-react'
 
 const CreateCourse = () => {
 
@@ -14,10 +15,18 @@ const CreateCourse = () => {
         <Container className="d-flex align-items-center vh-100">
             <Container className="text-wrap text-break">
 
-                <h1>{title}</h1>
+                <Button variant="light mb-3" href="/course">
+                    ← Back to courses
+                </Button>
+
+                <h1
+                    className={title === "New course" ? "text-muted fw-bold" : "fw-bold"}
+                    >
+                    {title}
+                </h1>
 
                 <Form>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Group className="mb-3">
                         <Form.Label>Course title</Form.Label>
                         <Form.Control 
                             type="text" 
@@ -30,12 +39,17 @@ const CreateCourse = () => {
                             Give a short title to your course.
                         </Form.Text>
                     </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Course description</Form.Label>
+                        <Form.Control as="textarea" rows={5} />
+                    </Form.Group>
+
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
                 </Form>
 
-                <Form.Group>
-                    <Form.Label>Course description</Form.Label>
-                    <Form.Control as="textarea" rows={3} />
-                </Form.Group>
             </Container>
         </Container>
     )
