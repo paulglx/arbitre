@@ -5,7 +5,7 @@ from rest_framework import serializers
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ["id","title", "description", "students"]
+        fields = ["id", "title", "description", "students"]
 
 
 class MinimalCourseSerializer(serializers.ModelSerializer):

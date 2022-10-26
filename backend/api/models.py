@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from pyparsing import empty
 
 
 class Course(models.Model):
@@ -9,11 +8,15 @@ class Course(models.Model):
     """
 
     owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="%(class)s_courses_owner",
+        User,
+        on_delete=models.CASCADE,
+        related_name="%(class)s_courses_owner",
     )
     title = models.CharField(max_length=255)
     description = models.TextField()
-    students = models.ManyToManyField(User, related_name="%(class)s_courses_students", blank=True)
+    students = models.ManyToManyField(
+        User, related_name="%(class)s_courses_students", blank=True
+    )
 
     def __str__(self):
         return self.title
