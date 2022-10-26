@@ -13,13 +13,13 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    #Allow students or owner to get their courses
+    # Allow students or owner to get their courses
     def get_queryset(self):
         user = self.request.user
         print("User:", user)
         return Course.objects.filter(Q(students__in=[user]) | Q(owner=user)).distinct()
 
-    #Auto set owner to current user
+    # Auto set owner to current user
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
