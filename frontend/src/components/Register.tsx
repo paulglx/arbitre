@@ -1,3 +1,5 @@
+// TODO allow users to register as teacher for testing
+
 import React from 'react'
 import { useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
