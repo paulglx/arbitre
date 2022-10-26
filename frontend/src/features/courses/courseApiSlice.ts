@@ -14,10 +14,35 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        createCourse: builder.mutation({
+            query: (data:any) => {
+                return (
+                    {
+                        url: '/api/course/',
+                        method: 'POST',
+                        credentials: 'include',
+                        body: data //Must include : title, description. Optional fields : students
+                    }
+                )
+            }
+        }),
+        deleteCourse: builder.mutation({
+            query: (id:any) => {
+                return (
+                    {
+                        url: `/api/course/${id}/`,
+                        method: 'DELETE',
+                        credentials: 'include',
+                    }
+                )
+            }
+        })
     })
 })
 
 export const {
     useGetCourseQuery,
     useGetAllCoursesQuery,
+    useCreateCourseMutation,
+    useDeleteCourseMutation
 } = courseApiSlice;

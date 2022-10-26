@@ -35,7 +35,7 @@ const Exercise = () => {
         var formData = new FormData();
         formData.append("exercise", exercise.id)
         formData.append("file", form.files[0])
-        formData.append("owner", '1')
+        formData.append("owner", '1') //TODO: get user id from store OR change model to auto save owner
 
         await createSubmission(formData).unwrap()
 

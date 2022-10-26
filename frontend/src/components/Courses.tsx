@@ -18,7 +18,7 @@ const Courses = () => {
     const user = useSelector(selectCurrentUser)
     const roles = useSelector(selectCurrentRoles)
 
-    const teacherContent = (roles:number[]) => {
+    const teacherContent = () => {
         return roles?.includes(2) ? (
             <ListGroup.Item
                 action
@@ -26,7 +26,7 @@ const Courses = () => {
                 href="/course/create"
                 key='create'
             >
-                &nbsp; Create Course
+                +&nbsp; New course
             </ListGroup.Item>
         ) : <></>
     }
@@ -49,7 +49,7 @@ const Courses = () => {
                         {course.title}
                     </ListGroup.Item>
                 })}
-                {teacherContent(roles)}
+                {teacherContent()}
             </ListGroup>
         </Container>
     </>)
