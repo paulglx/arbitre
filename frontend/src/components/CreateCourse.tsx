@@ -75,7 +75,7 @@ const CreateCourse = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Course description</Form.Label>
+                            <Form.Label>Course description <span className='text-muted'></span></Form.Label>
                             <Form.Control
                                 value={description}
                                 as="textarea"
@@ -84,6 +84,10 @@ const CreateCourse = () => {
                                 className={errMsg ? 'is-invalid' : ''}
                                 onChange={handleDescriptionInput}
                             />
+                            <Form.Text className="text-muted">
+                                Markdown supported !&nbsp;
+                                <a className='text-muted' href="https://www.markdownguide.org/basic-syntax/">See reference</a>
+                            </Form.Text>
                         </Form.Group>
 
                         <Button variant="primary" type="submit" onClick={handleSubmit}>

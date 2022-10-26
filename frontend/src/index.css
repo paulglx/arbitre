@@ -8,11 +8,6 @@ body {
   background-color: var(--bs-gray);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 div.vertical-center {
   min-height: 100%;  /* Fallback for browsers that don't support vh unit */
   min-height: 100vh;
@@ -48,4 +43,20 @@ ol.breadcrumb li.active {
 
 .dashed-border {
   border-style: dashed !important;
+}
+
+code, kbd, pre, samp {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+p > code {
+  background-color: var(--bs-light);
+  padding:5px;
+  border-radius: 5px;
+}
+
+.markdown pre {
+  background-color: var(--bs-light);
+  padding: 10px;
+  border-radius: 5px;
 }

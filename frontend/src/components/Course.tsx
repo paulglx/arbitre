@@ -2,11 +2,11 @@ import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger } fro
 import { selectCurrentRoles } from "../features/auth/authSlice";
 import { useGetCourseQuery, useDeleteCourseMutation } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Header from "./Header";
-import { useNavigate } from "react-router-dom";
-
+import ReactMarkdown from "react-markdown";
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 
 const Course = () => {
 
@@ -113,7 +113,7 @@ const Course = () => {
 
     <Header />
 
-        <Container>
+        <Container className="mb-3">
 
             <Breadcrumb>
                 <Breadcrumb.Item href="/course">
@@ -129,8 +129,11 @@ const Course = () => {
             {teacherContent()}
 
             <h1>{course.title}</h1>
-            <blockquote>
-                {course.description}
+            <blockquote className="border rounded p-3">
+                <ReactMarkdown
+                    children={course.description}
+                    className="markdown"
+                />
             </blockquote>
 
             <h2>Sessions</h2>
