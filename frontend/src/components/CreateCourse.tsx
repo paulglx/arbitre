@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
 import { useState } from 'react'
-import { useCreateCourseMutation } from '../features/courses/courseApiSlice'
+import { useCreateCourseMutation, useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
+import { useNavigate } from 'react-router-dom'
 
 const CreateCourse = () => {
 
@@ -9,6 +10,7 @@ const CreateCourse = () => {
     const [description, setDescription] = useState("")
     const [errMsg, setErrMsg] = useState("")
     const [createCourse] = useCreateCourseMutation()
+    const navigate = useNavigate()
 
     useEffect(() => {
         setErrMsg("")
@@ -27,7 +29,10 @@ const CreateCourse = () => {
 
         if(title && description) {
             try {
+                //Create course
                 await createCourse({title, description}).unwrap()
+                //Redirect to courses page
+                navigate("/course")
             } catch (err) {
                 console.log(err)
                 setErrMsg("An error occured while trying to create course.")
