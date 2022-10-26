@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets, permissions
 
 from .serializers import CourseSerializer, SessionSerializer, ExerciseSerializer
@@ -10,12 +11,17 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CourseSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
         print("User:", user)
-        return Course.objects.filter(students__in=[user])
+        return Course.objects.filter(Q(students__in=[user]) | Q(owner=user)).distinct()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    
 
 
 class SessionViewSet(viewsets.ModelViewSet):
@@ -24,7 +30,7 @@ class SessionViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = SessionSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     # Return sessions of course if course_id param passed. Else, return all sessions
     def get_queryset(self):
@@ -41,7 +47,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ExerciseSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):
