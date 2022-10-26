@@ -12,28 +12,13 @@ class TestSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = "__all__"
+        fields = ["id", "exercise", "file"]
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
             if isinstance(validator, validators.UniqueTogetherValidator):
                 self.validators.remove(validator)
         super(SubmissionSerializer, self).run_validators(value)
-
-    def create(self, request):
-        submission, created = Submission.objects.get_or_create(
-            exercise=request["exercise"],
-            owner=request["owner"],
-            file=request["file"],
-            defaults={
-                "exercise": request["exercise"],
-                "owner": request["owner"],
-                "file": request["file"],
-            },
-        )
-
-        submission.save()
-        return submission
 
 
 class TestResultSerializer(serializers.ModelSerializer):
