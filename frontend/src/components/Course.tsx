@@ -60,14 +60,14 @@ const Course = () => {
     )
 
     const teacherContent = () => {
-        return (
+        return roles?.includes(2) ? (
             <div className="d-flex justify-content-end">
                 <Button variant="light border" href={"/course/"+course.id+"/edit"}>Edit</Button> &nbsp;
                 <OverlayTrigger trigger="click" placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger">Delete</Button>
                 </OverlayTrigger>
             </div>
-        )
+        ) : <></>
     }
 
     const sessionContent = () => {
