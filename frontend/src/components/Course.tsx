@@ -6,7 +6,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Header from "./Header";
 import ReactMarkdown from "react-markdown";
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 
 const Course = () => {
 
@@ -31,14 +30,6 @@ const Course = () => {
         error: sessionsError
     } = useGetSessionsOfCourseQuery({course_id:id})
 
-    if(courseIsError || sessionsIsError) {
-        return roles?.includes(2) ? (
-            <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
-            </div>
-        ) : (<></>)
-    }
-
     const handleDelete = (e:any) => {
         e.preventDefault();
         try {
@@ -59,7 +50,7 @@ const Course = () => {
         </Popover>
     )
 
-    const teacherContent = () => {
+    const teacherActionsContent = () => {
         return roles?.includes(2) ? (
             <div className="d-flex justify-content-end">
                 <Button variant="light border" href={"/course/"+course.id+"/edit"}>Edit</Button> &nbsp;
@@ -122,40 +113,49 @@ const Course = () => {
         }
     }
 
+    if(courseIsError || sessionsIsError) {
+        return roles?.includes(2) ? (
+            <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
+            </div>
+        ) : (<></>)
+    }
+
     return courseIsLoading ? (
         <></>
-    ):(<>
+    ) : (
+    <>
+        <Header />
 
-    <Header />
+            <Container className="mb-3">
 
-        <Container className="mb-3">
+                <Breadcrumb>
+                    <Breadcrumb.Item href="/course">
+                        Courses
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item active>
+                        {course.title}
+                    </Breadcrumb.Item>
+                </Breadcrumb>
 
-            <Breadcrumb>
-                <Breadcrumb.Item href="/course">
-                    Courses
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active>
-                    {course.title}
-                </Breadcrumb.Item>
-            </Breadcrumb>
+                <br />
 
-            <br />
+                {teacherActionsContent()}
 
-            {teacherContent()}
+                <h1>{course.title}</h1>
+                <blockquote className="border rounded p-3">
+                    <ReactMarkdown
+                        children={course.description}
+                        className="markdown"
+                    />
+                </blockquote>
 
-            <h1>{course.title}</h1>
-            <blockquote className="border rounded p-3">
-                <ReactMarkdown
-                    children={course.description}
-                    className="markdown"
-                />
-            </blockquote>
+                <h2>Sessions</h2>
+                {sessionContent()}
 
-            <h2>Sessions</h2>
-            {sessionContent()}
-
-        </Container>
-    </>)
+            </Container>
+        </>
+    )
 }
 
 export default Course
