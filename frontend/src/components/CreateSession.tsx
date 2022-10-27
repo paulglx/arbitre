@@ -52,8 +52,8 @@ const CreateSession = () => {
                     description,
                     course_id
                 }).unwrap()
-                //Redirect to sessions page
-                navigate("/session")
+                //Redirect to previous page
+                navigate(`/course/${course_id}`)
             } catch (err) {
                 console.log(err)
                 setErrMsg("An error occured while trying to create session.")
