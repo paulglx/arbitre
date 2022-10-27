@@ -41,42 +41,42 @@ const Session = () => {
     <Header />
         
     <Container>
-            <Breadcrumb>
-                <Breadcrumb.Item href="/course">
-                    Courses
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href={"/course/"+course.id}>
-                    {course.title}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active>
-                    {session.title}
-                </Breadcrumb.Item>
-            </Breadcrumb>
-        </Container>
+        <Breadcrumb>
+            <Breadcrumb.Item href="/course">
+                Courses
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href={"/course/"+course.id}>
+                {course.title}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>
+                {session.title}
+            </Breadcrumb.Item>
+        </Breadcrumb>
+    </Container>
 
-        <br />
+    <br />
 
-        <Container>
-            <h1>{session.title}</h1>
-            <blockquote>
-                {session.description}
-            </blockquote>
+    <Container>
+        <h1>{session.title}</h1>
+        <blockquote>
+            {session.description}
+        </blockquote>
 
-            <h2>Exercises</h2>
-            <ListGroup>
-                {exercises.map((exercise:any, i:number) => {
-                    return <ListGroup.Item
-                        action
-                        variant="light"
-                        href={"/exercise/"+exercise.id}
-                        key={i}
-                    >
-                        {exercise.title}
-                    </ListGroup.Item>
-                })}
-            </ListGroup>
+        <h2>Exercises</h2>
+        <ListGroup>
+            {exercises.map((exercise:any, i:number) => {
+                return <ListGroup.Item
+                    action
+                    variant="light"
+                    href={"/exercise/"+exercise.id}
+                    key={i}
+                >
+                    {exercise.title}
+                </ListGroup.Item>
+            })}
+        </ListGroup>
 
-        </Container>
+    </Container>
     </>)
 }
 

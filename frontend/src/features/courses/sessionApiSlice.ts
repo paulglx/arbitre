@@ -42,5 +42,7 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetSessionQuery,
-    useGetSessionsOfCourseQuery
+    useGetSessionsOfCourseQuery,
+    useCreateSessionMutation,
+    useDeleteSessionMutation
 } = sessionApiSlice;

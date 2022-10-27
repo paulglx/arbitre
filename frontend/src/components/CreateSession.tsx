@@ -50,7 +50,7 @@ const CreateSession = () => {
                 await createSession({
                     title,
                     description,
-                    course:course_id
+                    course_id
                 }).unwrap()
                 //Redirect to sessions page
                 navigate("/session")
