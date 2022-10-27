@@ -63,11 +63,27 @@ const Course = () => {
         return roles?.includes(2) ? (
             <div className="d-flex justify-content-end">
                 <Button variant="light border" href={"/course/"+course.id+"/edit"}>Edit</Button> &nbsp;
-                <OverlayTrigger trigger="click" placement="auto" overlay={deletePopover}>
+                <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger">Delete</Button>
                 </OverlayTrigger>
             </div>
         ) : <></>
+    }
+
+    const sessionListTeacherContent = () => {
+        return roles?.includes(2) ? (
+            <ListGroup.Item action href={"/session/create?course_id="+id}>
+                        + Create Session
+            </ListGroup.Item>
+        ) : (<></>)
+    }
+
+    const sessionListTeacherContentNoSessions = () => {
+        return roles?.includes(2) ? (
+            <Button variant="light mb-3 border" href={"/session/create?course_id="+id}>
+                + Create session
+            </Button>
+        ) : (<></>)
     }
 
     const sessionContent = () => {
@@ -82,9 +98,7 @@ const Course = () => {
                     <ListGroup.Item className="text-muted text-center dashed-border">
                         <br />
                         <p>This course doesn't have any sessions.</p>
-                        <Button variant="light mb-3 border" href="">
-                            + Create session
-                        </Button>
+                        {sessionListTeacherContentNoSessions()}
                     </ListGroup.Item>
                 </ListGroup>
             )
@@ -102,7 +116,8 @@ const Course = () => {
                         {session.title}
                     </ListGroup.Item>
                 })}
-            </ListGroup>
+                {sessionListTeacherContent()}
+                </ListGroup>
             )
         }
     }
