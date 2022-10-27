@@ -12,8 +12,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     serializer_class = SubmissionSerializer
 
     def perform_create(self, serializer):
-        print(self)
-        print(serializer)
         submission, created = Submission.objects.update_or_create(
             exercise_id=self.request.data["exercise"],
             owner=self.request.user,
