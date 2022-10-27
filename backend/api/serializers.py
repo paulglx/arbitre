@@ -1,3 +1,4 @@
+from importlib.resources import read_binary
 from .models import Exercise, Session, Course
 from rest_framework import serializers
 
@@ -15,11 +16,14 @@ class MinimalCourseSerializer(serializers.ModelSerializer):
 
 
 class SessionSerializer(serializers.ModelSerializer):
-    course = MinimalCourseSerializer()
+    course = MinimalCourseSerializer(read_only=True)
+    course_id = serializers.PrimaryKeyRelatedField(
+        queryset=Course.objects.all(), source="course", write_only=True
+    )
 
     class Meta:
         model = Session
-        fields = "__all__"
+        fields = ["id", "title", "description", "course", "course_id"]
 
 
 class MinimalSessionSerializer(serializers.ModelSerializer):
@@ -27,7 +31,7 @@ class MinimalSessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Session
-        fields = ["id", "title", "course"]
+        fields = ["id", "title", "course_id"]
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
