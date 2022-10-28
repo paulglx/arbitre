@@ -184,7 +184,7 @@ const Course = () => {
                         Courses
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>
-                        {course.title}
+                        {title}
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
