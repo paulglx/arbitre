@@ -91,7 +91,7 @@ const CreateCourse = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" onClick={handleSubmit}>
-                            Submit
+                            Create course
                         </Button>
                     </Form>
                 </Container>
