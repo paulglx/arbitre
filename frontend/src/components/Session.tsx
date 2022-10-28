@@ -4,13 +4,13 @@ import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSl
 import { Container, ListGroup, Breadcrumb, Popover, Button, OverlayTrigger } from "react-bootstrap";
 import Header from "./Header";
 import { useSelector } from "react-redux";
-import { selectCurrentRoles } from "../features/auth/authSlice";
+import { selectIsTeacher } from "../features/auth/authSlice";
 import ReactMarkdown from "react-markdown";
 
 const Session = () => {
 
     const { id }:any = useParams();
-    const roles = useSelector(selectCurrentRoles);
+    const isTeacher = useSelector(selectIsTeacher);
     const [deleteSession] = useDeleteSessionMutation();
     const navigate = useNavigate();
 
@@ -53,7 +53,7 @@ const Session = () => {
     )
 
     const teacherActionsContent = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <div className="d-flex justify-content-end">
                 <Button variant="light border" href={"/session/"+course.id+"/edit"}>Edit</Button> &nbsp;
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
@@ -64,7 +64,7 @@ const Session = () => {
     }
 
     const exerciseListTeacherContent = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <ListGroup.Item action href={"/exercise/create?session_id="+id}>
                         + Create Session
             </ListGroup.Item>
@@ -72,7 +72,7 @@ const Session = () => {
     }
 
     const exerciseListTeacherContentNoSessions = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <Button variant="light mb-3 border" href={"/exercise/create?session_id="+id}>
                 + Create session
             </Button>
@@ -145,7 +145,7 @@ const Session = () => {
                 <br />
 
                 <div className="d-flex align-items-center justify-content-between">
-                    <h1 className="h2 fw-bold p-2">{session.title}</h1>
+                    <h1 className="session-title h2 fw-bold p-2">{session.title}</h1>
                     <div className="p-0 mb-2">
                      {teacherActionsContent()}
                     </div>

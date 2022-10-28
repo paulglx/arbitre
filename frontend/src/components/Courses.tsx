@@ -1,8 +1,7 @@
-import React from 'react'
 import { Container, ListGroup } from 'react-bootstrap'
 import { useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectCurrentRoles } from '../features/auth/authSlice';
+import { selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice';
 import Header from './Header'
 
 const Courses = () => {
@@ -16,10 +15,10 @@ const Courses = () => {
     } = useGetAllCoursesQuery({});
 
     const user = useSelector(selectCurrentUser)
-    const roles = useSelector(selectCurrentRoles)
+    const isTeacher = useSelector(selectIsTeacher)
 
     const teacherContent = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <ListGroup.Item
                 action
                 variant="light"
