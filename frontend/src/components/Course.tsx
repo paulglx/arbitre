@@ -140,15 +140,21 @@ const Course = () => {
 
                 <br />
 
-                {teacherActionsContent()}
-
-                <h1>{course.title}</h1>
-                <blockquote className="border rounded p-3">
+                <div className="d-flex align-items-center justify-content-between">
+                    <h1 className="h2 fw-extrabold p-2">{course.title}</h1>
+                    <div className="p-0 mb-2">
+                     {teacherActionsContent()}
+                    </div>
+                </div>
+                
+                <blockquote className="p-3 pb-1 bg-light rounded">
                     <ReactMarkdown
                         children={course.description}
                         className="markdown"
                     />
                 </blockquote>
+
+                <hr />
 
                 <h2>Sessions</h2>
                 {sessionContent()}

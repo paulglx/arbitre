@@ -144,15 +144,20 @@ const Session = () => {
 
                 <br />
 
-                {teacherActionsContent()}
-
-                <h1>{session.title}</h1>
-                <blockquote className="border rounded p-3">
+                <div className="d-flex align-items-center justify-content-between">
+                    <h1 className="h2 fw-bold p-2">{session.title}</h1>
+                    <div className="p-0 mb-2">
+                     {teacherActionsContent()}
+                    </div>
+                </div>
+                <div className="p-3 pb-1 rounded bg-light">
                     <ReactMarkdown
                         children={session.description}
                         className="markdown"
                     />
-                </blockquote>
+                </div>
+
+                <hr />
 
                 <h2>Exercises</h2>
                 <ListGroup>
