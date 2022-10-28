@@ -113,7 +113,9 @@ const Course = () => {
     const descriptionContent = () => {
         if (!isTeacher || !editDescription) {
             return (
-                <blockquote className="p-3 pb-1 bg-light rounded" onClick={() => setEditDescription(true)}>
+                <blockquote
+                    className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
+                    onClick={() => setEditDescription(true)}>
                     <ReactMarkdown
                         children={description}
                         className="markdown"
