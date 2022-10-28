@@ -1,8 +1,11 @@
+:root {
+  --mono-font: 'JetBrains Mono', monospace;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    sans-serif !important;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bs-gray);
@@ -59,7 +62,7 @@ ol.breadcrumb li.active {
 }
 
 code, kbd, pre, samp {
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: var(--mono-font) !important;
 }
 
 p > code {
@@ -135,4 +138,9 @@ p > code {
   border-radius: 5px;
   margin: -1px;
   margin-bottom: 7px;
+}
+
+.teacher.description-input {
+  background-color: var(--bs-light) !important;
+  font-family: var(--mono-font);
 }
