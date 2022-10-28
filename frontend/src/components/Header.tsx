@@ -26,7 +26,7 @@ const Header = () => {
         <Navbar className="py-3 border-bottom">
             <Container>
                 <Navbar.Brand href={"/"} className="arbitre">ARBITRE</Navbar.Brand>
-                <DropdownButton title={username} align="end">
+                <DropdownButton title={username} align="end" variant="outline-dark">
                         <Dropdown.Item href="/course">Courses</Dropdown.Item>
                         <Dropdown.Item href="/exercise">Submissions</Dropdown.Item>
                         <Dropdown.Divider />
