@@ -30,7 +30,7 @@ class MinimalSessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Session
-        fields = ["id", "title", "course_id"]
+        fields = ["id", "title", "course"]
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
