@@ -1,6 +1,6 @@
 import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger } from "react-bootstrap";
 import { selectIsTeacher } from "../features/auth/authSlice";
-import { useGetCourseQuery, useDeleteCourseMutation } from "../features/courses/courseApiSlice";
+import { useGetCourseQuery, useUpdateCourseMutation, useDeleteCourseMutation } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
 import { useParams, useNavigate, Form} from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -12,6 +12,7 @@ const Course = () => {
 
     const { id }:any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
+    const [updateCourse] = useUpdateCourseMutation();
     const [deleteCourse] = useDeleteCourseMutation();
     const navigate = useNavigate();
     const [title, setTitle] = useState("");
@@ -39,6 +40,18 @@ const Course = () => {
         isError: sessionsIsError,
         error: sessionsError
     } = useGetSessionsOfCourseQuery({course_id:id})
+
+    const handleUpdate = () => {
+        try {
+            updateCourse({
+                id: course?.id,
+                title,
+                description
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const handleDelete = (e:any) => {
         e.preventDefault();
@@ -75,21 +88,22 @@ const Course = () => {
             );
         } else if (isTeacher && editTitle) {
             return (
-                    <input
-                        autoFocus
-                        id="title"
-                        type="text"
-                        className="teacher title-input h2 fw-bold p-2"
-                        value={title} 
-                        onChange={(e:any) => setTitle(e.target.value)}
-                        onBlur={() => {
-                            if (title === "") {
-                                setTitle("Untitled course");
-                            }
-                            setEditTitle(false)
-                        }}
-                        placeholder="Enter course title"
-                    />
+                <input
+                    autoFocus
+                    id="title"
+                    type="text"
+                    className="teacher title-input h2 fw-bold p-2"
+                    value={title} 
+                    onChange={(e:any) => setTitle(e.target.value)}
+                    onBlur={() => {
+                        if (title === "") {
+                            setTitle("Untitled course");
+                        }
+                        setEditTitle(false)
+                        handleUpdate();
+                    }}
+                    placeholder="Enter course title"
+                />
             )
         }
     }
