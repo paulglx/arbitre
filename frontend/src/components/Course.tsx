@@ -1,8 +1,8 @@
-import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger } from "react-bootstrap";
+import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger, Form } from "react-bootstrap";
 import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetCourseQuery, useUpdateCourseMutation, useDeleteCourseMutation } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { useParams, useNavigate, Form} from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import Header from "./Header";
@@ -108,6 +108,39 @@ const Course = () => {
         }
     }
 
+    // Show description or edit description
+    const descriptionContent = () => {
+        if (!isTeacher || !editDescription) {
+            return (
+                <blockquote className="p-3 pb-1 bg-light rounded" onClick={() => setEditDescription(true)}>
+                    <ReactMarkdown
+                        children={description}
+                        className="markdown"
+                    />
+                </blockquote>
+            )
+        } else if (isTeacher && editDescription) {
+            return (
+                <Form>
+                    <Form.Group className="mb-3" controlId="description">
+                        <Form.Control
+                            autoFocus
+                            as="textarea"
+                            rows={description.split(/\r\n|\r|\n/).length}
+                            className="teacher"
+                            value={description}
+                            onChange={(e:any) => setDescription(e.target.value)}
+                            onBlur={() => {
+                                setEditDescription(false);
+                                handleUpdate();
+                            }}
+                        />
+                    </Form.Group>
+                </Form>
+            )
+        }
+    }
+
     //Edit and Delete buttons (teacher only)
     const teacherActionsContent = () => {
         return isTeacher ? (
@@ -206,17 +239,12 @@ const Course = () => {
 
                 <div className="d-flex align-items-center justify-content-between">
                     {titleContent()}
-                <div className="p-0 mb-2">
-                     {teacherActionsContent()}
-                </div>
+                    <div className="p-0 mb-2">
+                        {teacherActionsContent()}
+                    </div>
                 </div>
                 
-                <blockquote className="p-3 pb-1 bg-light rounded">
-                    <ReactMarkdown
-                        children={course.description}
-                        className="markdown"
-                    />
-                </blockquote>
+                {descriptionContent()}
 
                 <hr />
 

@@ -121,10 +121,10 @@ p > code {
 }
 
 .teacher.editable-title:hover::after {
-  content: " click to edit" !important;
-  font-weight: normal;
+  content:" CLICK TO EDIT";
+  font-weight: 200;
+  font-size: small;
   color: var(--bs-secondary);
-  font-size:medium;
   vertical-align: super;
 }
 
