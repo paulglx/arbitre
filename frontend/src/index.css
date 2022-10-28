@@ -128,7 +128,7 @@ p > code {
   vertical-align: super;
 }
 
-.teacher.title-input, .teacher.title-input:focus, .teacher.title-input:active {
+.teacher.title-input {
   -webkit-appearance: none;
   outline: none;
   border: 1px dashed var(--bs-gray-400) ;
