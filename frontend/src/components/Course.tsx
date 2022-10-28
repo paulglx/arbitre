@@ -1,18 +1,23 @@
 import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger } from "react-bootstrap";
-import { selectCurrentRoles } from "../features/auth/authSlice";
+import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetCourseQuery, useDeleteCourseMutation } from "../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Form} from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import ReactMarkdown from "react-markdown";
 
 const Course = () => {
 
     const { id }:any = useParams();
-    const roles = useSelector(selectCurrentRoles);
+    const isTeacher = useSelector(selectIsTeacher);
     const [deleteCourse] = useDeleteCourseMutation();
     const navigate = useNavigate();
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [editTitle, setEditTitle] = useState(false);
+    const [editDescription, setEditDescription] = useState(false);
 
     const {
         data: course,
@@ -21,6 +26,11 @@ const Course = () => {
         isError: courseIsError,
         error: courseError
     } = useGetCourseQuery({id});
+
+    useEffect(() => {
+        setTitle(course?.title);
+        setDescription(course?.description);
+    }, [course, courseIsSuccess]);
 
     const {
         data: sessions,
@@ -50,8 +60,43 @@ const Course = () => {
         </Popover>
     )
 
+    // Show title or edit title
+    const titleContent = () => {
+        if (!isTeacher || !editTitle) {
+            return (
+                <h1
+                    className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
+                    //onClick={() => isTeacher ? setEditTitle(true) : null}
+                    tabIndex={0} //allows focus
+                    onFocus={() => isTeacher ? setEditTitle(true) : null}
+                >
+                    {title}
+                </h1>
+            );
+        } else if (isTeacher && editTitle) {
+            return (
+                    <input
+                        autoFocus
+                        id="title"
+                        type="text"
+                        className="teacher title-input h2 fw-bold p-2"
+                        value={title} 
+                        onChange={(e:any) => setTitle(e.target.value)}
+                        onBlur={() => {
+                            if (title === "") {
+                                setTitle("Untitled course");
+                            }
+                            setEditTitle(false)
+                        }}
+                        placeholder="Enter course title"
+                    />
+            )
+        }
+    }
+
+    //Edit and Delete buttons (teacher only)
     const teacherActionsContent = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <div className="d-flex justify-content-end">
                 <Button variant="light border" href={"/course/"+course.id+"/edit"}>Edit</Button> &nbsp;
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
@@ -61,22 +106,25 @@ const Course = () => {
         ) : <></>
     }
 
+    //Create session button (teacher only)
     const sessionListTeacherContent = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <ListGroup.Item action href={"/session/create?course_id="+id}>
                         + Create Session
             </ListGroup.Item>
         ) : (<></>)
     }
 
+    //Create session button, on "no sessions" block (teacher only)
     const sessionListTeacherContentNoSessions = () => {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <Button variant="light mb-3 border" href={"/session/create?course_id="+id}>
                 + Create session
             </Button>
         ) : (<></>)
     }
 
+    //Session list, or "no sessions" block if no sessions
     const sessionContent = () => {
         if (sessionsIsLoading) {
             return (
@@ -113,14 +161,16 @@ const Course = () => {
         }
     }
 
+    //Session not found or not authorized
     if(courseIsError || sessionsIsError) {
-        return roles?.includes(2) ? (
+        return isTeacher ? (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
                 <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
             </div>
         ) : (<></>)
     }
 
+    //Main content
     return courseIsLoading ? (
         <></>
     ) : (
@@ -141,10 +191,10 @@ const Course = () => {
                 <br />
 
                 <div className="d-flex align-items-center justify-content-between">
-                    <h1 className="h2 fw-extrabold p-2">{course.title}</h1>
-                    <div className="p-0 mb-2">
+                    {titleContent()}
+                <div className="p-0 mb-2">
                      {teacherActionsContent()}
-                    </div>
+                </div>
                 </div>
                 
                 <blockquote className="p-3 pb-1 bg-light rounded">

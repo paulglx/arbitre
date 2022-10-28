@@ -107,5 +107,32 @@ p > code {
 }
 
 .fw-extrabold {
-  font-weight: 900 !important;
+  font-weight: 800 !important;
+}
+
+/* Teacher specific CSS */
+
+.teacher.editable-title {
+  border-radius: 5px;
+}
+
+.teacher.editable-title:hover {
+  background-color: var(--bs-light);
+}
+
+.teacher.editable-title:hover::after {
+  content: " click to edit" !important;
+  font-weight: normal;
+  color: var(--bs-secondary);
+  font-size:medium;
+  vertical-align: super;
+}
+
+.teacher.title-input, .teacher.title-input:focus, .teacher.title-input:active {
+  -webkit-appearance: none;
+  outline: none;
+  border: 1px dashed var(--bs-gray-400) ;
+  border-radius: 5px;
+  margin: -1px;
+  margin-bottom: 7px;
 }
