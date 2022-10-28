@@ -109,6 +109,7 @@ const Course = () => {
     }
 
     // Show description or edit description
+    // TODO implement ctrl+z
     const descriptionContent = () => {
         if (!isTeacher || !editDescription) {
             return (
@@ -126,15 +127,22 @@ const Course = () => {
                         <Form.Control
                             autoFocus
                             as="textarea"
-                            rows={description.split(/\r\n|\r|\n/).length}
-                            className="teacher"
+                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
+                            className="teacher description-input"
                             value={description}
                             onChange={(e:any) => setDescription(e.target.value)}
                             onBlur={() => {
+                                if(description === "") {
+                                    setDescription("No description");
+                                }
                                 setEditDescription(false);
                                 handleUpdate();
                             }}
+                            placeholder="Enter course description. Markdown is supported."
                         />
+                        <Form.Text className="text-muted">
+                            You are editing the description - Markdown supported !
+                        </Form.Text>
                     </Form.Group>
                 </Form>
             )
@@ -145,7 +153,6 @@ const Course = () => {
     const teacherActionsContent = () => {
         return isTeacher ? (
             <div className="d-flex justify-content-end">
-                <Button variant="light border" href={"/course/"+course.id+"/edit"}>Edit</Button> &nbsp;
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger">Delete</Button>
                 </OverlayTrigger>
