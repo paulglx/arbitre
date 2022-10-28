@@ -1,4 +1,3 @@
-from importlib.resources import read_binary
 from .models import Exercise, Session, Course
 from rest_framework import serializers
 
