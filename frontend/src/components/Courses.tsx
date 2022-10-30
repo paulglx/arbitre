@@ -24,6 +24,7 @@ const Courses = () => {
                 variant="light"
                 href="/course/create"
                 key='create'
+                id='create-course'
             >
                 +&nbsp; New course
             </ListGroup.Item>

@@ -68,7 +68,7 @@ const Course = () => {
             <Popover.Header as="h3">Are you sure?</Popover.Header>
             <Popover.Body>
             This will <strong>remove permanently</strong> this course, all its sessions and all the session's exercises. <br /><br />
-            <Button onClick={handleDelete} type="submit" size="sm" variant="danger">Delete course</Button>
+            <Button id="confirm-delete" onClick={handleDelete} type="submit" size="sm" variant="danger">Delete course</Button>
             </Popover.Body>
         </Popover>
     )
@@ -79,7 +79,7 @@ const Course = () => {
             return (
                 <h1
                     className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
-                    //onClick={() => isTeacher ? setEditTitle(true) : null}
+                    id="title-editable"
                     tabIndex={0} //allows focus
                     onFocus={() => isTeacher ? setEditTitle(true) : null}
                 >
@@ -90,7 +90,7 @@ const Course = () => {
             return (
                 <input
                     autoFocus
-                    id="title"
+                    id="title-input"
                     type="text"
                     className="teacher title-input h2 fw-bold p-2"
                     value={title} 
@@ -151,12 +151,12 @@ const Course = () => {
         }
     }
 
-    //Edit and Delete buttons (teacher only)
+    // Delete button (teacher only)
     const teacherActionsContent = () => {
         return isTeacher ? (
             <div className="d-flex justify-content-end">
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
-                    <Button variant="light border border-danger text-danger">Delete</Button>
+                    <Button variant="light border border-danger text-danger" id="delete-button">Delete</Button>
                 </OverlayTrigger>
             </div>
         ) : <></>
@@ -165,7 +165,7 @@ const Course = () => {
     //Create session button (teacher only)
     const sessionListTeacherContent = () => {
         return isTeacher ? (
-            <ListGroup.Item action href={"/session/create?course_id="+id}>
+            <ListGroup.Item id="create-session" action href={"/session/create?course_id="+id}>
                         + Create Session
             </ListGroup.Item>
         ) : (<></>)
@@ -174,7 +174,7 @@ const Course = () => {
     //Create session button, on "no sessions" block (teacher only)
     const sessionListTeacherContentNoSessions = () => {
         return isTeacher ? (
-            <Button variant="light mb-3 border" href={"/session/create?course_id="+id}>
+            <Button id="create-session-no-sessions" variant="light mb-3 border" href={"/session/create?course_id="+id}>
                 + Create session
             </Button>
         ) : (<></>)
@@ -190,7 +190,7 @@ const Course = () => {
         else if (sessionsIsSuccess && sessions.length === 0) {
             return (
                 <ListGroup>
-                    <ListGroup.Item className="text-muted text-center dashed-border">
+                    <ListGroup.Item id="no-sessions-warning" className="text-muted text-center dashed-border">
                         <br />
                         <p>This course doesn't have any sessions.</p>
                         {sessionListTeacherContentNoSessions()}
