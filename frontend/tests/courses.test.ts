@@ -22,26 +22,37 @@ test.beforeEach(async ({page}) => {
       });
 });
 
-test('Course workflow', async ({ page }) => {
+test('Course workflow', async ({ page, browserName }) => {
     await test.step('Login as teacher', async () => {
-        await page.goto('http://localhost:3000/');
+        await page.goto('/');
         await page.getByRole('tabpanel', { name: 'Login' }).locator('input[type="text"]').click();
         await page.getByRole('tabpanel', { name: 'Login' }).locator('input[type="text"]').fill('testteacher');
         await page.getByRole('tabpanel', { name: 'Login' }).locator('input[type="password"]').click();
         await page.getByRole('tabpanel', { name: 'Login' }).locator('input[type="password"]').fill('testpassword');
         await page.getByRole('button', { name: 'Sign In' }).click();
-        await expect(page).toHaveURL('http://localhost:3000/course');
+        await expect(page).toHaveURL('/course');
     });
     await test.step('Create Course', async () => {
-        await page.goto('http://localhost:3000/course');
-        await page.getByRole('link', { name: '+ New course' }).click();
-        await expect(page).toHaveURL('http://localhost:3000/course/create');
+        await expect(page).toHaveURL('/course');
+        await page.locator('#create-course').click();
+        await expect(page).toHaveURL('/course/create');
         await page.getByPlaceholder('Enter title').click();
-        await page.getByPlaceholder('Enter title').fill('Test Course');
+        await page.getByPlaceholder('Enter title').fill(`Test course ${browserName}`);
         await page.getByPlaceholder('Enter description').click();
-        await page.getByPlaceholder('Enter description').fill('Test description **markdown enabled**');
+        await page.getByPlaceholder('Enter description').fill('Test Description');
         await page.getByRole('button', { name: 'Create course' }).click();
-        await expect(page).toHaveURL('http://localhost:3000/course');
-        await page.isVisible('text=Test Course');
+        await expect(page).toHaveURL('/course');
+        //Check if course is created
+        await page.isVisible(`text=Test course ${browserName}`);
+        
+    });
+    await test.step('Delete course', async () => {
+        await page.goto('/course');
+        await page.getByRole('link', { name: `Test course ${browserName}` }).click();
+        await page.isVisible(`text=Test course ${browserName}`);
+        await page.locator('#delete-button').click();
+        await page.locator('#confirm-delete').click();
+        await expect(page).toHaveURL('/course');
+        await expect(page.locator(`text=Test course ${browserName}`)).toHaveCount(0);
     });
 });
