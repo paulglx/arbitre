@@ -1,18 +1,24 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useDeleteSessionMutation, useGetSessionQuery } from "../features/courses/sessionApiSlice";
-import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
-import { Container, ListGroup, Breadcrumb, Popover, Button, OverlayTrigger } from "react-bootstrap";
-import Header from "./Header";
-import { useSelector } from "react-redux";
+import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger, Form } from "react-bootstrap";
 import { selectIsTeacher } from "../features/auth/authSlice";
+import { useGetSessionQuery, useUpdateSessionMutation, useDeleteSessionMutation  } from "../features/courses/sessionApiSlice";
+import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import Header from "./Header";
 import ReactMarkdown from "react-markdown";
 
 const Session = () => {
 
     const { id }:any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
+    const [updateSession] = useUpdateSessionMutation();
     const [deleteSession] = useDeleteSessionMutation();
     const navigate = useNavigate();
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [editTitle, setEditTitle] = useState(false);
+    const [editDescription, setEditDescription] = useState(false);
 
     const {
         data: session,
@@ -21,6 +27,11 @@ const Session = () => {
         isError: sessionIsError,
         error: sessionError
     } = useGetSessionQuery({id});
+
+    useEffect(() => {
+        setTitle(session?.title);
+        setDescription(session?.description);
+    }, [session, sessionIsSuccess]);
 
     const {
         data: exercises,
@@ -31,6 +42,19 @@ const Session = () => {
     } = useGetExercisesOfSessionQuery({session_id:id});
 
     const course = session?.course
+
+    const handleUpdate = () => {
+        try {
+            updateSession({
+                course_id: course?.id,
+                id: session?.id,
+                title,
+                description,
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const handleDelete = (e:any) => {
         e.preventDefault();
@@ -52,10 +76,88 @@ const Session = () => {
         </Popover>
     )
 
+    // Show title or edit title
+    const titleContent = () => {
+        if (!isTeacher || !editTitle) {
+            return (
+                <h1
+                    className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
+                    id="title-editable"
+                    tabIndex={0} //allows focus
+                    onFocus={() => isTeacher ? setEditTitle(true) : null}
+                >
+                    {title}
+                </h1>
+            );
+        } else if (isTeacher && editTitle) {
+            return (
+                <input
+                    autoFocus
+                    id="title-input"
+                    type="text"
+                    className="teacher title-input h2 fw-bold p-2"
+                    value={title} 
+                    onChange={(e:any) => setTitle(e.target.value)}
+                    onBlur={() => {
+                        if (title === "") {
+                            setTitle("Untitled session");
+                        }
+                        setEditTitle(false)
+                        handleUpdate();
+                    }}
+                    placeholder="Enter session title"
+                />
+            )
+        }
+    }
+
+        // Show description or edit description
+    // TODO implement ctrl+z
+    const descriptionContent = () => {
+        if (!isTeacher || !editDescription) {
+            return (
+                <blockquote
+                    tabIndex={0} //allows focus
+                    className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
+                    onFocus={() => setEditDescription(true)}>
+                    <ReactMarkdown
+                        children={description}
+                        className="markdown"
+                    />
+                </blockquote>
+            )
+        } else if (isTeacher && editDescription) {
+            return (
+                <Form>
+                    <Form.Group className="mb-3" controlId="description">
+                        <Form.Control
+                            autoFocus
+                            as="textarea"
+                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
+                            className="teacher description-input"
+                            value={description}
+                            onChange={(e:any) => setDescription(e.target.value)}
+                            onBlur={() => {
+                                if(description === "") {
+                                    setDescription("No description");
+                                }
+                                setEditDescription(false);
+                                handleUpdate();
+                            }}
+                            placeholder="Enter course description. Markdown is supported."
+                        />
+                        <Form.Text className="text-muted">
+                            You are editing the description - Markdown supported !
+                        </Form.Text>
+                    </Form.Group>
+                </Form>
+            )
+        }
+    }
+
     const teacherActionsContent = () => {
         return isTeacher ? (
             <div className="d-flex justify-content-end">
-                <Button variant="light border" href={"/session/"+course.id+"/edit"}>Edit</Button> &nbsp;
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger">Delete</Button>
                 </OverlayTrigger>
@@ -66,19 +168,20 @@ const Session = () => {
     const exerciseListTeacherContent = () => {
         return isTeacher ? (
             <ListGroup.Item action href={"/exercise/create?session_id="+id}>
-                        + Create Session
+                        + Create Exercise
             </ListGroup.Item>
         ) : (<></>)
     }
 
-    const exerciseListTeacherContentNoSessions = () => {
+    const exerciseListTeacherContentNoExercises = () => {
         return isTeacher ? (
             <Button variant="light mb-3 border" href={"/exercise/create?session_id="+id}>
-                + Create session
+                + Create exercise
             </Button>
         ) : (<></>)
     }
 
+    //Exercises list, or 'no exercises' block if no exercises
     const exercisesContent = () => {
         if (exercisesIsLoading) {
             return (
@@ -90,8 +193,8 @@ const Session = () => {
                 <ListGroup>
                     <ListGroup.Item className="text-muted text-center dashed-border">
                         <br />
-                        <p>This course doesn't have any sessions.</p>
-                        {exerciseListTeacherContentNoSessions()}
+                        <p>This session doesn't have any exercises.</p>
+                        {exerciseListTeacherContentNoExercises()}
                     </ListGroup.Item>
                 </ListGroup>
             )
@@ -123,7 +226,7 @@ const Session = () => {
         )
     }
 
-    return sessionIsLoading || exercisesIsLoading  ? (
+    return sessionIsLoading  ? (
         <></>
     ) : (
         <>
@@ -138,40 +241,25 @@ const Session = () => {
                         {course.title}
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>
-                        {session.title}
+                        {title}
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
                 <br />
 
                 <div className="d-flex align-items-center justify-content-between">
-                    <h1 className="session-title h2 fw-bold p-2">{session.title}</h1>
+                    {titleContent()}
                     <div className="p-0 mb-2">
-                     {teacherActionsContent()}
+                        {teacherActionsContent()}
                     </div>
                 </div>
-                <div className="p-3 pb-1 rounded bg-light">
-                    <ReactMarkdown
-                        children={session.description}
-                        className="markdown"
-                    />
-                </div>
+
+                {descriptionContent()}
 
                 <hr />
 
                 <h2>Exercises</h2>
-                <ListGroup>
-                    {exercises.map((exercise:any, i:number) => {
-                        return <ListGroup.Item
-                            action
-                            variant="light"
-                            href={"/exercise/"+exercise.id}
-                            key={i}
-                        >
-                            {exercise.title}
-                        </ListGroup.Item>
-                    })}
-                </ListGroup>
+                {exercisesContent()}
 
             </Container>
         </>

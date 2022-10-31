@@ -26,11 +26,23 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
                 )
             }
         }),
-        deleteSession: builder.mutation({
-            query: (id:any) => {
+        updateSession: builder.mutation({
+            query: (data:any) => {
                 return (
                     {
-                        url: `/api/session/${id}/`,
+                        url: `/api/session/${data.id}/`,
+                        method: 'PUT',
+                        credentials: 'include',
+                        body: data,
+                    }
+                )
+            }
+        }),
+        deleteSession: builder.mutation({
+            query: (data:any) => {
+                return (
+                    {
+                        url: `/api/session/${data.id}/`,
                         method: 'DELETE',
                         credentials: 'include',
                     }
@@ -44,5 +56,6 @@ export const {
     useGetSessionQuery,
     useGetSessionsOfCourseQuery,
     useCreateSessionMutation,
+    useUpdateSessionMutation,
     useDeleteSessionMutation
 } = sessionApiSlice;
