@@ -14,10 +14,48 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        createExercise: builder.mutation({
+            query: (data:any) => {
+                return (
+                    {
+                        url: '/api/exercise/',
+                        method: 'POST',
+                        credentials: 'include',
+                        body: data,
+                    }
+                )
+            }
+        }),
+        updateExercise: builder.mutation({
+            query: (data:any) => {
+                return (
+                    {
+                        url: `/api/exercise/${data.id}/`,
+                        method: 'PUT',
+                        credentials: 'include',
+                        body: data,
+                    }
+                )
+            }
+        }),
+        deleteExercise: builder.mutation({
+            query: (data:any) => {
+                return (
+                    {
+                        url: `/api/exercise/${data.id}/`,
+                        method: 'DELETE',
+                        credentials: 'include',
+                    }
+                )
+            }
+        }),
     })
 })
 
 export const {
     useGetExerciseQuery,
-    useGetExercisesOfSessionQuery
+    useGetExercisesOfSessionQuery,
+    useCreateExerciseMutation,
+    useUpdateExerciseMutation,
+    useDeleteExerciseMutation
 } = exerciseApiSlice;
