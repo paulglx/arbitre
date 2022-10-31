@@ -38,7 +38,7 @@ const Courses = () => {
 
         <Container>
 
-            <h1>Welcome back, {user}!</h1>
+            <h1 className='fw-bold'>Welcome back, {user}!</h1>
             <hr />
             <h2>Your courses</h2>
             <ListGroup>
