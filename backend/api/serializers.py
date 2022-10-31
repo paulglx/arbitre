@@ -34,8 +34,8 @@ class MinimalSessionSerializer(serializers.ModelSerializer):
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
-    session = MinimalSessionSerializer()
+    session = MinimalSessionSerializer(read_only=True)
 
     class Meta:
         model = Exercise
-        fields = "__all__"
+        fields = '__all__'

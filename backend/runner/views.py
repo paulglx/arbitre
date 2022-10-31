@@ -27,6 +27,14 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
 
+    #Get the tests for the exercise if exercise_id is given
+    def get_queryset(self):
+        queryset = Test.objects.all()
+        exercise_id = self.request.query_params.get("exercise_id", None)
+        if exercise_id:
+            queryset = queryset.filter(exercise=exercise_id)
+        return queryset
+
 
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
