@@ -38,7 +38,9 @@ const Courses = () => {
 
         <Container>
 
-            <h1>{user}'s courses</h1>
+            <h1>Welcome back, {user}!</h1>
+            <hr />
+            <h2>Your courses</h2>
             <ListGroup>
                 {courses.map((course:any, i:number) => {
                     return <ListGroup.Item
