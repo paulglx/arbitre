@@ -20,6 +20,20 @@ const Course = () => {
     const [editTitle, setEditTitle] = useState(false);
     const [editDescription, setEditDescription] = useState(false);
 
+    useEffect(() => {
+        window.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                if(editTitle) {
+                    (event.target as HTMLElement).blur();
+                }
+            }
+            if (event.key === 'Escape') {
+                //TODO revert to previous state
+                (event.target as HTMLElement).blur();
+            }
+        });
+    });
+
     const {
         data: course,
         isLoading: courseIsLoading,
@@ -80,8 +94,8 @@ const Course = () => {
                 <h1
                     className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
                     id="title-editable"
-                    tabIndex={0} //allows focus
                     onFocus={() => isTeacher ? setEditTitle(true) : null}
+                    tabIndex={0} //allows focus
                 >
                     {title}
                 </h1>
@@ -89,12 +103,10 @@ const Course = () => {
         } else if (isTeacher && editTitle) {
             return (
                 <input
+                    autoComplete="false"
                     autoFocus
-                    id="title-input"
-                    type="text"
                     className="teacher title-input h2 fw-bold p-2"
-                    value={title} 
-                    onChange={(e:any) => setTitle(e.target.value)}
+                    id="title-input"
                     onBlur={() => {
                         if (title === "") {
                             setTitle("Untitled course");
@@ -102,7 +114,10 @@ const Course = () => {
                         setEditTitle(false)
                         handleUpdate();
                     }}
+                    onChange={(e:any) => setTitle(e.target.value)}
                     placeholder="Enter course title"
+                    type="text"
+                    value={title} 
                 />
             )
         }
@@ -114,9 +129,10 @@ const Course = () => {
         if (!isTeacher || !editDescription) {
             return (
                 <blockquote
-                    tabIndex={0} //allows focus
                     className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
-                    onFocus={() => setEditDescription(true)}>
+                    onFocus={() => setEditDescription(true)}
+                    tabIndex={0} //allows focus
+                >
                     <ReactMarkdown
                         children={description}
                         className="markdown"
@@ -128,12 +144,9 @@ const Course = () => {
                 <Form>
                     <Form.Group className="mb-3" controlId="description">
                         <Form.Control
-                            autoFocus
                             as="textarea"
-                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
+                            autoFocus
                             className="teacher description-input"
-                            value={description}
-                            onChange={(e:any) => setDescription(e.target.value)}
                             onBlur={() => {
                                 if(description === "") {
                                     setDescription("No description");
@@ -141,7 +154,10 @@ const Course = () => {
                                 setEditDescription(false);
                                 handleUpdate();
                             }}
+                            onChange={(e:any) => setDescription(e.target.value)}
                             placeholder="Enter course description. Markdown is supported."
+                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
+                            value={description}
                         />
                         <Form.Text className="text-muted">
                             You are editing the description - Markdown supported !

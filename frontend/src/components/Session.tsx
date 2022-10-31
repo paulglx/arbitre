@@ -20,6 +20,20 @@ const Session = () => {
     const [editTitle, setEditTitle] = useState(false);
     const [editDescription, setEditDescription] = useState(false);
 
+    useEffect(() => {
+        window.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                if(editTitle) {
+                    (event.target as HTMLElement).blur();
+                }
+            }
+            if (event.key === 'Escape') {
+                //TODO revert to previous state
+                (event.target as HTMLElement).blur();
+            }
+        });
+    });
+
     const {
         data: session,
         isLoading: sessionIsLoading,
