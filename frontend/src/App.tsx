@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Course from "./components/Course";
 import Courses from "./components/Courses";
 import CreateCourse from "./components/CreateCourse";
+import CreateExercise from "./components/CreateExercise";
 import CreateSession from "./components/CreateSession";
 import Exercise from "./components/Exercise";
 import Layout from "./components/Layout";
@@ -36,6 +37,7 @@ function App() {
 					<Route path="session/create" element={<CreateSession/>} />
 
 					<Route path="exercise/:exercise_id" element={<Exercise/>} />
+					<Route path="exercise/create" element={<CreateExercise/>} />
 					<Route path="exercise/:exercise_id/results" element={<TestResult/>} />
 				</Route>
 
