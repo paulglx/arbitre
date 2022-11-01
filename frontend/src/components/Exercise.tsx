@@ -1,7 +1,11 @@
-import { useParams } from "react-router-dom";
-import { useGetExerciseQuery } from "../features/courses/exerciseApiSlice";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectIsTeacher, selectCurrentUser } from "../features/auth/authSlice";
+import { useGetExerciseQuery, useCreateExerciseMutation, useUpdateExerciseMutation, useDeleteExerciseMutation } from "../features/courses/exerciseApiSlice";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
-import { Container, Navbar, Form, Button, Breadcrumb } from "react-bootstrap";
+import { useCreateTestMutation, useUpdateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery } from "../features/courses/testApiSlice";
+import { Tabs, Tab, Container, Form, Button, Breadcrumb, Col, Row, InputGroup } from "react-bootstrap";
 import store from "../app/store";
 import Header from "./Header";
 import TestResult from "./TestResult";
@@ -9,20 +13,99 @@ import TestResult from "./TestResult";
 const Exercise = () => {
 
     const { exercise_id } : any = useParams();
+    const [createSubmission] = useCreateSubmissionMutation();
+    const [createExercise] = useCreateExerciseMutation();
+    const [updateExercise] = useUpdateExerciseMutation();
+    const [createTest] = useCreateTestMutation();
+    const [updateTest] = useUpdateTestMutation();
+    const [deleteTest] = useDeleteTestMutation();
+    const navigate = useNavigate();
+
+
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [tests, setTests] = useState([] as any[]);
+    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
+    
+    const [editTitle, setEditTitle] = useState(false);
+    const [editDescription, setEditDescription] = useState(false);
+
+    const [editTest, setEditTest] = useState(false);
+    const [editTestId, setEditTestId] = useState(null);
 
     const {
         data: exercise,
-        isLoading,
-        isSuccess,
-        isError,
-        error
+        isLoading: exerciseIsLoading,
+        isSuccess: exerciseIsSuccess,
+        isError: exerciseIsError,
+        error: exerciseError,
     } = useGetExerciseQuery({id:exercise_id});
+
+    const {
+        data: testsResponse,
+        isLoading: testsIsLoading,
+        isSuccess: testsIsSuccess,
+        isError: testsIsError,
+        error: testsError,
+    } = useGetTestsOfExerciseQuery({exercise_id});
 
     const session = exercise?.session
     const course = session?.course
-    const username = store.getState().auth?.user;
+    const user = useSelector(selectCurrentUser);
+    const isTeacher = useSelector(selectIsTeacher);
 
-    const [createSubmission] = useCreateSubmissionMutation();
+    useEffect(() => {
+        window.addEventListener('keyup', (event) => {
+            if (event.key === 'Escape') {
+                //TODO revert to previous state
+                (event.target as HTMLElement).blur();
+            }
+        });
+    });
+
+    useEffect(() => {
+        setTitle(exercise?.title);
+        setDescription(exercise?.description);
+    }, [exercise]);
+
+    useEffect(() => {
+        setTests(testsResponse);
+    }, [testsResponse]);
+
+    const handleCreateOrUpdateTest = async (testId: any) => {
+        const test = tests.filter((t:any) => t.id===testId)[0]
+        const newTest:boolean = test?.new;
+        if (newTest) {
+            await createTest({
+                exercise: exercise_id,
+                name: test.name,
+                stdin: test.stdin,
+                stdout: test.stdout,
+            })
+            //reload page
+            window.location.reload();
+
+        } else {
+            await updateTest({
+                id: test.id,
+                exercise: exercise_id,
+                name: test.name,
+                stdin: test.stdin,
+                stdout: test.stdout,
+            })
+        }
+    }
+
+    const handeDeleteTest = async (testId:any) => {
+        const test = tests.filter((t:any) => t.id===testId)[0]
+        try {
+            await deleteTest({id:testId});
+            //remove test from tests state
+            setTests(tests.filter((t:any) => t.id!==testId));
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const handleSubmit = async (e : any) => {
         e.preventDefault();
@@ -40,7 +123,134 @@ const Exercise = () => {
 
     }
 
-    if(isError) {
+    //Prevent blurring test div when focusing one of its inputs
+    const handleTestBlur = (e : any) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            setEditTest(false);
+            handleCreateOrUpdateTest(editTestId);
+        }
+    }
+
+    const testsContent = () => {
+        if (!isTeacher) {
+            return <></>
+        }
+        return (exerciseIsSuccess && tests) ? (
+            <>
+                        
+            <h3>Tests</h3>
+
+            {tests.map((test:any) => (
+
+                <div className={"mb-3 p-3 border rounded " + (editTest && editTestId === test?.id ? "border-primary" : "")} key={test?.id} tabIndex={0}
+                    onFocus={() => {setEditTestId(test?.id); setEditTest(true)}}
+                    onBlur={(e) => {handleTestBlur(e)}}
+                >
+                    <Row className="">
+                        <Col>
+                            
+                            <Form.Control
+                                className="bg-white border-0 fw-bold p-0"
+                                placeholder="Test name"
+                                aria-label="Test name"
+                                value={test?.name}
+                                autoComplete="off"
+                                onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, name: e.target.value} : t))}}
+                                {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
+                            />
+
+                        </Col>
+
+                        <Col className="fw-bold">
+                            {editTest && editTestId === test?.id ? (
+                                <Button className="btn-link btn-light text-danger text-decoration-none p-0 float-end"
+                                    onClick={(e) => {handeDeleteTest(editTestId)}}
+                                >
+                                    Delete
+                                </Button>
+                            ) : (<></>)}
+                        </Col>
+                    </Row>
+                    <Row className="mt-2">
+                        <Col>
+                            <InputGroup className="">
+
+                                <InputGroup.Text>Input</InputGroup.Text>
+
+                                <Form.Control
+                                    as="textarea"
+                                    rows={1}
+                                    placeholder="Input"
+                                    aria-label="Input"
+                                    value={test?.stdin}
+                                    autoComplete="off"
+                                    onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdin: e.target.value} : t))}}
+                                    {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
+                                />
+
+                                <InputGroup.Text>
+                                    🡒 {/* Long arrow unicode Caution:works with Inter only */}
+                                </InputGroup.Text>
+
+                                <Form.Control
+                                    as="textarea"
+                                    rows={1}
+                                    placeholder="Output"
+                                    aria-label="Ouput"
+                                    value={test?.stdout}
+                                    autoComplete="off"
+                                    onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdout: e.target.value} : t))}}
+                                    {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
+                                />
+
+                                <InputGroup.Text>Ouput</InputGroup.Text>
+
+                            </InputGroup>
+                        </Col>
+                    </Row>
+                </div>
+            ))}
+
+            <Button
+                className="btn-link btn-light"
+                onClick={(e) => {
+                    //generates a random id to differentiate between new tests. On creating the test, this id will be ignored by the API.
+                    const randomId = Array(16).join().split(',').map(function() { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
+                    setTests([...tests, {id: randomId, name: "New Test", stdin: "", stdout: "", new:true}])
+                }}
+            >
+                + ADD TEST
+            </Button>
+
+        </>
+        ) : (<></>)
+
+    }
+
+    const submissionContent = () => {
+        return (<>
+            <h2 className="h4">
+                Submit your work
+            </h2>
+            <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
+                <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>Submission file</Form.Label>
+                    <Form.Control required type="file" name="file"/>
+                    <Form.Text className="text-muted">You are logged in as <u>{user}</u></Form.Text>
+                </Form.Group>
+
+                <Button variant="primary" type="submit">
+                    Submit
+                </Button>
+            </Form>
+
+            <br />
+            
+            <TestResult />
+        </>)
+    }
+
+    if(exerciseIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
                 <h3>The exercise you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
@@ -48,13 +258,13 @@ const Exercise = () => {
         )
     }
 
-    return isLoading ? (
+    return exerciseIsLoading ? (
         <></>
     ):(<>
 
     <Header />
 
-    <Container>
+    <Container className="mb-3">
 
         <Breadcrumb>
             <Breadcrumb.Item href="/course">
@@ -73,37 +283,32 @@ const Exercise = () => {
 
         <br />
 
-        <Container>
-            <h1>{exercise.title}</h1>
-            <blockquote>
-                {exercise.description}
-            </blockquote>
-        </Container>
+        <h1>{title}</h1>
 
-        <br />
+        <Tabs
+            defaultActiveKey="exercise"
+            id="exercise-tabs"
+            className="mb-3"
+        >
+            <Tab eventKey="exercise" title="Exercise">
+                <blockquote>
+                    {description}
+                </blockquote>
+            </Tab>
 
-        <Container className="w-75 p-3">
+            {isTeacher ? (
+                <Tab eventKey="tests" title="Tests">
+                    {testsContent()}
+                </Tab>
+            ) : (<></>)}      
 
-        <h2 className="h4">Submit your work</h2>
-        <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
-            <Form.Group controlId="formFile" className="mb-3">
-                <Form.Label>Submission file</Form.Label>
-                <Form.Control required type="file" name="file"/>
-                <Form.Text className="text-muted">You are logged in as <u>{username}</u></Form.Text>
-            </Form.Group>
+            <Tab eventKey="submission" title="Submission">
+                {submissionContent()}
+            </Tab>      
 
-            <Button variant="primary" type="submit">
-                Submit
-            </Button>
-        </Form>
-
-        <br />
-        
-        <TestResult />
+        </Tabs>
 
         </Container>
-
-    </Container>
     </>)
 }
 
