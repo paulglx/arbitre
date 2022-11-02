@@ -56,7 +56,7 @@ const Course = () => {
         error: sessionsError
     } = useGetSessionsOfCourseQuery({course_id:id})
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         try {
             updateCourse({
                 id: course?.id,
