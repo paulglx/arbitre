@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Col, Container, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
+import { Breadcrumb, Button, Col, Container, Form, InputGroup, Popover, Row, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useCreateExerciseMutation, useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
@@ -16,6 +16,7 @@ const Exercise = () => {
     const [createExercise] = useCreateExerciseMutation();
     const [createSubmission] = useCreateSubmissionMutation();
     const [createTest] = useCreateTestMutation();
+    const [deleteExercise] = useDeleteExerciseMutation();
     const [deleteTest] = useDeleteTestMutation();
     const [description, setDescription] = useState("");
     const [editDescription, setEditDescription] = useState(false);
@@ -69,6 +70,32 @@ const Exercise = () => {
         setTests(testsResponse);
     }, [testsResponse]);
 
+    const handleUpdateExercise = async () => {
+        try {
+            await updateExercise({id: exercise_id, title, description});
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleDeleteExercise = async () => {
+        try {
+            await deleteExercise({id: exercise_id});
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const deletePopover = (
+        <Popover id="popover-basic">
+            <Popover.Header as="h3">Are you sure?</Popover.Header>
+            <Popover.Body>
+            This will <strong>remove permanently</strong> this exercise, and all associated submissions.<br /><br />
+            <Button id="confirm-delete" onClick={handleDeleteExercise} type="submit" size="sm" variant="danger">Delete exercise</Button>
+            </Popover.Body>
+        </Popover>
+    )
+
     const handleCreateOrUpdateTest = async (testId: any) => {
         const test = tests.filter((t:any) => t.id===testId)[0]
         const newTest:boolean = test?.new;
@@ -94,7 +121,6 @@ const Exercise = () => {
     }
 
     const handeDeleteTest = async (testId:any) => {
-        const test = tests.filter((t:any) => t.id===testId)[0]
         try {
             await deleteTest({id:testId});
             //remove test from tests state
@@ -125,6 +151,87 @@ const Exercise = () => {
         if (!e.currentTarget.contains(e.relatedTarget)) {
             setEditTest(false);
             handleCreateOrUpdateTest(editTestId);
+        }
+    }
+
+    // Show title or edit title
+    const titleContent = () => {
+        if (!isTeacher || !editTitle) {
+            return (
+                <h1
+                    className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
+                    id="title-editable"
+                    onFocus={() => isTeacher ? setEditTitle(true) : null}
+                    tabIndex={0} //allows focus
+                >
+                    {title}
+                </h1>
+            );
+        } else if (isTeacher && editTitle) {
+            return (
+                <input
+                    autoComplete="false"
+                    autoFocus
+                    className="teacher title-input h2 fw-bold p-2"
+                    id="title-input"
+                    onBlur={() => {
+                        if (title === "") {
+                            setTitle("Untitled exercise");
+                        }
+                        setEditTitle(false)
+                        handleUpdateExercise();
+                    }}
+                    onChange={(e:any) => setTitle(e.target.value)}
+                    placeholder="Enter exercise title"
+                    type="text"
+                    value={title} 
+                />
+            )
+        }
+    }
+
+    // Show description or edit description
+    // TODO implement ctrl+z
+    const descriptionContent = () => {
+        if (!isTeacher || !editDescription) {
+            return (
+                <blockquote
+                    className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
+                    onFocus={() => setEditDescription(true)}
+                    tabIndex={0} //allows focus
+                >
+                    <ReactMarkdown
+                        children={description}
+                        className="markdown"
+                    />
+                </blockquote>
+            )
+        } else if (isTeacher && editDescription) {
+            return (
+                <Form>
+                    <Form.Group className="mb-3" controlId="description">
+                        <Form.Control
+                            as="textarea"
+                            autoFocus
+                            className="teacher description-input"
+                            onBlur={() => {
+                                if(description === "") {
+                                    setDescription("No description");
+                                }
+                                setEditDescription(false);
+                                handleUpdateExercise();
+                            }}
+                            onChange={(e:any) => setDescription(e.target.value)}
+                            placeholder="Enter exercise description. Markdown is supported."
+                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
+                            value={description}
+                        />
+                        <Form.Text className="text-muted">
+                            You are editing the description - Markdown supported !
+                        </Form.Text>
+                    </Form.Group>
+                </Form>
+            )
         }
     }
 
@@ -282,7 +389,7 @@ const Exercise = () => {
 
         <br />
 
-        <h1>{title}</h1>
+        {titleContent()}
 
         <Tabs
             defaultActiveKey="exercise"
@@ -290,9 +397,7 @@ const Exercise = () => {
             className="mb-3"
         >
             <Tab eventKey="exercise" title="Exercise">
-                <blockquote>
-                    {description}
-                </blockquote>
+                {descriptionContent()}
             </Tab>
 
             {isTeacher ? (
