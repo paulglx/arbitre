@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+
 import { ListGroup } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
 import { useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
+import { useParams } from 'react-router-dom';
 
 const TestResult = () => {
 

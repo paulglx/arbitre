@@ -1,24 +1,25 @@
-import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger, Form } from "react-bootstrap";
-import { selectIsTeacher } from "../features/auth/authSlice";
-import { useGetCourseQuery, useUpdateCourseMutation, useDeleteCourseMutation } from "../features/courses/courseApiSlice";
-import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { useParams, useNavigate} from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation } from "../features/courses/courseApiSlice";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import Header from "./Header";
 import ReactMarkdown from "react-markdown";
+import { selectIsTeacher } from "../features/auth/authSlice";
+import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
+import { useSelector } from "react-redux";
 
 const Course = () => {
 
+    const [deleteCourse] = useDeleteCourseMutation();
+    const [description, setDescription] = useState("");
+    const [editDescription, setEditDescription] = useState(false);
+    const [editTitle, setEditTitle] = useState(false);
+    const [title, setTitle] = useState("");
+    const [updateCourse] = useUpdateCourseMutation();
     const { id }:any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
-    const [updateCourse] = useUpdateCourseMutation();
-    const [deleteCourse] = useDeleteCourseMutation();
     const navigate = useNavigate();
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [editTitle, setEditTitle] = useState(false);
-    const [editDescription, setEditDescription] = useState(false);
 
     useEffect(() => {
         window.addEventListener('keyup', (event) => {

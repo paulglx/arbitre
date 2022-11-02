@@ -1,10 +1,11 @@
+import { Container, Tab, Tabs } from "react-bootstrap";
 import React, { useEffect } from "react";
-import { Container, Tabs, Tab } from "react-bootstrap";
-import Register from "./Register";
+
 import Login from "./Login";
+import Register from "./Register";
+import { selectCurrentUser } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../features/auth/authSlice";
 
 const Public = () => {
 

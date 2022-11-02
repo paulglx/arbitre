@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
 import { Breadcrumb, Button, Container, Form } from 'react-bootstrap'
-import { useState } from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+
 import { useCreateSessionMutation } from '../features/courses/sessionApiSlice'
 import { useGetCourseQuery } from '../features/courses/courseApiSlice'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
 
 const CreateSession = () => {
 
@@ -13,7 +14,7 @@ const CreateSession = () => {
     const [createSession] = useCreateSessionMutation()
     const navigate = useNavigate()
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
     const course_id:number = Number(searchParams.get("course_id"))
 
     const {

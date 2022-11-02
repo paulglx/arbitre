@@ -1,8 +1,9 @@
 import { Container, ListGroup } from 'react-bootstrap'
+import { selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice';
+
+import Header from './Header'
 import { useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice';
-import Header from './Header'
 
 const Courses = () => {
 

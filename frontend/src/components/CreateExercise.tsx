@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
 import { Breadcrumb, Button, Container, Form } from 'react-bootstrap'
-import { useState } from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+
 import { useCreateExerciseMutation } from '../features/courses/exerciseApiSlice'
 import { useGetSessionQuery } from '../features/courses/sessionApiSlice'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
 
 const CreateExercise = () => {
 

@@ -1,37 +1,34 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { Breadcrumb, Button, Col, Container, Form, InputGroup, Row, Tab, Tabs } from "react-bootstrap";
+import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
+import { useCreateExerciseMutation, useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
+import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectIsTeacher, selectCurrentUser } from "../features/auth/authSlice";
-import { useGetExerciseQuery, useCreateExerciseMutation, useUpdateExerciseMutation, useDeleteExerciseMutation } from "../features/courses/exerciseApiSlice";
-import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
-import { useCreateTestMutation, useUpdateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery } from "../features/courses/testApiSlice";
-import { Tabs, Tab, Container, Form, Button, Breadcrumb, Col, Row, InputGroup } from "react-bootstrap";
-import store from "../app/store";
+import { useNavigate, useParams } from "react-router-dom";
+
 import Header from "./Header";
+import ReactMarkdown from "react-markdown";
 import TestResult from "./TestResult";
+import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
+import { useSelector } from "react-redux";
 
 const Exercise = () => {
 
-    const { exercise_id } : any = useParams();
-    const [createSubmission] = useCreateSubmissionMutation();
     const [createExercise] = useCreateExerciseMutation();
-    const [updateExercise] = useUpdateExerciseMutation();
+    const [createSubmission] = useCreateSubmissionMutation();
     const [createTest] = useCreateTestMutation();
-    const [updateTest] = useUpdateTestMutation();
     const [deleteTest] = useDeleteTestMutation();
-    const navigate = useNavigate();
-
-
-    const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [tests, setTests] = useState([] as any[]);
-    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
-    
-    const [editTitle, setEditTitle] = useState(false);
     const [editDescription, setEditDescription] = useState(false);
-
     const [editTest, setEditTest] = useState(false);
     const [editTestId, setEditTestId] = useState(null);
+    const [editTitle, setEditTitle] = useState(false);
+    const [tests, setTests] = useState([] as any[]);
+    const [title, setTitle] = useState("");
+    const [updateExercise] = useUpdateExerciseMutation();
+    const [updateTest] = useUpdateTestMutation();
+    const { exercise_id } : any = useParams();
+    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
+    const navigate = useNavigate();
 
     const {
         data: exercise,
@@ -139,6 +136,8 @@ const Exercise = () => {
             <>
                         
             <h3>Tests</h3>
+
+            <h6 className="text-muted fw-light">Click to edit</h6>
 
             {tests.map((test:any) => (
 

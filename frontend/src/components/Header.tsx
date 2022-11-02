@@ -1,11 +1,11 @@
-import React from 'react'
-import store from '../app/store'
 import { Container, Dropdown, DropdownButton, Navbar } from 'react-bootstrap'
+
+import React from 'react'
+import { logOut } from '../features/auth/authSlice'
+import store from '../app/store'
+import { useDispatch } from 'react-redux'
 import { useLogoutMutation } from '../features/auth/authApiSlice'
 import { useNavigate } from 'react-router-dom'
-import { logOut } from '../features/auth/authSlice'
-import { useDispatch } from 'react-redux'
-
 
 const Header = () => {
 

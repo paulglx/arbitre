@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
-import { useState } from 'react'
+import React, { useEffect } from 'react'
 import { useCreateCourseMutation, useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
+
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const CreateCourse = () => {
 

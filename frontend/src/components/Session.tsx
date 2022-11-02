@@ -1,12 +1,13 @@
-import { Container, ListGroup, Breadcrumb, Button, Popover, OverlayTrigger, Form } from "react-bootstrap";
-import { selectIsTeacher } from "../features/auth/authSlice";
-import { useGetSessionQuery, useUpdateSessionMutation, useDeleteSessionMutation  } from "../features/courses/sessionApiSlice";
-import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
+import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../features/courses/sessionApiSlice";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+
 import Header from "./Header";
 import ReactMarkdown from "react-markdown";
+import { selectIsTeacher } from "../features/auth/authSlice";
+import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
+import { useSelector } from "react-redux";
 
 const Session = () => {
 
