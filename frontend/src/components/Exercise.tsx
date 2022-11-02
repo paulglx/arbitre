@@ -81,6 +81,7 @@ const Exercise = () => {
     const handleDeleteExercise = async () => {
         try {
             await deleteExercise({id: exercise_id});
+            navigate(`/session/${session.id}`)
         } catch (error) {
             console.log(error);
         }
@@ -136,7 +137,7 @@ const Exercise = () => {
             e.stopPropagation();
         }
         
-        var formData = new FormData();
+        const formData = new FormData();
         formData.append("exercise", exercise.id)
         formData.append("file", form.files[0])
 
