@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Col, Container, Form, InputGroup, Popover, Row, Tab, Tabs } from "react-bootstrap";
+import { Breadcrumb, Button, Col, Container, Form, InputGroup, OverlayTrigger, Popover, Row, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useCreateExerciseMutation, useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
@@ -106,8 +106,6 @@ const Exercise = () => {
                 stdin: test.stdin,
                 stdout: test.stdout,
             })
-            //reload page
-            window.location.reload();
 
         } else {
             await updateTest({
@@ -233,6 +231,17 @@ const Exercise = () => {
                 </Form>
             )
         }
+    }
+
+    // Delete button (teacher only)
+    const teacherActionsContent = () => {
+        return isTeacher ? (
+            <div className="d-flex justify-content-end">
+                <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
+                    <Button variant="light border border-danger text-danger" id="delete-button">Delete</Button>
+                </OverlayTrigger>
+            </div>
+        ) : <></>
     }
 
     const testsContent = () => {
@@ -389,7 +398,12 @@ const Exercise = () => {
 
         <br />
 
-        {titleContent()}
+        <div className="d-flex align-items-center justify-content-between">
+            {titleContent()}
+            <div className="p-0 mb-2">
+                {teacherActionsContent()}
+            </div>
+        </div>
 
         <Tabs
             defaultActiveKey="exercise"
