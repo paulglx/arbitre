@@ -31,9 +31,9 @@ const CreateCourse = () => {
         if(title && description) {
             try {
                 //Create course
-                await createCourse({title, description}).unwrap()
+                const newCourse:any = await createCourse({title, description}).unwrap()
                 //Redirect to courses page
-                navigate("/course")
+                navigate(`/course/${newCourse?.id}`)
             } catch (err) {
                 console.log(err)
                 setErrMsg("An error occured while trying to create course.")

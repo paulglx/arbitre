@@ -9,7 +9,7 @@ import { useState } from 'react'
 const CreateExercise = () => {
 
     const [title, setTitle] = useState("New exercise")
-    const [statement, setStatement] = useState("")
+    const [description, setDescription] = useState("")
 
 
     const [errMsg, setErrMsg] = useState("")
@@ -29,7 +29,7 @@ const CreateExercise = () => {
 
     useEffect(() => {
         setErrMsg("")
-    }, [title, statement])
+    }, [title, description])
 
     const handleTitleInput = (e:any) => {
         setTitle(e.target.value ? e.target.value : "New exercise")
@@ -40,23 +40,23 @@ const CreateExercise = () => {
     }
 
     const handleDescriptionInput = (e:any) => {
-        setStatement(e.target.value)
+        setDescription(e.target.value)
     }
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
 
-        if(title && statement) {
+        if(title && description) {
             try {
-                console.log(title, statement, session_id)
+                console.log(title, description, session_id)
                 //Create session
-                await createExercise({
+                const newExercise:any = await createExercise({
                     title,
-                    statement,
+                    description,
                     session_id
                 }).unwrap()
-                //Redirect to previous page
-                navigate(`/session/${session_id}`)
+                //Redirect to new exercise
+                navigate(`/exercise/${newExercise?.id}`)
             } catch (err) {
                 console.log(err)
                 setErrMsg("An error occured while trying to create exercise.")
@@ -117,12 +117,12 @@ const CreateExercise = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Exercise statement <span className='text-muted'></span></Form.Label>
+                            <Form.Label>Exercise description <span className='text-muted'></span></Form.Label>
                             <Form.Control
-                                value={statement}
+                                value={description}
                                 as="textarea"
                                 rows={5}
-                                placeholder="Enter statement"
+                                placeholder="Enter description"
                                 className={errMsg ? 'is-invalid' : ''}
                                 onChange={handleDescriptionInput}
                             />
