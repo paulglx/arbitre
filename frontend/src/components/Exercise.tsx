@@ -253,15 +253,17 @@ const Exercise = () => {
 
             {tests.map((test:any) => (
 
-                <div className={"mb-3 p-3 border rounded " + (editTest && editTestId === test?.id ? "border-primary" : "")} key={test?.id} tabIndex={0}
+                <div className={"p-2 mb-1" + (editTest && editTestId === test?.id ? "border-primary" : "")} key={test?.id} tabIndex={0}
                     onFocus={() => {setEditTestId(test?.id); setEditTest(true)}}
                     onBlur={(e) => {handleTestBlur(e)}}
                 >
-                    <Row className="">
-                        <Col>
-                            
+
+                    <Row className="g-3">
+
+                        <Col md={2}>
+
                             <Form.Control
-                                className="bg-white border-0 fw-bold p-0"
+                                className="bg-white fw-bold"
                                 placeholder="Test name"
                                 aria-label="Test name"
                                 value={test?.name}
@@ -270,9 +272,6 @@ const Exercise = () => {
                                 {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
                             />
 
-                        </Col>
-
-                        <Col className="fw-bold">
                             {editTest && editTestId === test?.id ? (
                                 <Button className="btn-link btn-light text-danger text-decoration-none p-0 float-end"
                                     onClick={(e) => {handeDeleteTest(editTestId)}}
@@ -280,43 +279,48 @@ const Exercise = () => {
                                     Delete
                                 </Button>
                             ) : (<></>)}
+
                         </Col>
-                    </Row>
-                    <Row className="mt-2">
-                        <Col>
-                            <InputGroup className="mb-2">
 
-                                <InputGroup.Text>Input</InputGroup.Text>
+                        <Col md={5}>
 
-                                <Form.Control
-                                    as="textarea"
-                                    rows={1}
-                                    placeholder="Input to test for"
-                                    aria-label="Input"
-                                    value={test?.stdin}
-                                    autoComplete="off"
-                                    onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdin: e.target.value} : t))}}
-                                    {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
-                                />
+                        <InputGroup>
 
-                            </InputGroup>
+                            <InputGroup.Text>Input</InputGroup.Text>
 
-                            <InputGroup>
+                            <Form.Control
+                                as="textarea"
+                                rows={1}
+                                placeholder="Input to test for"
+                                aria-label="Input"
+                                value={test?.stdin}
+                                autoComplete="off"
+                                onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdin: e.target.value} : t))}}
+                                {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
+                            />
 
-                                <InputGroup.Text>Ouput</InputGroup.Text>
+                        </InputGroup>
 
-                                <Form.Control
-                                    as="textarea"
-                                    rows={1}
-                                    placeholder="Expected output"
-                                    aria-label="Ouput"
-                                    value={test?.stdout}
-                                    autoComplete="off"
-                                    onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdout: e.target.value} : t))}}
-                                    {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
-                                />
+                        </Col>
 
-                            </InputGroup>
+                        <Col md={5}>
+
+                        <InputGroup>
+
+                            <InputGroup.Text>Ouput</InputGroup.Text>
+
+                            <Form.Control
+                                as="textarea"
+                                rows={1}
+                                placeholder="Expected output"
+                                aria-label="Ouput"
+                                value={test?.stdout}
+                                autoComplete="off"
+                                onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdout: e.target.value} : t))}}
+                                {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
+                            />
+
+                        </InputGroup>
                         </Col>
                     </Row>
                 </div>
