@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
-import ReactMarkdown from "react-markdown";
+import Markdown from "./Markdown";
 import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
 import { useSelector } from "react-redux";
@@ -134,9 +134,8 @@ const Course = () => {
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >
-                    <ReactMarkdown
+                    <Markdown
                         children={description}
-                        className="markdown"
                     />
                 </blockquote>
             )

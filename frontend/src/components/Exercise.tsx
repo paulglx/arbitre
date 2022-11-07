@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
-import ReactMarkdown from "react-markdown";
+import Markdown from "./Markdown";
 import TestResult from "./TestResult";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { useSelector } from "react-redux";
@@ -72,7 +72,7 @@ const Exercise = () => {
 
     const handleUpdateExercise = async () => {
         try {
-            await updateExercise({id: exercise_id, title, description});
+            await updateExercise({id: exercise_id, title, description, session_id: session.id});
         } catch (error) {
             console.log(error);
         }
@@ -114,7 +114,7 @@ const Exercise = () => {
                 exercise: exercise_id,
                 name: test.name,
                 stdin: test.stdin,
-                stdout: test.stdout,
+                stdout: test.stdout
             })
         }
     }
@@ -199,10 +199,7 @@ const Exercise = () => {
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >
-                    <ReactMarkdown
-                        children={description}
-                        className="markdown"
-                    />
+                    <Markdown children={description} />
                 </blockquote>
             )
         } else if (isTeacher && editDescription) {
@@ -251,8 +248,6 @@ const Exercise = () => {
         }
         return (exerciseIsSuccess && tests) ? (
             <>
-                        
-            <h3>Tests</h3>
 
             <h6 className="text-muted fw-light">Click to edit</h6>
 
@@ -289,14 +284,14 @@ const Exercise = () => {
                     </Row>
                     <Row className="mt-2">
                         <Col>
-                            <InputGroup className="">
+                            <InputGroup className="mb-2">
 
                                 <InputGroup.Text>Input</InputGroup.Text>
 
                                 <Form.Control
                                     as="textarea"
                                     rows={1}
-                                    placeholder="Input"
+                                    placeholder="Input to test for"
                                     aria-label="Input"
                                     value={test?.stdin}
                                     autoComplete="off"
@@ -304,22 +299,22 @@ const Exercise = () => {
                                     {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
                                 />
 
-                                <InputGroup.Text>
-                                    🡒 {/* Long arrow unicode Caution:works with Inter only */}
-                                </InputGroup.Text>
+                            </InputGroup>
+
+                            <InputGroup>
+
+                                <InputGroup.Text>Ouput</InputGroup.Text>
 
                                 <Form.Control
                                     as="textarea"
                                     rows={1}
-                                    placeholder="Output"
+                                    placeholder="Expected output"
                                     aria-label="Ouput"
                                     value={test?.stdout}
                                     autoComplete="off"
                                     onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdout: e.target.value} : t))}}
                                     {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
                                 />
-
-                                <InputGroup.Text>Ouput</InputGroup.Text>
 
                             </InputGroup>
                         </Col>

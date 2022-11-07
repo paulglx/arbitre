@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
-import ReactMarkdown from "react-markdown";
+import Markdown from "./Markdown";
 import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { useSelector } from "react-redux";
@@ -74,10 +74,11 @@ const Session = () => {
     const handleDelete = (e:any) => {
         e.preventDefault();
         try {
-            deleteSession(id);
-            navigate(`/course/${course.id}`);
+            deleteSession({id});
         } catch (e) {
             console.log(e);
+        } finally {
+            navigate(`/course/${course?.id}`);
         }
     }
 
@@ -135,10 +136,7 @@ const Session = () => {
                     tabIndex={0} //allows focus
                     className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}>
-                    <ReactMarkdown
-                        children={description}
-                        className="markdown"
-                    />
+                    <Markdown children={description} />
                 </blockquote>
             )
         } else if (isTeacher && editDescription) {
