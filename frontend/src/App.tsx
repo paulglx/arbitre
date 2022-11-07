@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+
 import Course from "./components/Course";
 import Courses from "./components/Courses";
 import CreateCourse from "./components/CreateCourse";
@@ -8,6 +9,7 @@ import Exercise from "./components/Exercise";
 import Layout from "./components/Layout";
 import Login from "./components/Login";
 import NotFound from "./components/NotFound";
+import Notification from "./components/Notification";
 import Public from "./components/Public";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
@@ -16,7 +18,7 @@ import TestResult from "./components/TestResult";
 import Users from "./components/Users";
 
 function App() {
-	return (
+	return (<>
 		<Routes>
 			<Route path="/" element={<Layout />}>
 
@@ -36,9 +38,9 @@ function App() {
 					<Route path="session/:id" element={<Session/>} />
 					<Route path="session/create" element={<CreateSession/>} />
 
-					<Route path="exercise/:exercise_id" element={<Exercise/>} />
+					<Route path="exercise/:exercise_id/" element={<Exercise/>} />
+					<Route path="exercise/:exercise_id/:tab" element={<Exercise/>} />
 					<Route path="exercise/create" element={<CreateExercise/>} />
-					<Route path="exercise/:exercise_id/results" element={<TestResult/>} />
 				</Route>
 
 				{/* 404 page when no routes match*/}
@@ -46,7 +48,7 @@ function App() {
 
 			</Route>
 		</Routes>
-	);
+		</>);
 }
 
 export default App;
