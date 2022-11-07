@@ -32,7 +32,7 @@ const Courses = () => {
         ) : <></>
     }
 
-    return courseIsLoading ? (<></>) : (<>
+    return courseIsSuccess ? (<>
         <Header />
 
         <br />
@@ -55,7 +55,7 @@ const Courses = () => {
                 {teacherContent()}
             </ListGroup>
         </Container>
-    </>)
+    </>) : (<></>)
 }
 
 export default Courses
