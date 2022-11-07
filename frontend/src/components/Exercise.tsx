@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 
 const Exercise = () => {
 
-    const [createExercise] = useCreateExerciseMutation();
+    const [activeTab, setActiveTab] = useState("description");
     const [createSubmission] = useCreateSubmissionMutation();
     const [createTest] = useCreateTestMutation();
     const [deleteExercise] = useDeleteExerciseMutation();
@@ -29,7 +29,11 @@ const Exercise = () => {
     const [updateTest] = useUpdateTestMutation();
     const { exercise_id } : any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
+    const defaultTab = "description";
+    const urlTab = useParams()?.tab;
     const navigate = useNavigate();
+
+    console.log(urlTab);
 
     const {
         data: exercise,
@@ -51,6 +55,17 @@ const Exercise = () => {
     const course = session?.course
     const user = useSelector(selectCurrentUser);
     const isTeacher = useSelector(selectIsTeacher);
+
+    const toggle = (tab:any) => {
+        if (activeTab !== tab) navigate(`/exercise/${exercise_id}/${tab}` , {replace: true});
+    }
+
+    useEffect(() => {
+        if(!urlTab) {
+            navigate(`./description`, {replace: true});
+        }
+        setActiveTab(urlTab!);
+    }, [urlTab, navigate]);
 
     useEffect(() => {
         window.addEventListener('keyup', (event) => {
@@ -253,7 +268,7 @@ const Exercise = () => {
 
             {tests.map((test:any) => (
 
-                <div className={"p-2 mb-1" + (editTest && editTestId === test?.id ? "border-primary" : "")} key={test?.id} tabIndex={0}
+                <div className={"p-2 mb-1" + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
                     onFocus={() => {setEditTestId(test?.id); setEditTest(true)}}
                     onBlur={(e) => {handleTestBlur(e)}}
                 >
@@ -373,6 +388,8 @@ const Exercise = () => {
         )
     }
 
+    console.log("activetab:", activeTab)
+
     return exerciseIsLoading ? (
         <></>
     ):(<>
@@ -406,11 +423,12 @@ const Exercise = () => {
         </div>
 
         <Tabs
-            defaultActiveKey="exercise"
+            activeKey={activeTab}
+            onSelect={(key:any) => {key && toggle(key)}}
             id="exercise-tabs"
             className="mb-3"
         >
-            <Tab eventKey="exercise" title="Exercise">
+            <Tab eventKey="description" title="Description">
                 {descriptionContent()}
             </Tab>
 
