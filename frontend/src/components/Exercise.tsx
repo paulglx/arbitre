@@ -33,8 +33,6 @@ const Exercise = () => {
     const urlTab = useParams()?.tab;
     const navigate = useNavigate();
 
-    console.log(urlTab);
-
     const {
         data: exercise,
         isLoading: exerciseIsLoading,
@@ -387,8 +385,6 @@ const Exercise = () => {
             </div>
         )
     }
-
-    console.log("activetab:", activeTab)
 
     return exerciseIsLoading ? (
         <></>
