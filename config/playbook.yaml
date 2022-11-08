@@ -1,5 +1,4 @@
-# TODO fix playbook
-- name: Camisole VM
+- name: Arbitre Playbook
   hosts: group
   become: true
   tasks:
@@ -51,3 +50,33 @@
   - name: Run test command
     ansible.builtin.uri:
       url: http://localhost:42920/
+
+  - name: Install nodejs and npm
+    register: noderepo
+    ansible.builtin.apt:
+      name: nodejs
+      state: present
+      update_cache: true
+
+  - name: Install git
+    ansible.builtin.apt:
+      name: git
+      state: present
+      update_cache: true
+
+  - name: Git clone Arbitre
+    ansible.builtin.git:
+      repo: https://github.com/paulglx/arbitre
+      clone: true
+      update: true
+      dest: ~/arbitre
+      version: main
+
+  - name: Install Python dependencies
+    ansible.builtin.pip:
+      name: -r ~/arbitre/requirements.txt
+      state: present
+
+  - name: Install NodeJS dependencies
+    community.general.npm:
+      path: ~/arbitre/frontend
