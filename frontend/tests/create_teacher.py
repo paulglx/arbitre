@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 
-if User.objects.filter(username='teacher') == []:  
-    user = User.objects.create_user('testteacher','testmail@test.com', 'testpassword')
+user, created = User.objects.get_or_create(username='testteacher',email='testmail@test.com')
+if created:
+    user.set_password('testpassword')
     user.groups.add(2)
     user.save()
-    exit()
+    
+exit()
