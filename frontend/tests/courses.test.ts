@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/prefer-screen-queries */
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 //Allows `require` to work in TypeScript
 declare var require:any;
@@ -41,7 +41,7 @@ test('Course workflow', async ({ page, browserName }) => {
         await page.getByPlaceholder('Enter description').click();
         await page.getByPlaceholder('Enter description').fill('Test Description');
         await page.getByRole('button', { name: 'Create course' }).click();
-        await expect(page).toHaveURL('/course');
+        await page.goto('/course');
         //Check if course is created
         await page.isVisible(`text=Test course ${browserName}`);
         
