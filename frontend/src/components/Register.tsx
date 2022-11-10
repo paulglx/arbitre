@@ -1,13 +1,15 @@
-import React from 'react'
-import { useRef, useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-
-import { useDispatch } from 'react-redux'
-import { setCredentials } from '../features/auth/authSlice'
-import { useLoginMutation, useGetGroupsMutation, useRegisterMutation } from '../features/auth/authApiSlice'
+// TODO allow users to register as teacher for testing
 
 import '../login-register.css'
+
+import { useEffect, useRef, useState } from 'react'
+import { useGetGroupsMutation, useLoginMutation, useRegisterMutation } from '../features/auth/authApiSlice'
+import { useLocation, useNavigate } from 'react-router-dom'
+
 import { Alert } from 'react-bootstrap'
+import React from 'react'
+import { setCredentials } from '../features/auth/authSlice'
+import { useDispatch } from 'react-redux'
 
 const Register = () => {
     const userRef = useRef<any>()

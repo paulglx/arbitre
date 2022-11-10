@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+
 import { ListGroup } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
 import { useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
+import { useParams } from 'react-router-dom';
 
 const TestResult = () => {
 
     const { exercise_id } : any = useParams();
-    const owner = 1;
-    //TODO get real owner name
-    const owner_name = "John Doe";
 
     const [resultsExist, setResultsExist] = useState(false);
 
@@ -18,7 +16,7 @@ const TestResult = () => {
         isSuccess,
         isError,
         error
-    } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id, owner:owner});
+    } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id});
 
     useEffect(() => {
         setResultsExist( typeof testResults !== 'undefined' && testResults.length > 0 )
@@ -57,7 +55,6 @@ const TestResult = () => {
             <ListGroup.Item className='bg-light d-flex justify-content-between align-items-start'>
                 {/* Get filename*/}
                 <span className='fw-bold'>{testResults[0].submission.file.split("/").pop()}</span>
-                <span className="text-secondary">submitted by <u>{owner_name}</u></span>
             </ListGroup.Item>
 
             {testResults.map((result:any, i:number) => (

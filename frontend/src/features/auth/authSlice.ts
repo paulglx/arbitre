@@ -28,3 +28,4 @@ export const selectCurrentUser = (state:any) => state.auth.user
 export const selectCurrentAccessToken = (state:any) => state.auth.accessToken
 export const selectCurrentRefreshToken = (state:any) => state.auth.refreshToken
 export const selectCurrentRoles = (state:any) => state.auth.roles
+export const selectIsTeacher = (state:any) => state.auth.roles.includes(2)

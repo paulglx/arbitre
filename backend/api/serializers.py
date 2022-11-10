@@ -5,7 +5,7 @@ from rest_framework import serializers
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = "__all__"
+        fields = ["id", "title", "description", "students"]
 
 
 class MinimalCourseSerializer(serializers.ModelSerializer):
@@ -15,11 +15,14 @@ class MinimalCourseSerializer(serializers.ModelSerializer):
 
 
 class SessionSerializer(serializers.ModelSerializer):
-    course = MinimalCourseSerializer()
+    course = MinimalCourseSerializer(read_only=True)
+    course_id = serializers.PrimaryKeyRelatedField(
+        queryset=Course.objects.all(), source="course", write_only=True
+    )
 
     class Meta:
         model = Session
-        fields = "__all__"
+        fields = ["id", "title", "description", "course", "course_id"]
 
 
 class MinimalSessionSerializer(serializers.ModelSerializer):
@@ -31,8 +34,11 @@ class MinimalSessionSerializer(serializers.ModelSerializer):
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
-    session = MinimalSessionSerializer()
+    session = MinimalSessionSerializer(read_only=True)
+    session_id = serializers.PrimaryKeyRelatedField(
+        queryset=Session.objects.all(), source="session", write_only=True
+    )
 
     class Meta:
         model = Exercise
-        fields = "__all__"
+        fields = ["id", "title", "description", "session_id", "session"]

@@ -46,10 +46,10 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
         "running": False,
-        "stdout": response["stdout"],
-        "success": response["stdout"] == test["stdout"],
+        "stdout": response["stdout"] + "\n" + response["stderr"],
+        "success": response["stdout"] == test["stdout"] and response["exitcode"] == 0,
         "time": response["meta"]["wall-time"],
         "memory": response["meta"]["cg-mem"],
     }
-    print("data to send:", after_data)
+    print("data to send:" + str(after_data))
     requests.post(post_url, data=after_data)

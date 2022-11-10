@@ -1,13 +1,13 @@
-import React from 'react'
-import { useRef, useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-
-import { useDispatch } from 'react-redux'
-import { setCredentials } from '../features/auth/authSlice'
-import { useLoginMutation, useGetGroupsMutation } from '../features/auth/authApiSlice'
-
 import '../login-register.css'
+
+import { useEffect, useRef, useState } from 'react'
+import { useGetGroupsMutation, useLoginMutation } from '../features/auth/authApiSlice'
+import { useLocation, useNavigate } from 'react-router-dom'
+
 import { Alert } from 'react-bootstrap'
+import React from 'react'
+import { setCredentials } from '../features/auth/authSlice'
+import { useDispatch } from 'react-redux'
 
 const Login = () => {
     const userRef = useRef<any>()

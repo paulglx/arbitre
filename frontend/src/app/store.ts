@@ -1,7 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist";
+
 import { apiSlice } from "./api/apiSlice";
 import authReducer from "../features/auth/authSlice"
-import { persistStore, persistReducer } from "redux-persist";
+import { configureStore } from "@reduxjs/toolkit";
+import notificationSlice from "../features/notification/notificationSlice";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
@@ -14,6 +16,7 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer)
 export const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
+        notification : notificationSlice,
         auth: persistedAuthReducer
     },
     middleware: getDefaultMiddleware =>

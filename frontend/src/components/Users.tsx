@@ -1,7 +1,6 @@
-import React from "react";
-
-import { useGetUsersQuery } from "../features/users/usersApiSlice";
 import { Link } from "react-router-dom";
+import React from "react";
+import { useGetUsersQuery } from "../features/users/usersApiSlice";
 
 const Users = () => {
 
