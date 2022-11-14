@@ -430,6 +430,7 @@ const Exercise = () => {
             onSelect={(key:any) => {key && toggle(key)}}
             id="exercise-tabs"
             className="mb-3"
+            variant="pills"
         >
             <Tab eventKey="description" title="Description">
                 {descriptionContent()}
