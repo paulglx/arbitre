@@ -65,6 +65,11 @@ ol.breadcrumb li.active {
   overflow-x: scroll;
 }
 
+.editable-test:hover {
+  background-color: var(--bs-gray-200);
+  border-radius: 5px;
+}
+
 code, kbd, pre, samp {
   font-family: var(--mono-font) !important;
 }
