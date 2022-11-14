@@ -136,7 +136,7 @@ const Course = () => {
         if (!isTeacher || !editDescription) {
             return (
                 <blockquote
-                    className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded description" + (isTeacher ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >

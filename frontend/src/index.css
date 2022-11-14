@@ -61,6 +61,10 @@ ol.breadcrumb li.active {
   border-style: dashed !important;
 }
 
+.description {
+  overflow-x: scroll;
+}
+
 code, kbd, pre, samp {
   font-family: var(--mono-font) !important;
 }
