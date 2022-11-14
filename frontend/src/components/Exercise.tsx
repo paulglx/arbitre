@@ -361,9 +361,6 @@ const Exercise = () => {
 
     const submissionContent = () => {
         return (<>
-            <h2 className="h4">
-                Submit your work
-            </h2>
             <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
                 <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>Submission file</Form.Label>
