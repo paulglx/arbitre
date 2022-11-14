@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
+import autosize from "autosize";
 import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
 import { useSelector } from "react-redux";
@@ -22,6 +23,11 @@ const Course = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+
+        //autosize textareas
+        const textareas = document.getElementsByTagName("textarea");
+        autosize(textareas);
+
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
                 if(editTitle) {
@@ -156,7 +162,6 @@ const Course = () => {
                             }}
                             onChange={(e:any) => setDescription(e.target.value)}
                             placeholder="Enter course description. Markdown is supported."
-                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
                             value={description}
                         />
                         <Form.Text className="text-muted">

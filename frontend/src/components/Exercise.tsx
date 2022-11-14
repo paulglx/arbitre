@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import Markdown from "./Markdown";
 import TestResult from "./TestResult";
+import autosize from "autosize";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { useSelector } from "react-redux";
 
@@ -65,7 +66,13 @@ const Exercise = () => {
         setActiveTab(urlTab!);
     }, [urlTab, navigate]);
 
+    //On load
     useEffect(() => {
+
+        //autosize textareas
+        const textareas = document.getElementsByTagName("textarea");
+        autosize(textareas);
+
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Escape') {
                 //TODO revert to previous state
@@ -232,7 +239,6 @@ const Exercise = () => {
                             }}
                             onChange={(e:any) => setDescription(e.target.value)}
                             placeholder="Enter exercise description. Markdown is supported."
-                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
                             value={description}
                         />
                         <Form.Text className="text-muted">
@@ -266,7 +272,7 @@ const Exercise = () => {
 
             {tests.map((test:any) => (
 
-                <div className={"p-2 mb-1" + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
+                <div className={"p-1" + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
                     onFocus={() => {setEditTestId(test?.id); setEditTest(true)}}
                     onBlur={(e) => {handleTestBlur(e)}}
                 >
@@ -303,7 +309,6 @@ const Exercise = () => {
 
                             <Form.Control
                                 as="textarea"
-                                rows={1}
                                 placeholder="Input to test for"
                                 aria-label="Input"
                                 value={test?.stdin}
@@ -324,7 +329,6 @@ const Exercise = () => {
 
                             <Form.Control
                                 as="textarea"
-                                rows={1}
                                 placeholder="Expected output"
                                 aria-label="Ouput"
                                 value={test?.stdout}
