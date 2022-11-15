@@ -50,7 +50,7 @@ ol.breadcrumb li.active {
   padding-left: 10px;
   padding-right: 10px;
   margin-left:-10px;
-  margin-right:-10px;
+  margin-right:6px;
 }
 
 .flex-fill {
