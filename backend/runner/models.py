@@ -1,8 +1,8 @@
+from .tasks import run_camisole
 from api.models import Exercise
 from django.contrib.auth.models import User
 from django.db import models
-
-from .tasks import run_camisole
+from django.utils.translation import gettext_lazy as _
 
 
 class Submission(models.Model):
@@ -10,9 +10,23 @@ class Submission(models.Model):
     The stored code file that will be judged
     """
 
+    class SubmissionStatus(models.TextChoices):
+        PENDING = 'pending', _('Pending')
+        RUNNING = 'running', _('Running')
+        SUCCESS = 'success', _('Success')
+        FAILED = 'failed', _('Failed')
+        ERROR = 'error', _('Error')
+
+
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     file = models.FileField(upload_to="uploads")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=10,
+        choices=SubmissionStatus.choices,
+        default=SubmissionStatus.PENDING,
+    )
+
 
     def __str__(self):
         return self.file.name
@@ -55,13 +69,23 @@ class TestResult(models.Model):
     A test, ran on a file
     """
 
+    class TestResultStatus(models.TextChoices):
+            PENDING = 'pending', _('Pending')
+            RUNNING = 'running', _('Running')
+            SUCCESS = 'success', _('Success')
+            FAILED = 'failed', _('Failed')
+            ERROR = 'error', _('Error')
+
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     exercise_test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    running = models.BooleanField(default=False)
     stdout = models.CharField(max_length=255, default="")
-    success = models.BooleanField(default=False)
     time = models.FloatField(default=-1)
     memory = models.IntegerField(default=-1)
+    status = models.CharField(
+        max_length=10,
+        choices=TestResultStatus.choices,
+        default=TestResultStatus.PENDING,
+    )
 
     class Meta:
         unique_together = ("submission", "exercise_test")
