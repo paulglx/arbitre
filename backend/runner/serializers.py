@@ -1,6 +1,7 @@
 from .models import Submission, Test, TestResult
 from rest_framework import serializers, validators
 import copy
+import requests
 
 
 class TestSerializer(serializers.ModelSerializer):
@@ -12,7 +13,7 @@ class TestSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = ["id", "exercise", "file"]
+        fields = ["id", "exercise", "file", "status"]
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
@@ -37,9 +38,8 @@ class TestResultSerializer(serializers.ModelSerializer):
             "submission_pk",
             "exercise_test",
             "exercise_test_pk",
-            "running",
+            "status",
             "stdout",
-            "success",
             "time",
             "memory",
         )
@@ -52,8 +52,6 @@ class TestResultSerializer(serializers.ModelSerializer):
         super(TestResultSerializer, self).run_validators(value)
 
     def create(self, request):
-        print("SERIALIZER create")
-        print(request)
         testresult, created = TestResult.objects.get_or_create(
             submission=request["submission"],
             exercise_test=request["exercise_test"],
@@ -63,17 +61,19 @@ class TestResultSerializer(serializers.ModelSerializer):
             },
         )
 
-        testresult.running = request["running"]
-        if testresult.running:
+        testresult.status = request["status"]
+        if testresult.status == "running":
             testresult.stdout = ""
-            testresult.success = False
             testresult.time = -1
             testresult.memory = -1
         else:
             testresult.stdout = request["stdout"]
-            testresult.success = request["success"]
             testresult.time = request["time"]
             testresult.memory = request["memory"]
 
         testresult.save()
+
+        #Refresh submission status
+        requests.get(f'http://localhost:8000/runner/api/refresh-submission?submission_id={testresult.submission.id}')
+
         return testresult
