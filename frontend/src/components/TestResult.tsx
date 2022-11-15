@@ -1,7 +1,9 @@
+import {  } from '../features/submission/submissionApiSlice';
+
 import { useEffect, useState } from 'react'
+import { useGetSubmissionByExerciseQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
 import { ListGroup } from 'react-bootstrap';
-import { useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 import { useParams } from 'react-router-dom';
 
 const TestResult = () => {
@@ -18,6 +20,14 @@ const TestResult = () => {
         error
     } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id});
 
+    const {
+        data: submissionData,
+        isLoading: submissionIsLoading,
+        isSuccess: submissionIsSuccess,
+        isError: submissionIsError,
+        error: submissionError
+    } = useGetSubmissionByExerciseQuery({exercise_id:exercise_id});
+
     useEffect(() => {
         setResultsExist( typeof testResults !== 'undefined' && testResults.length > 0 )
     }, [testResults])
@@ -31,30 +41,57 @@ const TestResult = () => {
     }
 
     const statusPillContent = (result:any) => {
-        if(result.success) {
+        if (result.status === "running") {
+            return (<>
+                <span className="badge bg-secondary rounded-pill">Running</span>
+            </>)
+        }
+        else if (result.status === "pending") {
+            return (<>
+                <span className="badge bg-secondary rounded-pill">Pending</span>
+            </>)
+        }
+        else if(result.status === "success") {
             return (<>
                 <span className="badge bg-secondary rounded-pill">{result.time} s</span>
                 &nbsp;
                 <span className="badge bg-success rounded-pill">Success</span>
             </>)
         }
-        else if (result.running) {
-            return (<>
-                <span className="badge bg-secondary rounded-pill">Running</span>
+        else if (result.status === "failed") {
+                return (<>
+                <span className="badge bg-danger rounded-pill">Fail</span>
             </>)
         }
-        else {
-            return (<>
-                <span className="badge bg-danger rounded-pill">Fail</span>
+        else if (result.status === "error") {
+                return (<>
+                <span className="badge bg-danger rounded-pill">Error</span>
             </>)
         }
     }
 
-    return resultsExist ? (
+    const submissionStatusContent = (submission:any) => {
+        if (submission.status === "running") {
+            return (<>
+                <span className="badge bg-secondary rounded-pill">Running</span>
+            </>)
+        }
+        else if(submission.status === "success") {
+            return (<>
+                <span className="badge bg-success rounded-pill">Success</span>
+            </>)
+        }
+    }
+
+
+
+    return (submissionData && submissionIsSuccess && isSuccess && resultsExist) ? (
         <ListGroup>
-            <ListGroup.Item className='bg-light d-flex justify-content-between align-items-start'>
+            <ListGroup.Item className={'bg-light d-flex justify-content-between align-items-start'}>
                 {/* Get filename*/}
-                <span className='fw-bold'>{testResults[0].submission.file.split("/").pop()}</span>
+                <span className='fw-bold'>{submissionData[0].file.split("/").pop()}</span>
+                {/* Get submission status */}
+                {submissionStatusContent(submissionData[0])}
             </ListGroup.Item>
 
             {testResults.map((result:any, i:number) => (
