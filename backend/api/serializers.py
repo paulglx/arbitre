@@ -44,10 +44,8 @@ class ExerciseSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "description", "session_id", "session"]
 
 class MinimalExerciseSerializer(serializers.ModelSerializer):
-    session_id = serializers.PrimaryKeyRelatedField(
-        queryset=Session.objects.all(), source="session", write_only=True
-    )
 
     class Meta:
         model = Exercise
-        fields = ["id", "title", "session_id"]
+        fields = ["id", "title"]
+        depth=1

@@ -13,8 +13,8 @@ import Notification from "./components/Notification";
 import Public from "./components/Public";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
+import Results from "./components/Results";
 import Session from "./components/Session";
-import TestResult from "./components/TestResult";
 import Users from "./components/Users";
 
 function App() {
@@ -41,6 +41,8 @@ function App() {
 					<Route path="exercise/:exercise_id/" element={<Exercise/>} />
 					<Route path="exercise/:exercise_id/:tab" element={<Exercise/>} />
 					<Route path="exercise/create" element={<CreateExercise/>} />
+
+					<Route path="results" element={<Results/>} />
 				</Route>
 
 				{/* 404 page when no routes match*/}
