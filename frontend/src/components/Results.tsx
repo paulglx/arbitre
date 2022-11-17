@@ -1,8 +1,9 @@
-import { Accordion, Container, Table } from 'react-bootstrap'
+import { Accordion, Badge, Container, Spinner, Table } from 'react-bootstrap'
 import React, { useEffect } from 'react'
 
 import Header from './Header'
 import { selectIsTeacher } from '../features/auth/authSlice'
+import session from 'redux-persist/lib/storage/session'
 import { useGetAllResultsQuery } from '../features/results/resultsApiSlice'
 import { useSelector } from 'react-redux'
 
@@ -23,71 +24,74 @@ const Results = () => {
 
     console.log("Courses:",courses)
 
-    const tableHeaderContent = (courses:any) => {
+    const statusContent = (status:string) => {
+        if (status === "not submitted") {
+            return <span className='text-muted'>-</span>
+        } else if (status === "running") {
+         return (
+            <Spinner animation="border" role="status" as="span" size="sm">
+                <span className="visually-hidden">Running...</span>
+            </Spinner>)
+        } else if (status === "PENDING" || status === "pending") {
+         return (
+            <Spinner animation="border" role="status" as="span" size="sm">
+                <span className="visually-hidden">Pending...</span>
+            </Spinner>)
+        } else if (status === "success") {
+            return <Badge bg="success">Success</Badge>
+        } else if (status === "failed") {
+            return <Badge bg="secondary">Failed</Badge>
+        } else if (status === "error") {
+            return <Badge bg="danger">Error</Badge>
+        }
+    }
 
-        const sessions_titles_and_width:any[] = []
-        courses[0].students[0].sessions?.map((session:any) => ( sessions_titles_and_width.push({
-           "session_title": session.session_title,
-           "number_of_exercises": session.results.length
-        })))
+    const tableHeadContent = (session:any) => {
+        return (
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    {session.students_data[0]?.results?.map((exercise:any) => (
+                        <th className='fw-normal'>{exercise.exercise_title}</th>
+                    ))}
+                </tr>
+            </thead>
+        )
+    }
 
+    const tableBodyContent = (session:any) => {
         return (<>
-            <th key={-1} rowSpan={2}>Students</th>
-            {sessions_titles_and_width.map((session:any, i:number) => (
-                <th key={i} colSpan={session.number_of_exercises}>{session.session_title}</th>
-            ))}
+            <tbody className=''>
+                {session.students_data.map((student:any) => (
+                    <tr>
+                        <td className=''>{student.student_name}</td>
+                        {student.results?.map((exercise:any) => (
+                            <td className='text-center'>{statusContent(exercise.status)}</td>
+                        ))}
+                    </tr>
+                ))}
+            </tbody>
         </>)
+    }
 
-
-    } 
-
-    const courseResults = (course:any) => {
+    const courseResultsTable = (course:any) => {
 
         console.log(course)
 
-        return isSuccess ? (<>
-            <Accordion.Header >{course.title}</Accordion.Header>
-            <Accordion.Body>
-                <Table striped bordered hover responsive className='p-0 m-0'>
-                    <thead>
-                        <tr>
-                            {tableHeaderContent(courses)}
-                        </tr>
-                    </thead>
-                    <thead>
-                        <tr>
-                            <th rowSpan={0}></th>
-                            <th>Exercise 1</th>
-                            <th>Exercise 2</th>
-                            <th>Exercise 3</th>
-                            <th>Exercise 1</th>
-                            <th>Exercise 2</th>
-                            <th>Exercise 3</th>
-                        </tr>
-                    </thead>
-                    <tbody className='table-group-divider'>
-                        <tr>
-                            <td>Student 1</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                        </tr>
-                        <tr>
-                            <td>Student 2</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                            <td>ok</td>
-                        </tr>
-                    </tbody>
-                </Table>
-            </Accordion.Body>
-        </>) : (<></>)
+        return isSuccess ? (
+            course.sessions.map((session:any, i:number) => (<>
+                <Accordion.Item eventKey={String(i)}>
+                    <Accordion.Header>{session.session_title}</Accordion.Header>
+                    <Accordion.Body>
+                        
+                        <Table striped bordered hover className='p-0 m-0'>
+                            {tableHeadContent(session)}
+                            {tableBodyContent(session)}
+                        </Table>
+
+                    </Accordion.Body>
+                </Accordion.Item>
+            </>))) : (<></>)
     }
 
     return isTeacher && isSuccess ? (<>
@@ -101,13 +105,17 @@ const Results = () => {
 
             <br />
 
-            <Accordion defaultActiveKey="0" className='bg-light'>
-                {results.courses?.map((course:any, i:number) => (
-                    <Accordion.Item key={course.id} eventKey={String(i)}>
-                        {courseResults(course)}
-                    </Accordion.Item>
-                ))}
-            </Accordion>
+            {courses.map((course:any, i:number) => (<>
+
+                <h2>{course.course_title}</h2>
+
+                <Accordion key={course.course_id} defaultActiveKey="0">
+                    {courseResultsTable(course)}
+                </Accordion>
+
+                <br />
+                
+            </>))}
 
         </Container>
     </>) : (<></>)
