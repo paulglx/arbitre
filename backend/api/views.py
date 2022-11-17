@@ -62,56 +62,47 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         else:
             return Exercise.objects.all()
 
-class ResultsViewSet(viewsets.ViewSet):
+class ResultsOfSessionViewSet(viewsets.ViewSet):
     """
-    Get submission statuses for all exercises for given user.
+    Get submission statuses for all exercises of a session, for a given user.
+    Params: user_id, session_id
     """
-
+    
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
 
         user = User.objects.get(id=request.data["user_id"])
+        session = Session.objects.get(id=request.data["session_id"])
 
-        # Get all sessions to which the user has access
-        sessions = Session.objects.filter(
-            Q(course__students__in=[user]) | Q(course__owner=user)
-        ).distinct()
+        # Get all the exercises to do in the session
+        exercises = Exercise.objects.filter(session=session)
+        exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
+        exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
 
+        # Get status for exercises that have been submitted
+        submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
+        submissions_serializer = SubmissionSerializer(submissions, many=True)
+        
+        # Return exercise and status only
         results = []
-
-        for session in sessions:
-            session_data = []
-
-            # Get all the exercises to do in the session
-            exercises = Exercise.objects.filter(session=session)
-            exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
-            exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
-
-            # Get status for exercises that have been submitted
-            submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
-            submissions_serializer = SubmissionSerializer(submissions, many=True)
-            
-            # Return exercise and status only
-            for exercise in exercises_to_do_dict:
-                status = "not submitted"
-                for submission in submissions_serializer.data:
-                    if submission["exercise"] == exercise["id"]:
-                        status = submission["status"]
-                session_data.append({"exercise": exercise["id"], "status": status})
-            
+        for exercise in exercises_to_do_dict:
+            status = "not submitted"
+            for submission in submissions_serializer.data:
+                if submission["exercise"] == exercise["id"]:
+                    status = submission["status"]
             results.append({
-                "course_id": session.course.id,
-                "session_id": session.id,
-                "session_title": session.title,
-                "results": session_data
-            })
-
+                "exercise_id": exercise["id"], 
+                "exercise_title": exercise["title"],
+                "status": status}
+            )
+        
         return Response(results)
 
 class AllResultsViewSet(viewsets.ViewSet):
     """
     Get submission statuses for all exercises for all students of all user's courses.
+    User : logged in user
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -124,31 +115,39 @@ class AllResultsViewSet(viewsets.ViewSet):
 
         for course in courses:
 
-                all_students = []
-                for course in courses:
-                    all_students += course.students.all()
+            all_students = course.students.all()
+            all_students_ids = [student.id for student in all_students]
 
-                all_students_ids = [student.id for student in all_students]
+            session_data = []
+
+            for session in course.session_set.all():
 
                 students_data = []
                 for student_id in all_students_ids:
 
                     result_request = HttpRequest()
                     result_request.method = "GET"
-                    result_request.data = {"user_id": student_id}
+                    result_request.data = {"user_id": student_id, "session_id": session.id}
 
-                    results_response = ResultsViewSet.list(self, result_request).data
+                    result_response = ResultsOfSessionViewSet.list(self, result_request).data
 
                     students_data.append({
-                        "username": User.objects.get(id=student_id).username,
-                        "sessions": [result for result in results_response if result["course_id"] == course.id]
+                        "student_id": student_id,
+                        "student_name": User.objects.get(id=student_id).username,
+                        "results": result_response
                     })
 
-                courses_to_send.append({
-                    "id": course.id,
-                    "title": course.title,
-                    "students": students_data
+                session_data.append({
+                    "session_id": session.id,
+                    "session_title": session.title,
+                    "students_data": students_data
                 })
+                    
+            courses_to_send.append({
+                "course_id": course.id,
+                "course_title": course.title,
+                "sessions": session_data,
+            })
 
         return Response({"courses":courses_to_send})
 
