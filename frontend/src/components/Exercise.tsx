@@ -69,9 +69,10 @@ const Exercise = () => {
     //On load
     useEffect(() => {
 
-        //autosize textareas
+       //autosize textareas
+       // TODO fix jumping page
         const textareas = document.getElementsByTagName("textarea");
-        autosize(textareas);
+        autosize(textareas)
 
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Escape') {
