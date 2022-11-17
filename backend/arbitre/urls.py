@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from api.auth.views import LogoutView, UserGroup, UserViewSet
-from api.views import CourseViewSet, ExerciseViewSet, SessionViewSet, ResultsViewSet, AllResultsViewSet
+from api.views import CourseViewSet, ExerciseViewSet, SessionViewSet, AllResultsViewSet, ResultsOfSessionViewSet
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi
@@ -44,7 +44,7 @@ router = routers.DefaultRouter()
 router.register(r"exercise", ExerciseViewSet, basename="exercise")
 router.register(r"session", SessionViewSet, basename="session")
 router.register(r"course", CourseViewSet, basename="course")
-router.register(r"results", ResultsViewSet, basename="results")
+router.register(r"results", ResultsOfSessionViewSet, basename="results")
 router.register(r"all_results", AllResultsViewSet, basename="all_results")
 
 urlpatterns = [
