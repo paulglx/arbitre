@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
+from .models import Submission, TestResult
 
 
 # Create your tests here.
@@ -156,3 +157,28 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         new_exercise = Exercise.objects.create(title="new_exercise", session=session)
         new_exercise.save()
         self.assertEqual(session, new_exercise.session)
+
+
+class StudentSubmissionTest(TestCase):
+    """
+    Test Student Submission interactions
+    """
+
+    fixtures = ["student_submission_test_fixtures.json"]
+
+    def test_student_can_access_course(self):
+        student = User.objects.get(username="student")
+        course = Course.objects.get(title="teacher's first course")
+        self.assertTrue(student in course.students.all())
+
+    def test_student_can_create_submission(
+        self,
+    ):
+        student = User.objects.get(username="student")
+        exercise = Exercise.objects.get(title="Double String")
+        submission = Submission.objects.create(
+            exercise=exercise, owner=student, file="test_files/double_string.py"
+        )
+        submission.save()
+
+
