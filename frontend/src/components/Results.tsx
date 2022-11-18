@@ -1,9 +1,8 @@
 import { Accordion, Badge, Container, Spinner, Table } from 'react-bootstrap'
-import React, { useEffect } from 'react'
 
+import Error from './Error'
 import Header from './Header'
 import { selectIsTeacher } from '../features/auth/authSlice'
-import session from 'redux-persist/lib/storage/session'
 import { useGetAllResultsQuery } from '../features/results/resultsApiSlice'
 import { useSelector } from 'react-redux'
 
@@ -14,15 +13,11 @@ const Results = () => {
     const {
         data: results,
         isSuccess,
-        isLoading,
         isError,
         error,
-        refetch,
     } = useGetAllResultsQuery({})
 
     const courses = results?.courses
-
-    console.log("Courses:",courses)
 
     const statusContent = (status:string) => {
         if (status === "not submitted") {
@@ -49,10 +44,10 @@ const Results = () => {
     const tableHeadContent = (session:any) => {
         return (
             <thead>
-                <tr>
-                    <th>Student</th>
-                    {session.students_data[0]?.results?.map((exercise:any) => (
-                        <th className='fw-normal'>{exercise.exercise_title}</th>
+                <tr key={-1}>
+                    <th key={-1}>Student</th>
+                    {session.students_data[0]?.results?.map((exercise:any, i:number) => (
+                        <th className='fw-normal' key={i}>{exercise.exercise_title}</th>
                     ))}
                 </tr>
             </thead>
@@ -62,11 +57,11 @@ const Results = () => {
     const tableBodyContent = (session:any) => {
         return (<>
             <tbody className=''>
-                {session.students_data.map((student:any) => (
-                    <tr>
+                {session.students_data.map((student:any, i:number) => (
+                    <tr key={i}>
                         <td className=''>{student.student_name}</td>
-                        {student.results?.map((exercise:any) => (
-                            <td className='text-center'>{statusContent(exercise.status)}</td>
+                        {student.results?.map((exercise:any, j:number) => (
+                            <td className='text-center' key={j}>{statusContent(exercise.status)}</td>
                         ))}
                     </tr>
                 ))}
@@ -80,7 +75,7 @@ const Results = () => {
 
         return isSuccess ? (
             course.sessions.map((session:any, i:number) => (<>
-                <Accordion.Item eventKey={String(i)}>
+                <Accordion.Item eventKey={String(i)} key={i}>
                     <Accordion.Header>{session.session_title}</Accordion.Header>
                     <Accordion.Body>
                         
@@ -118,7 +113,7 @@ const Results = () => {
             </>))}
 
         </Container>
-    </>) : (<></>)
+    </>) : (<Error isError={isError} error={JSON.stringify(error)} />)
 }
 
 export default Results
