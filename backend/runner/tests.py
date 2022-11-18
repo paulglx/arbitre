@@ -2,7 +2,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
-from .models import Test, TestResult, Submission
 
 
 # Create your tests here.

@@ -52,7 +52,7 @@ class TestResultSerializer(serializers.ModelSerializer):
         super(TestResultSerializer, self).run_validators(value)
 
     def create(self, request):
-        testresult, created = TestResult.objects.get_or_create(
+        testresult = TestResult.objects.get_or_create(
             submission=request["submission"],
             exercise_test=request["exercise_test"],
             defaults={
@@ -75,7 +75,8 @@ class TestResultSerializer(serializers.ModelSerializer):
 
         # Refresh submission status
         requests.get(
-            f"http://localhost:8000/runner/api/refresh-submission?submission_id={testresult.submission.id}"
+            f"http://localhost:8000/runner/api/"
+            f"refresh-submission?submission_id={testresult.submission.id}"
         )
 
         return testresult
