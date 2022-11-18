@@ -73,7 +73,9 @@ class TestResultSerializer(serializers.ModelSerializer):
 
         testresult.save()
 
-        #Refresh submission status
-        requests.get(f'http://localhost:8000/runner/api/refresh-submission?submission_id={testresult.submission.id}')
+        # Refresh submission status
+        requests.get(
+            f"http://localhost:8000/runner/api/refresh-submission?submission_id={testresult.submission.id}"
+        )
 
         return testresult

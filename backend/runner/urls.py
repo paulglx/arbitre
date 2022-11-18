@@ -7,7 +7,9 @@ router = DefaultRouter()
 router.register(r"submission", views.SubmissionViewSet)
 router.register(r"test", views.TestViewSet)
 router.register(r"testresult", views.TestResultViewSet, basename="testresults")
-router.register(r"refresh-submission", views.RefreshSubmissionViewSet, basename="refresh")
+router.register(
+    r"refresh-submission", views.RefreshSubmissionViewSet, basename="refresh"
+)
 
 urlpatterns = [
     # ex: /polls/

@@ -15,7 +15,13 @@ Including another URLconf
 """
 
 from api.auth.views import LogoutView, UserGroup, UserViewSet
-from api.views import CourseViewSet, ExerciseViewSet, SessionViewSet, AllResultsViewSet, ResultsOfSessionViewSet
+from api.views import (
+    CourseViewSet,
+    ExerciseViewSet,
+    SessionViewSet,
+    AllResultsViewSet,
+    ResultsOfSessionViewSet,
+)
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi

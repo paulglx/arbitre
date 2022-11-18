@@ -18,7 +18,7 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     testresult_before_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
-        "status":"running",
+        "status": "running",
     }
     requests.post(testresult_post_url, data=testresult_before_data)
 
@@ -48,7 +48,6 @@ def run_camisole(submission_id, test_id, file_content) -> None:
             status = "failed"
     else:
         status = "error"
-
 
     # Save results to database using REST API
     after_data = {

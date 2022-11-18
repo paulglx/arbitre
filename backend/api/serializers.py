@@ -43,9 +43,9 @@ class ExerciseSerializer(serializers.ModelSerializer):
         model = Exercise
         fields = ["id", "title", "description", "session_id", "session"]
 
-class MinimalExerciseSerializer(serializers.ModelSerializer):
 
+class MinimalExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
         fields = ["id", "title"]
-        depth=1
+        depth = 1

@@ -1,5 +1,10 @@
 from .models import Course, Session, Exercise
-from .serializers import CourseSerializer, SessionSerializer, ExerciseSerializer, MinimalExerciseSerializer
+from .serializers import (
+    CourseSerializer,
+    SessionSerializer,
+    ExerciseSerializer,
+    MinimalExerciseSerializer,
+)
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpRequest
@@ -62,12 +67,13 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         else:
             return Exercise.objects.all()
 
+
 class ResultsOfSessionViewSet(viewsets.ViewSet):
     """
     Get submission statuses for all exercises of a session, for a given user.
     Params: user_id, session_id
     """
-    
+
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
@@ -83,7 +89,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         # Get status for exercises that have been submitted
         submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
         submissions_serializer = SubmissionSerializer(submissions, many=True)
-        
+
         # Return exercise and status only
         results = []
         for exercise in exercises_to_do_dict:
@@ -91,13 +97,16 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
             for submission in submissions_serializer.data:
                 if submission["exercise"] == exercise["id"]:
                     status = submission["status"]
-            results.append({
-                "exercise_id": exercise["id"], 
-                "exercise_title": exercise["title"],
-                "status": status}
+            results.append(
+                {
+                    "exercise_id": exercise["id"],
+                    "exercise_title": exercise["title"],
+                    "status": status,
+                }
             )
-        
+
         return Response(results)
+
 
 class AllResultsViewSet(viewsets.ViewSet):
     """
@@ -110,7 +119,7 @@ class AllResultsViewSet(viewsets.ViewSet):
     def list(self, request):
         user = self.request.user
         courses = Course.objects.filter(Q(owner=user)).distinct()
-        
+
         courses_to_send = []
 
         for course in courses:
@@ -127,27 +136,37 @@ class AllResultsViewSet(viewsets.ViewSet):
 
                     result_request = HttpRequest()
                     result_request.method = "GET"
-                    result_request.data = {"user_id": student_id, "session_id": session.id}
+                    result_request.data = {
+                        "user_id": student_id,
+                        "session_id": session.id,
+                    }
 
-                    result_response = ResultsOfSessionViewSet.list(self, result_request).data
+                    result_response = ResultsOfSessionViewSet.list(
+                        self, result_request
+                    ).data
 
-                    students_data.append({
-                        "student_id": student_id,
-                        "student_name": User.objects.get(id=student_id).username,
-                        "results": result_response
-                    })
+                    students_data.append(
+                        {
+                            "student_id": student_id,
+                            "student_name": User.objects.get(id=student_id).username,
+                            "results": result_response,
+                        }
+                    )
 
-                session_data.append({
-                    "session_id": session.id,
-                    "session_title": session.title,
-                    "students_data": students_data
-                })
-                    
-            courses_to_send.append({
-                "course_id": course.id,
-                "course_title": course.title,
-                "sessions": session_data,
-            })
+                session_data.append(
+                    {
+                        "session_id": session.id,
+                        "session_title": session.title,
+                        "students_data": students_data,
+                    }
+                )
 
-        return Response({"courses":courses_to_send})
+            courses_to_send.append(
+                {
+                    "course_id": course.id,
+                    "course_title": course.title,
+                    "sessions": session_data,
+                }
+            )
 
+        return Response({"courses": courses_to_send})

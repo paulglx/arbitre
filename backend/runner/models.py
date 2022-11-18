@@ -11,12 +11,11 @@ class Submission(models.Model):
     """
 
     class SubmissionStatus(models.TextChoices):
-        PENDING = 'pending', _('Pending')
-        RUNNING = 'running', _('Running')
-        SUCCESS = 'success', _('Success')
-        FAILED = 'failed', _('Failed')
-        ERROR = 'error', _('Error')
-
+        PENDING = "pending", _("Pending")
+        RUNNING = "running", _("Running")
+        SUCCESS = "success", _("Success")
+        FAILED = "failed", _("Failed")
+        ERROR = "error", _("Error")
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     file = models.FileField(upload_to="uploads")
@@ -26,7 +25,6 @@ class Submission(models.Model):
         choices=SubmissionStatus.choices,
         default=SubmissionStatus.PENDING,
     )
-
 
     def __str__(self):
         return self.file.name
@@ -70,11 +68,11 @@ class TestResult(models.Model):
     """
 
     class TestResultStatus(models.TextChoices):
-            PENDING = 'pending', _('Pending')
-            RUNNING = 'running', _('Running')
-            SUCCESS = 'success', _('Success')
-            FAILED = 'failed', _('Failed')
-            ERROR = 'error', _('Error')
+        PENDING = "pending", _("Pending")
+        RUNNING = "running", _("Running")
+        SUCCESS = "success", _("Success")
+        FAILED = "failed", _("Failed")
+        ERROR = "error", _("Error")
 
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     exercise_test = models.ForeignKey(Test, on_delete=models.CASCADE)

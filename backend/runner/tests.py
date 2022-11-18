@@ -47,6 +47,7 @@ class UserTest(TestCase):
         user = authenticate(username="", password="testpwd")
         self.assertEqual(user, None)
 
+
 class Student_CourseSessionExerciseTest(TestCase):
     """
     Test Course, Session, Exercise interactions from student viewpoint
@@ -56,26 +57,34 @@ class Student_CourseSessionExerciseTest(TestCase):
         teacher = User.objects.create_user("teacher")
         teacher.save()
 
-        student = User.objects.create(username="testuser", password="testpwd", email="testmail@mail.com")
+        student = User.objects.create(
+            username="testuser", password="testpwd", email="testmail@mail.com"
+        )
         student.save()
 
         course = Course.objects.create(title="testcourse", owner=teacher)
         course.students.add(student)
         course.save()
 
-        inaccessible_course = Course.objects.create(title="inaccessible_course", owner=teacher)
+        inaccessible_course = Course.objects.create(
+            title="inaccessible_course", owner=teacher
+        )
         inaccessible_course.save()
 
         session = Session.objects.create(title="testsession", course=course)
         session.save()
 
-        inaccessible_session = Session.objects.create(title="inaccessible_session", course=inaccessible_course)
+        inaccessible_session = Session.objects.create(
+            title="inaccessible_session", course=inaccessible_course
+        )
         inaccessible_session.save()
 
         exercise = Exercise.objects.create(title="testexercise", session=session)
         exercise.save()
 
-        inaccessible_exercise = Exercise.objects.create(title="inaccessible_exercise", session=inaccessible_session)
+        inaccessible_exercise = Exercise.objects.create(
+            title="inaccessible_exercise", session=inaccessible_session
+        )
         inaccessible_exercise.save()
 
     def test_student_can_access_course(self):
@@ -101,34 +110,42 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         other_teacher = User.objects.create_user("other_teacher")
         other_teacher.save()
 
-        student = User.objects.create(username="testuser", password="testpwd", email="testmail@mail.com")
+        student = User.objects.create(
+            username="testuser", password="testpwd", email="testmail@mail.com"
+        )
         student.save()
 
         course = Course.objects.create(title="testcourse", owner=teacher)
         course.students.add(student)
         course.save()
 
-        inaccessible_course = Course.objects.create(title="inaccessible_course", owner=other_teacher)
+        inaccessible_course = Course.objects.create(
+            title="inaccessible_course", owner=other_teacher
+        )
         inaccessible_course.save()
 
         session = Session.objects.create(title="testsession", course=course)
         session.save()
 
-        inaccessible_session = Session.objects.create(title="inaccessible_session", course=inaccessible_course)
+        inaccessible_session = Session.objects.create(
+            title="inaccessible_session", course=inaccessible_course
+        )
         inaccessible_session.save()
 
         exercise = Exercise.objects.create(title="testexercise", session=session)
         exercise.save()
 
-        inaccessible_exercise = Exercise.objects.create(title="inaccessible_exercise", session=inaccessible_session)
+        inaccessible_exercise = Exercise.objects.create(
+            title="inaccessible_exercise", session=inaccessible_session
+        )
         inaccessible_exercise.save()
-    
+
     def test_teacher_can_create_new_course(self):
         teacher = User.objects.get(username="teacher")
         new_course = Course.objects.create(title="new_course", owner=teacher)
         new_course.save()
         self.assertEqual(teacher, new_course.owner)
-        
+
     def test_can_create_session_in_course(self):
         course = Course.objects.get(title="testcourse")
         new_session = Session.objects.create(title="new_session", course=course)
@@ -140,4 +157,3 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         new_exercise = Exercise.objects.create(title="new_exercise", session=session)
         new_exercise.save()
         self.assertEqual(session, new_exercise.session)
-

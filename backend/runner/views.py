@@ -18,12 +18,12 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             owner=self.request.user,
             defaults={
                 "file": self.request.data["file"],
-                "status":"PENDING",
+                "status": "PENDING",
             },
         )
         submission.save()
 
-    #Get submission for  exercise if exercise_id is given
+    # Get submission for  exercise if exercise_id is given
     def get_queryset(self):
         queryset = Submission.objects.all()
         exercise_id = self.request.query_params.get("exercise_id", None)
@@ -32,15 +32,18 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(exercise=exercise_id, owner=user)
         return queryset
 
+
 class RefreshSubmissionViewSet(viewsets.ViewSet):
     """
     Refreshes submission status based on all test results statuses for that submission
     """
-    
+
     # GET /api/refresh-submission?submission_id=...
     def list(self, request):
         try:
-            submission = Submission.objects.get(pk=request.query_params["submission_id"])
+            submission = Submission.objects.get(
+                pk=request.query_params["submission_id"]
+            )
             test_results = TestResult.objects.filter(submission=submission)
             status = ""
             if test_results:
@@ -54,7 +57,9 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
                     status = "running"
             else:
                 status = "pending"
-            Submission.objects.filter(pk=request.query_params["submission_id"]).update(status=status)
+            Submission.objects.filter(pk=request.query_params["submission_id"]).update(
+                status=status
+            )
             return JsonResponse({"status": submission.status})
         except Submission.DoesNotExist:
             return JsonResponse({"status": "Not Found"})
@@ -64,7 +69,7 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
 
-    #Get the tests for the exercise if exercise_id is given
+    # Get the tests for the exercise if exercise_id is given
     def get_queryset(self):
         queryset = Test.objects.all()
         exercise_id = self.request.query_params.get("exercise_id", None)
@@ -85,4 +90,3 @@ class TestResultViewSet(viewsets.ModelViewSet):
                 submission__exercise_id=exercise_id, submission__owner=owner
             )
         return super().get_queryset()
-
