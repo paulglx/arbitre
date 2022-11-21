@@ -10,7 +10,9 @@ const Error = (props:any) => {
     const errorExplained = (status:any) => {
         switch (status) {
             case 'FETCH_ERROR':
-                return 'There was an error fetching the data from the server.'
+                return 'There was an error fetching the data from the server. Please try again later.'
+            case 'PARSING_ERROR':
+                return 'There was an error parsing the data from the server. The database might be corrupted.'
             default:
                 return 'There was an unknown error.'
         }
