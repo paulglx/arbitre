@@ -1,10 +1,11 @@
-import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation } from "../features/courses/courseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
+import TeacherList from "./TeacherList";
 import autosize from "autosize";
 import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
@@ -274,13 +275,29 @@ const Course = () => {
                         {teacherActionsContent()}
                     </div>
                 </div>
-                
-                {descriptionContent()}
 
-                <hr />
+                {isTeacher ? (<>
+                    <Tabs className="mb-3" variant="pills">
 
-                <h2>Sessions</h2>
-                {sessionContent()}
+                        <Tab eventKey="default" title="Description">
+                            {descriptionContent()}
+                        </Tab>
+
+                        <Tab eventKey="sessions" title="Sessions">
+                            {sessionContent()}
+                        </Tab>
+
+                        <Tab eventKey="teachers" title="Teachers">
+                            <TeacherList courseId={id} />
+                        </Tab>
+
+                    </Tabs>
+                </>) : (<>
+                    {descriptionContent()}
+
+                    <h2>Sessions</h2>
+                    {sessionContent()}
+                </>)}
 
             </Container>
         </>
