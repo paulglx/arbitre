@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework import permissions, serializers, viewsets
+from rest_framework import permissions, viewsets
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import MinimalUserSerializer, UserSerializer
 
 
 class LogoutView(APIView):
@@ -14,23 +15,6 @@ class LogoutView(APIView):
         token = RefreshToken(token=refresh_token)
         token.blacklist()
         return Response({"status": "OK, goodbye"})
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-
-    password = serializers.CharField(write_only=True)
-
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data["username"],
-            password=validated_data["password"],
-        )
-
-        return user
-
-    class Meta:
-        model = User
-        fields = ["url", "id", "username", "password"]
 
 
 class UserGroup(APIView):
@@ -50,3 +34,16 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = UserSerializer
+
+
+class TeachersViewSet(viewsets.ViewSet):
+    """
+    Get all teachers
+    """
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def list(self, request):
+        teachers = User.objects.filter(groups__id=2)
+        serializer = MinimalUserSerializer(teachers, many=True)
+        return Response(serializer.data)
