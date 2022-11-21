@@ -177,7 +177,9 @@ class StudentSubmissionTest(TestCase):
         student = User.objects.get(username="student")
         exercise = Exercise.objects.get(title="Double String")
         submission = Submission.objects.create(
-            exercise=exercise, owner=student, file="runner/fixtures/test_files/double_string.py"
+            exercise=exercise,
+            owner=student,
+            file="runner/fixtures/test_files/double_string.py",
         )
         submission.save()
         created_submission = Submission.objects.get(id=submission.id)
