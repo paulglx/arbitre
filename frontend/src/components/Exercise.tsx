@@ -1,13 +1,14 @@
 import { Breadcrumb, Button, Col, Container, Form, InputGroup, OverlayTrigger, Popover, Row, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
-import { useCreateExerciseMutation, useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
+import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
 import TestResult from "./TestResult";
+import autosize from "autosize";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { useSelector } from "react-redux";
 
@@ -21,6 +22,7 @@ const Exercise = () => {
     const [description, setDescription] = useState("");
     const [editDescription, setEditDescription] = useState(false);
     const [editTest, setEditTest] = useState(false);
+    const [hoveredTestId, setHoveredTestId] = useState(-1);
     const [editTestId, setEditTestId] = useState(null);
     const [editTitle, setEditTitle] = useState(false);
     const [tests, setTests] = useState([] as any[]);
@@ -29,7 +31,6 @@ const Exercise = () => {
     const [updateTest] = useUpdateTestMutation();
     const { exercise_id } : any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
-    const defaultTab = "description";
     const urlTab = useParams()?.tab;
     const navigate = useNavigate();
 
@@ -65,7 +66,14 @@ const Exercise = () => {
         setActiveTab(urlTab!);
     }, [urlTab, navigate]);
 
+    //On load
     useEffect(() => {
+
+       //autosize textareas
+       // TODO fix jumping page
+        const textareas = document.getElementsByTagName("textarea");
+        autosize(textareas)
+
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Escape') {
                 //TODO revert to previous state
@@ -208,7 +216,7 @@ const Exercise = () => {
         if (!isTeacher || !editDescription) {
             return (
                 <blockquote
-                    className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded description" + (isTeacher ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >
@@ -232,7 +240,6 @@ const Exercise = () => {
                             }}
                             onChange={(e:any) => setDescription(e.target.value)}
                             placeholder="Enter exercise description. Markdown is supported."
-                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
                             value={description}
                         />
                         <Form.Text className="text-muted">
@@ -266,17 +273,19 @@ const Exercise = () => {
 
             {tests.map((test:any) => (
 
-                <div className={"p-2 mb-1" + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
+                <div className={"p-1 mb-1" + (isTeacher ? " editable-test" : "") + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
                     onFocus={() => {setEditTestId(test?.id); setEditTest(true)}}
                     onBlur={(e) => {handleTestBlur(e)}}
+                    onMouseEnter={() => setHoveredTestId(test?.id)}
+                    onMouseLeave={() => setHoveredTestId(-1)}
                 >
 
-                    <Row className="g-3">
+                    <Row className="g-2">
 
-                        <Col md={2}>
+                        <Col md={3}>
 
                             <Form.Control
-                                className="bg-white fw-bold"
+                                className={"bg-white fw-bold" + (editTest && editTestId === test?.id ? " " : " border")}
                                 placeholder="Test name"
                                 aria-label="Test name"
                                 value={test?.name}
@@ -285,17 +294,9 @@ const Exercise = () => {
                                 {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
                             />
 
-                            {editTest && editTestId === test?.id ? (
-                                <Button className="btn-link btn-light text-danger text-decoration-none p-0 float-end"
-                                    onClick={(e) => {handeDeleteTest(editTestId)}}
-                                >
-                                    Delete
-                                </Button>
-                            ) : (<></>)}
-
                         </Col>
 
-                        <Col md={5}>
+                        <Col md={4}>
 
                         <InputGroup>
 
@@ -303,8 +304,8 @@ const Exercise = () => {
 
                             <Form.Control
                                 as="textarea"
-                                rows={1}
                                 placeholder="Input to test for"
+                                rows={1}
                                 aria-label="Input"
                                 value={test?.stdin}
                                 autoComplete="off"
@@ -316,7 +317,7 @@ const Exercise = () => {
 
                         </Col>
 
-                        <Col md={5}>
+                        <Col md={4}>
 
                         <InputGroup>
 
@@ -324,8 +325,8 @@ const Exercise = () => {
 
                             <Form.Control
                                 as="textarea"
-                                rows={1}
                                 placeholder="Expected output"
+                                rows={1}
                                 aria-label="Ouput"
                                 value={test?.stdout}
                                 autoComplete="off"
@@ -334,6 +335,16 @@ const Exercise = () => {
                             />
 
                         </InputGroup>
+                        </Col>
+                        <Col>
+                        {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
+                            <Button
+                                className="btn-link delete-button btn-light text-danger text-decoration-none float-end"
+                                onClick={(e) => {handeDeleteTest(editTestId)}}
+                            >
+                                Delete
+                            </Button>
+                        ) : (<></>)}
                         </Col>
                     </Row>
                 </div>
@@ -357,9 +368,6 @@ const Exercise = () => {
 
     const submissionContent = () => {
         return (<>
-            <h2 className="h4">
-                Submit your work
-            </h2>
             <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
                 <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>Submission file</Form.Label>
@@ -423,6 +431,7 @@ const Exercise = () => {
             onSelect={(key:any) => {key && toggle(key)}}
             id="exercise-tabs"
             className="mb-3"
+            variant="pills"
         >
             <Tab eventKey="description" title="Description">
                 {descriptionContent()}

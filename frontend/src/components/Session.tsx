@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
+import autosize from "autosize";
 import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { useSelector } from "react-redux";
@@ -22,6 +23,11 @@ const Session = () => {
     const [editDescription, setEditDescription] = useState(false);
 
     useEffect(() => {
+
+        //autosize textareas
+        const textareas = document.getElementsByTagName("textarea");
+        autosize(textareas);
+        
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
                 if(editTitle) {
@@ -134,7 +140,7 @@ const Session = () => {
             return (
                 <blockquote
                     tabIndex={0} //allows focus
-                    className={"p-3 pb-1 bg-light rounded" + (isTeacher ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded description" + (isTeacher ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}>
                     <Markdown children={description} />
                 </blockquote>
@@ -146,7 +152,6 @@ const Session = () => {
                         <Form.Control
                             autoFocus
                             as="textarea"
-                            rows={Math.max(2, description.split(/\r\n|\r|\n/).length)} // Display as many rows as description has lines (minimum 2 rows).
                             className="teacher description-input"
                             value={description}
                             onChange={(e:any) => setDescription(e.target.value)}

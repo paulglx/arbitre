@@ -10,17 +10,17 @@ def run_camisole(submission_id, test_id, file_content) -> None:
     """
 
     base_url = "http://localhost:8000/runner/api"
-    post_url = f"{base_url}/testresult/"
+    testresult_post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
 
     # Save the empty test result with "running" status
-    before_data = {
+    testresult_before_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
-        "running": True,
+        "status": "running",
     }
-    requests.post(post_url, data=before_data)
+    requests.post(testresult_post_url, data=testresult_before_data)
 
     # Configure the data used to run camisole
     camisole_server_url = "http://oasis:1234/run"
@@ -40,16 +40,23 @@ def run_camisole(submission_id, test_id, file_content) -> None:
 
     # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
-    # Save results to database using REST API
+    status = ""
+    if response["exitcode"] == 0:
+        if response["stdout"] == test["stdout"]:
+            status = "success"
+        else:
+            status = "failed"
+    else:
+        status = "error"
 
+    # Save results to database using REST API
     after_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
-        "running": False,
         "stdout": response["stdout"] + "\n" + response["stderr"],
-        "success": response["stdout"] == test["stdout"] and response["exitcode"] == 0,
+        "status": status,
         "time": response["meta"]["wall-time"],
         "memory": response["meta"]["cg-mem"],
     }
     print("data to send:" + str(after_data))
-    requests.post(post_url, data=after_data)
+    requests.post(testresult_post_url, data=after_data)

@@ -17,9 +17,15 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        getSubmissionByExercise: builder.query({
+            query: params => ({
+                url: `/runner/api/submission?exercise_id=${params.exercise_id}`,
+                method: 'GET',
+            })
+        }),
         getSubmissionTestResults: builder.query({
             query: params => ({
-                url: `/runner/api/testresult?exercise_id=${params.exercise_id}&owner=${params.owner}`,
+                url: `/runner/api/testresult?exercise_id=${params.exercise_id}`,
                 method: 'GET',
             })
         }),
@@ -29,5 +35,6 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreateSubmissionMutation,
     useGetSubmissionQuery,
+    useGetSubmissionByExerciseQuery,
     useGetSubmissionTestResultsQuery
 } = submissionApiSlice;

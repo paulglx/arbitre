@@ -50,7 +50,7 @@ ol.breadcrumb li.active {
   padding-left: 10px;
   padding-right: 10px;
   margin-left:-10px;
-  margin-right:-10px;
+  margin-right:6px;
 }
 
 .flex-fill {
@@ -59,6 +59,19 @@ ol.breadcrumb li.active {
 
 .dashed-border {
   border-style: dashed !important;
+}
+
+.description {
+  overflow-x: scroll;
+}
+
+button, .list-group, ol.breadcrumb, input {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.editable-test:hover {
+  background-color: var(--bs-gray-200);
+  border-radius: 5px;
 }
 
 code, kbd, pre, samp {

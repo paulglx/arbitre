@@ -1,13 +1,24 @@
-from django.db.models import Q
-from rest_framework import viewsets, permissions
-
-from .serializers import CourseSerializer, SessionSerializer, ExerciseSerializer
 from .models import Course, Session, Exercise
+from .serializers import (
+    CourseSerializer,
+    SessionSerializer,
+    ExerciseSerializer,
+    MinimalExerciseSerializer,
+)
+from django.contrib.auth.models import User
+from django.db.models import Q
+from django.http import HttpRequest
+from rest_framework import viewsets, permissions
+from rest_framework.response import Response
+from runner.models import Submission
+from runner.serializers import SubmissionSerializer
+import json
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     """
-    Get courses that current user is student of
+    List all courses of student, or courses created by teacher (GET)
+    Create a new course (POST)
     """
 
     serializer_class = CourseSerializer
@@ -16,7 +27,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     # Allow students or owner to get their courses
     def get_queryset(self):
         user = self.request.user
-        print("User:", user)
         return Course.objects.filter(Q(students__in=[user]) | Q(owner=user)).distinct()
 
     # Auto set owner to current user
@@ -56,3 +66,107 @@ class ExerciseViewSet(viewsets.ModelViewSet):
             return Exercise.objects.filter(session_id=session_id)
         else:
             return Exercise.objects.all()
+
+
+class ResultsOfSessionViewSet(viewsets.ViewSet):
+    """
+    Get submission statuses for all exercises of a session, for a given user.
+    Params: user_id, session_id
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+
+        user = User.objects.get(id=request.data["user_id"])
+        session = Session.objects.get(id=request.data["session_id"])
+
+        # Get all the exercises to do in the session
+        exercises = Exercise.objects.filter(session=session)
+        exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
+        exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
+
+        # Get status for exercises that have been submitted
+        submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
+        submissions_serializer = SubmissionSerializer(submissions, many=True)
+
+        # Return exercise and status only
+        results = []
+        for exercise in exercises_to_do_dict:
+            status = "not submitted"
+            for submission in submissions_serializer.data:
+                if submission["exercise"] == exercise["id"]:
+                    status = submission["status"]
+            results.append(
+                {
+                    "exercise_id": exercise["id"],
+                    "exercise_title": exercise["title"],
+                    "status": status,
+                }
+            )
+
+        return Response(results)
+
+
+class AllResultsViewSet(viewsets.ViewSet):
+    """
+    Get submission statuses for all exercises for all students of all user's courses.
+    User : logged in user
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+        user = self.request.user
+        courses = Course.objects.filter(Q(owner=user)).distinct()
+
+        courses_to_send = []
+
+        for course in courses:
+
+            all_students = course.students.all()
+            all_students_ids = [student.id for student in all_students]
+
+            session_data = []
+
+            for session in course.session_set.all():
+
+                students_data = []
+                for student_id in all_students_ids:
+
+                    result_request = HttpRequest()
+                    result_request.method = "GET"
+                    result_request.data = {
+                        "user_id": student_id,
+                        "session_id": session.id,
+                    }
+
+                    result_response = ResultsOfSessionViewSet.list(
+                        self, result_request
+                    ).data
+
+                    students_data.append(
+                        {
+                            "student_id": student_id,
+                            "student_name": User.objects.get(id=student_id).username,
+                            "results": result_response,
+                        }
+                    )
+
+                session_data.append(
+                    {
+                        "session_id": session.id,
+                        "session_title": session.title,
+                        "students_data": students_data,
+                    }
+                )
+
+            courses_to_send.append(
+                {
+                    "course_id": course.id,
+                    "course_title": course.title,
+                    "sessions": session_data,
+                }
+            )
+
+        return Response({"courses": courses_to_send})

@@ -1,6 +1,7 @@
 import { Container, ListGroup } from 'react-bootstrap'
 import { selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice';
 
+import Error from './Error';
 import Header from './Header'
 import { useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
 import { useSelector } from "react-redux";
@@ -55,7 +56,7 @@ const Courses = () => {
                 {teacherContent()}
             </ListGroup>
         </Container>
-    </>) : (<></>)
+    </>) : (<Error isError={courseIsError} error={JSON.stringify(courseError)} />)
 }
 
 export default Courses

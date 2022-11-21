@@ -31,13 +31,32 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
    
-    - name: Enforce Style with Black
-      run: |
-        python -m black .
-   
     - name: Lint
       run: |
         python -m pylama
+
+    - name: Connect to runner server with Tailscale
+      uses: tailscale/github-action@v1
+      with:
+        authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+    - name: Start RabbitMQ
+      uses: getong/rabbitmq-action@v1.2
+      with:
+        rabbitmq version: 'latest'
+        host port: 5672
+        rabbitmq user: 'guest'
+        rabbitmq password: 'guest'
+
+
+
+    - name: Run celery worker in background
+      run: |
+        celery -A arbitre worker -l info -E &
+
+    - name: Wait 30s for celery to be ready
+      run: sleep 30s
+      shell: bash
         
     - name: Run Tests
       run: |
