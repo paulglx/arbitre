@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
-from .models import Submission, TestResult
+from .models import Submission
 
 
 # Create your tests here.
@@ -177,8 +177,8 @@ class StudentSubmissionTest(TestCase):
         student = User.objects.get(username="student")
         exercise = Exercise.objects.get(title="Double String")
         submission = Submission.objects.create(
-            exercise=exercise, owner=student, file="test_files/double_string.py"
+            exercise=exercise, owner=student, file="runner/fixtures/test_files/double_string.py"
         )
         submission.save()
-
-
+        created_submission = Submission.objects.get(id=submission.id)
+        self.assertEqual(created_submission.owner, student)

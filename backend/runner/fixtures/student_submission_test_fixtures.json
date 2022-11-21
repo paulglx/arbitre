@@ -65,7 +65,7 @@
         "fields": {
             "session": 1,
             "title": "Double String",
-            "description": "The goal of the exercise is to return a given string, twice.\n\n---\n\n##Skeleton\n\n```\ndef double_string(s):\n    #...\n\nprint(double_string(input()), end='')\n```"
+            "description": "The goal of the exercise is to return a given string, twice.\n\n---\n\n## Skeleton\n\n```\ndef double_string(s):\n    #...\n\nprint(double_string(input()), end='')\n```"
         }
     },
     {
