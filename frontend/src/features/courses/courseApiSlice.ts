@@ -48,7 +48,29 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                     }
                 )
             }
-        })
+        }),
+        getOwners: builder.query({
+            query: params => ({
+                url: `/api/course_owner?course_id=${params.course_id}`,
+                method: 'GET',
+            })
+        }),
+        addOwner: builder.mutation({
+            query: (data:any) => ({
+                url: `/api/course_owner/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : course_id, user_id
+            })
+        }),
+        removeOwner: builder.mutation({
+            query: (data:any) => ({
+                url: `/api/course_owner/${data.course_id}/`,
+                method: 'DELETE',
+                credentials: 'include',
+                body: {user_id:data.user_id} //Must include : course_id, user_id
+            })
+        }),
     })
 })
 
@@ -57,5 +79,8 @@ export const {
     useGetAllCoursesQuery,
     useCreateCourseMutation,
     useUpdateCourseMutation,
-    useDeleteCourseMutation
+    useDeleteCourseMutation,
+    useGetOwnersQuery,
+    useAddOwnerMutation,
+    useRemoveOwnerMutation,
 } = courseApiSlice;

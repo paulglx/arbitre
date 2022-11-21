@@ -24,14 +24,45 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    # Allow students or owner to get their courses
+    # Allow students or owners to get their courses
     def get_queryset(self):
         user = self.request.user
-        return Course.objects.filter(Q(students__in=[user]) | Q(owner=user)).distinct()
+        return Course.objects.filter(
+            Q(students__in=[user]) | Q(owners__in=[user])
+        ).distinct()
 
-    # Auto set owner to current user
+    # Add current user to owners
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(owners=[self.request.user])
+
+
+class CourseOwnerViewSet(viewsets.ViewSet):
+    """
+    List (GET), add (POST) or remove (DELETE) teachers from a course
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+        course = Course.objects.get(pk=request.query_params.get("course_id"))
+        return Response({"owners": [
+            {"id": user.id, "username": user.username}
+            for user in course.owners.all()
+        ]})
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        user = User.objects.get(id=request.data.get("user_id"))
+        course.owners.add(user)
+        course.save()
+        return Response({"status": "OK"})
+
+    def destroy(self, request, pk=None):
+        course = Course.objects.get(pk=pk)
+        user = User.objects.get(id=request.data.get("user_id"))
+        course.owners.remove(user)
+        course.save()
+        return Response({"status": "OK"})
 
 
 class SessionViewSet(viewsets.ModelViewSet):
@@ -87,7 +118,9 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
 
         # Get status for exercises that have been submitted
-        submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
+        submissions = Submission.objects.filter(
+            owners__in=[user], exercise__in=exercises
+        )
         submissions_serializer = SubmissionSerializer(submissions, many=True)
 
         # Return exercise and status only
@@ -118,7 +151,7 @@ class AllResultsViewSet(viewsets.ViewSet):
 
     def list(self, request):
         user = self.request.user
-        courses = Course.objects.filter(Q(owner=user)).distinct()
+        courses = Course.objects.filter(Q(owners__in=[user])).distinct()
 
         courses_to_send = []
 

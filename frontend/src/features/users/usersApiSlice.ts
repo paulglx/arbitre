@@ -13,5 +13,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    useGetUsersQuery
+    useGetUsersQuery,
+    useGetTeachersQuery
 } = usersApiSlice
