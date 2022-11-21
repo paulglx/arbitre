@@ -42,7 +42,6 @@ jobs:
 
     - name: Run celery worker in background
       run: |
-        cd backend
         celery -A arbitre worker -l info -E 
         
     - name: Run Tests
