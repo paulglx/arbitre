@@ -45,10 +45,14 @@ class CourseOwnerViewSet(viewsets.ViewSet):
 
     def list(self, request):
         course = Course.objects.get(pk=request.query_params.get("course_id"))
-        return Response({"owners": [
-            {"id": user.id, "username": user.username}
-            for user in course.owners.all()
-        ]})
+        return Response(
+            {
+                "owners": [
+                    {"id": user.id, "username": user.username}
+                    for user in course.owners.all()
+                ]
+            }
+        )
 
     def create(self, request):
         course = Course.objects.get(pk=request.data.get("course_id"))
