@@ -40,6 +40,9 @@ jobs:
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
+    - name: Start RabbitMQ
+      uses: namoshek/rabbitmq-github-action@v1.1.0
+
     - name: Run celery worker in background
       run: |
         celery -A arbitre worker -l info -E 
