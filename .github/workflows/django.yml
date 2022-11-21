@@ -20,6 +20,11 @@ jobs:
     steps:
     
     - uses: actions/checkout@v3
+
+    - name: Install Tailscale
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: tailscale
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -39,7 +44,7 @@ jobs:
       run: |
         python -m pylama
 
-    - name: Tailscale
+    - name: Connect to runner server with Tailscale
       uses: tailscale/github-action@v1
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
