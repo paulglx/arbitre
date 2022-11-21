@@ -20,11 +20,6 @@ jobs:
     steps:
     
     - uses: actions/checkout@v3
-
-    - name: Install Tailscale
-      uses: awalsh128/cache-apt-pkgs-action@latest
-      with:
-        packages: tailscale
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -36,10 +31,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
    
-    - name: Enforce Style with Black
-      run: |
-        python -m black .
-   
     - name: Lint
       run: |
         python -m pylama
@@ -48,6 +39,9 @@ jobs:
       uses: tailscale/github-action@v1
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+    - name: Run celery worker in background
+      run: celery -A arbitre worker -l info -E 
         
     - name: Run Tests
       run: |
