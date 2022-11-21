@@ -52,7 +52,11 @@ jobs:
 
     - name: Run celery worker in background
       run: |
-        celery -A arbitre worker -l info -E 
+        celery -A arbitre worker -l info -E &
+
+    - name: Wait 30s for celery to be ready
+      run: sleep 30s
+      shell: bash
         
     - name: Run Tests
       run: |
