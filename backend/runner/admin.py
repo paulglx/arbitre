@@ -16,7 +16,7 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 
 class CourseAdmin(admin.ModelAdmin):
-    fields = ["owner", "title", "description", "students"]
+    fields = ["owners", "title", "description", "students"]
     filter_horizontal = [
         "students",
     ]

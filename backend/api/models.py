@@ -7,11 +7,11 @@ class Course(models.Model):
     A course, that includes sessions, owned by a teacher
     """
 
-    owner = models.ForeignKey(
+    owners = models.ManyToManyField(
         User,
-        on_delete=models.CASCADE,
-        related_name="%(class)s_courses_owner",
+        related_name="%(class)s_courses_owners",
     )
+
     title = models.CharField(max_length=255)
     description = models.TextField()
     students = models.ManyToManyField(
