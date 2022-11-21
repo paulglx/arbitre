@@ -67,9 +67,7 @@ class Student_CourseSessionExerciseTest(TestCase):
         course.students.add(student)
         course.save()
 
-        inaccessible_course = Course.objects.create(
-            title="inaccessible_course"
-        )
+        inaccessible_course = Course.objects.create(title="inaccessible_course")
         inaccessible_course.owners.add(teacher)
         inaccessible_course.save()
 
@@ -122,9 +120,7 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         course.students.add(student)
         course.save()
 
-        inaccessible_course = Course.objects.create(
-            title="inaccessible_course"
-        )
+        inaccessible_course = Course.objects.create(title="inaccessible_course")
         inaccessible_course.owners.add(other_teacher)
         inaccessible_course.save()
 
