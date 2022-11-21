@@ -62,13 +62,15 @@ class Student_CourseSessionExerciseTest(TestCase):
         )
         student.save()
 
-        course = Course.objects.create(title="testcourse", owners=[teacher])
+        course = Course.objects.create(title="testcourse")
+        course.owners.add(teacher)
         course.students.add(student)
         course.save()
 
         inaccessible_course = Course.objects.create(
-            title="inaccessible_course", owners=[teacher]
+            title="inaccessible_course"
         )
+        inaccessible_course.owners.add(teacher)
         inaccessible_course.save()
 
         session = Session.objects.create(title="testsession", course=course)
@@ -115,13 +117,15 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         )
         student.save()
 
-        course = Course.objects.create(title="testcourse", owners=[teacher])
+        course = Course.objects.create(title="testcourse")
+        course.owners.add(teacher)
         course.students.add(student)
         course.save()
 
         inaccessible_course = Course.objects.create(
-            title="inaccessible_course", owners=[other_teacher]
+            title="inaccessible_course"
         )
+        inaccessible_course.owners.add(other_teacher)
         inaccessible_course.save()
 
         session = Session.objects.create(title="testsession", course=course)
@@ -142,7 +146,8 @@ class Teacher_CourseSessionExerciseTest(TestCase):
 
     def test_teacher_can_create_new_course(self):
         teacher = User.objects.get(username="teacher")
-        new_course = Course.objects.create(title="new_course", owners=[teacher])
+        new_course = Course.objects.create(title="new_course")
+        new_course.owners.add(teacher)
         new_course.save()
         self.assertTrue(teacher in new_course.owners.all())
 
