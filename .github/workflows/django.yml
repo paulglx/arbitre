@@ -42,6 +42,13 @@ jobs:
 
     - name: Start RabbitMQ
       uses: namoshek/rabbitmq-github-action@v1.1.0
+      with:
+        rabbitmq_version: 3.8.9
+        rabbitmq_plugins: rabbitmq_management
+        rabbitmq_port: 5672
+        rabbitmq_management_port: 15672
+        rabbitmq_user: guest
+        rabbitmq_password: guest
 
     - name: Run celery worker in background
       run: |
