@@ -14,13 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from api.auth.views import LogoutView, UserGroup, UserViewSet
+from api.auth.views import LogoutView, UserGroup, UserViewSet, TeachersViewSet
 from api.views import (
     CourseViewSet,
     ExerciseViewSet,
     SessionViewSet,
     AllResultsViewSet,
     ResultsOfSessionViewSet,
+    CourseOwnerViewSet,
 )
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -43,13 +44,16 @@ schema_view = get_schema_view(
 
 # Auth router
 auth_router = routers.DefaultRouter()
-auth_router.register(r"users", UserViewSet)
+auth_router.register(r"users", UserViewSet, basename="users")
+auth_router.register(r"teachers", TeachersViewSet, basename="teachers")
 
 # Models API router
 router = routers.DefaultRouter()
 router.register(r"exercise", ExerciseViewSet, basename="exercise")
 router.register(r"session", SessionViewSet, basename="session")
 router.register(r"course", CourseViewSet, basename="course")
+router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
+
 router.register(r"results", ResultsOfSessionViewSet, basename="results")
 router.register(r"all_results", AllResultsViewSet, basename="all_results")
 

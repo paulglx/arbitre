@@ -3,7 +3,7 @@
         "model": "api.course",
         "pk": 1,
         "fields": {
-            "owner": 1,
+            "owners": [1],
             "title": "teacher's first course",
             "description": "This is teacher's first course.",
             "students": [
@@ -15,7 +15,7 @@
         "model": "api.course",
         "pk": 2,
         "fields": {
-            "owner": 1,
+            "owners": [1],
             "title": "teacher's second course",
             "description": "This is teacher's second course",
             "students": [
