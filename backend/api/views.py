@@ -58,6 +58,10 @@ class CourseOwnerViewSet(viewsets.ViewSet):
 
     def create(self, request):
         course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+            )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.tutors.all():
             return Response(
@@ -75,6 +79,10 @@ class CourseOwnerViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk=None):
         course = Course.objects.get(pk=pk)
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+            )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.owners.all():
             course.owners.remove(user)
@@ -108,6 +116,10 @@ class CourseTutorViewSet(viewsets.ViewSet):
 
     def create(self, request):
         course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+            )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.owners.all():
             return Response(
@@ -127,6 +139,10 @@ class CourseTutorViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk=None):
         course = Course.objects.get(pk=pk)
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+            )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.tutors.all():
             course.tutors.remove(user)
