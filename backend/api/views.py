@@ -8,7 +8,7 @@ from .serializers import (
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpRequest
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from runner.models import Submission
 from runner.serializers import SubmissionSerializer
@@ -24,11 +24,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    # Allow students or owners to get their courses
+    # Allow students, tutors or owners to get their courses
     def get_queryset(self):
         user = self.request.user
         return Course.objects.filter(
-            Q(students__in=[user]) | Q(owners__in=[user])
+            Q(students__in=[user]) | Q(tutors__in=[user]) | Q(owners__in=[user])
         ).distinct()
 
     # Add current user to owners
@@ -39,6 +39,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 class CourseOwnerViewSet(viewsets.ViewSet):
     """
     List (GET), add (POST) or remove (DELETE) teachers from a course
+    - course_id: number
+    - user_id: number
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -57,16 +59,83 @@ class CourseOwnerViewSet(viewsets.ViewSet):
     def create(self, request):
         course = Course.objects.get(pk=request.data.get("course_id"))
         user = User.objects.get(id=request.data.get("user_id"))
-        course.owners.add(user)
-        course.save()
-        return Response({"status": "OK"})
+        if user in course.tutors.all():
+            return Response(
+                {"message": "User is already a tutor of this course"},
+                status=status.HTTP_409_CONFLICT,
+            )
+        if user not in course.owners.all():
+            course.owners.add(user)
+            course.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                {"message": "User is already an owner"}, status=status.HTTP_200_OK
+            )
 
     def destroy(self, request, pk=None):
         course = Course.objects.get(pk=pk)
         user = User.objects.get(id=request.data.get("user_id"))
-        course.owners.remove(user)
-        course.save()
-        return Response({"status": "OK"})
+        if user in course.owners.all():
+            course.owners.remove(user)
+            course.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": "User is not an owner"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class CourseTutorViewSet(viewsets.ViewSet):
+    """
+    List (GET), add (POST) or remove (DELETE) tutors from a course.
+    - course_id: number
+    - user_id: number
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+        course = Course.objects.get(pk=request.query_params.get("course_id"))
+        return Response(
+            {
+                "tutors": [
+                    {"id": user.id, "username": user.username}
+                    for user in course.tutors.all()
+                ]
+            }
+        )
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        user = User.objects.get(id=request.data.get("user_id"))
+        if user in course.owners.all():
+            return Response(
+                {
+                    "message": "Unchanged: User is an owner of this course",
+                },
+                status=status.HTTP_409_CONFLICT,
+            )
+        if user not in course.tutors.all():
+            course.tutors.add(user)
+            course.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": "User is already a tutor"}, status=status.HTTP_200_OK
+            )
+
+    def destroy(self, request, pk=None):
+        course = Course.objects.get(pk=pk)
+        user = User.objects.get(id=request.data.get("user_id"))
+        if user in course.tutors.all():
+            course.tutors.remove(user)
+            course.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": "User is not a tutor"}, status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class SessionViewSet(viewsets.ModelViewSet):
