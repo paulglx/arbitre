@@ -77,7 +77,7 @@ const Results = () => {
             course.sessions.map((session:any, i:number) => (<>
                 <Accordion.Item eventKey={String(i)} key={i}>
                     <Accordion.Header>{session.session_title}</Accordion.Header>
-                    <Accordion.Body>
+                    <Accordion.Body className='overflow-scroll p-0 m-0'>
                         
                         <Table striped bordered hover className='p-0 m-0'>
                             {tableHeadContent(session)}
