@@ -5,6 +5,7 @@ from api.auth.serializers import MinimalUserSerializer
 
 class CourseSerializer(serializers.ModelSerializer):
     owners = MinimalUserSerializer(many=True, read_only=True)
+    tutors = MinimalUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course

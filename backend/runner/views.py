@@ -15,7 +15,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         submission, created = Submission.objects.update_or_create(
             exercise_id=self.request.data["exercise"],
-            owners=[self.request.user],
+            owner=self.request.user,
             defaults={
                 "file": self.request.data["file"],
                 "status": "PENDING",
@@ -29,7 +29,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         exercise_id = self.request.query_params.get("exercise_id", None)
         user = self.request.user
         if exercise_id:
-            queryset = queryset.filter(exercise=exercise_id, owners__in=[user])
+            queryset = queryset.filter(exercise=exercise_id, owner=user)
         return queryset
 
 
