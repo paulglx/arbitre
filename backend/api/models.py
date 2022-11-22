@@ -11,7 +11,10 @@ class Course(models.Model):
         User,
         related_name="%(class)s_courses_owners",
     )
-
+    tutors = models.ManyToManyField(
+        User,
+        related_name="%(class)s_courses_tutors",
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
     students = models.ManyToManyField(
