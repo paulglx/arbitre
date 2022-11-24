@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
+import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation } from "../features/courses/courseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,7 +8,6 @@ import Header from "./Header";
 import Markdown from "./Markdown";
 import TeacherList from "./TeacherList";
 import autosize from "autosize";
-import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
 import { useSelector } from "react-redux";
 
@@ -22,6 +22,7 @@ const Course = () => {
     const { id }:any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
+    const username = useSelector(selectCurrentUser);
 
     useEffect(() => {
 
@@ -47,8 +48,10 @@ const Course = () => {
         isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
         isError: courseIsError,
-        error: courseError
     } = useGetCourseQuery({id});
+
+    const ownersUsernames = course?.owners.map((owner:any) => owner.username);
+    const isOwner = ownersUsernames?.includes(username);
 
     useEffect(() => {
         setTitle(course?.title);
@@ -60,7 +63,6 @@ const Course = () => {
         isLoading: sessionsIsLoading,
         isSuccess: sessionsIsSuccess,
         isError: sessionsIsError,
-        error: sessionsError
     } = useGetSessionsOfCourseQuery({course_id:id})
 
     const handleUpdate = async () => {
@@ -97,18 +99,18 @@ const Course = () => {
 
     // Show title or edit title
     const titleContent = () => {
-        if (!isTeacher || !editTitle) {
+        if (!isOwner || !editTitle) {
             return (
                 <h1
-                    className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
+                    className={"h2 fw-bold p-2" + (isOwner ? " teacher editable-title" : "")}
                     id="title-editable"
-                    onFocus={() => isTeacher ? setEditTitle(true) : null}
+                    onFocus={() => isOwner ? setEditTitle(true) : null}
                     tabIndex={0} //allows focus
                 >
                     {title}
                 </h1>
             );
-        } else if (isTeacher && editTitle) {
+        } else if (isOwner && editTitle) {
             return (
                 <input
                     autoComplete="false"
@@ -134,10 +136,10 @@ const Course = () => {
     // Show description or edit description
     // TODO implement ctrl+z
     const descriptionContent = () => {
-        if (!isTeacher || !editDescription) {
+        if (!isOwner || !editDescription) {
             return (
                 <blockquote
-                    className={"p-3 pb-1 bg-light rounded description" + (isTeacher ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded description" + (isOwner ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >
@@ -146,7 +148,7 @@ const Course = () => {
                     />
                 </blockquote>
             )
-        } else if (isTeacher && editDescription) {
+        } else if (isOwner && editDescription) {
             return (
                 <Form>
                     <Form.Group className="mb-3" controlId="description">
@@ -175,8 +177,8 @@ const Course = () => {
     }
 
     // Delete button (teacher only)
-    const teacherActionsContent = () => {
-        return isTeacher ? (
+    const ownerActionsContent = () => {
+        return isOwner ? (
             <div className="d-flex justify-content-end">
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger" id="delete-button">Delete</Button>
@@ -186,8 +188,8 @@ const Course = () => {
     }
 
     //Create session button (teacher only)
-    const sessionListTeacherContent = () => {
-        return isTeacher ? (
+    const sessionListOwnerContent = () => {
+        return isOwner ? (
             <ListGroup.Item id="create-session" action href={"/session/create?course_id="+id}>
                         + Create Session
             </ListGroup.Item>
@@ -195,8 +197,8 @@ const Course = () => {
     }
 
     //Create session button, on "no sessions" block (teacher only)
-    const sessionListTeacherContentNoSessions = () => {
-        return isTeacher ? (
+    const sessionListOwnerContentNoSessions = () => {
+        return isOwner ? (
             <Button id="create-session-no-sessions" variant="light mb-3 border" href={"/session/create?course_id="+id}>
                 + Create session
             </Button>
@@ -216,7 +218,7 @@ const Course = () => {
                     <ListGroup.Item id="no-sessions-warning" className="text-muted text-center dashed-border">
                         <br />
                         <p>This course doesn't have any sessions.</p>
-                        {sessionListTeacherContentNoSessions()}
+                        {sessionListOwnerContentNoSessions()}
                     </ListGroup.Item>
                 </ListGroup>
             )
@@ -234,7 +236,7 @@ const Course = () => {
                         {session.title}
                     </ListGroup.Item>
                 })}
-                {sessionListTeacherContent()}
+                {sessionListOwnerContent()}
                 </ListGroup>
             )
         }
@@ -272,7 +274,7 @@ const Course = () => {
                 <div className="d-flex align-items-center justify-content-between">
                     {titleContent()}
                     <div className="p-0 mb-2">
-                        {teacherActionsContent()}
+                        {ownerActionsContent()}
                     </div>
                 </div>
 
@@ -288,7 +290,7 @@ const Course = () => {
                         </Tab>
 
                         <Tab eventKey="teachers" title="Teachers">
-                            <TeacherList courseId={id} />
+                            <TeacherList courseId={id} isOwner={isOwner} />
                         </Tab>
 
                     </Tabs>

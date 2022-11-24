@@ -60,7 +60,8 @@ class CourseOwnerViewSet(viewsets.ViewSet):
         course = Course.objects.get(pk=request.data.get("course_id"))
         if request.user not in course.owners.all():
             return Response(
-                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
             )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.tutors.all():
@@ -81,7 +82,8 @@ class CourseOwnerViewSet(viewsets.ViewSet):
         course = Course.objects.get(pk=pk)
         if request.user not in course.owners.all():
             return Response(
-                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
             )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.owners.all():
@@ -118,7 +120,8 @@ class CourseTutorViewSet(viewsets.ViewSet):
         course = Course.objects.get(pk=request.data.get("course_id"))
         if request.user not in course.owners.all():
             return Response(
-                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
             )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.owners.all():
@@ -141,7 +144,8 @@ class CourseTutorViewSet(viewsets.ViewSet):
         course = Course.objects.get(pk=pk)
         if request.user not in course.owners.all():
             return Response(
-                {"message": "Forbidden: User is not an owner"}, status=status.HTTP_403_FORBIDDEN
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
             )
         user = User.objects.get(id=request.data.get("user_id"))
         if user in course.tutors.all():
@@ -238,7 +242,9 @@ class AllResultsViewSet(viewsets.ViewSet):
 
     def list(self, request):
         user = self.request.user
-        courses = Course.objects.filter(Q(owners__in=[user]) | Q(tutors__in=[user])).distinct()
+        courses = Course.objects.filter(
+            Q(owners__in=[user]) | Q(tutors__in=[user])
+        ).distinct()
 
         courses_to_send = []
 

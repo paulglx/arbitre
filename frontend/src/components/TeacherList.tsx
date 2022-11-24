@@ -13,14 +13,15 @@ const TeacherList = (props:any) => {
     const [addOwner] = useAddOwnerMutation()
     const [addTutor] = useAddTutorMutation()
     const [owners, setOwners] = useState<any[]>([])
+    const [ownerToAdd, setOwnerToAdd] = useState<any>("")
     const [removeOwner] = useRemoveOwnerMutation()
     const [removeTutor] = useRemoveTutorMutation()
     const [tutors, setTutors] = useState<any[]>([])
-    const [ownerToAdd, setOwnerToAdd] = useState<any>("")
     const [tutorToAdd, setTutorToAdd] = useState<any>("")
     const course_id:number = props?.courseId
     const current_username = useSelector(selectCurrentUser)
-
+    const isOwner:boolean = props?.isOwner
+    
     const {
         data: ownersData,
         isSuccess: isOwnersSuccess,
@@ -113,42 +114,51 @@ const TeacherList = (props:any) => {
                         &nbsp;
                         {owner.username}
 
-                        {owner.username !== current_username ? (
-                            <DashCircleFill className="text-secondary" role="button" onClick={() => handleDeleteOwner(owner.id)}/>
-                        ) : (
-                            <OverlayTrigger placement='right' overlay={
-                                <Tooltip id="tooltip-disabled">
-                                    You cannot remove yourself.
-                                </Tooltip>
-                            }>
-                                <DashCircle className='text-muted'/>
-                            </OverlayTrigger>  
+                        {isOwner ?
+                            (owner.username !== current_username ? (
+                                <DashCircleFill className="text-secondary" role="button" onClick={() => handleDeleteOwner(owner.id)}/>
+                            ) : (
+                                <OverlayTrigger placement='right' overlay={
+                                    <Tooltip id="tooltip-disabled">
+                                        You cannot remove yourself.
+                                    </Tooltip>
+                                }>
+                                    <DashCircle className='text-muted'/>
+                                </OverlayTrigger>  
+                            )) : (
+                            <></>
                         )}
 
                     </ListGroup.Item>
                 ))}
 
-                <ListGroup.Item className="d-flex align-items-center justify-content-between">
+                {isOwner ? (
 
-                    <Form onSubmit={handleAddOwner}>
-                        <Form.Control
-                            type="text"
-                            placeholder="Add teacher"
-                            list="teacherOptions"
-                            value={ownerToAdd}
-                            onChange={(e:any) => setOwnerToAdd(e.target.value)}
-                            onSubmit={handleAddOwner}
-                        />
-                        <datalist id="teacherOptions">
-                            {addableUsers && addableUsers.map((user:any) => (
-                                <option key={user.id} value={user.username}/>
-                            ))}
-                        </datalist>
-                    </Form>
+                    <ListGroup.Item className="d-flex align-items-center justify-content-between">
 
-                    <PlusCircleFill role="button" className={ownerToAdd !== "" ? "text-primary" : "text-secondary"} onClick={handleAddOwner} type="submit" />
+                        <Form onSubmit={handleAddOwner}>
+                            <Form.Control
+                                type="text"
+                                placeholder="Add teacher"
+                                list="teacherOptions"
+                                value={ownerToAdd}
+                                onChange={(e:any) => setOwnerToAdd(e.target.value)}
+                                onSubmit={handleAddOwner}
+                            />
+                            <datalist id="teacherOptions">
+                                {addableUsers && addableUsers.map((user:any) => (
+                                    <option key={user.id} value={user.username}/>
+                                ))}
+                            </datalist>
+                        </Form>
 
-                </ListGroup.Item>
+                        <PlusCircleFill role="button" className={ownerToAdd !== "" ? "text-primary" : "text-secondary"} onClick={handleAddOwner} type="submit" />
+
+                    </ListGroup.Item>
+
+                ) : (
+                    <></>
+                )}
 
             </ListGroup>
         </div>
@@ -166,32 +176,40 @@ const TeacherList = (props:any) => {
                         &nbsp;
                         {tutor.username}
 
-                        <DashCircleFill className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)}/>
+                        {isOwner ? (
+                            <DashCircleFill className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)}/>
+                        ) : (
+                            <></>
+                        )}
 
                     </ListGroup.Item>
                 ))}
 
-                <ListGroup.Item className="d-flex align-items-center justify-content-between">
+                {isOwner ? (
+                    <ListGroup.Item className="d-flex align-items-center justify-content-between">
 
-                    <Form onSubmit={handleAddTutor}>
-                        <Form.Control
-                            type="text"
-                            placeholder="Add teacher"
-                            list="teacherOptions"
-                            value={tutorToAdd}
-                            onChange={(e:any) => setTutorToAdd(e.target.value)}
-                            onSubmit={handleAddTutor}
-                        />
-                        <datalist id="teacherOptions">
-                            {addableUsers && addableUsers.map((user:any) => (
-                                <option key={user.id} value={user.username}/>
-                            ))}
-                        </datalist>
-                    </Form>
+                        <Form onSubmit={handleAddTutor}>
+                            <Form.Control
+                                type="text"
+                                placeholder="Add teacher"
+                                list="teacherOptions"
+                                value={tutorToAdd}
+                                onChange={(e:any) => setTutorToAdd(e.target.value)}
+                                onSubmit={handleAddTutor}
+                            />
+                            <datalist id="teacherOptions">
+                                {addableUsers && addableUsers.map((user:any) => (
+                                    <option key={user.id} value={user.username}/>
+                                ))}
+                            </datalist>
+                        </Form>
 
-                    <PlusCircleFill role="button" className={tutorToAdd !== "" ? "text-primary" : "text-secondary"} onClick={handleAddTutor} type="submit" />
+                        <PlusCircleFill role="button" className={tutorToAdd !== "" ? "text-primary" : "text-secondary"} onClick={handleAddTutor} type="submit" />
 
-                </ListGroup.Item>
+                    </ListGroup.Item>
+                ) : (
+                    <></>
+                )}
 
             </ListGroup>
         </div>

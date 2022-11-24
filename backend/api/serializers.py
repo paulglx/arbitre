@@ -13,9 +13,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class MinimalCourseSerializer(serializers.ModelSerializer):
+    owners = MinimalUserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Course
-        fields = ["id", "title"]
+        fields = ["id", "title", "owners"]
 
 
 class SessionSerializer(serializers.ModelSerializer):

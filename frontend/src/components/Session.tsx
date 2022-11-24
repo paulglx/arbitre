@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../features/courses/sessionApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,21 +7,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import Markdown from "./Markdown";
 import autosize from "autosize";
-import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { useSelector } from "react-redux";
 
 const Session = () => {
 
-    const { id }:any = useParams();
-    const isTeacher = useSelector(selectIsTeacher);
-    const [updateSession] = useUpdateSessionMutation();
     const [deleteSession] = useDeleteSessionMutation();
-    const navigate = useNavigate();
-    const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [editTitle, setEditTitle] = useState(false);
     const [editDescription, setEditDescription] = useState(false);
+    const [editTitle, setEditTitle] = useState(false);
+    const [title, setTitle] = useState("");
+    const [updateSession] = useUpdateSessionMutation();
+    const {id}:any = useParams();
+    const navigate = useNavigate();
+    const username = useSelector(selectCurrentUser);
 
     useEffect(() => {
 
@@ -46,8 +46,10 @@ const Session = () => {
         isLoading: sessionIsLoading,
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
-        error: sessionError
     } = useGetSessionQuery({id});
+
+    const ownerUsernames = session?.course.owners.map((o:any) => o.username);
+    const isOwner = ownerUsernames?.includes(username);
 
     useEffect(() => {
         setTitle(session?.title);
@@ -59,7 +61,6 @@ const Session = () => {
         isLoading: exercisesIsLoading,
         isSuccess: exercisesIsSuccess,
         isError: exercisesIsError,
-        error: exercisesError
     } = useGetExercisesOfSessionQuery({session_id:id});
 
     const course = session?.course
@@ -100,18 +101,18 @@ const Session = () => {
 
     // Show title or edit title
     const titleContent = () => {
-        if (!isTeacher || !editTitle) {
+        if (!isOwner || !editTitle) {
             return (
                 <h1
-                    className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
+                    className={"h2 fw-bold p-2" + (isOwner ? " teacher editable-title" : "")}
                     id="title-editable"
                     tabIndex={0} //allows focus
-                    onFocus={() => isTeacher ? setEditTitle(true) : null}
+                    onFocus={() => isOwner ? setEditTitle(true) : null}
                 >
                     {title}
                 </h1>
             );
-        } else if (isTeacher && editTitle) {
+        } else if (isOwner && editTitle) {
             return (
                 <input
                     autoFocus
@@ -136,16 +137,16 @@ const Session = () => {
         // Show description or edit description
     // TODO implement ctrl+z
     const descriptionContent = () => {
-        if (!isTeacher || !editDescription) {
+        if (!isOwner || !editDescription) {
             return (
                 <blockquote
                     tabIndex={0} //allows focus
-                    className={"p-3 pb-1 bg-light rounded description" + (isTeacher ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded description" + (isOwner ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}>
                     <Markdown children={description} />
                 </blockquote>
             )
-        } else if (isTeacher && editDescription) {
+        } else if (isOwner && editDescription) {
             return (
                 <Form>
                     <Form.Group className="mb-3" controlId="description">
@@ -174,7 +175,7 @@ const Session = () => {
     }
 
     const teacherActionsContent = () => {
-        return isTeacher ? (
+        return isOwner ? (
             <div className="d-flex justify-content-end">
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger">Delete</Button>
@@ -184,7 +185,7 @@ const Session = () => {
     }
 
     const exerciseListTeacherContent = () => {
-        return isTeacher ? (
+        return isOwner ? (
             <ListGroup.Item action href={"/exercise/create?session_id="+id}>
                         + Create Exercise
             </ListGroup.Item>
@@ -192,7 +193,7 @@ const Session = () => {
     }
 
     const exerciseListTeacherContentNoExercises = () => {
-        return isTeacher ? (
+        return isOwner ? (
             <Button variant="light mb-3 border" href={"/exercise/create?session_id="+id}>
                 + Create exercise
             </Button>

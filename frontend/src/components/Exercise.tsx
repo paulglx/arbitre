@@ -22,38 +22,35 @@ const Exercise = () => {
     const [description, setDescription] = useState("");
     const [editDescription, setEditDescription] = useState(false);
     const [editTest, setEditTest] = useState(false);
-    const [hoveredTestId, setHoveredTestId] = useState(-1);
     const [editTestId, setEditTestId] = useState(null);
     const [editTitle, setEditTitle] = useState(false);
+    const [hoveredTestId, setHoveredTestId] = useState(-1);
     const [tests, setTests] = useState([] as any[]);
     const [title, setTitle] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
     const [updateTest] = useUpdateTestMutation();
     const { exercise_id } : any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
-    const urlTab = useParams()?.tab;
+    const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
+    const urlTab = useParams()?.tab;
+    const username = useSelector(selectCurrentUser);
 
     const {
         data: exercise,
         isLoading: exerciseIsLoading,
         isSuccess: exerciseIsSuccess,
         isError: exerciseIsError,
-        error: exerciseError,
     } = useGetExerciseQuery({id:exercise_id});
-
-    const {
-        data: testsResponse,
-        isLoading: testsIsLoading,
-        isSuccess: testsIsSuccess,
-        isError: testsIsError,
-        error: testsError,
-    } = useGetTestsOfExerciseQuery({exercise_id});
 
     const session = exercise?.session
     const course = session?.course
-    const user = useSelector(selectCurrentUser);
-    const isTeacher = useSelector(selectIsTeacher);
+    const ownersUsernames = exercise?.session.course.owners.map((owner:any) => owner.username);
+    const isOwner = ownersUsernames?.includes(username);
+
+    const {
+        data: testsResponse,
+    } = useGetTestsOfExerciseQuery({exercise_id});
 
     const toggle = (tab:any) => {
         if (activeTab !== tab) navigate(`/exercise/${exercise_id}/${tab}` , {replace: true});
@@ -176,18 +173,18 @@ const Exercise = () => {
 
     // Show title or edit title
     const titleContent = () => {
-        if (!isTeacher || !editTitle) {
+        if (!isOwner || !editTitle) {
             return (
                 <h1
-                    className={"h2 fw-bold p-2" + (isTeacher ? " teacher editable-title" : "")}
+                    className={"h2 fw-bold p-2" + (isOwner ? " teacher editable-title" : "")}
                     id="title-editable"
-                    onFocus={() => isTeacher ? setEditTitle(true) : null}
+                    onFocus={() => isOwner ? setEditTitle(true) : null}
                     tabIndex={0} //allows focus
                 >
                     {title}
                 </h1>
             );
-        } else if (isTeacher && editTitle) {
+        } else if (isOwner && editTitle) {
             return (
                 <input
                     autoComplete="false"
@@ -213,17 +210,17 @@ const Exercise = () => {
     // Show description or edit description
     // TODO implement ctrl+z
     const descriptionContent = () => {
-        if (!isTeacher || !editDescription) {
+        if (!isOwner || !editDescription) {
             return (
                 <blockquote
-                    className={"p-3 pb-1 bg-light rounded description" + (isTeacher ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded description" + (isOwner ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >
                     <Markdown children={description} />
                 </blockquote>
             )
-        } else if (isTeacher && editDescription) {
+        } else if (isOwner && editDescription) {
             return (
                 <Form>
                     <Form.Group className="mb-3" controlId="description">
@@ -253,7 +250,7 @@ const Exercise = () => {
 
     // Delete button (teacher only)
     const teacherActionsContent = () => {
-        return isTeacher ? (
+        return isOwner ? (
             <div className="d-flex justify-content-end">
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger" id="delete-button">Delete</Button>
@@ -263,21 +260,20 @@ const Exercise = () => {
     }
 
     const testsContent = () => {
-        if (!isTeacher) {
-            return <></>
-        }
         return (exerciseIsSuccess && tests) ? (
             <>
 
-            <h6 className="text-muted fw-light">Click to edit</h6>
+            <h6 className="text-muted fw-light">
+                {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
+            </h6>
 
             {tests.map((test:any) => (
 
-                <div className={"p-1 mb-1" + (isTeacher ? " editable-test" : "") + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
-                    onFocus={() => {setEditTestId(test?.id); setEditTest(true)}}
-                    onBlur={(e) => {handleTestBlur(e)}}
-                    onMouseEnter={() => setHoveredTestId(test?.id)}
-                    onMouseLeave={() => setHoveredTestId(-1)}
+                <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
+                    onFocus={() => {isOwner && setEditTestId(test?.id); setEditTest(true)}}
+                    onBlur={(e) => {isOwner && handleTestBlur(e)}}
+                    onMouseEnter={() => isOwner && setHoveredTestId(test?.id)}
+                    onMouseLeave={() => isOwner && setHoveredTestId(-1)}
                 >
 
                     <Row className="g-2">
@@ -290,7 +286,7 @@ const Exercise = () => {
                                 aria-label="Test name"
                                 value={test?.name}
                                 autoComplete="off"
-                                onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, name: e.target.value} : t))}}
+                                onChange={(e) => {isOwner && setTests(tests.map((t:any) => t.id === test?.id ? {...t, name: e.target.value} : t))}}
                                 {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
                             />
 
@@ -309,7 +305,7 @@ const Exercise = () => {
                                 aria-label="Input"
                                 value={test?.stdin}
                                 autoComplete="off"
-                                onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdin: e.target.value} : t))}}
+                                onChange={(e) => {isOwner && setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdin: e.target.value} : t))}}
                                 {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
                             />
 
@@ -340,7 +336,7 @@ const Exercise = () => {
                         {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
                             <Button
                                 className="btn-link delete-button btn-light text-danger text-decoration-none float-end"
-                                onClick={(e) => {handeDeleteTest(editTestId)}}
+                                onClick={(e) => {isOwner && handeDeleteTest(editTestId)}}
                             >
                                 Delete
                             </Button>
@@ -350,16 +346,18 @@ const Exercise = () => {
                 </div>
             ))}
 
-            <Button
-                className="btn-link btn-light"
-                onClick={(e) => {
-                    //generates a random id to differentiate between new tests. On creating the test, this id will be ignored by the API.
-                    const randomId = Array(16).join().split(',').map(function() { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
-                    setTests([...tests, {id: randomId, name: "New Test", stdin: "", stdout: "", new:true}])
-                }}
-            >
-                + ADD TEST
-            </Button>
+            {isOwner ? (
+                <Button
+                    className="btn-link btn-light"
+                    onClick={(e) => {
+                        //generates a random id to differentiate between new tests. On creating the test, this id will be ignored by the API.
+                        const randomId = Array(16).join().split(',').map(function() { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
+                        setTests([...tests, {id: randomId, name: "New Test", stdin: "", stdout: "", new:true}])
+                    }}
+                >
+                    + ADD TEST
+                </Button>
+            ) : (<></>)}
 
         </>
         ) : (<></>)
@@ -372,7 +370,7 @@ const Exercise = () => {
                 <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>Submission file</Form.Label>
                     <Form.Control required type="file" name="file"/>
-                    <Form.Text className="text-muted">You are logged in as <u>{user}</u></Form.Text>
+                    <Form.Text className="text-muted">You are logged in as <u>{username}</u></Form.Text>
                 </Form.Group>
 
                 <Button variant="primary" type="submit">

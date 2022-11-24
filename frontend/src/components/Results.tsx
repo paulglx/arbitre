@@ -104,7 +104,7 @@ const Results = () => {
 
                 <h2>{course.course_title}</h2>
 
-                <Accordion key={course.course_id} defaultActiveKey="0">
+                <Accordion key={course.course_id}>
                     {courseResultsTable(course)}
                 </Accordion>
 
