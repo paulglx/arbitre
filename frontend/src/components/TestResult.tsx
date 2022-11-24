@@ -43,7 +43,7 @@ const TestResult = () => {
     const statusPillContent = (result:any) => {
         if (result.status === "running") {
             return (<>
-                <span className="badge bg-secondary rounded-pill">Running</span>
+                 <span className="spinner-border spinner-border-sm p-1 m-1" role="status" aria-hidden="true"></span>
             </>)
         }
         else if (result.status === "pending") {

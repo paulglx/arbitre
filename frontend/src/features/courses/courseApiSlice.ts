@@ -93,19 +93,28 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: {user_id:data.user_id} //Must include : course_id, user_id
             })
         }),
+        updateLanguage: builder.mutation({
+            query: (data:any) => ({
+                url: `/api/course/${data.course_id}/`,
+                method: 'PATCH',
+                credentials: 'include',
+                body: {language:data.language} //Must include : course_id, language
+            })
+        }),
     })
 })
 
 export const {
-    useGetCourseQuery,
-    useGetAllCoursesQuery,
-    useCreateCourseMutation,
-    useUpdateCourseMutation,
-    useDeleteCourseMutation,
-    useGetOwnersQuery,
     useAddOwnerMutation,
-    useRemoveOwnerMutation,
-    useGetTutorsQuery,
     useAddTutorMutation,
+    useUpdateLanguageMutation,
+    useCreateCourseMutation,
+    useDeleteCourseMutation,
+    useGetAllCoursesQuery,
+    useGetCourseQuery,
+    useGetOwnersQuery,
+    useGetTutorsQuery,
+    useRemoveOwnerMutation,
     useRemoveTutorMutation,
+    useUpdateCourseMutation,
 } = courseApiSlice;

@@ -1,6 +1,6 @@
-import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
+import { Breadcrumb, Button, Container, Dropdown, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
-import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation } from "../features/courses/courseApiSlice";
+import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../features/courses/courseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -17,12 +17,36 @@ const Course = () => {
     const [description, setDescription] = useState("");
     const [editDescription, setEditDescription] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
+    const [language, setLanguage] = useState("");
+    const [languageName, setLanguageName] = useState("");
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
+    const [updateLanguage] = useUpdateLanguageMutation();
     const { id }:any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
+    const languageChoices = [
+        ["ada", "Ada"],
+        ["c", "C"],
+        ["c#", "C#"],
+        ["c++", "C++"],
+        ["d", "D"],
+        ["go", "Go"],
+        ["haskell", "Haskell"],
+        ["java", "Java"],
+        ["javascript", "JavaScript"],
+        ["lua", "Lua"],
+        ["ocaml", "OCaml"],
+        ["pascal", "Pascal"],
+        ["perl", "Perl"],
+        ["php", "PHP"],
+        ["prolog", "Prolog"],
+        ["python", "Python"],
+        ["ruby", "Ruby"],
+        ["rust", "Rust"],
+        ["scheme", "Scheme"],
+    ]
 
     useEffect(() => {
 
@@ -56,6 +80,7 @@ const Course = () => {
     useEffect(() => {
         setTitle(course?.title);
         setDescription(course?.description);
+        setLanguage(course?.language);
     }, [course, courseIsSuccess]);
 
     const {
@@ -85,6 +110,14 @@ const Course = () => {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    const handleLanguageChange = (lang:string) => {
+        setLanguage(lang);
+        updateLanguage({
+            course_id: course?.id,
+            language: lang
+        });
     }
 
     const deletePopover = (
@@ -180,6 +213,26 @@ const Course = () => {
     const ownerActionsContent = () => {
         return isOwner ? (
             <div className="d-flex justify-content-end">
+                <Dropdown align="end">
+                    <Dropdown.Toggle id="language-dropdown" className="text-capitalize" variant="outline-dark">
+                        {language}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        {languageChoices.map((language:any) => (
+                            <Dropdown.Item
+                                key={language[0]}
+                                eventKey={language[0]}
+                                onClick={() => handleLanguageChange(language[0])}
+                            >
+                                {language[1]}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                &nbsp;
+
                 <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
                     <Button variant="light border border-danger text-danger" id="delete-button">Delete</Button>
                 </OverlayTrigger>
