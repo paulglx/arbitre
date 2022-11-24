@@ -5,16 +5,19 @@ from api.auth.serializers import MinimalUserSerializer
 
 class CourseSerializer(serializers.ModelSerializer):
     owners = MinimalUserSerializer(many=True, read_only=True)
+    tutors = MinimalUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = ["id", "owners", "title", "description", "students"]
+        fields = ["id", "owners", "tutors", "title", "description", "students"]
 
 
 class MinimalCourseSerializer(serializers.ModelSerializer):
+    owners = MinimalUserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Course
-        fields = ["id", "title"]
+        fields = ["id", "title", "owners"]
 
 
 class SessionSerializer(serializers.ModelSerializer):

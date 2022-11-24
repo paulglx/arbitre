@@ -71,6 +71,28 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: {user_id:data.user_id} //Must include : course_id, user_id
             })
         }),
+        getTutors: builder.query({
+            query: params => ({
+                url: `/api/course_tutor?course_id=${params.course_id}`,
+                method: 'GET',
+            })
+        }),
+        addTutor: builder.mutation({
+            query: (data:any) => ({
+                url: `/api/course_tutor/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : course_id, user_id
+            })
+        }),
+        removeTutor: builder.mutation({
+            query: (data:any) => ({
+                url: `/api/course_tutor/${data.course_id}/`,
+                method: 'DELETE',
+                credentials: 'include',
+                body: {user_id:data.user_id} //Must include : course_id, user_id
+            })
+        }),
     })
 })
 
@@ -83,4 +105,7 @@ export const {
     useGetOwnersQuery,
     useAddOwnerMutation,
     useRemoveOwnerMutation,
+    useGetTutorsQuery,
+    useAddTutorMutation,
+    useRemoveTutorMutation,
 } = courseApiSlice;

@@ -77,7 +77,7 @@ const Results = () => {
             course.sessions.map((session:any, i:number) => (<>
                 <Accordion.Item eventKey={String(i)} key={i}>
                     <Accordion.Header>{session.session_title}</Accordion.Header>
-                    <Accordion.Body>
+                    <Accordion.Body className='overflow-scroll p-0 m-0'>
                         
                         <Table striped bordered hover className='p-0 m-0'>
                             {tableHeadContent(session)}
@@ -104,7 +104,7 @@ const Results = () => {
 
                 <h2>{course.course_title}</h2>
 
-                <Accordion key={course.course_id} defaultActiveKey="0">
+                <Accordion key={course.course_id}>
                     {courseResultsTable(course)}
                 </Accordion>
 

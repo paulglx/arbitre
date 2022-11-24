@@ -22,6 +22,7 @@ from api.views import (
     AllResultsViewSet,
     ResultsOfSessionViewSet,
     CourseOwnerViewSet,
+    CourseTutorViewSet,
 )
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -53,6 +54,7 @@ router.register(r"exercise", ExerciseViewSet, basename="exercise")
 router.register(r"session", SessionViewSet, basename="session")
 router.register(r"course", CourseViewSet, basename="course")
 router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
+router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
 
 router.register(r"results", ResultsOfSessionViewSet, basename="results")
 router.register(r"all_results", AllResultsViewSet, basename="all_results")
