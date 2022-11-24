@@ -3,7 +3,6 @@ import { selectCurrentRefreshToken, selectCurrentUser, selectIsTeacher } from '.
 
 import React from 'react'
 import { logOut } from '../features/auth/authSlice'
-import store from '../app/store'
 import { useDispatch } from 'react-redux'
 import { useLogoutMutation } from '../features/auth/authApiSlice'
 import { useNavigate } from 'react-router-dom'

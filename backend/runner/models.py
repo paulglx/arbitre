@@ -1,4 +1,4 @@
-from api.models import Course, Exercise, Session
+from api.models import Exercise
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _

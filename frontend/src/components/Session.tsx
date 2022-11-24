@@ -1,5 +1,4 @@
 import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
-import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../features/courses/sessionApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import Markdown from "./Markdown";
 import autosize from "autosize";
+import { selectCurrentUser } from "../features/auth/authSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { useSelector } from "react-redux";
 

@@ -68,6 +68,6 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
             "time": 0,
             "memory": 0,
         }
-    
+
     print("data to send:" + str(after_data))
     requests.post(testresult_post_url, data=after_data)

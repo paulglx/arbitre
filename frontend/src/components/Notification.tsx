@@ -16,7 +16,7 @@ const Notification = () => {
             message:"This is a test notif",
             type: "light"
         }))
-    },[])
+    },[dispatch])
 
     return notifications ? (
         <ToastContainer className='p-3' position="bottom-end">

@@ -18,7 +18,6 @@ const Course = () => {
     const [editDescription, setEditDescription] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
     const [language, setLanguage] = useState("");
-    const [languageName, setLanguageName] = useState("");
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
     const [updateLanguage] = useUpdateLanguageMutation();

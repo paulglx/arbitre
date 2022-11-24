@@ -14,18 +14,12 @@ const TestResult = () => {
 
     const {
         data: testResults,
-        isLoading,
         isSuccess,
-        isError,
-        error
     } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id});
 
     const {
         data: submissionData,
-        isLoading: submissionIsLoading,
         isSuccess: submissionIsSuccess,
-        isError: submissionIsError,
-        error: submissionError
     } = useGetSubmissionByExerciseQuery({exercise_id:exercise_id});
 
     useEffect(() => {

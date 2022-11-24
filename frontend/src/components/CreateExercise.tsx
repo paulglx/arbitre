@@ -16,15 +16,12 @@ const CreateExercise = () => {
     const [createExercise] = useCreateExerciseMutation();
     const navigate = useNavigate()
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
     const session_id:number = Number(searchParams.get("session_id"))
 
     const {
         data: session,
-        isLoading: sessionIsLoading,
         isSuccess: sessionIsSuccess,
-        isError: sessionIsError,
-        error: sessionError
     } = useGetSessionQuery({id:session_id});
 
     useEffect(() => {
