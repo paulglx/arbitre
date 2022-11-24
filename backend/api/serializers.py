@@ -9,7 +9,15 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["id", "owners", "tutors", "title", "description", "students"]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "language",
+            "students",
+            "owners",
+            "tutors",
+        ]
 
 
 class MinimalCourseSerializer(serializers.ModelSerializer):

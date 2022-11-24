@@ -4,7 +4,7 @@ import requests
 
 
 @shared_task
-def run_camisole(submission_id, test_id, file_content) -> None:
+def run_camisole(submission_id, test_id, file_content, lang) -> None:
     """
     Runs one test on a submission, and stores the result in the database.
     """
@@ -24,7 +24,6 @@ def run_camisole(submission_id, test_id, file_content) -> None:
 
     # Configure the data used to run camisole
     camisole_server_url = "http://oasis:1234/run"
-    lang = "python"  # TODO add language choices:
     source = file_content
 
     response_object = requests.post(
@@ -36,27 +35,39 @@ def run_camisole(submission_id, test_id, file_content) -> None:
         },
     )
 
-    response = json.loads(response_object.text)["tests"][0]
+    response_text = json.loads(response_object.text)
 
-    # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
+    if "tests" in response_text:
+        response = response_text["tests"][0]
+        # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
-    status = ""
-    if response["exitcode"] == 0:
-        if response["stdout"] == test["stdout"]:
-            status = "success"
+        status = ""
+        if response["exitcode"] == 0:
+            if response["stdout"] == test["stdout"]:
+                status = "success"
+            else:
+                status = "failed"
         else:
-            status = "failed"
-    else:
-        status = "error"
+            status = "error"
 
-    # Save results to database using REST API
-    after_data = {
-        "submission_pk": submission_id,
-        "exercise_test_pk": test_id,
-        "stdout": response["stdout"] + "\n" + response["stderr"],
-        "status": status,
-        "time": response["meta"]["wall-time"],
-        "memory": response["meta"]["cg-mem"],
-    }
+        # Save results to database using REST API
+        after_data = {
+            "submission_pk": submission_id,
+            "exercise_test_pk": test_id,
+            "stdout": response["stdout"] + "\n" + response["stderr"],
+            "status": status,
+            "time": response["meta"]["wall-time"],
+            "memory": response["meta"]["cg-mem"],
+        }
+    else:
+        after_data = {
+            "submission_pk": submission_id,
+            "exercise_test_pk": test_id,
+            "stdout": "Error: no response from runner",
+            "status": "error",
+            "time": 0,
+            "memory": 0,
+        }
+    
     print("data to send:" + str(after_data))
     requests.post(testresult_post_url, data=after_data)
