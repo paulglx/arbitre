@@ -238,7 +238,7 @@ class AllResultsViewSet(viewsets.ViewSet):
 
     def list(self, request):
         user = self.request.user
-        courses = Course.objects.filter(Q(owners__in=[user])).distinct()
+        courses = Course.objects.filter(Q(owners__in=[user]) | Q(tutors__in=[user])).distinct()
 
         courses_to_send = []
 
