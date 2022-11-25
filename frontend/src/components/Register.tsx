@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useGetGroupsMutation, useLoginMutation, useRegisterMutation } from '../features/auth/authApiSlice'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Alert } from 'react-bootstrap'
 import React from 'react'
 import { setCredentials } from '../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
@@ -41,7 +40,7 @@ const Register = () => {
         
         try {
             //Register user
-            const registerResponse = await register({ username:user, password:pwd })
+            await register({ username:user, password:pwd })
             //Login user
             const userData = await login({ username:user, password:pwd }).unwrap()
             const groupsData = await getGroups({ username:user }).unwrap()

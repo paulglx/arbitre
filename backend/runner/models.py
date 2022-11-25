@@ -1,8 +1,8 @@
-from .tasks import run_camisole
 from api.models import Exercise
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from .tasks import run_camisole
 
 
 class Submission(models.Model):
@@ -34,6 +34,7 @@ class Submission(models.Model):
         # Save submission to database
         super(Submission, self).save(*args, **kwargs)
 
+        course = self.exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
 
         with self.file.open(mode="rb") as f:
@@ -42,7 +43,10 @@ class Submission(models.Model):
             for test in tests:
                 # Add camisole task to queue
                 run_camisole.delay(
-                    submission_id=self.id, test_id=test.id, file_content=file_content
+                    submission_id=self.id,
+                    test_id=test.id,
+                    file_content=file_content,
+                    lang=course.language,
                 )
 
     class Meta:

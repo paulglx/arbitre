@@ -16,7 +16,7 @@ const Public = () => {
         if (user) {
             navigate('/course');
         }
-    }, [user]);
+    }, [user, navigate]);
 
     const loginRegisterBlock = () => {
         return (

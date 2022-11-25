@@ -14,18 +14,12 @@ const TestResult = () => {
 
     const {
         data: testResults,
-        isLoading,
         isSuccess,
-        isError,
-        error
     } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id});
 
     const {
         data: submissionData,
-        isLoading: submissionIsLoading,
         isSuccess: submissionIsSuccess,
-        isError: submissionIsError,
-        error: submissionError
     } = useGetSubmissionByExerciseQuery({exercise_id:exercise_id});
 
     useEffect(() => {
@@ -43,7 +37,7 @@ const TestResult = () => {
     const statusPillContent = (result:any) => {
         if (result.status === "running") {
             return (<>
-                <span className="badge bg-secondary rounded-pill">Running</span>
+                 <span className="spinner-border spinner-border-sm p-1 m-1" role="status" aria-hidden="true"></span>
             </>)
         }
         else if (result.status === "pending") {

@@ -1,7 +1,7 @@
-import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import { Button, Container, Form } from 'react-bootstrap'
 import React, { useEffect } from 'react'
-import { useCreateCourseMutation, useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
 
+import { useCreateCourseMutation } from '../features/courses/courseApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 

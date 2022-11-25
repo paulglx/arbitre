@@ -19,10 +19,7 @@ const CreateSession = () => {
 
     const {
         data: course,
-        isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
-        isError: courseIsError,
-        error: courseError
     } = useGetCourseQuery({id:course_id});
 
     useEffect(() => {

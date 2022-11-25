@@ -52,7 +52,7 @@ class TestResultSerializer(serializers.ModelSerializer):
         super(TestResultSerializer, self).run_validators(value)
 
     def create(self, request):
-        testresult = TestResult.objects.get_or_create(
+        testresult, created = TestResult.objects.get_or_create(
             submission=request["submission"],
             exercise_test=request["exercise_test"],
             defaults={

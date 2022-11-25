@@ -10,7 +10,6 @@ const Courses = () => {
 
     const {
         data: courses,
-        isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
         isError: courseIsError,
         error: courseError
