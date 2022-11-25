@@ -269,7 +269,7 @@ const Exercise = () => {
 
             {tests.map((test:any) => (
 
-                <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " border rounded border-primary bg-light" : "")} key={test?.id} tabIndex={0}
+                <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " editable-test-focused" : "")} key={test?.id} tabIndex={0}
                     onFocus={() => {isOwner && setEditTestId(test?.id); setEditTest(true)}}
                     onBlur={(e) => {isOwner && handleTestBlur(e)}}
                     onMouseEnter={() => isOwner && setHoveredTestId(test?.id)}
