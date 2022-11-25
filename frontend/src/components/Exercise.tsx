@@ -317,7 +317,7 @@ const Exercise = () => {
 
                         <InputGroup>
 
-                            <InputGroup.Text>Ouput</InputGroup.Text>
+                            <InputGroup.Text>Output</InputGroup.Text>
 
                             <Form.Control
                                 as="textarea"
