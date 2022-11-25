@@ -37,7 +37,9 @@ class Course(models.Model):
         default=Languages.PYTHON,
     )
     students = models.ManyToManyField(
-        User, related_name="%(class)s_courses_students", blank=True
+        User,
+        related_name="%(class)s_courses_students",
+        blank=True
     )
     owners = models.ManyToManyField(
         User,
@@ -46,6 +48,7 @@ class Course(models.Model):
     tutors = models.ManyToManyField(
         User,
         related_name="%(class)s_courses_tutors",
+        blank=True,
     )
 
     def __str__(self):
