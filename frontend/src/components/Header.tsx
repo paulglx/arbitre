@@ -1,6 +1,7 @@
-import { Container, Dropdown, DropdownButton, Nav, Navbar } from 'react-bootstrap'
+import { Container, Dropdown, Nav, Navbar } from 'react-bootstrap'
 import { selectCurrentRefreshToken, selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice'
 
+import { PersonCircle } from 'react-bootstrap-icons'
 import React from 'react'
 import { logOut } from '../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
@@ -34,12 +35,22 @@ const Header = () => {
                         <Nav.Link href="/course">Courses</Nav.Link>
                         {isTeacher ? (<Nav.Link href="/results">Results</Nav.Link>) : (<></>)}
                     </Nav>
-                    <DropdownButton title={username} align="end" variant="outline-dark" className='d-flex'>
-                        <Dropdown.Item href="/course">Courses</Dropdown.Item>
-                        <Dropdown.Item href="/exercise">Submissions</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item as="button" onClick={signout}>Sign Out</Dropdown.Item>
-                    </DropdownButton>
+
+                    <Dropdown align="end">
+
+                        <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
+                            <PersonCircle className="align-middle"/>
+                            &nbsp;&nbsp;
+                            <span>{username}</span>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item href="/course">Courses</Dropdown.Item>
+                            <Dropdown.Item href="/exercise">Submissions</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item as="button" onClick={signout}>Sign Out</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
