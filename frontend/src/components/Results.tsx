@@ -42,7 +42,7 @@ const Results = () => {
     }
 
     const tableHeadContent = (session:any) => {
-        return (
+        return session.students_data[0]?.results.length > 0 ? (
             <thead>
                 <tr key={-1}>
                     <th key={-1}>Student</th>
@@ -51,11 +51,12 @@ const Results = () => {
                     ))}
                 </tr>
             </thead>
-        )
+        ) : (<></>)
     }
 
     const tableBodyContent = (session:any) => {
-        return (<>
+        console.log(session)
+        return session.students_data[0]?.results.length > 0 ? (<>
             <tbody className=''>
                 {session.students_data.map((student:any, i:number) => (
                     <tr key={i}>
@@ -66,7 +67,13 @@ const Results = () => {
                     </tr>
                 ))}
             </tbody>
-        </>)
+        </>) : (
+            <tbody>
+                <tr>
+                    <td colSpan={session.students_data[0]?.results?.length + 1} className='text-center text-muted'>There are no students registered to this course</td>
+                </tr>
+            </tbody>
+        )
     }
 
     const courseResultsTable = (course:any) => {
