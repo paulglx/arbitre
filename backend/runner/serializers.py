@@ -30,6 +30,7 @@ class TestResultSerializer(serializers.ModelSerializer):
     exercise_test_pk = serializers.PrimaryKeyRelatedField(
         queryset=Test.objects.all(), source="exercise_test", write_only=True
     )
+    stdout = serializers.CharField(trim_whitespace=False, required=False)
 
     class Meta:
         model = TestResult

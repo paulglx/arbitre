@@ -80,7 +80,7 @@ class TestResult(models.Model):
 
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
     exercise_test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    stdout = models.CharField(max_length=255, default="")
+    stdout = models.TextField(default="")
     time = models.FloatField(default=-1)
     memory = models.IntegerField(default=-1)
     status = models.CharField(
