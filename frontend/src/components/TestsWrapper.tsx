@@ -1,6 +1,7 @@
 import { Dropdown } from 'react-bootstrap';
 import React from 'react'
 import TestsEditor from './TestsEditor';
+import TestsRawEditor from './TestsRawEditor';
 import { useState } from 'react'
 
 const TestsWrapper = (props:any) => {
@@ -38,8 +39,11 @@ const TestsWrapper = (props:any) => {
 
         <br />
 
-        {chosenEditor === 'VISUAL' ? (<TestsEditor exercise={props.exercise} />) : (<p>TODO</p>) }
-
+        {chosenEditor === 'VISUAL' ? (
+            <TestsEditor exercise={props.exercise} />
+        ) : (
+            <TestsRawEditor exercise={props.exercise} />
+        )}
     </>)
 
 }

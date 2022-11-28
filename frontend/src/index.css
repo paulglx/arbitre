@@ -90,6 +90,10 @@ button, .list-group, ol.breadcrumb, input {
 
 }
 
+.ace_content, .ace_gutter-cell {
+  font-family: var(--mono-font);
+}
+
 code, kbd, pre, samp {
   font-family: var(--mono-font) !important;
 }
