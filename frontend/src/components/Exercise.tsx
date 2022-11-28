@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import Markdown from "./Markdown";
 import TestResult from "./TestResult";
-import TestsEditor from "./TestsEditor";
+import TestsWrapper from "./TestsWrapper";
 import autosize from "autosize";
 import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { useSelector } from "react-redux";
@@ -275,7 +275,7 @@ const Exercise = () => {
 
             {isTeacher ? (
                 <Tab eventKey="tests" title="Tests">
-                    <TestsEditor exercise={exercise} />
+                    <TestsWrapper exercise={exercise} />
                 </Tab>
             ) : (<></>)}      
 
