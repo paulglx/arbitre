@@ -217,14 +217,16 @@ const Course = () => {
                         {language}
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        {languageChoices.map((language:any) => (
+                    <Dropdown.Menu className="gap-1 p-2 rounded-3 mx-0">
+                        {languageChoices.map((choice:any) => (
                             <Dropdown.Item
-                                key={language[0]}
-                                eventKey={language[0]}
-                                onClick={() => handleLanguageChange(language[0])}
+                                className="rounded-2"
+                                key={choice[0]}
+                                eventKey={choice[0]}
+                                onClick={() => handleLanguageChange(choice[0])}
+                                active = {choice[0] === language}
                             >
-                                {language[1]}
+                                {choice[1]}
                             </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
