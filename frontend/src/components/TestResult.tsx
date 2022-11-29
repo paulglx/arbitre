@@ -1,5 +1,3 @@
-import {  } from '../features/submission/submissionApiSlice';
-
 import { useEffect, useState } from 'react'
 import { useGetSubmissionByExerciseQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
@@ -73,6 +71,21 @@ const TestResult = () => {
         else if(submission.status === "success") {
             return (<>
                 <span className="badge bg-success rounded-pill">Success</span>
+            </>)
+        }
+        else if (submission.status === "failed") {
+                return (<>
+                <span className="badge bg-danger rounded-pill">Fail</span>
+            </>)
+        }
+        else if (submission.status === "error") {
+                return (<>
+                <span className="badge bg-danger rounded-pill">Error</span>
+            </>)
+        }
+        else if (submission.status === "pending") {
+                return (<>
+                <span className="badge bg-secondary rounded-pill">Pending</span>
             </>)
         }
     }

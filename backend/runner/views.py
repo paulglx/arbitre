@@ -18,7 +18,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             owner=self.request.user,
             defaults={
                 "file": self.request.data["file"],
-                "status": "PENDING",
+                "status": "pending",
             },
         )
         submission.save()
