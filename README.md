@@ -12,19 +12,21 @@ See [installation](./config/README.md) for details on setting up Arbitre.
 
 Simultaneously run these tasks :
 
-#### Run backend server
+#### Start backend server
 
 From `./backend/`, run `python manage.py runserver`
 
-#### Test runner server
+#### Start test runner server
 
 From `./backend/`, run `celery -A arbitre worker -l info -E`
 
-#### Run frontend server
+#### Start frontend server
 
 From `./frontend/`, run `npm start`.
 
-#### Make sure the runner server is setup. [See installation](./config/README.md)
+#### Make sure the runner server is setup.
+
+[See installation](./config/README.md)
 
 ## Credits
 
