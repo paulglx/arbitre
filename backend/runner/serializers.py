@@ -35,6 +35,7 @@ class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         fields = (
+            "id",
             "submission",
             "submission_pk",
             "exercise_test",
