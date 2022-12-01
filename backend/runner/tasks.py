@@ -124,4 +124,4 @@ def run_all_pending_tests() -> None:
             submission["id"], test["id"], file_content, course["language"]
         )
 
-    print(f'[PERIODIC] {len(pending_test_results)} pending tests have been restarted.')
+    print(f"[PERIODIC] {len(pending_test_results)} pending tests have been restarted.")
