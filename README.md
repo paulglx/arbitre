@@ -10,13 +10,17 @@ See [installation](./config/README.md) for details on setting up Arbitre.
 
 ### Start Arbitre
 
-#### Run backend server
+#### Start backend server
 
 From `./backend/`, run `python manage.py runserver`
 
-#### Run frontend server
+#### Start frontend server
 
 From `./frontend/`, run `npm start`.
+
+#### Start test runner server
+
+celery -A arbitre worker -l info -E -B
 
 ## Credits
 
