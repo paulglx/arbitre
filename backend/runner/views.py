@@ -38,7 +38,7 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
     Refreshes submission status based on all test results statuses for that submission
     """
 
-    # GET /api/refresh-submission?submission_id=...
+    # GET runner/api/refresh-submission?submission_id=...
     def list(self, request):
         try:
             submission = Submission.objects.get(
@@ -65,6 +65,28 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
             return JsonResponse({"status": "Not Found"})
 
 
+class SubmissionFileViewSet(viewsets.ViewSet):
+    """
+    Returns submission file
+    """
+
+    # GET runner/api/submission-file?submission_id=...
+    def list(self, request):
+        try:
+            submission = Submission.objects.get(
+                pk=request.query_params["submission_id"]
+            )
+            try:
+                with submission.file.open(mode="rb") as f:
+                    file_content = f.read().decode()
+            except FileNotFoundError:
+                return JsonResponse({"file": "Not Found", "content": ""})
+
+            return JsonResponse({"file": str(submission.file), "content": file_content})
+        except Submission.DoesNotExist:
+            return JsonResponse({"file": "Not Found", "content": ""})
+
+
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
@@ -82,6 +104,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
 
+    # GET runner/api?exercise_id=...
     def get_queryset(self):
         exercise_id = self.request.query_params.get("exercise_id")
         owner = self.request.user.id
