@@ -11,6 +11,9 @@ __pycache__
 db.sqlite3
 media
 
+#Celery
+celerybeat-schedule
+
 # Ansible
 *.retry
 
