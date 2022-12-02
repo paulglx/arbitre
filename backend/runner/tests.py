@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
-from .models import Submission
+import requests
 
 
 # Create your tests here.
@@ -46,6 +46,67 @@ class UserTest(TestCase):
     def test_auth_fail_no_user_provided(self):
         user = authenticate(username="", password="testpwd")
         self.assertEqual(user, None)
+
+
+class SimpleJWTTest(TestCase):
+    """
+    Test SimpleJWT interactions
+    """
+
+    BASE_URL = "http://localhost:8000"
+
+    @classmethod
+    def setUpClass(cls):
+        endpoint = "/api/auth/users/"
+        body = {
+            "username": "apitestuser",
+            "password": "apitestpwd",
+        }
+        requests.post(cls.BASE_URL + endpoint, data=body)
+        super().setUpClass()
+
+    def test_login_user_via_api(self):
+        endpoint = "/api/auth/token/"
+        body = {
+            "username": "apitestuser",
+            "password": "apitestpwd",
+        }
+        response = requests.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 200)
+
+    def test_refresh_token_via_api(self):
+        endpoint = "/api/auth/token/"
+        body = {
+            "username": "apitestuser",
+            "password": "apitestpwd",
+        }
+        response = requests.post(self.BASE_URL + endpoint, data=body)
+
+        token = response.json()["refresh"]
+
+        endpoint = "/api/auth/token/refresh/"
+        body = {
+            "refresh": token,
+        }
+        response = requests.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 200)
+
+    def test_logout_user_via_api(self):
+        endpoint = "/api/auth/token/"
+        body = {
+            "username": "apitestuser",
+            "password": "apitestpwd",
+        }
+        response = requests.post(self.BASE_URL + endpoint, data=body)
+
+        token = response.json()["refresh"]
+
+        endpoint = "/api/auth/logout/"
+        body = {
+            "refresh": token,
+        }
+        response = requests.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 200)
 
 
 class Student_CourseSessionExerciseTest(TestCase):
@@ -158,30 +219,3 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         new_exercise = Exercise.objects.create(title="new_exercise", session=session)
         new_exercise.save()
         self.assertEqual(session, new_exercise.session)
-
-
-class StudentSubmissionTest(TestCase):
-    """
-    Test Student Submission interactions
-    """
-
-    fixtures = ["student_submission_test_fixtures.json"]
-
-    def test_student_can_access_course(self):
-        student = User.objects.get(username="student")
-        course = Course.objects.get(title="teacher's first course")
-        self.assertTrue(student in course.students.all())
-
-    def test_student_can_create_submission(
-        self,
-    ):
-        student = User.objects.get(username="student")
-        exercise = Exercise.objects.get(title="Double String")
-        submission = Submission.objects.create(
-            exercise=exercise,
-            owner=student,
-            file="runner/fixtures/test_files/double_string.py",
-        )
-        submission.save()
-        created_submission = Submission.objects.get(id=submission.id)
-        self.assertEqual(created_submission.owner, student)
