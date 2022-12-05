@@ -1,8 +1,7 @@
-from django.test import TestCase
-from django.contrib.auth.models import User
+from django.test import TestCase, Client
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
-import requests
 
 
 # Create your tests here.
@@ -57,12 +56,13 @@ class SimpleJWTTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.client = Client()
         endpoint = "/api/auth/users/"
         body = {
             "username": "apitestuser",
             "password": "apitestpwd",
         }
-        requests.post(cls.BASE_URL + endpoint, data=body)
+        cls.client.post(cls.BASE_URL + endpoint, data=body)
         super().setUpClass()
 
     def test_login_user_via_api(self):
@@ -71,8 +71,17 @@ class SimpleJWTTest(TestCase):
             "username": "apitestuser",
             "password": "apitestpwd",
         }
-        response = requests.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
         self.assertEqual(response.status_code, 200)
+
+    def test_login_user_via_api_fail_wrong_password(self):
+        endpoint = "/api/auth/token/"
+        body = {
+            "username": "apitestuser",
+            "password": "apitestpwd2",
+        }
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 401)
 
     def test_refresh_token_via_api(self):
         endpoint = "/api/auth/token/"
@@ -80,7 +89,7 @@ class SimpleJWTTest(TestCase):
             "username": "apitestuser",
             "password": "apitestpwd",
         }
-        response = requests.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
 
         token = response.json()["refresh"]
 
@@ -88,8 +97,16 @@ class SimpleJWTTest(TestCase):
         body = {
             "refresh": token,
         }
-        response = requests.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
         self.assertEqual(response.status_code, 200)
+
+    def test_refresh_token_via_api_fail_wrong_token(self):
+        endpoint = "/api/auth/token/refresh/"
+        body = {
+            "refresh": "thisisawrongtoken",
+        }
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 401)
 
     def test_logout_user_via_api(self):
         endpoint = "/api/auth/token/"
@@ -97,7 +114,7 @@ class SimpleJWTTest(TestCase):
             "username": "apitestuser",
             "password": "apitestpwd",
         }
-        response = requests.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
 
         token = response.json()["refresh"]
 
@@ -105,8 +122,35 @@ class SimpleJWTTest(TestCase):
         body = {
             "refresh": token,
         }
-        response = requests.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
         self.assertEqual(response.status_code, 200)
+
+    def test_logout_user_via_api_fail_wrong_token(self):
+        endpoint = "/api/auth/logout/"
+        body = {
+            "refresh": "thisisawrongtoken",
+        }
+        with self.assertRaises(Exception):
+            self.client.post(self.BASE_URL + endpoint, data=body)
+
+
+class UserGroupTest(TestCase):
+    """
+    Test UserGroup interactions
+    """
+
+    def setUp(self):
+        User.objects.create_user("test", "", "test")
+
+        g1 = Group.objects.create(name="testgroup1")
+        g2 = Group.objects.create(name="testgroup2")
+
+        g1.save()
+        g2.save()
+
+        user = User.objects.get(username="test")
+        user.groups.add(g1)
+        user.save()
 
 
 class Student_CourseSessionExerciseTest(TestCase):
