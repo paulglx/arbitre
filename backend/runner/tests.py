@@ -241,9 +241,7 @@ class Student_CourseSessionExerciseTest(TestCase):
 
     def test_session_string_is_course_title_plus_semicolon_plus_title(self):
         session = Session.objects.get(title="testsession")
-        self.assertEqual(
-            str(session), session.course.title + " : " + session.title
-        )
+        self.assertEqual(str(session), session.course.title + " : " + session.title)
 
     def test_exercise_string_is_title(self):
         exercise = Exercise.objects.get(title="testexercise")
@@ -315,3 +313,97 @@ class Teacher_CourseSessionExerciseTest(TestCase):
         new_exercise = Exercise.objects.create(title="new_exercise", session=session)
         new_exercise.save()
         self.assertEqual(session, new_exercise.session)
+
+
+class CourseAPITest(TestCase):
+    """
+    Test Course API
+    """
+
+    TOKEN = ""
+    BASE_URL = "http://localhost:8000"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="course_test_teacher", password="course_test_teacher"
+        )
+        teacher.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {"username": "course_test_teacher", "password": "course_test_teacher"},
+            format="json",
+        )
+        cls.TOKEN = response.data["refresh"]
+
+        super(CourseAPITest, cls).setUpClass()
+
+    def test_get_all_courses(self):
+        endpoint = self.BASE_URL + "/api/course/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_course(self):
+        endpoint = self.BASE_URL + "/api/course/"
+        data = {"title": "testcourse", "description": "testdescription"}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_get_all_user_courses(self):
+        endpoint = self.BASE_URL + "/api/course/"
+        data = {"title": "testcourse", "description": "testdescription"}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        endpoint = self.BASE_URL + "/api/course/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_course(self):
+        endpoint = self.BASE_URL + "/api/course/"
+        data = {"title": "testcourse", "description": "testdescription"}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        endpoint = self.BASE_URL + "/api/course/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        course_id = response.data[0]["id"]
+
+        endpoint = self.BASE_URL + f"/api/course/{course_id}/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
