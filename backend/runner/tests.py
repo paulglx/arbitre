@@ -152,6 +152,44 @@ class UserGroupTest(TestCase):
         user.groups.add(g1)
         user.save()
 
+    def test_get_groups_via_api(self):
+
+        endpoint = "/api/auth/users/groups/"
+        body = {
+            "username": "test",
+        }
+        response = self.client.post(endpoint, data=body)
+        self.assertEqual(response.status_code, 200)
+
+
+class TeacherTest(TestCase):
+    """
+    Test Teacher interactions
+    """
+
+    def setUp(self):
+        User.objects.create_user("teacher1", "", "teacher1")
+        User.objects.create_user("teacher2", "", "teacher2")
+
+        gs = Group.objects.create(name="students")
+        gt = Group.objects.create(name="teachers")
+
+        gs.save()
+        gt.save()
+
+        user = User.objects.get(username="teacher1")
+        user.groups.add(gs)
+        user.save()
+
+        user = User.objects.get(username="teacher2")
+        user.groups.add(gt)
+        user.save()
+
+    def test_get_all_teachers(self):
+        endpoint = "/api/auth/teachers/"
+        response = self.client.get(endpoint)
+        self.assertEqual(response.status_code, 200)
+
 
 class Student_CourseSessionExerciseTest(TestCase):
     """
@@ -196,6 +234,20 @@ class Student_CourseSessionExerciseTest(TestCase):
         student = User.objects.get(username="testuser")
         course = Course.objects.get(title="testcourse")
         self.assertTrue(student in course.students.all())
+
+    def test_course_string_is_title(self):
+        course = Course.objects.get(title="testcourse")
+        self.assertEqual(str(course), course.title)
+
+    def test_session_string_is_course_title_plus_semicolon_plus_title(self):
+        session = Session.objects.get(title="testsession")
+        self.assertEqual(
+            str(session), session.course.title + " : " + session.title
+        )
+
+    def test_exercise_string_is_title(self):
+        exercise = Exercise.objects.get(title="testexercise")
+        self.assertEqual(str(exercise), exercise.title)
 
     def test_student_cannot_access_inaccessible_course(self):
         student = User.objects.get(username="testuser")
