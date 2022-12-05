@@ -10,11 +10,10 @@ from .serializers import MinimalUserSerializer, UserSerializer
 class LogoutView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, *args, **kwargs):
-        refresh_token = self.request.data.get("refresh")
-        token = RefreshToken(token=refresh_token)
+    def post(self, request):
+        token = RefreshToken(request.data.get("refresh"))
         token.blacklist()
-        return Response({"status": "OK, goodbye"})
+        return Response("Success")
 
 
 class UserGroup(APIView):
