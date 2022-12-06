@@ -22,10 +22,15 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CourseSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     # Allow students, tutors or owners to get their courses
     def get_queryset(self):
+
+        # if param 'all' is set, return all courses
+        if self.request.query_params.get("all", None) == "true":
+            return Course.objects.all()
+
         user = self.request.user
         return Course.objects.filter(
             Q(students__in=[user]) | Q(tutors__in=[user]) | Q(owners__in=[user])
@@ -181,7 +186,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ExerciseSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):

@@ -10,6 +10,9 @@ router.register(r"testresult", views.TestResultViewSet, basename="testresults")
 router.register(
     r"refresh-submission", views.RefreshSubmissionViewSet, basename="refresh"
 )
+router.register(
+    r"submission-file", views.SubmissionFileViewSet, basename="submission-file"
+)
 
 urlpatterns = [
     # ex: /polls/
