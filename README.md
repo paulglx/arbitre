@@ -22,7 +22,7 @@ From `./backend/`, run `python manage.py runserver`
 
 #### Start test runner server
 
-From `./backend/`, run `celery -A arbitre worker -l info -E`
+From `./backend/`, run `celery -A arbitre worker -l info -E -B`
 
 #### Start frontend server
 
