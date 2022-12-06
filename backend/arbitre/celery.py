@@ -1,7 +1,5 @@
 from celery import Celery
-from celery.schedules import crontab
 import os
-from runner.tasks import run_all_pending_tests
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "arbitre.settings")
