@@ -5,6 +5,8 @@ omit =
     */migrations/*
     *tests*
     manage.py
+    *asgi*
+    *wsgi*
 branch = True
 
 [report]
