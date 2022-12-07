@@ -10,6 +10,6 @@ omit =
 branch = True
 
 [report]
-fail_under = 100
+fail_under = 67
 show_missing = True
 skip_covered = True
