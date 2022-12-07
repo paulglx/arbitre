@@ -166,14 +166,14 @@ class UserGroupTest(TestCase):
         user.groups.add(g1)
         user.save()
 
-    def test_get_groups_via_api(self):
+"""     def test_get_groups_via_api(self):
 
         endpoint = "/api/auth/users/groups/"
         body = {
             "username": "test",
         }
         response = self.client.post(endpoint, data=body)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200) """
 
 
 class TeacherTest(TestCase):
