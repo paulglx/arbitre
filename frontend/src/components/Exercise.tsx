@@ -380,7 +380,7 @@ const Exercise = () => {
 
             <br />
             
-            <TestResult />
+            <TestResult exercise_id={exercise.id} />
         </>)
     }
 

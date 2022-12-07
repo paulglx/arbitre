@@ -1,14 +1,23 @@
-import { Accordion, Badge, Container, Spinner, Table } from 'react-bootstrap'
+import { Accordion, Badge, Container, Modal, Spinner, Table } from 'react-bootstrap'
 
 import Error from './Error'
 import Header from './Header'
+import TestResult from './TestResult'
 import { selectIsTeacher } from '../features/auth/authSlice'
 import { useGetAllResultsQuery } from '../features/results/resultsApiSlice'
 import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
 const Results = () => {
 
     const isTeacher = useSelector(selectIsTeacher)
+
+    const [showModal, setShowModal] = useState(false)
+    const [modalTitle, setModalTitle] = useState("")
+    const [modalContent, setModalContent] = useState(<></>)
+
+    const handleModalClose = () => setShowModal(false)
+    const handleModalShow = () => setShowModal(true)
 
     const {
         data: results,
@@ -35,7 +44,7 @@ const Results = () => {
         } else if (status === "success") {
             return <Badge bg="success">Success</Badge>
         } else if (status === "failed") {
-            return <Badge bg="secondary">Failed</Badge>
+            return <Badge bg="secondary">Fail</Badge>
         } else if (status === "error") {
             return <Badge bg="danger">Error</Badge>
         }
@@ -62,7 +71,21 @@ const Results = () => {
                     <tr key={i}>
                         <td className=''>{student.student_name}</td>
                         {student.results?.map((exercise:any, j:number) => (
-                            <td className='text-center' key={j}>{statusContent(exercise.status)}</td>
+                            <td
+                                className='text-center cursor-pointer'
+                                role={exercise.status !== "not submitted" ? "button" : ""}
+                                key={j}
+                                onClick = {exercise.status !== "not submitted" ? (() => {
+                                        setModalTitle(`${student.student_name}'s submission for ${exercise.exercise_title}`)
+                                        setModalContent(<TestResult exercise_id={exercise.exercise_id} user_id={student.student_id} />)
+                                        handleModalShow()
+                                    }) : (
+                                        undefined
+                                    )
+                                }
+                            >
+                                {statusContent(exercise.status)}
+                            </td>
                         ))}
                     </tr>
                 ))}
@@ -97,6 +120,18 @@ const Results = () => {
     }
 
     return isTeacher && isSuccess ? (<>
+
+        <Modal show={showModal} onHide={handleModalClose}>
+            <Modal.Header closeButton>
+                <Modal.Title className='h6'>
+                    {modalTitle}
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {modalContent}
+            </Modal.Body>
+        </Modal>
+
         <Header />
 
         <br />

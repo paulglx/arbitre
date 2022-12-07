@@ -3,13 +3,14 @@ import { apiSlice } from "../../app/api/apiSlice";
 export const submissionApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         createSubmission: builder.mutation<{}, FormData>({
-            query: (data:any) => {
+            query: (data: any) => {
                 return ({
                     url: 'runner/api/submission/',
                     method: 'POST',
                     credentials: 'include',
                     body: data
-            })}
+                })
+            }
         }),
         getSubmission: builder.query({
             query: params => ({
@@ -25,7 +26,7 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
         }),
         getSubmissionTestResults: builder.query({
             query: params => ({
-                url: `/runner/api/testresult?exercise_id=${params.exercise_id}`,
+                url: `/runner/api/testresult?exercise_id=${params.exercise_id}&user_id=${params.user_id || ''}`,
                 method: 'GET',
             })
         }),
