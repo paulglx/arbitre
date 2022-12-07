@@ -11,7 +11,7 @@ __pycache__
 db.sqlite3
 media
 
-#Celery
+# Celery
 celerybeat-schedule
 
 # Ansible

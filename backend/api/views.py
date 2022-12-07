@@ -77,10 +77,11 @@ class CourseOwnerViewSet(viewsets.ViewSet):
         if user not in course.owners.all():
             course.owners.add(user)
             course.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_200_OK)
         else:
             return Response(
-                {"message": "User is already an owner"}, status=status.HTTP_200_OK
+                {"message": "User is already an owner"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
     def destroy(self, request, pk=None):
@@ -94,7 +95,10 @@ class CourseOwnerViewSet(viewsets.ViewSet):
         if user in course.owners.all():
             course.owners.remove(user)
             course.save()
-            return Response(status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Owner removed from course"}, status=status.HTTP_200_OK
+            )
+
         else:
             return Response(
                 {"message": "User is not an owner"}, status=status.HTTP_404_NOT_FOUND
@@ -142,7 +146,8 @@ class CourseTutorViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(
-                {"message": "User is already a tutor"}, status=status.HTTP_200_OK
+                {"message": "User is already a tutor"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
     def destroy(self, request, pk=None):
@@ -156,7 +161,9 @@ class CourseTutorViewSet(viewsets.ViewSet):
         if user in course.tutors.all():
             course.tutors.remove(user)
             course.save()
-            return Response(status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Tutor removed from course"}, status=status.HTTP_200_OK
+            )
         else:
             return Response(
                 {"message": "User is not a tutor"}, status=status.HTTP_404_NOT_FOUND

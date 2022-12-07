@@ -1,0 +1,15 @@
+[run]
+source = .
+omit =
+    */node_modules/*
+    */migrations/*
+    *tests*
+    manage.py
+    *asgi*
+    *wsgi*
+branch = True
+
+[report]
+fail_under = 67
+show_missing = True
+skip_covered = True
