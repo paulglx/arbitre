@@ -1136,7 +1136,7 @@ class SessionAPITest(TestCase):
         session1.save()
         session2.save()
 
-        endpoint = self.BASE_URL + f"/api/session/"
+        endpoint = self.BASE_URL + "/api/session/"
         response = self.client.get(
             endpoint,
             content_type="application/json",
@@ -1353,7 +1353,7 @@ class ExerciseAPITest(TestCase):
         exercise1.save()
         exercise2.save()
 
-        endpoint = self.BASE_URL + f"/api/exercise/"
+        endpoint = self.BASE_URL + "/api/exercise/"
         response = self.client.get(
             endpoint,
             content_type="application/json",
