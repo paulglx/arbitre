@@ -710,7 +710,7 @@ class CourseOwnersTest(TestCase):
         course.owners.add(teacher1)
         course.save()
 
-        #login as teacher2 and store refresh token
+        # login as teacher2 and store refresh token
         response = self.client.post(
             self.BASE_URL + "/api/auth/token/",
             {"username": "cot_teacher2", "password": "cot_teacher2"},
@@ -951,7 +951,9 @@ class CourseTutorsTest(TestCase):
             content_type="application/json",
             **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
         )
-        self.assertEqual(response.data["message"], "Unchanged: User is an owner of this course")
+        self.assertEqual(
+            response.data["message"], "Unchanged: User is an owner of this course"
+        )
         self.assertEqual(response.status_code, 409)
 
     def test_remove_course_tutor(self):
@@ -1059,7 +1061,11 @@ class SessionAPITest(TestCase):
         course.save()
 
         endpoint = self.BASE_URL + "/api/session/"
-        data = {"course_id": course.id, "title": "testsession", "description": "testdescription"}
+        data = {
+            "course_id": course.id,
+            "title": "testsession",
+            "description": "testdescription",
+        }
         response = self.client.post(
             endpoint,
             data,
@@ -1077,7 +1083,11 @@ class SessionAPITest(TestCase):
         course.save()
 
         endpoint = self.BASE_URL + "/api/session/"
-        data = {"course_id": course.id, "title": "testsession", "description": "testdescription"}
+        data = {
+            "course_id": course.id,
+            "title": "testsession",
+            "description": "testdescription",
+        }
         response = self.client.post(
             endpoint,
             data,
@@ -1163,3 +1173,225 @@ class ExerciseAPITest(TestCase):
         cls.TOKEN = response.data["refresh"]
 
         super(ExerciseAPITest, cls).setUpClass()
+
+    def test_create_exercise(self):
+        teacher = User.objects.get(username="exercise_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        endpoint = self.BASE_URL + "/api/exercise/"
+        data = {
+            "session_id": session.id,
+            "title": "testexercise",
+            "description": "testdescription",
+        }
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_edit_exercise(self):
+        teacher = User.objects.get(username="exercise_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        endpoint = self.BASE_URL + f"/api/exercise/{exercise.id}/"
+        data = {
+            "title": "testexercise",
+            "description": "testdescription",
+            "session_id": session.id,
+        }
+        response = self.client.put(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_exercise(self):
+        teacher = User.objects.get(username="exercise_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        endpoint = self.BASE_URL + f"/api/exercise/{exercise.id}/"
+        response = self.client.delete(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+    def test_get_exercise(self):
+        teacher = User.objects.get(username="exercise_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        endpoint = self.BASE_URL + f"/api/exercise/{exercise.id}/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_exercises_of_session(self):
+        teacher = User.objects.get(username="exercise_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise1 = Exercise.objects.create(
+            title="testexercise1", description="testdescription", session=session
+        )
+        exercise2 = Exercise.objects.create(
+            title="testexercise2", description="testdescription", session=session
+        )
+        exercise1.save()
+        exercise2.save()
+
+        endpoint = self.BASE_URL + f"/api/exercise/?session_id={session.id}"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+
+    def test_get_all_exercises(self):
+        teacher = User.objects.get(username="exercise_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session1 = Session.objects.create(
+            title="testsession1", description="testdescription", course=course
+        )
+        session2 = Session.objects.create(
+            title="testsession2", description="testdescription", course=course
+        )
+        session1.save()
+        session2.save()
+
+        exercise1 = Exercise.objects.create(
+            title="testexercise1", description="testdescription", session=session1
+        )
+        exercise2 = Exercise.objects.create(
+            title="testexercise2", description="testdescription", session=session2
+        )
+        exercise1.save()
+        exercise2.save()
+
+        endpoint = self.BASE_URL + f"/api/exercise/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+
+
+class ResultsOfSessionTest(TestCase):
+
+    BASE_URL = "http://localhost:8000"
+    TOKEN = ""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="ros_test_teacher", password="ros_test_teacher"
+        )
+        teacher.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {"username": "ros_test_teacher", "password": "ros_test_teacher"},
+            format="json",
+        )
+        cls.TOKEN = response.data["refresh"]
+
+        super(ResultsOfSessionTest, cls).setUpClass()
+
+    def test_get_results_of_session(self):
+
+        teacher = User.objects.get(username="ros_test_teacher")
+
+        course = Course.objects.create(title="testcourse", description="testdescription")
+        course.owners.add(teacher)
+        course.save()

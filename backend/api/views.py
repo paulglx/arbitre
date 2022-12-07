@@ -162,8 +162,7 @@ class CourseTutorViewSet(viewsets.ViewSet):
             course.tutors.remove(user)
             course.save()
             return Response(
-                {"message": "Tutor removed from course"},
-                status=status.HTTP_200_OK
+                {"message": "Tutor removed from course"}, status=status.HTTP_200_OK
             )
         else:
             return Response(
