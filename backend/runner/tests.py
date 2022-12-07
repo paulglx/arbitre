@@ -166,6 +166,7 @@ class UserGroupTest(TestCase):
         user.groups.add(g1)
         user.save()
 
+
 """     def test_get_groups_via_api(self):
 
         endpoint = "/api/auth/users/groups/"
@@ -1392,6 +1393,8 @@ class ResultsOfSessionTest(TestCase):
 
         teacher = User.objects.get(username="ros_test_teacher")
 
-        course = Course.objects.create(title="testcourse", description="testdescription")
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
         course.owners.add(teacher)
         course.save()
