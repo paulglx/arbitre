@@ -133,6 +133,20 @@ class SimpleJWTTest(TestCase):
         with self.assertRaises(Exception):
             self.client.post(self.BASE_URL + endpoint, data=body)
 
+    def test_register_user_via_api(self):
+        endpoint = "/api/auth/users/"
+        data = {
+            "username": "sjwttestuser",
+            "password": "sjwttestpwd",
+        }
+        response = self.client.get(self.BASE_URL + endpoint, data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_users_via_api(self):
+        endpoint = "/api/auth/users/"
+        response = self.client.get(self.BASE_URL + endpoint)
+        self.assertEqual(response.status_code, 200)
+
 
 class UserGroupTest(TestCase):
     """
@@ -342,8 +356,17 @@ class CourseAPITest(TestCase):
 
         super(CourseAPITest, cls).setUpClass()
 
-    def test_get_all_courses(self):
+    def test_get_courses(self):
         endpoint = self.BASE_URL + "/api/course/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_courses(self):
+        endpoint = self.BASE_URL + "/api/course/?all=true"
         response = self.client.get(
             endpoint,
             content_type="application/json",
@@ -466,32 +489,34 @@ class CourseOwnersTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_add_course_owner(self):
-        endpoint = self.BASE_URL + "/api/course/"
-        data = {"title": "testcourse", "description": "testdescription"}
+
+        course = Course.objects.create(title="testcourse", description="testdescription")
+        owner = User.objects.create_user(username="cot_owner", password="cot_owner")
+        course.owners.add(owner)
+        course.save()
+
+        other_user = User.objects.create_user(
+            username="cot_other_user", password="cot_other_user"
+        )
+        other_user.save()
+
+        #login owner
         response = self.client.post(
-            endpoint,
-            data,
-            content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+            self.BASE_URL + "/api/auth/token/",
+            {"username": "cot_owner", "password": "cot_owner"},
+            format="json",
         )
-
-        endpoint = self.BASE_URL + "/api/course/"
-        response = self.client.get(
-            endpoint,
-            content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
-        )
-
-        course_id = response.data[0]["id"]
+        COT_TOKEN = response.data["refresh"]
 
         endpoint = self.BASE_URL + "/api/course_owner/"
-        data = {"course_id": course_id, "user_id": 2}
+        data = {"course_id": course.id, "user_id": other_user.id}
         response = self.client.post(
             endpoint,
             data,
             content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+            **{"HTTP_AUTHORIZATION": f"Bearer {COT_TOKEN}"},
         )
+
         self.assertEqual(response.status_code, 200)
 
     def test_add_course_owner_already_owner(self):
@@ -581,54 +606,36 @@ class CourseOwnersTest(TestCase):
             )
 
     def test_add_course_owner_user_is_not_course_owner(self):
-        endpoint = self.BASE_URL + "/api/course/"
-        data = {"title": "testcourse", "description": "testdescription"}
-        self.client.post(
-            endpoint,
-            data,
-            content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        course = Course.objects.create(title="testcourse", description="testdescription")
+        course.save()
+
+        not_an_owner = User.objects.create_user(
+            username="cot_not_an_owner", password="cot_not_an_owner"
         )
+        not_an_owner.save()
 
-        endpoint = self.BASE_URL + "/api/course/"
-        response = self.client.get(
-            endpoint,
-            content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
-        )
-
-        course_id = response.data[0]["id"]
-
-        endpoint = self.BASE_URL + "/api/course_owner/"
-        data = {"course_id": course_id, "user_id": 2}
-        response = self.client.post(
-            endpoint,
-            data,
-            content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        # Login as teacher2
+        # Login as cot_not_an_owner
         response = self.client.post(
             self.BASE_URL + "/api/auth/token/",
-            {"username": "cot_teacher2", "password": "cot_teacher2"},
+            {"username": "cot_not_an_owner", "password": "cot_not_an_owner"},
             format="json",
         )
-        TEACHER_2_TOKEN = response.data["refresh"]
+        COT_NOT_OWNER_TOKEN = response.data["refresh"]
 
         endpoint = self.BASE_URL + "/api/course_owner/"
-        data = {"course_id": course_id, "user_id": 3}
+        data = {"course_id": course.id, "user_id": not_an_owner.id}
         response = self.client.post(
             endpoint,
             data,
             content_type="application/json",
-            **{"HTTP_AUTHORIZATION": f"Bearer {TEACHER_2_TOKEN}"},
+            **{"HTTP_AUTHORIZATION": f"Bearer {COT_NOT_OWNER_TOKEN}"},
         )
         self.assertEqual(response.data["message"], "Forbidden: User is not an owner")
 
     def test_add_course_owner_user_is_already_tutor(self):
-        course = Course.objects.create(title="testcourse", description="testdescription")
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
         teacher1 = User.objects.get(username="cot_teacher1")
         teacher2 = User.objects.get(username="cot_teacher2")
         course.owners.add(teacher1)
@@ -643,4 +650,6 @@ class CourseOwnersTest(TestCase):
             content_type="application/json",
             **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
         )
-        self.assertEqual(response.data["message"], "User is already a tutor of this course")
+        self.assertEqual(
+            response.data["message"], "User is already a tutor of this course"
+        )
