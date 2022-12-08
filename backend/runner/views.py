@@ -49,7 +49,7 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
                 submissions = Submission.objects.filter(
                     pk=request.query_params["submission_id"]
                 )
-            
+
             for submission in submissions:
                 test_results = TestResult.objects.filter(submission=submission)
                 status = ""
@@ -64,10 +64,8 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
                         status = "running"
                 else:
                     status = "pending"
-                Submission.objects.filter(pk=submission.id).update(
-                    status=status
-                )
-            
+                Submission.objects.filter(pk=submission.id).update(status=status)
+
             return JsonResponse({"detail": "Submission status updated"})
 
         except Submission.DoesNotExist:
