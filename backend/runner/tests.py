@@ -1398,3 +1398,56 @@ class ResultsOfSessionTest(TestCase):
         )
         course.owners.add(teacher)
         course.save()
+
+
+class CoursesSessionsExercisesTest(TestCase):
+
+    BASE_URL = "http://localhost:8000"
+    TOKEN = ""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="cse_test_teacher", password="cse_test_teacher"
+        )
+        teacher.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {"username": "cse_test_teacher", "password": "cse_test_teacher"},
+            format="json",
+        )
+        cls.TOKEN = response.data["refresh"]
+
+        super(CoursesSessionsExercisesTest, cls).setUpClass()
+
+    def test_get_courses_sessions_exercises_via_api(self):
+        teacher = User.objects.get(username="cse_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        endpoint = self.BASE_URL + "/api/courses_sessions_exercises/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)

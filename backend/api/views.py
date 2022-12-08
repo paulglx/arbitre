@@ -85,7 +85,7 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
                     "sessions": sessions_data,
                 }
             )
-        
+
         return Response(courses_data)
 
 
