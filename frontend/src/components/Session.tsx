@@ -1,26 +1,42 @@
-import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover } from "react-bootstrap";
+import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../features/courses/sessionApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
+import ResultsTable from "./ResultsTable";
 import autosize from "autosize";
 import { selectCurrentUser } from "../features/auth/authSlice";
+import { selectIsTeacher } from "../features/auth/authSlice";
 import { useGetExercisesOfSessionQuery } from "../features/courses/exerciseApiSlice";
 import { useSelector } from "react-redux";
 
 const Session = () => {
 
+    const [activeTab, setActiveTab] = useState("description");
     const [deleteSession] = useDeleteSessionMutation();
     const [description, setDescription] = useState("");
     const [editDescription, setEditDescription] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
     const [title, setTitle] = useState("");
     const [updateSession] = useUpdateSessionMutation();
-    const {id}:any = useParams();
+    const { session_id }:any = useParams();
+    const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
+    const urlTab = useParams()?.tab;
     const username = useSelector(selectCurrentUser);
+
+    useEffect(() => {
+        if(!urlTab) {
+            navigate(`./description`, {replace: true});
+        }
+        setActiveTab(urlTab!);
+    }, [urlTab, navigate]);
+
+    const toggle = (tab:any) => {
+        if (activeTab !== tab) navigate(`/session/${session_id}/${tab}` , {replace: true});
+    }
 
     useEffect(() => {
 
@@ -46,7 +62,7 @@ const Session = () => {
         isLoading: sessionIsLoading,
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
-    } = useGetSessionQuery({id});
+    } = useGetSessionQuery({id:session_id});
 
     const ownerUsernames = session?.course.owners.map((o:any) => o.username);
     const isOwner = ownerUsernames?.includes(username);
@@ -61,7 +77,7 @@ const Session = () => {
         isLoading: exercisesIsLoading,
         isSuccess: exercisesIsSuccess,
         isError: exercisesIsError,
-    } = useGetExercisesOfSessionQuery({session_id:id});
+    } = useGetExercisesOfSessionQuery({session_id});
 
     const course = session?.course
 
@@ -81,7 +97,7 @@ const Session = () => {
     const handleDelete = (e:any) => {
         e.preventDefault();
         try {
-            deleteSession({id});
+            deleteSession({id:session_id});
         } catch (e) {
             console.log(e);
         } finally {
@@ -186,7 +202,7 @@ const Session = () => {
 
     const exerciseListTeacherContent = () => {
         return isOwner ? (
-            <ListGroup.Item action href={"/exercise/create?session_id="+id}>
+            <ListGroup.Item action href={"/exercise/create?session_id="+session_id}>
                         + Create Exercise
             </ListGroup.Item>
         ) : (<></>)
@@ -194,7 +210,7 @@ const Session = () => {
 
     const exerciseListTeacherContentNoExercises = () => {
         return isOwner ? (
-            <Button variant="light mb-3 border" href={"/exercise/create?session_id="+id}>
+            <Button variant="light mb-3 border" href={"/exercise/create?session_id="+session_id}>
                 + Create exercise
             </Button>
         ) : (<></>)
@@ -273,12 +289,36 @@ const Session = () => {
                     </div>
                 </div>
 
-                {descriptionContent()}
+                {isTeacher ? (
+                    <Tabs
+                        activeKey={activeTab}
+                        onSelect={(key:any) => {key && toggle(key)}}
+                        id="session-tabs"
+                        className="mb-3"
+                        variant="pills"
+                    >
+                        <Tab eventKey="description" title="Description">
+                            {descriptionContent()}
+                        </Tab>
 
-                <hr />
+                        <Tab eventKey="submission" title="Submission">
+                            {exercisesContent()}
+                        </Tab>
 
-                <h2>Exercises</h2>
-                {exercisesContent()}
+                        {isTeacher ? (
+                            <Tab eventKey="results" title="Results">
+                                <ResultsTable session_id={session_id} />
+                            </Tab>
+                        ) : (<></>)}
+
+                    </Tabs>
+                    ) : (<>
+                        {descriptionContent()}
+
+                        <h3>Exercises</h3>
+                        {exercisesContent()}
+                    </>)
+                }
 
             </Container>
         </>

@@ -35,7 +35,8 @@ function App() {
 					<Route path="course/create" element={<CreateCourse/>} />
 					<Route path="course/:id" element={<Course/>} />
 
-					<Route path="session/:id" element={<Session/>} />
+					<Route path="session/:session_id" element={<Session/>} />
+					<Route path="session/:session_id/:tab" element={<Session/>} />
 					<Route path="session/create" element={<CreateSession/>} />
 
 					<Route path="exercise/:exercise_id/" element={<Exercise/>} />
