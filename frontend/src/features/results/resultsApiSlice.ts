@@ -8,6 +8,13 @@ export const resultsApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        getResultsOfSession: builder.query({
+            query: params => ({
+                url: `/api/session_results/?session_id=${params.session_id}`,
+                method: 'GET',
+            })
+        }),
+
         getAllResults: builder.query({
             query: () => ({
                 url: `/api/all_results`,
@@ -19,5 +26,6 @@ export const resultsApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetResultsOfUserQuery,
+    useGetResultsOfSessionQuery,
     useGetAllResultsQuery,
 } = resultsApiSlice;
