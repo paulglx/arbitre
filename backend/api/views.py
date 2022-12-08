@@ -41,6 +41,54 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer.save(owners=[self.request.user])
 
 
+class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
+    """
+    List all courses of user, including sessions and exercises (GET)
+    """
+
+    def list(self, request):
+        user = request.user
+
+        courses = Course.objects.filter(
+            Q(tutors__in=[user]) | Q(owners__in=[user])
+        ).distinct()
+
+        courses_data = []
+        for course in courses:
+
+            sessions = Session.objects.filter(course=course)
+            sessions_data = []
+            for session in sessions:
+
+                exercises = Exercise.objects.filter(session=session)
+                exercises_data = []
+                for exercise in exercises:
+                    exercises_data.append(
+                        {
+                            "id": exercise.id,
+                            "title": exercise.title,
+                        }
+                    )
+
+                sessions_data.append(
+                    {
+                        "id": session.id,
+                        "title": session.title,
+                        "exercises": exercises_data,
+                    }
+                )
+
+            courses_data.append(
+                {
+                    "id": course.id,
+                    "title": course.title,
+                    "sessions": sessions_data,
+                }
+            )
+        
+        return Response(courses_data)
+
+
 class CourseOwnerViewSet(viewsets.ViewSet):
     """
     List (GET), add (POST) or remove (DELETE) teachers from a course
@@ -242,6 +290,42 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
             )
 
         return Response(results)
+
+
+class AllResultsOfSessionViewSet(viewsets.ViewSet):
+    """
+    Get submission statuses for all exercises of a session, for all students.
+    Params: session_id
+    """
+
+    def list(self, request):
+
+        session = Session.objects.get(id=self.request.GET.get("session_id"))
+
+        all_students = session.course.students.all()
+        all_students_ids = [student.id for student in all_students]
+
+        students_data = []
+        for student_id in all_students_ids:
+
+            result_request = HttpRequest()
+            result_request.method = "GET"
+            result_request.data = {
+                "user_id": student_id,
+                "session_id": session.id,
+            }
+
+            result_response = ResultsOfSessionViewSet.list(self, result_request).data
+
+            students_data.append(
+                {
+                    "user_id": student_id,
+                    "username": User.objects.get(id=student_id).username,
+                    "exercises": result_response,
+                }
+            )
+
+        return Response(students_data)
 
 
 class AllResultsViewSet(viewsets.ViewSet):
