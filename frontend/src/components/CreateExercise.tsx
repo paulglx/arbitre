@@ -17,18 +17,18 @@ const CreateExercise = () => {
     const navigate = useNavigate()
 
     const [searchParams] = useSearchParams()
-    const session_id:number = Number(searchParams.get("session_id"))
+    const session_id: number = Number(searchParams.get("session_id"))
 
     const {
         data: session,
         isSuccess: sessionIsSuccess,
-    } = useGetSessionQuery({id:session_id});
+    } = useGetSessionQuery({ id: session_id });
 
     useEffect(() => {
         setErrMsg("")
     }, [title, description])
 
-    const handleTitleInput = (e:any) => {
+    const handleTitleInput = (e: any) => {
         setTitle(e.target.value ? e.target.value : "New exercise")
     }
 
@@ -36,18 +36,18 @@ const CreateExercise = () => {
         navigate(-1)
     }
 
-    const handleDescriptionInput = (e:any) => {
+    const handleDescriptionInput = (e: any) => {
         setDescription(e.target.value)
     }
 
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        if(title && description) {
+        if (title && description) {
             try {
                 console.log(title, description, session_id)
                 //Create session
-                const newExercise:any = await createExercise({
+                const newExercise: any = await createExercise({
                     title,
                     description,
                     session_id
@@ -72,10 +72,10 @@ const CreateExercise = () => {
                     <Breadcrumb.Item href="/course">
                         Courses
                     </Breadcrumb.Item>
-                    <Breadcrumb.Item href={"/course/"+session?.course?.id}>
+                    <Breadcrumb.Item href={"/course/" + session?.course?.id}>
                         {session?.course?.title}
                     </Breadcrumb.Item>
-                    <Breadcrumb.Item href={"/session/"+session?.id}>
+                    <Breadcrumb.Item href={"/session/" + session?.id}>
                         {session?.title}
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>
@@ -84,56 +84,56 @@ const CreateExercise = () => {
                 </Breadcrumb>
             </Container>
 
-                <Container className='p-3'>
-                    <Button variant="light mb-3" onClick={goBack}>
-                        ← Back to course
+            <Container className='p-3'>
+                <Button variant="light mb-3" onClick={goBack}>
+                    ← Back to course
+                </Button>
+
+                <h1
+                    className={title === "New exercise" ? "text-muted fw-bold" : "fw-bold"}
+                >
+                    {title}
+                </h1>
+
+                <p className='text-danger'>{errMsg}</p>
+
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Exercise title</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter title"
+                            onChange={handleTitleInput}
+                            autoComplete='off'
+                            className={errMsg ? 'is-invalid' : ''}
+                            required
+                        />
+                        <Form.Text className="text-muted">
+                            Give a short title to your session.
+                        </Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Exercise description <span className='text-muted'></span></Form.Label>
+                        <Form.Control
+                            value={description}
+                            as="textarea"
+                            rows={5}
+                            placeholder="Enter description"
+                            className={errMsg ? 'is-invalid' : ''}
+                            onChange={handleDescriptionInput}
+                        />
+                        <Form.Text className="text-muted">
+                            Markdown supported !&nbsp;
+                            <a className='text-muted' href="https://www.markdownguide.org/basic-syntax/">See reference</a>
+                        </Form.Text>
+                    </Form.Group>
+
+                    <Button variant="primary" type="submit" onClick={handleSubmit}>
+                        Submit
                     </Button>
-
-                    <h1
-                        className={title === "New exercise" ? "text-muted fw-bold" : "fw-bold"}
-                        >
-                        {title}
-                    </h1>
-
-                    <p className='text-danger'>{errMsg}</p>
-
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Exercise title</Form.Label>
-                            <Form.Control 
-                                type="text"
-                                placeholder="Enter title"
-                                onChange={handleTitleInput}
-                                autoComplete='off'
-                                className={errMsg ? 'is-invalid' : ''}
-                                required
-                            />
-                            <Form.Text className="text-muted">
-                                Give a short title to your session.
-                            </Form.Text>
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Exercise description <span className='text-muted'></span></Form.Label>
-                            <Form.Control
-                                value={description}
-                                as="textarea"
-                                rows={5}
-                                placeholder="Enter description"
-                                className={errMsg ? 'is-invalid' : ''}
-                                onChange={handleDescriptionInput}
-                            />
-                            <Form.Text className="text-muted">
-                                Markdown supported !&nbsp;
-                                <a className='text-muted' href="https://www.markdownguide.org/basic-syntax/">See reference</a>
-                            </Form.Text>
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit" onClick={handleSubmit}>
-                            Submit
-                        </Button>
-                    </Form>
-                </Container>
+                </Form>
+            </Container>
         </Container>) : (<></>)
 }
 

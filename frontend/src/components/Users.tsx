@@ -12,7 +12,7 @@ const Users = () => {
         error
     } = useGetUsersQuery({});
 
-    let content:JSX.Element;
+    let content: JSX.Element;
     if (isLoading) {
         content = <p>Loading...</p>;
     } else if (isSuccess) {
@@ -21,7 +21,7 @@ const Users = () => {
                 <h1>Users</h1>
 
                 <ul>
-                    {users.map((user:any, i:number) => {
+                    {users.map((user: any, i: number) => {
                         return <li key={i}>{user.username}</li>
                     })}
                 </ul>

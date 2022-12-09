@@ -16,8 +16,6 @@ const ResultsTable = (props: any) => {
     const {
         data: results,
         isSuccess: isResultsSuccess,
-        isError: isResultsError,
-        error: resultsError,
     } = useGetResultsOfSessionQuery({ session_id });
 
     const statusContent = (status: string) => {

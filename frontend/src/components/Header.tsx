@@ -15,12 +15,12 @@ const Header = () => {
     const isTeacher = useSelector(selectIsTeacher)
     const refresh = useSelector(selectCurrentRefreshToken)
 
-    const [ logout ] = useLogoutMutation()
+    const [logout] = useLogoutMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const signout = () => {
-        logout({refresh})
+        logout({ refresh })
         dispatch(logOut({}))
         navigate('/')
     }
@@ -39,7 +39,7 @@ const Header = () => {
                     <Dropdown align="end">
 
                         <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
-                            <PersonCircle className="align-middle"/>
+                            <PersonCircle className="align-middle" />
                             &nbsp;&nbsp;
                             <span>{username}</span>
                         </Dropdown.Toggle>

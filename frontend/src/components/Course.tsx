@@ -21,7 +21,7 @@ const Course = () => {
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
     const [updateLanguage] = useUpdateLanguageMutation();
-    const { id }:any = useParams();
+    const { id }: any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
@@ -55,7 +55,7 @@ const Course = () => {
 
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
-                if(editTitle) {
+                if (editTitle) {
                     (event.target as HTMLElement).blur();
                 }
             }
@@ -71,9 +71,9 @@ const Course = () => {
         isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
         isError: courseIsError,
-    } = useGetCourseQuery({id});
+    } = useGetCourseQuery({ id });
 
-    const ownersUsernames = course?.owners.map((owner:any) => owner.username);
+    const ownersUsernames = course?.owners.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
     useEffect(() => {
@@ -87,7 +87,7 @@ const Course = () => {
         isLoading: sessionsIsLoading,
         isSuccess: sessionsIsSuccess,
         isError: sessionsIsError,
-    } = useGetSessionsOfCourseQuery({course_id:id})
+    } = useGetSessionsOfCourseQuery({ course_id: id })
 
     const handleUpdate = async () => {
         try {
@@ -101,7 +101,7 @@ const Course = () => {
         }
     }
 
-    const handleDelete = (e:any) => {
+    const handleDelete = (e: any) => {
         e.preventDefault();
         try {
             deleteCourse(id);
@@ -111,7 +111,7 @@ const Course = () => {
         }
     }
 
-    const handleLanguageChange = (lang:string) => {
+    const handleLanguageChange = (lang: string) => {
         setLanguage(lang);
         updateLanguage({
             course_id: course?.id,
@@ -123,8 +123,8 @@ const Course = () => {
         <Popover id="popover-basic">
             <Popover.Header as="h3">Are you sure?</Popover.Header>
             <Popover.Body>
-            This will <strong>remove permanently</strong> this course, all its sessions and all the session's exercises. <br /><br />
-            <Button id="confirm-delete" onClick={handleDelete} type="submit" size="sm" variant="danger">Delete course</Button>
+                This will <strong>remove permanently</strong> this course, all its sessions and all the session's exercises. <br /><br />
+                <Button id="confirm-delete" onClick={handleDelete} type="submit" size="sm" variant="danger">Delete course</Button>
             </Popover.Body>
         </Popover>
     )
@@ -156,10 +156,10 @@ const Course = () => {
                         setEditTitle(false)
                         handleUpdate();
                     }}
-                    onChange={(e:any) => setTitle(e.target.value)}
+                    onChange={(e: any) => setTitle(e.target.value)}
                     placeholder="Enter course title"
                     type="text"
-                    value={title} 
+                    value={title}
                 />
             )
         }
@@ -189,13 +189,13 @@ const Course = () => {
                             autoFocus
                             className="teacher description-input"
                             onBlur={() => {
-                                if(description === "") {
+                                if (description === "") {
                                     setDescription("No description");
                                 }
                                 setEditDescription(false);
                                 handleUpdate();
                             }}
-                            onChange={(e:any) => setDescription(e.target.value)}
+                            onChange={(e: any) => setDescription(e.target.value)}
                             placeholder="Enter course description. Markdown is supported."
                             value={description}
                         />
@@ -218,13 +218,13 @@ const Course = () => {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu className="gap-1 p-2 rounded-3 mx-0">
-                        {languageChoices.map((choice:any) => (
+                        {languageChoices.map((choice: any) => (
                             <Dropdown.Item
                                 className="rounded-2"
                                 key={choice[0]}
                                 eventKey={choice[0]}
                                 onClick={() => handleLanguageChange(choice[0])}
-                                active = {choice[0] === language}
+                                active={choice[0] === language}
                             >
                                 {choice[1]}
                             </Dropdown.Item>
@@ -244,8 +244,8 @@ const Course = () => {
     //Create session button (teacher only)
     const sessionListOwnerContent = () => {
         return isOwner ? (
-            <ListGroup.Item id="create-session" action href={"/session/create?course_id="+id}>
-                        + Create Session
+            <ListGroup.Item id="create-session" action href={"/session/create?course_id=" + id}>
+                + Create Session
             </ListGroup.Item>
         ) : (<></>)
     }
@@ -253,7 +253,7 @@ const Course = () => {
     //Create session button, on "no sessions" block (teacher only)
     const sessionListOwnerContentNoSessions = () => {
         return isOwner ? (
-            <Button id="create-session-no-sessions" variant="light mb-3 border" href={"/session/create?course_id="+id}>
+            <Button id="create-session-no-sessions" variant="light mb-3 border" href={"/session/create?course_id=" + id}>
                 + Create session
             </Button>
         ) : (<></>)
@@ -280,27 +280,27 @@ const Course = () => {
         else if (sessionsIsSuccess) {
             return (
                 <ListGroup>
-                {sessions.map((session:any, i:number) => {
-                    return <ListGroup.Item
-                        action
-                        variant="light"
-                        href={"/session/"+session.id}
-                        key={i}
-                    >
-                        {session.title}
-                    </ListGroup.Item>
-                })}
-                {sessionListOwnerContent()}
+                    {sessions.map((session: any, i: number) => {
+                        return <ListGroup.Item
+                            action
+                            variant="light"
+                            href={"/session/" + session.id}
+                            key={i}
+                        >
+                            {session.title}
+                        </ListGroup.Item>
+                    })}
+                    {sessionListOwnerContent()}
                 </ListGroup>
             )
         }
     }
 
     //Session not found or not authorized
-    if(courseIsError || sessionsIsError) {
+    if (courseIsError || sessionsIsError) {
         return isTeacher ? (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
+                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
             </div>
         ) : (<></>)
     }
@@ -309,8 +309,8 @@ const Course = () => {
     return courseIsLoading ? (
         <></>
     ) : (
-    <>
-        <Header />
+        <>
+            <Header />
 
             <Container className="mb-3">
 

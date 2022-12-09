@@ -21,8 +21,8 @@ const Register = () => {
     const location = useLocation()
     const from = location.state?.from?.pathname || "/"
 
-    const [register, { isLoading:registerIsLoading }] = useRegisterMutation();
-    const [login, { isLoading:loginIsLoading }] = useLoginMutation()
+    const [register, { isLoading: registerIsLoading }] = useRegisterMutation();
+    const [login, { isLoading: loginIsLoading }] = useLoginMutation()
     const [getGroups] = useGetGroupsMutation();
     const dispatch = useDispatch()
 
@@ -34,17 +34,17 @@ const Register = () => {
         setErrMsg('')
     }, [user, pwd])
 
-    const handleSubmit = async (e : any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault()
 
-        
+
         try {
             //Register user
-            await register({ username:user, password:pwd })
+            await register({ username: user, password: pwd })
             //Login user
-            const userData = await login({ username:user, password:pwd }).unwrap()
-            const groupsData = await getGroups({ username:user }).unwrap()
-            const roles = groupsData.groups.map((g:any) => g.id);
+            const userData = await login({ username: user, password: pwd }).unwrap()
+            const groupsData = await getGroups({ username: user }).unwrap()
+            const roles = groupsData.groups.map((g: any) => g.id);
 
             dispatch(setCredentials({ ...userData, user, roles }))
             setUser('')
@@ -54,7 +54,7 @@ const Register = () => {
             } else {
                 navigate(from, { replace: true });
             }
-        } catch (err:any) {
+        } catch (err: any) {
             if (!err?.status) {
                 // isLoading: true until timeout occurs
                 setErrMsg('No Server Response');
@@ -67,50 +67,50 @@ const Register = () => {
             }
             errRef.current.focus();
         }
-        
+
     }
 
-    const handleUserInput = (e:any) => setUser(e.target.value)
-    const handlePwdInput = (e:any) => setPwd(e.target.value)
+    const handleUserInput = (e: any) => setUser(e.target.value)
+    const handlePwdInput = (e: any) => setPwd(e.target.value)
 
     const content = (registerIsLoading || loginIsLoading) ? <></> : (
 
         <div className="register text-center bg-light border rounded">
             <div className="form-signin w-100 m-auto">
-            <form onSubmit={handleSubmit}>
-                <h3 className='mb-3 p-3 fw-normal'>Create account</h3>
+                <form onSubmit={handleSubmit}>
+                    <h3 className='mb-3 p-3 fw-normal'>Create account</h3>
 
-                <p ref={errRef} className={errMsg ? "errmsg text-danger" : "d-none"} aria-live="assertive">{errMsg}</p>
+                    <p ref={errRef} className={errMsg ? "errmsg text-danger" : "d-none"} aria-live="assertive">{errMsg}</p>
 
-                <div className='form-floating'>
-                    <input
-                        className={errMsg ? 'is-invalid form-control' : 'form-control'}
-                        type="text"
-                        id="username-register"
-                        ref={userRef}
-                        value={user}
-                        onChange={handleUserInput}
-                        autoComplete="off"
-                        required
-                    />
-                    <label htmlFor="username">Username:</label>
-                </div>
+                    <div className='form-floating'>
+                        <input
+                            className={errMsg ? 'is-invalid form-control' : 'form-control'}
+                            type="text"
+                            id="username-register"
+                            ref={userRef}
+                            value={user}
+                            onChange={handleUserInput}
+                            autoComplete="off"
+                            required
+                        />
+                        <label htmlFor="username">Username:</label>
+                    </div>
 
-                <div className='form-floating'>
-                    <input
-                        className={errMsg ? 'is-invalid form-control' : 'form-control'}
-                        type="password"
-                        id="password-register"
-                        onChange={handlePwdInput}
-                        value={pwd}
-                        required
-                    />
-                    <label htmlFor="password">Password:</label>
-                </div>
-                <br/>
-                <button className='w-100 btn btn-lg btn-primary'>Sign Up</button>
-            </form>
-            <p className="mt-5 mb-3 text-muted">2022 - WIP</p>
+                    <div className='form-floating'>
+                        <input
+                            className={errMsg ? 'is-invalid form-control' : 'form-control'}
+                            type="password"
+                            id="password-register"
+                            onChange={handlePwdInput}
+                            value={pwd}
+                            required
+                        />
+                        <label htmlFor="password">Password:</label>
+                    </div>
+                    <br />
+                    <button className='w-100 btn btn-lg btn-primary'>Sign Up</button>
+                </form>
+                <p className="mt-5 mb-3 text-muted">2022 - WIP</p>
             </div>
         </div>
     )

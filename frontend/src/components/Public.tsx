@@ -28,15 +28,16 @@ const Public = () => {
                     <Register />
                 </Tab>
             </Tabs>
-        )}
+        )
+    }
 
     const content = (
         <div className="vertical-center d-flex align-items-center justify-content-between">
             <Container className="p-3">
-                    <div className="ms-auto w-50">
-                        <h1 className='border border-3 rounded-pill packed-border border-dark arbitre'>ARBITRE</h1>
-                        <h2 className="mt-3">An open source <br/> code judge</h2>
-                    </div>
+                <div className="ms-auto w-50">
+                    <h1 className='border border-3 rounded-pill packed-border border-dark arbitre'>ARBITRE</h1>
+                    <h2 className="mt-3">An open source <br /> code judge</h2>
+                </div>
             </Container>
 
             <Container>

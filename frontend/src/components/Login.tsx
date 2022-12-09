@@ -31,13 +31,13 @@ const Login = () => {
         setErrMsg('')
     }, [user, pwd])
 
-    const handleSubmit = async (e : any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault()
 
         try {
-            const userData = await login({ username:user, password:pwd }).unwrap()
-            const groupsData = await getGroups({ username:user }).unwrap()
-            const roles = groupsData.groups.map((g:any) => g.id);
+            const userData = await login({ username: user, password: pwd }).unwrap()
+            const groupsData = await getGroups({ username: user }).unwrap()
+            const roles = groupsData.groups.map((g: any) => g.id);
 
             dispatch(setCredentials({ ...userData, user, roles }))
             setUser('')
@@ -47,7 +47,7 @@ const Login = () => {
             } else {
                 navigate(from, { replace: true });
             }
-        } catch (err:any) {
+        } catch (err: any) {
             if (!err?.status) {
                 // isLoading: true until timeout occurs
                 setErrMsg('No Server Response');
@@ -62,21 +62,21 @@ const Login = () => {
         }
     }
 
-    const handleUserInput = (e:any) => setUser(e.target.value)
-    const handlePwdInput = (e:any) => setPwd(e.target.value)
+    const handleUserInput = (e: any) => setUser(e.target.value)
+    const handlePwdInput = (e: any) => setPwd(e.target.value)
 
     const content = isLoading ? <></> : (
 
         <div className="login text-center bg-light border rounded">
-            
+
             <div className="form-signin w-100 m-auto">
                 <form onSubmit={handleSubmit}>
-                <h3 className="mb-3 p-3 fw-normal">Welcome back</h3>
+                    <h3 className="mb-3 p-3 fw-normal">Welcome back</h3>
 
-                <p ref={errRef} className={errMsg ? "errmsg text-danger" : "d-none"} aria-live="assertive">{errMsg}</p>
+                    <p ref={errRef} className={errMsg ? "errmsg text-danger" : "d-none"} aria-live="assertive">{errMsg}</p>
 
                     <div className="form-floating">
-                    <input
+                        <input
                             className={errMsg ? 'is-invalid form-control' : 'form-control'}
                             type="text"
                             id="username-login"

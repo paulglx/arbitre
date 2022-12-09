@@ -21,21 +21,21 @@ const Session = () => {
     const [editTitle, setEditTitle] = useState(false);
     const [title, setTitle] = useState("");
     const [updateSession] = useUpdateSessionMutation();
-    const { session_id }:any = useParams();
+    const { session_id }: any = useParams();
     const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
     const urlTab = useParams()?.tab;
     const username = useSelector(selectCurrentUser);
 
     useEffect(() => {
-        if(!urlTab) {
-            navigate(`./description`, {replace: true});
+        if (!urlTab) {
+            navigate(`./description`, { replace: true });
         }
         setActiveTab(urlTab!);
     }, [urlTab, navigate]);
 
-    const toggle = (tab:any) => {
-        if (activeTab !== tab) navigate(`/session/${session_id}/${tab}` , {replace: true});
+    const toggle = (tab: any) => {
+        if (activeTab !== tab) navigate(`/session/${session_id}/${tab}`, { replace: true });
     }
 
     useEffect(() => {
@@ -43,10 +43,10 @@ const Session = () => {
         //autosize textareas
         const textareas = document.getElementsByTagName("textarea");
         autosize(textareas);
-        
+
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Enter') {
-                if(editTitle) {
+                if (editTitle) {
                     (event.target as HTMLElement).blur();
                 }
             }
@@ -62,9 +62,9 @@ const Session = () => {
         isLoading: sessionIsLoading,
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
-    } = useGetSessionQuery({id:session_id});
+    } = useGetSessionQuery({ id: session_id });
 
-    const ownerUsernames = session?.course.owners.map((o:any) => o.username);
+    const ownerUsernames = session?.course.owners.map((o: any) => o.username);
     const isOwner = ownerUsernames?.includes(username);
 
     useEffect(() => {
@@ -77,7 +77,7 @@ const Session = () => {
         isLoading: exercisesIsLoading,
         isSuccess: exercisesIsSuccess,
         isError: exercisesIsError,
-    } = useGetExercisesOfSessionQuery({session_id});
+    } = useGetExercisesOfSessionQuery({ session_id });
 
     const course = session?.course
 
@@ -94,10 +94,10 @@ const Session = () => {
         }
     }
 
-    const handleDelete = (e:any) => {
+    const handleDelete = (e: any) => {
         e.preventDefault();
         try {
-            deleteSession({id:session_id});
+            deleteSession({ id: session_id });
         } catch (e) {
             console.log(e);
         } finally {
@@ -109,8 +109,8 @@ const Session = () => {
         <Popover id="popover-basic">
             <Popover.Header as="h3">Are you sure?</Popover.Header>
             <Popover.Body>
-            This will <strong>remove permanently</strong> this session and all its exercises. <br /><br />
-            <Button onClick={handleDelete} type="submit" size="sm" variant="danger">Delete session</Button>
+                This will <strong>remove permanently</strong> this session and all its exercises. <br /><br />
+                <Button onClick={handleDelete} type="submit" size="sm" variant="danger">Delete session</Button>
             </Popover.Body>
         </Popover>
     )
@@ -135,8 +135,8 @@ const Session = () => {
                     id="title-input"
                     type="text"
                     className="teacher title-input h2 fw-bold p-2"
-                    value={title} 
-                    onChange={(e:any) => setTitle(e.target.value)}
+                    value={title}
+                    onChange={(e: any) => setTitle(e.target.value)}
                     onBlur={() => {
                         if (title === "") {
                             setTitle("Untitled session");
@@ -150,7 +150,7 @@ const Session = () => {
         }
     }
 
-        // Show description or edit description
+    // Show description or edit description
     // TODO implement ctrl+z
     const descriptionContent = () => {
         if (!isOwner || !editDescription) {
@@ -171,9 +171,9 @@ const Session = () => {
                             as="textarea"
                             className="teacher description-input"
                             value={description}
-                            onChange={(e:any) => setDescription(e.target.value)}
+                            onChange={(e: any) => setDescription(e.target.value)}
                             onBlur={() => {
-                                if(description === "") {
+                                if (description === "") {
                                     setDescription("No description");
                                 }
                                 setEditDescription(false);
@@ -202,15 +202,15 @@ const Session = () => {
 
     const exerciseListTeacherContent = () => {
         return isOwner ? (
-            <ListGroup.Item action href={"/exercise/create?session_id="+session_id}>
-                        + Create Exercise
+            <ListGroup.Item action href={"/exercise/create?session_id=" + session_id}>
+                + Create Exercise
             </ListGroup.Item>
         ) : (<></>)
     }
 
     const exerciseListTeacherContentNoExercises = () => {
         return isOwner ? (
-            <Button variant="light mb-3 border" href={"/exercise/create?session_id="+session_id}>
+            <Button variant="light mb-3 border" href={"/exercise/create?session_id=" + session_id}>
                 + Create exercise
             </Button>
         ) : (<></>)
@@ -237,42 +237,42 @@ const Session = () => {
         else if (exercisesIsSuccess) {
             return (
                 <ListGroup>
-                {exercises.map((exercise:any, i:number) => {
-                    return <ListGroup.Item
-                        action
-                        variant="light"
-                        href={"/exercise/"+exercise.id}
-                        key={i}
-                    >
-                        {exercise.title}
-                    </ListGroup.Item>
-                })}
-                {exerciseListTeacherContent()}
+                    {exercises.map((exercise: any, i: number) => {
+                        return <ListGroup.Item
+                            action
+                            variant="light"
+                            href={"/exercise/" + exercise.id}
+                            key={i}
+                        >
+                            {exercise.title}
+                        </ListGroup.Item>
+                    })}
+                    {exerciseListTeacherContent()}
                 </ListGroup>
             )
         }
     }
 
-    if(exercisesIsError || sessionIsError) {
+    if (exercisesIsError || sessionIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The session you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
+                <h3>The session you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
             </div>
         )
     }
 
-    return sessionIsLoading  ? (
+    return sessionIsLoading ? (
         <></>
     ) : (
         <>
             <Header />
-                
+
             <Container>
                 <Breadcrumb>
                     <Breadcrumb.Item href="/course">
                         Courses
                     </Breadcrumb.Item>
-                    <Breadcrumb.Item href={"/course/"+course.id}>
+                    <Breadcrumb.Item href={"/course/" + course.id}>
                         {course.title}
                     </Breadcrumb.Item>
                     <Breadcrumb.Item active>
@@ -292,7 +292,7 @@ const Session = () => {
                 {isTeacher ? (
                     <Tabs
                         activeKey={activeTab}
-                        onSelect={(key:any) => {key && toggle(key)}}
+                        onSelect={(key: any) => { key && toggle(key) }}
                         id="session-tabs"
                         className="mb-3"
                         variant="pills"
@@ -312,12 +312,12 @@ const Session = () => {
                         ) : (<></>)}
 
                     </Tabs>
-                    ) : (<>
-                        {descriptionContent()}
+                ) : (<>
+                    {descriptionContent()}
 
-                        <h3>Exercises</h3>
-                        {exercisesContent()}
-                    </>)
+                    <h3>Exercises</h3>
+                    {exercisesContent()}
+                </>)
                 }
 
             </Container>

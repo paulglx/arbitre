@@ -29,7 +29,7 @@ const Exercise = () => {
     const [title, setTitle] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
     const [updateTest] = useUpdateTestMutation();
-    const { exercise_id } : any = useParams();
+    const { exercise_id }: any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
     const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
@@ -41,24 +41,24 @@ const Exercise = () => {
         isLoading: exerciseIsLoading,
         isSuccess: exerciseIsSuccess,
         isError: exerciseIsError,
-    } = useGetExerciseQuery({id:exercise_id});
+    } = useGetExerciseQuery({ id: exercise_id });
 
     const session = exercise?.session
     const course = session?.course
-    const ownersUsernames = exercise?.session.course.owners.map((owner:any) => owner.username);
+    const ownersUsernames = exercise?.session.course.owners.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
     const {
         data: testsResponse,
-    } = useGetTestsOfExerciseQuery({exercise_id});
+    } = useGetTestsOfExerciseQuery({ exercise_id });
 
-    const toggle = (tab:any) => {
-        if (activeTab !== tab) navigate(`/exercise/${exercise_id}/${tab}` , {replace: true});
+    const toggle = (tab: any) => {
+        if (activeTab !== tab) navigate(`/exercise/${exercise_id}/${tab}`, { replace: true });
     }
 
     useEffect(() => {
-        if(!urlTab) {
-            navigate(`./description`, {replace: true});
+        if (!urlTab) {
+            navigate(`./description`, { replace: true });
         }
         setActiveTab(urlTab!);
     }, [urlTab, navigate]);
@@ -66,8 +66,8 @@ const Exercise = () => {
     //On load
     useEffect(() => {
 
-       //autosize textareas
-       // TODO fix jumping page
+        //autosize textareas
+        // TODO fix jumping page
         const textareas = document.getElementsByTagName("textarea");
         autosize(textareas)
 
@@ -90,7 +90,7 @@ const Exercise = () => {
 
     const handleUpdateExercise = async () => {
         try {
-            await updateExercise({id: exercise_id, title, description, session_id: session.id});
+            await updateExercise({ id: exercise_id, title, description, session_id: session.id });
         } catch (error) {
             console.log(error);
         }
@@ -98,7 +98,7 @@ const Exercise = () => {
 
     const handleDeleteExercise = async () => {
         try {
-            await deleteExercise({id: exercise_id});
+            await deleteExercise({ id: exercise_id });
             navigate(`/session/${session.id}`)
         } catch (error) {
             console.log(error);
@@ -109,15 +109,15 @@ const Exercise = () => {
         <Popover id="popover-basic">
             <Popover.Header as="h3">Are you sure?</Popover.Header>
             <Popover.Body>
-            This will <strong>remove permanently</strong> this exercise, and all associated submissions.<br /><br />
-            <Button id="confirm-delete" onClick={handleDeleteExercise} type="submit" size="sm" variant="danger">Delete exercise</Button>
+                This will <strong>remove permanently</strong> this exercise, and all associated submissions.<br /><br />
+                <Button id="confirm-delete" onClick={handleDeleteExercise} type="submit" size="sm" variant="danger">Delete exercise</Button>
             </Popover.Body>
         </Popover>
     )
 
     const handleCreateOrUpdateTest = async (testId: any) => {
-        const test = tests.filter((t:any) => t.id===testId)[0]
-        const newTest:boolean = test?.new;
+        const test = tests.filter((t: any) => t.id === testId)[0]
+        const newTest: boolean = test?.new;
         if (newTest) {
             await createTest({
                 exercise: exercise_id,
@@ -137,24 +137,24 @@ const Exercise = () => {
         }
     }
 
-    const handeDeleteTest = async (testId:any) => {
+    const handeDeleteTest = async (testId: any) => {
         try {
-            await deleteTest({id:testId});
+            await deleteTest({ id: testId });
             //remove test from tests state
-            setTests(tests.filter((t:any) => t.id!==testId));
+            setTests(tests.filter((t: any) => t.id !== testId));
         } catch (error) {
             console.log(error);
         }
     }
 
-    const handleSubmit = async (e : any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        const form=e.target[0];
+        const form = e.target[0];
         if (form.checkValidity() === false) {
             e.stopPropagation();
         }
-        
+
         const formData = new FormData();
         formData.append("exercise", exercise.id)
         formData.append("file", form.files[0])
@@ -164,7 +164,7 @@ const Exercise = () => {
     }
 
     //Prevent blurring test div when focusing one of its inputs
-    const handleTestBlur = (e : any) => {
+    const handleTestBlur = (e: any) => {
         if (!e.currentTarget.contains(e.relatedTarget)) {
             setEditTest(false);
             handleCreateOrUpdateTest(editTestId);
@@ -198,10 +198,10 @@ const Exercise = () => {
                         setEditTitle(false)
                         handleUpdateExercise();
                     }}
-                    onChange={(e:any) => setTitle(e.target.value)}
+                    onChange={(e: any) => setTitle(e.target.value)}
                     placeholder="Enter exercise title"
                     type="text"
-                    value={title} 
+                    value={title}
                 />
             )
         }
@@ -229,13 +229,13 @@ const Exercise = () => {
                             autoFocus
                             className="teacher description-input"
                             onBlur={() => {
-                                if(description === "") {
+                                if (description === "") {
                                     setDescription("No description");
                                 }
                                 setEditDescription(false);
                                 handleUpdateExercise();
                             }}
-                            onChange={(e:any) => setDescription(e.target.value)}
+                            onChange={(e: any) => setDescription(e.target.value)}
                             placeholder="Enter exercise description. Markdown is supported."
                             value={description}
                         />
@@ -263,103 +263,103 @@ const Exercise = () => {
         return (exerciseIsSuccess && tests) ? (
             <>
 
-            <h6 className="text-muted fw-light">
-                {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
-            </h6>
+                <h6 className="text-muted fw-light">
+                    {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
+                </h6>
 
-            {tests.map((test:any) => (
+                {tests.map((test: any) => (
 
-                <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " editable-test-focused" : "")} key={test?.id} tabIndex={0}
-                    onFocus={() => {isOwner && setEditTestId(test?.id); setEditTest(true)}}
-                    onBlur={(e) => {isOwner && handleTestBlur(e)}}
-                    onMouseEnter={() => isOwner && setHoveredTestId(test?.id)}
-                    onMouseLeave={() => isOwner && setHoveredTestId(-1)}
-                >
+                    <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " editable-test-focused" : "")} key={test?.id} tabIndex={0}
+                        onFocus={() => { isOwner && setEditTestId(test?.id); setEditTest(true) }}
+                        onBlur={(e) => { isOwner && handleTestBlur(e) }}
+                        onMouseEnter={() => isOwner && setHoveredTestId(test?.id)}
+                        onMouseLeave={() => isOwner && setHoveredTestId(-1)}
+                    >
 
-                    <Row className="g-2">
+                        <Row className="g-2">
 
-                        <Col md={3}>
+                            <Col md={3}>
 
-                            <Form.Control
-                                className={"bg-white fw-bold" + (editTest && editTestId === test?.id ? " " : " border")}
-                                placeholder="Test name"
-                                aria-label="Test name"
-                                value={test?.name}
-                                autoComplete="off"
-                                onChange={(e) => {isOwner && setTests(tests.map((t:any) => t.id === test?.id ? {...t, name: e.target.value} : t))}}
-                                {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
-                            />
+                                <Form.Control
+                                    className={"bg-white fw-bold" + (editTest && editTestId === test?.id ? " " : " border")}
+                                    placeholder="Test name"
+                                    aria-label="Test name"
+                                    value={test?.name}
+                                    autoComplete="off"
+                                    onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, name: e.target.value } : t)) }}
+                                    {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                                />
 
-                        </Col>
+                            </Col>
 
-                        <Col md={4}>
+                            <Col md={4}>
 
-                        <InputGroup>
+                                <InputGroup>
 
-                            <InputGroup.Text>Input</InputGroup.Text>
+                                    <InputGroup.Text>Input</InputGroup.Text>
 
-                            <Form.Control
-                                as="textarea"
-                                placeholder="Input to test for"
-                                rows={1}
-                                aria-label="Input"
-                                value={test?.stdin}
-                                autoComplete="off"
-                                onChange={(e) => {isOwner && setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdin: e.target.value} : t))}}
-                                {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
-                            />
+                                    <Form.Control
+                                        as="textarea"
+                                        placeholder="Input to test for"
+                                        rows={1}
+                                        aria-label="Input"
+                                        value={test?.stdin}
+                                        autoComplete="off"
+                                        onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdin: e.target.value } : t)) }}
+                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                                    />
 
-                        </InputGroup>
+                                </InputGroup>
 
-                        </Col>
+                            </Col>
 
-                        <Col md={4}>
+                            <Col md={4}>
 
-                        <InputGroup>
+                                <InputGroup>
 
-                            <InputGroup.Text>Output</InputGroup.Text>
+                                    <InputGroup.Text>Output</InputGroup.Text>
 
-                            <Form.Control
-                                as="textarea"
-                                placeholder="Expected output"
-                                rows={1}
-                                aria-label="Ouput"
-                                value={test?.stdout}
-                                autoComplete="off"
-                                onChange={(e) => {setTests(tests.map((t:any) => t.id === test?.id ? {...t, stdout: e.target.value} : t))}}
-                                {...(editTest && editTestId === test?.id ? {} : {disabled: true, readOnly: true})}
-                            />
+                                    <Form.Control
+                                        as="textarea"
+                                        placeholder="Expected output"
+                                        rows={1}
+                                        aria-label="Ouput"
+                                        value={test?.stdout}
+                                        autoComplete="off"
+                                        onChange={(e) => { setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdout: e.target.value } : t)) }}
+                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                                    />
 
-                        </InputGroup>
-                        </Col>
-                        <Col>
-                        {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
-                            <Button
-                                className="btn-link delete-button btn-light text-danger text-decoration-none float-end"
-                                onClick={(e) => {isOwner && handeDeleteTest(editTestId)}}
-                            >
-                                Delete
-                            </Button>
-                        ) : (<></>)}
-                        </Col>
-                    </Row>
-                </div>
-            ))}
+                                </InputGroup>
+                            </Col>
+                            <Col>
+                                {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
+                                    <Button
+                                        className="btn-link delete-button btn-light text-danger text-decoration-none float-end"
+                                        onClick={(e) => { isOwner && handeDeleteTest(editTestId) }}
+                                    >
+                                        Delete
+                                    </Button>
+                                ) : (<></>)}
+                            </Col>
+                        </Row>
+                    </div>
+                ))}
 
-            {isOwner ? (
-                <Button
-                    className="btn-link btn-light"
-                    onClick={(e) => {
-                        //generates a random id to differentiate between new tests. On creating the test, this id will be ignored by the API.
-                        const randomId = Array(16).join().split(',').map(function() { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
-                        setTests([...tests, {id: randomId, name: "New Test", stdin: "", stdout: "", new:true}])
-                    }}
-                >
-                    + ADD TEST
-                </Button>
-            ) : (<></>)}
+                {isOwner ? (
+                    <Button
+                        className="btn-link btn-light"
+                        onClick={(e) => {
+                            //generates a random id to differentiate between new tests. On creating the test, this id will be ignored by the API.
+                            const randomId = Array(16).join().split(',').map(function () { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
+                            setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }])
+                        }}
+                    >
+                        + ADD TEST
+                    </Button>
+                ) : (<></>)}
 
-        </>
+            </>
         ) : (<></>)
 
     }
@@ -369,7 +369,7 @@ const Exercise = () => {
             <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
                 <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>Submission file</Form.Label>
-                    <Form.Control required type="file" name="file"/>
+                    <Form.Control required type="file" name="file" />
                     <Form.Text className="text-muted">You are logged in as <u>{username}</u></Form.Text>
                 </Form.Group>
 
@@ -379,73 +379,73 @@ const Exercise = () => {
             </Form>
 
             <br />
-            
+
             <TestResult exercise_id={exercise.id} />
         </>)
     }
 
-    if(exerciseIsError) {
+    if (exerciseIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The exercise you are looking for doesn't exist, <br />or you aren't allowed to access it.<br/><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
+                <h3>The exercise you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
             </div>
         )
     }
 
     return exerciseIsLoading ? (
         <></>
-    ):(<>
+    ) : (<>
 
-    <Header />
+        <Header />
 
-    <Container className="mb-3">
+        <Container className="mb-3">
 
-        <Breadcrumb>
-            <Breadcrumb.Item href="/course">
-                Courses
-            </Breadcrumb.Item>
-            <Breadcrumb.Item href={"/course/"+course.id}>
-                {course.title}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item href={"/session/"+session.id}>
-                {session.title}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item active>
-                {exercise.title}
-            </Breadcrumb.Item>
-        </Breadcrumb>
+            <Breadcrumb>
+                <Breadcrumb.Item href="/course">
+                    Courses
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={"/course/" + course.id}>
+                    {course.title}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href={"/session/" + session.id}>
+                    {session.title}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>
+                    {exercise.title}
+                </Breadcrumb.Item>
+            </Breadcrumb>
 
-        <br />
+            <br />
 
-        <div className="d-flex align-items-center justify-content-between">
-            {titleContent()}
-            <div className="p-0 mb-2">
-                {teacherActionsContent()}
+            <div className="d-flex align-items-center justify-content-between">
+                {titleContent()}
+                <div className="p-0 mb-2">
+                    {teacherActionsContent()}
+                </div>
             </div>
-        </div>
 
-        <Tabs
-            activeKey={activeTab}
-            onSelect={(key:any) => {key && toggle(key)}}
-            id="exercise-tabs"
-            className="mb-3"
-            variant="pills"
-        >
-            <Tab eventKey="description" title="Description">
-                {descriptionContent()}
-            </Tab>
-
-            {isTeacher ? (
-                <Tab eventKey="tests" title="Tests">
-                    {testsContent()}
+            <Tabs
+                activeKey={activeTab}
+                onSelect={(key: any) => { key && toggle(key) }}
+                id="exercise-tabs"
+                className="mb-3"
+                variant="pills"
+            >
+                <Tab eventKey="description" title="Description">
+                    {descriptionContent()}
                 </Tab>
-            ) : (<></>)}      
 
-            <Tab eventKey="submission" title="Submission">
-                {submissionContent()}
-            </Tab>      
+                {isTeacher ? (
+                    <Tab eventKey="tests" title="Tests">
+                        {testsContent()}
+                    </Tab>
+                ) : (<></>)}
 
-        </Tabs>
+                <Tab eventKey="submission" title="Submission">
+                    {submissionContent()}
+                </Tab>
+
+            </Tabs>
 
         </Container>
     </>)

@@ -43,10 +43,10 @@ const Courses = () => {
             <hr />
             <h2>Your courses</h2>
             <ListGroup>
-                {courses.map((course:any, i:number) => {
+                {courses.map((course: any, i: number) => {
                     return <ListGroup.Item
                         action
-                        href={"/course/"+course.id}
+                        href={"/course/" + course.id}
                         key={i}
                     >
                         {course.title}

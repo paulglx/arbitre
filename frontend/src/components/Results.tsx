@@ -17,8 +17,6 @@ const Results = () => {
     const {
         data: courses,
         isSuccess: isCoursesSuccess,
-        isError: isCoursesError,
-        error: coursesError,
     } = useGetCoursesSessionsExercisesQuery({});
 
     useEffect(() => {

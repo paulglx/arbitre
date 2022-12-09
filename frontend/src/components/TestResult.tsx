@@ -1,7 +1,7 @@
 import { Badge, ListGroup, Spinner } from 'react-bootstrap';
 import { useGetSubmissionByExerciseQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
-const TestResult = (props:any) => {
+const TestResult = (props: any) => {
 
     const exercise_id = props.exercise_id;
     const user_id = props.user_id || null;
@@ -9,27 +9,26 @@ const TestResult = (props:any) => {
     const {
         data: testResults,
         isSuccess,
-    } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id, user_id:user_id});
+    } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id });
 
     const {
         data: submissionData,
-        isSuccess: submissionIsSuccess,
-    } = useGetSubmissionByExerciseQuery({exercise_id:exercise_id});
+    } = useGetSubmissionByExerciseQuery({ exercise_id: exercise_id });
 
     console.log(submissionData)
-    
-    const testResultContent = (result:any) => {
+
+    const testResultContent = (result: any) => {
         if (result.running) {
             return <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         } else {
-            return <span className="font-monospace">{ result.stdout }</span>
+            return <span className="font-monospace">{result.stdout}</span>
         }
     }
 
-    const statusPillContent = (result:any) => {
+    const statusPillContent = (result: any) => {
         if (result.status === "running") {
             return (<>
-                 <span className="spinner-border spinner-border-sm p-1 m-1" role="status" aria-hidden="true"></span>
+                <span className="spinner-border spinner-border-sm p-1 m-1" role="status" aria-hidden="true"></span>
             </>)
         }
         else if (result.status === "pending") {
@@ -37,7 +36,7 @@ const TestResult = (props:any) => {
                 <Badge bg="secondary">Pending</Badge>
             </>)
         }
-        else if(result.status === "success") {
+        else if (result.status === "success") {
             return (<>
                 <Badge bg="secondary">{result.time} s</Badge>
                 &nbsp;
@@ -45,18 +44,18 @@ const TestResult = (props:any) => {
             </>)
         }
         else if (result.status === "failed") {
-                return (<>
-               <Badge bg="secondary">Fail</Badge>
+            return (<>
+                <Badge bg="secondary">Fail</Badge>
             </>)
         }
         else if (result.status === "error") {
-                return (<>
+            return (<>
                 <Badge bg="danger">Error</Badge>
             </>)
         }
     }
 
-    const statusContent = (status:string) => {
+    const statusContent = (status: string) => {
         if (status === "running") {
             return (
                 <Spinner animation="border" role="status" as="span" size="sm">
@@ -89,7 +88,7 @@ const TestResult = (props:any) => {
                 {statusContent(submissionData[0].status)}
             </ListGroup.Item>
 
-            {testResults.map((result:any, i:number) => (
+            {testResults.map((result: any, i: number) => (
                 <ListGroup.Item className='d-flex justify-content-between align-items-start' key={i}>
                     <div className='ms-2 me-auto'>
                         <div className="fw-bold">{result.exercise_test.name}</div>
