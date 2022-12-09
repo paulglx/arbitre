@@ -8,7 +8,6 @@ from .serializers import MinimalUserSerializer, UserSerializer
 
 
 class LogoutView(APIView):
-    # permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         token = RefreshToken(request.data.get("refresh"))
@@ -31,8 +30,8 @@ class UserGroup(APIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    permission_classes = [permissions.AllowAny]
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class TeachersViewSet(viewsets.ViewSet):
@@ -40,7 +39,7 @@ class TeachersViewSet(viewsets.ViewSet):
     Get all teachers
     """
 
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
         teachers = User.objects.filter(groups__id=2)

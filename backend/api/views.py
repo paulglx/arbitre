@@ -22,7 +22,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CourseSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     # Allow students, tutors or owners to get their courses
     def get_queryset(self):
@@ -45,6 +45,8 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
     """
     List all courses of user, including sessions and exercises (GET)
     """
+
+    permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
         user = request.user
@@ -241,7 +243,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ExerciseSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):
@@ -297,6 +299,8 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
     Get submission statuses for all exercises of a session, for all students.
     Params: session_id
     """
+
+    permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
 
