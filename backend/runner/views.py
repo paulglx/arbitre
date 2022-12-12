@@ -6,11 +6,13 @@ from runner.serializers import (
     TestSerializer,
 )
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         submission, created = Submission.objects.update_or_create(
@@ -25,11 +27,18 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     # Get submission for  exercise if exercise_id is given
     def get_queryset(self):
-        queryset = Submission.objects.all()
         exercise_id = self.request.query_params.get("exercise_id", None)
-        user = self.request.user
+        user_id = self.request.query_params.get("user_id", None)
+        if user_id:
+            user = User.objects.get(pk=user_id)
+        else:
+            user = self.request.user
         if exercise_id:
-            queryset = queryset.filter(exercise=exercise_id, owner=user)
+            queryset = Submission.objects.filter(exercise=exercise_id, owner=user)
+        elif user_id:
+            queryset = Submission.objects.filter(owner=user)
+        else:
+            queryset = Submission.objects.all()
         return queryset
 
 
