@@ -13,7 +13,7 @@ const JoinCourse = (props: any) => {
 
     const [codeInput, setCodeInput] = useState<any>(join_code || '')
     const digits = useDigitInput({
-        acceptedCharacters: /^[0-9]$/,
+        acceptedCharacters: /^[A-Z0-9]$/,
         length: 8,
         value: codeInput,
         onChange: (value: any) => setCodeInput(value),
@@ -25,20 +25,20 @@ const JoinCourse = (props: any) => {
 
             <br /><br />
 
-            <Container className='w-50'>
+            <Container>
                 <h1 className='fw-bold'>Join a course</h1>
                 <hr />
-                <p className='text-muted'>Enter the 8 digit course ID to join a course.</p>
+                <p className='text-muted'>Enter the 8 character course ID to join a course.</p>
 
                 <div className="jc-input-group">
-                    <input placeholder='X' inputMode="decimal" autoFocus {...digits[0]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[1]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[2]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[3]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[4]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[5]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[6]} />
-                    <input placeholder='X' inputMode="decimal" {...digits[7]} />
+                    <input placeholder='X' inputMode="text" autoFocus {...digits[0]} />
+                    <input placeholder='X' inputMode="text" {...digits[1]} />
+                    <input placeholder='X' inputMode="text" {...digits[2]} />
+                    <input placeholder='X' inputMode="text" {...digits[3]} />
+                    <input placeholder='X' inputMode="text" {...digits[4]} />
+                    <input placeholder='X' inputMode="text" {...digits[5]} />
+                    <input placeholder='X' inputMode="text" {...digits[6]} />
+                    <input placeholder='X' inputMode="text" {...digits[7]} />
                 </div>
 
                 <br />
