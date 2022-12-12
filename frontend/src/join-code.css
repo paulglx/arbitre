@@ -4,24 +4,6 @@
     font-family: var(--mono-font);
 }
 
-.jc-input-group>label:last-child,
-.jc-input-group>span:last-child {
-    margin-right: 0;
-}
-
-@media (min-width: 800px) {
-
-    .jc-input-group>label,
-    .jc-input-group>span {
-        margin-right: 0.2em;
-    }
-
-    .jc-input-group>label:last-child,
-    .jc-input-group>span:last-child {
-        margin-right: 0;
-    }
-}
-
 .jc-input-group>input {
     width: 2em;
     padding: 0.5em;
@@ -36,3 +18,8 @@
 .jc-input-group>input::placeholder {
     color: var(--bs-gray-500);
 }
+
+.jc-input-group>input:focus::placeholder {
+    color: transparent;
+}
+
