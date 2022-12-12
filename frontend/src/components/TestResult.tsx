@@ -1,10 +1,10 @@
 import { Badge, ListGroup, Spinner } from 'react-bootstrap';
-import { useGetSubmissionByExerciseQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
+import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
 const TestResult = (props: any) => {
 
     const exercise_id = props.exercise_id;
-    const user_id = props.user_id || null;
+    const user_id = props.user_id || "";
 
     const {
         data: testResults,
@@ -13,7 +13,7 @@ const TestResult = (props: any) => {
 
     const {
         data: submissionData,
-    } = useGetSubmissionByExerciseQuery({ exercise_id: exercise_id });
+    } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id });
 
     console.log(submissionData)
 
