@@ -57,7 +57,7 @@ const Courses = () => {
             </ListGroup>
 
             <ListGroup className='rounded-4 mt-3'>
-                <ListGroup.Item>
+                <ListGroup.Item action href="/course/join">
                     <BoxArrowInDownRight className='mb-1' /> &nbsp; Join a course
                 </ListGroup.Item>
             </ListGroup>
