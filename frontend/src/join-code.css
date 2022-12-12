@@ -23,3 +23,8 @@
     color: transparent;
 }
 
+.jc-input-group>.jc-input-error {
+    color: var(--bs-danger);
+    border-color: var(--bs-danger);
+}
+
