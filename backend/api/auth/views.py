@@ -31,7 +31,8 @@ class UserGroup(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # TODO fix permissions
+    permission_classes = [permissions.AllowAny]
 
 
 class TeachersViewSet(viewsets.ViewSet):
