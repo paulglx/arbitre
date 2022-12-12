@@ -107,6 +107,14 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: { language: data.language } //Must include : course_id, language
             })
         }),
+        joinCourseWithCode: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_join/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : join_code
+            })
+        }),
     })
 })
 
@@ -120,6 +128,7 @@ export const {
     useGetCoursesSessionsExercisesQuery,
     useGetOwnersQuery,
     useGetTutorsQuery,
+    useJoinCourseWithCodeMutation,
     useRemoveOwnerMutation,
     useRemoveTutorMutation,
     useUpdateCourseMutation,

@@ -18,6 +18,7 @@ from api.auth.views import LogoutView, UserGroup, UserViewSet, TeachersViewSet
 from api.views import (
     AllResultsOfSessionViewSet,
     AllResultsViewSet,
+    CourseJoinViewSet,
     CourseOwnerViewSet,
     CoursesSessionsExercisesViewSet,
     CourseTutorViewSet,
@@ -57,6 +58,8 @@ router.register(r"session", SessionViewSet, basename="session")
 router.register(r"course", CourseViewSet, basename="course")
 router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
 router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
+router.register(r"course_join", CourseJoinViewSet, basename="course_join")
+
 router.register(
     r"courses_sessions_exercises",
     CoursesSessionsExercisesViewSet,
