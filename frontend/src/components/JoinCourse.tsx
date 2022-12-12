@@ -1,23 +1,65 @@
 import '../join-code.css'
 
 import { Button, Container, Form } from 'react-bootstrap'
+import { useEffect, useState } from 'react'
 
 import Header from './Header'
 import useDigitInput from 'react-digit-input';
+import { useJoinCourseWithCodeMutation } from '../features/courses/courseApiSlice';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
-import { useState } from 'react'
 
 const JoinCourse = (props: any) => {
 
-    const { join_code } = useParams<{ join_code: string }>()
+    const [codeInput, setCodeInput] = useState<any>('')
+    const [err, setErr] = useState<any>("")
+    const [joinCourseWithCode] = useJoinCourseWithCodeMutation()
+    const { join_code: join_code_parameter } = useParams<{ join_code: string }>()
+    const navigate = useNavigate()
 
-    const [codeInput, setCodeInput] = useState<any>(join_code || '')
+    const handleCodeInput = (value: any) => {
+        setErr("")
+        setCodeInput(value.toUpperCase())
+    }
+
     const digits = useDigitInput({
-        acceptedCharacters: /^[A-Z0-9]$/,
+        acceptedCharacters: /^[a-zA-Z0-9]$/,
         length: 8,
         value: codeInput,
-        onChange: (value: any) => setCodeInput(value),
+        onChange: handleCodeInput,
     });
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
+
+        try {
+            setCodeInput(codeInput.toUpperCase())
+            const response = await joinCourseWithCode({ join_code: codeInput }).unwrap()
+            navigate(`/course/${response.course_id}`)
+
+        } catch (err: any) {
+            if (err.data.course_id) {
+                navigate(`/course/${err.data.course_id}`)
+                return
+            }
+            setErr(err.data.message)
+        }
+    }
+
+    useEffect(() => {
+        if (join_code_parameter) {
+
+            if (join_code_parameter.length !== 8) {
+                setErr("Invalid join link.")
+                navigate("/course/join")
+                return
+            }
+
+            setCodeInput(join_code_parameter)
+            handleSubmit({ preventDefault: () => { } })
+            navigate("/course/join")
+        }
+    }, [join_code_parameter])
 
     return (
         <>
@@ -25,27 +67,41 @@ const JoinCourse = (props: any) => {
 
             <br /><br />
 
-            <Container>
+            <Container className='p-3'>
+
+                <Button variant="light mb-3" href="/course">
+                    ← Back to courses
+                </Button>
+
+                <br /><br />
+
                 <h1 className='fw-bold'>Join a course</h1>
                 <hr />
-                <p className='text-muted'>Enter the 8 character course ID to join a course.</p>
+                {err === "" ?
+                    <p className='text-muted'>Enter the 8 character course ID to join a course.</p>
+                    :
+                    <p className='text-danger'>{err}</p>
+                }
 
-                <div className="jc-input-group">
-                    <input placeholder='X' inputMode="text" autoFocus {...digits[0]} />
-                    <input placeholder='X' inputMode="text" {...digits[1]} />
-                    <input placeholder='X' inputMode="text" {...digits[2]} />
-                    <input placeholder='X' inputMode="text" {...digits[3]} />
-                    <input placeholder='X' inputMode="text" {...digits[4]} />
-                    <input placeholder='X' inputMode="text" {...digits[5]} />
-                    <input placeholder='X' inputMode="text" {...digits[6]} />
-                    <input placeholder='X' inputMode="text" {...digits[7]} />
-                </div>
+                <Form className="jc-input-group">
+                    {Array(8).fill(0).map((_, i: number) => (
+                        <input
+                            type="text"
+                            placeholder='X'
+                            key={i}
+                            autoFocus={i === 0}
+                            className={err === "" ? "" : "jc-input-error"}
+                            {...digits[i]}
+                        />
+                    ))}
+                </Form>
 
                 <br />
 
                 <Button
                     variant='primary'
                     disabled={codeInput.replace(" ", "").length < 8}
+                    onClick={handleSubmit}
                 >
                     Join
                 </Button>
