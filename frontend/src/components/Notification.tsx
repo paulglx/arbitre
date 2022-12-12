@@ -13,23 +13,23 @@ const Notification = () => {
     useEffect(() => {
         dispatch(pushNotification({
             id: 1,
-            message:"This is a test notif",
+            message: "This is a test notif",
             type: "light"
         }))
-    },[dispatch])
+    }, [dispatch])
 
     return notifications ? (
         <ToastContainer className='p-3' position="bottom-end">
-            
-            {notifications.map((notif:any, i:number) => (
-                <Toast key={i} bg={notif.type} onClose={() => {dispatch(removeNotification({id:notif.id}))}} show={true} delay={3000} autohide>
+
+            {notifications.map((notif: any, i: number) => (
+                <Toast key={i} bg={notif.type} onClose={() => { dispatch(removeNotification({ id: notif.id })) }} show={true} delay={3000} autohide>
                     <Toast.Header>
                         Notification
                     </Toast.Header>
                     <Toast.Body>
                         {notif.message}
                     </Toast.Body>
-            </Toast>
+                </Toast>
             ))}
 
         </ToastContainer>

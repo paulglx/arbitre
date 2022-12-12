@@ -1,107 +1,92 @@
-import { useEffect, useState } from 'react'
-import { useGetSubmissionByExerciseQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
+import { Badge, ListGroup, Spinner } from 'react-bootstrap';
+import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
-import { ListGroup } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+const TestResult = (props: any) => {
 
-const TestResult = () => {
-
-    const { exercise_id } : any = useParams();
-
-    const [resultsExist, setResultsExist] = useState(false);
+    const exercise_id = props.exercise_id;
+    const user_id = props.user_id || "";
 
     const {
         data: testResults,
         isSuccess,
-    } = useGetSubmissionTestResultsQuery({exercise_id:exercise_id});
+    } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id });
 
     const {
         data: submissionData,
-        isSuccess: submissionIsSuccess,
-    } = useGetSubmissionByExerciseQuery({exercise_id:exercise_id});
+    } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id });
 
-    useEffect(() => {
-        setResultsExist( typeof testResults !== 'undefined' && testResults.length > 0 )
-    }, [testResults])
-    
-    const testResultContent = (result:any) => {
+    const testResultContent = (result: any) => {
         if (result.running) {
             return <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         } else {
-            return <span className="font-monospace">{ result.stdout }</span>
+            return <span className="font-monospace">{result.stdout}</span>
         }
     }
 
-    const statusPillContent = (result:any) => {
+    const statusPillContent = (result: any) => {
         if (result.status === "running") {
             return (<>
-                 <span className="spinner-border spinner-border-sm p-1 m-1" role="status" aria-hidden="true"></span>
+                <span className="spinner-border spinner-border-sm p-1 m-1" role="status" aria-hidden="true"></span>
             </>)
         }
         else if (result.status === "pending") {
             return (<>
-                <span className="badge bg-secondary rounded-pill">Pending</span>
+                <Badge bg="secondary">Pending</Badge>
             </>)
         }
-        else if(result.status === "success") {
+        else if (result.status === "success") {
             return (<>
-                <span className="badge bg-secondary rounded-pill">{result.time} s</span>
+                <Badge bg="secondary">{result.time} s</Badge>
                 &nbsp;
-                <span className="badge bg-success rounded-pill">Success</span>
+                <Badge bg="success">Success</Badge>
             </>)
         }
         else if (result.status === "failed") {
-                return (<>
-                <span className="badge bg-danger rounded-pill">Fail</span>
+            return (<>
+                <Badge bg="secondary">Fail</Badge>
             </>)
         }
         else if (result.status === "error") {
-                return (<>
-                <span className="badge bg-danger rounded-pill">Error</span>
+            return (<>
+                <Badge bg="danger">Error</Badge>
             </>)
         }
     }
 
-    const submissionStatusContent = (submission:any) => {
-        if (submission.status === "running") {
-            return (<>
-                <span className="badge bg-secondary rounded-pill">Running</span>
-            </>)
+    const statusContent = (status: string) => {
+        if (status === "running") {
+            return (
+                <Spinner animation="border" role="status" as="span" size="sm">
+                    <span className="visually-hidden">Running...</span>
+                </Spinner>
+            )
         }
-        else if(submission.status === "success") {
-            return (<>
-                <span className="badge bg-success rounded-pill">Success</span>
-            </>)
+        else if (status === "PENDING" || status === "pending") {
+            return (
+                <Spinner animation="border" role="status" as="span" size="sm">
+                    <span className="visually-hidden">Pending...</span>
+                </Spinner>
+            )
         }
-        else if (submission.status === "failed") {
-                return (<>
-                <span className="badge bg-danger rounded-pill">Fail</span>
-            </>)
+        else if (status === "success") {
+            return <Badge bg="success">Success</Badge>
         }
-        else if (submission.status === "error") {
-                return (<>
-                <span className="badge bg-danger rounded-pill">Error</span>
-            </>)
+        else if (status === "failed") {
+            return <Badge bg="secondary">Fail</Badge>
         }
-        else if (submission.status === "pending") {
-                return (<>
-                <span className="badge bg-secondary rounded-pill">Pending</span>
-            </>)
+        else if (status === "error") {
+            return <Badge bg="danger">Error</Badge>
         }
     }
 
-
-
-    return (submissionData && submissionIsSuccess && isSuccess && resultsExist) ? (
+    return (submissionData && submissionData.length > 0 && isSuccess && testResults) ? (
         <ListGroup>
             <ListGroup.Item className={'bg-light d-flex justify-content-between align-items-start'}>
-                {/* Get filename*/}
-                <span className='fw-bold'>{submissionData[0].file.split("/").pop()}</span>
-                {/* Get submission status */}
-                {submissionStatusContent(submissionData[0])}
+                <span className='fw-bold'>{submissionData[0]?.file?.split("/").pop()}</span>
+                {statusContent(submissionData[0].status)}
             </ListGroup.Item>
 
-            {testResults.map((result:any, i:number) => (
+            {testResults.map((result: any, i: number) => (
                 <ListGroup.Item className='d-flex justify-content-between align-items-start' key={i}>
                     <div className='ms-2 me-auto'>
                         <div className="fw-bold">{result.exercise_test.name}</div>
@@ -112,9 +97,10 @@ const TestResult = () => {
             ))}
 
         </ListGroup>
-    ) : (
-        <></>
-    )
+    ) : (<>
+        <p className='text-danger'>There was an error while trying to display the test results.</p>
+        <p>Try submitting the file again.</p>
+    </>)
 }
 
 export default TestResult

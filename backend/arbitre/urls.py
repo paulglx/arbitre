@@ -16,13 +16,15 @@ Including another URLconf
 
 from api.auth.views import LogoutView, UserGroup, UserViewSet, TeachersViewSet
 from api.views import (
+    AllResultsOfSessionViewSet,
+    AllResultsViewSet,
+    CourseOwnerViewSet,
+    CoursesSessionsExercisesViewSet,
+    CourseTutorViewSet,
     CourseViewSet,
     ExerciseViewSet,
-    SessionViewSet,
-    AllResultsViewSet,
     ResultsOfSessionViewSet,
-    CourseOwnerViewSet,
-    CourseTutorViewSet,
+    SessionViewSet,
 )
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -55,19 +57,27 @@ router.register(r"session", SessionViewSet, basename="session")
 router.register(r"course", CourseViewSet, basename="course")
 router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
 router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
+router.register(
+    r"courses_sessions_exercises",
+    CoursesSessionsExercisesViewSet,
+    basename="courses_sessions_exercises",
+)
 
 router.register(r"results", ResultsOfSessionViewSet, basename="results")
+router.register(
+    r"session_results", AllResultsOfSessionViewSet, basename="session_results"
+)
 router.register(r"all_results", AllResultsViewSet, basename="all_results")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("runner/", include("runner.urls")),
     path("api/", include(router.urls)),  # Contains : /exercise, /session, /course
     path("api/auth/", include(auth_router.urls)),  # Contains : /users
-    path("api/auth/users/groups", UserGroup.as_view(), name="user_groups"),
     path("api/auth/logout/", LogoutView.as_view(), name="logout"),
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/auth/users/groups", UserGroup.as_view(), name="user_groups"),
+    path("runner/", include("runner.urls")),
     # Swagger
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",

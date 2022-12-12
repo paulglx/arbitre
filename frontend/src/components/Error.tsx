@@ -2,12 +2,12 @@ import { Container, ListGroup } from "react-bootstrap"
 
 import Header from "./Header"
 
-const Error = (props:any) => {
+const Error = (props: any) => {
 
     const isError = props.isError
     const error = props.error ? JSON.parse(props.error) : {}
 
-    const errorExplained = (status:any) => {
+    const errorExplained = (status: any) => {
         switch (status) {
             case 'FETCH_ERROR':
                 return 'There was an error fetching the data from the server. Please try again later.'
@@ -37,7 +37,7 @@ const Error = (props:any) => {
                 </ListGroup>
             </Container>
         </Container>
-        </>) : (<></>)
+    </>) : (<></>)
 }
 
 export default Error
