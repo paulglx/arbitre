@@ -8,7 +8,6 @@ from .serializers import MinimalUserSerializer, UserSerializer
 
 
 class LogoutView(APIView):
-
     def post(self, request):
         token = RefreshToken(request.data.get("refresh"))
         token.blacklist()

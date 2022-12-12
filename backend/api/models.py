@@ -48,6 +48,7 @@ class Course(models.Model):
         related_name="%(class)s_courses_tutors",
         blank=True,
     )
+    join_code = models.CharField(max_length=8, blank=False, default="00000000")
 
     def __str__(self):
         return self.title

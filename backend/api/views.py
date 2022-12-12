@@ -13,6 +13,8 @@ from rest_framework.response import Response
 from runner.models import Submission
 from runner.serializers import SubmissionSerializer
 import json
+import secrets
+import string
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -23,6 +25,15 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     serializer_class = CourseSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def generate_join_code(self):
+        alphabet = string.ascii_uppercase + string.digits
+
+        join_code = "".join(secrets.choice(alphabet) for i in range(8))
+        while Course.objects.filter(join_code=join_code).exists():
+            join_code = "".join(secrets.choice(alphabet) for i in range(8))
+
+        return join_code
 
     # Allow students, tutors or owners to get their courses
     def get_queryset(self):
@@ -38,7 +49,37 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     # Add current user to owners
     def perform_create(self, serializer):
-        serializer.save(owners=[self.request.user])
+        serializer.save(owners=[self.request.user], join_code=self.generate_join_code())
+
+
+class CourseJoinViewSet(viewsets.ViewSet):
+    """
+    Join a course with a join code
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        courses = Course.objects.filter(join_code=request.data.get("join_code"))
+        if not courses.exists():
+            return Response(
+                {"message": "Course not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        course = courses[0]
+        if request.user in course.students.all():
+            return Response(
+                {"message": "You are already in this course", "course_id": course.id},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        course.students.add(request.user)
+        course.save()
+        return Response(
+            {
+                "message": "Success",
+                "course_id": course.id,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
