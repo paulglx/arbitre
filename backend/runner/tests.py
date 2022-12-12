@@ -56,13 +56,9 @@ class SimpleJWTTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.client = Client()
-        endpoint = "/api/auth/users/"
-        body = {
-            "username": "apitestuser",
-            "password": "apitestpwd",
-        }
-        cls.client.post(cls.BASE_URL + endpoint, data=body)
+        user = User.objects.create_user("apitestuser", "", "apitestpwd")
+        user.save()
+
         super().setUpClass()
 
     def test_login_user_via_api(self):
@@ -143,8 +139,20 @@ class SimpleJWTTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_all_users_via_api(self):
+        endpoint = "/api/auth/token/"
+        body = {
+            "username": "apitestuser",
+            "password": "apitestpwd",
+        }
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
+
+        token = response.json()["refresh"]
+
         endpoint = "/api/auth/users/"
-        response = self.client.get(self.BASE_URL + endpoint)
+        body = {
+            "HTTP_AUTHORIZATION": "Bearer " + token,
+        }
+        response = self.client.get(self.BASE_URL + endpoint, **body)
         self.assertEqual(response.status_code, 200)
 
 
@@ -201,8 +209,22 @@ class TeacherTest(TestCase):
         user.save()
 
     def test_get_all_teachers(self):
+
+        # login as teacher1
+        endpoint = "/api/auth/token/"
+        body = {
+            "username": "teacher1",
+            "password": "teacher1",
+        }
+        response = self.client.post(endpoint, data=body)
+
+        token = response.json()["refresh"]
+
         endpoint = "/api/auth/teachers/"
-        response = self.client.get(endpoint)
+        body = {
+            "HTTP_AUTHORIZATION": "Bearer " + token,
+        }
+        response = self.client.get(endpoint, **body)
         self.assertEqual(response.status_code, 200)
 
 
