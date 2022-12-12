@@ -45,7 +45,6 @@ const CreateExercise = () => {
 
         if (title && description) {
             try {
-                console.log(title, description, session_id)
                 //Create session
                 const newExercise: any = await createExercise({
                     title,
@@ -55,7 +54,6 @@ const CreateExercise = () => {
                 //Redirect to new exercise
                 navigate(`/exercise/${newExercise?.id}`)
             } catch (err) {
-                console.log(err)
                 setErrMsg("An error occured while trying to create exercise.")
             }
         }

@@ -15,8 +15,6 @@ const TestResult = (props: any) => {
         data: submissionData,
     } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id });
 
-    console.log(submissionData)
-
     const testResultContent = (result: any) => {
         if (result.running) {
             return <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

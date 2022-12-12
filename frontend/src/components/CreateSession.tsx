@@ -43,7 +43,6 @@ const CreateSession = () => {
 
         if (title && description) {
             try {
-                console.log(title, description, course_id)
                 //Create session
                 const newSession: any = await createSession({
                     title,
@@ -53,7 +52,6 @@ const CreateSession = () => {
                 //Redirect to previous page
                 navigate(`/session/${newSession?.id}`)
             } catch (err) {
-                console.log(err)
                 setErrMsg("An error occured while trying to create session.")
             }
         }
