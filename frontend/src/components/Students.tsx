@@ -1,21 +1,25 @@
 import "../join-code.css"
 
-import { Button, Container, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Container, OverlayTrigger, Tooltip } from 'react-bootstrap'
 
-import { Clipboard } from 'react-bootstrap-icons'
+import { selectIsTeacher } from "../features/auth/authSlice"
+import { useSelector } from 'react-redux'
 import { useState } from 'react'
 
 const Students = (props: any) => {
 
     const [tooltipText, setTooltipText] = useState('Click to copy to clipboard')
+    const isTeacher = useSelector(selectIsTeacher)
 
     const course = props.course
     console.log(course)
 
-    return (<>
-        <Container className='w-50 bg-light p-3 rounded-4 pb-1'>
-            <h3>Join code</h3>
-            <div className='text-center fs-2'>
+    return isTeacher ? (<>
+
+        <Container className='bg-light p-3 rounded-4 pb-1'>
+            <h3>Invite students</h3>
+            <div className='text-center'>
+                <p className="text-muted mb-2">Course code</p>
                 <OverlayTrigger
                     placement="right"
                     overlay={<Tooltip>{tooltipText}</Tooltip>}
@@ -59,7 +63,7 @@ const Students = (props: any) => {
             <br />
             <p className='text-muted'>Students can click "Join course" on the homepage and enter this code.</p>
         </Container>
-    </>)
+    </>) : (<></>)
 }
 
 export default Students

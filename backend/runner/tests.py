@@ -1571,7 +1571,7 @@ class CourseJoinTest(TestCase):
         course.owners.add(teacher)
         course.save()
 
-        #log in as student
+        # log in as student
         response = self.client.post(
             self.BASE_URL + "/api/auth/token/",
             {

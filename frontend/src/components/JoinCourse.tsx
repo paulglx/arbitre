@@ -96,7 +96,7 @@ const JoinCourse = (props: any) => {
                 <h1 className='fw-bold'>Join a course</h1>
                 <hr />
                 {err === "" ?
-                    <p className='text-muted'>Enter the 8 character course ID to join a course.</p>
+                    <p className='text-muted'>Enter the 8 character course code to join a course.</p>
                     :
                     <p className='text-danger'>{err}</p>
                 }
