@@ -13,6 +13,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
+            "join_code",
             "language",
             "students",
             "owners",

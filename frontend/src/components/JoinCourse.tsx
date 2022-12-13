@@ -30,6 +30,7 @@ const JoinCourse = (props: any) => {
     });
 
     const handleSubmit = async (e: any) => {
+
         e.preventDefault()
 
         try {
@@ -47,6 +48,23 @@ const JoinCourse = (props: any) => {
     }
 
     useEffect(() => {
+
+        async function joinCourse(code: string) {
+            try {
+                setCodeInput(code.toUpperCase())
+                const response = await joinCourseWithCode({ join_code: code }).unwrap()
+                navigate(`/course/${response.course_id}`)
+
+            } catch (err: any) {
+                if (err.data.course_id) {
+                    navigate(`/course/${err.data.course_id}`)
+                    return
+                }
+                setErr(err.data.message)
+            }
+        }
+
+
         if (join_code_parameter) {
 
             if (join_code_parameter.length !== 8) {
@@ -54,12 +72,12 @@ const JoinCourse = (props: any) => {
                 navigate("/course/join")
                 return
             }
-
             setCodeInput(join_code_parameter)
-            handleSubmit({ preventDefault: () => { } })
-            navigate("/course/join")
+
+            joinCourse(join_code_parameter)
+
         }
-    }, [join_code_parameter])
+    }, [join_code_parameter, joinCourseWithCode, navigate])
 
     return (
         <>
@@ -101,7 +119,7 @@ const JoinCourse = (props: any) => {
                 <Button
                     variant='primary'
                     disabled={codeInput.replace(" ", "").length < 8}
-                    onClick={handleSubmit}
+                    onClick={(e: any) => handleSubmit(e)}
                 >
                     Join
                 </Button>

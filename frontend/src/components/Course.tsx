@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
+import Students from "./Students";
 import TeacherList from "./TeacherList";
 import autosize from "autosize";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
@@ -341,6 +342,10 @@ const Course = () => {
 
                         <Tab eventKey="sessions" title="Sessions">
                             {sessionContent()}
+                        </Tab>
+
+                        <Tab eventKey="students" title="Students">
+                            <Students course={course} />
                         </Tab>
 
                         <Tab eventKey="teachers" title="Teachers">
