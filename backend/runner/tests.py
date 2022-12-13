@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
+from runner.models import Submission, Test
 
 
 # Create your tests here.
@@ -1473,3 +1474,124 @@ class CoursesSessionsExercisesTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+
+
+class SubmissionTest(TestCase):
+    def test_submission_string_is_file_name(self):
+
+        user = User.objects.create_user(username="testuser", password="testpassword")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        submission = Submission.objects.create(
+            exercise=exercise,
+            file="runner/fixtures/test_files/double_string.py",
+            owner=user,
+        )
+        submission.save()
+        self.assertEqual(str(submission), "runner/fixtures/test_files/double_string.py")
+
+
+class TestTest(TestCase):
+    def test_test_string_is_test_name_plus_exercise_name(self):
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        test = Test.objects.create(
+            name="testname", stdin="", stdout="", exercise=exercise
+        )
+        test.save()
+        self.assertEqual(str(test), "testname (testexercise)")
+
+
+class CourseJoinTest(TestCase):
+    BASE_URL = "http://localhost:8000"
+    TOKEN = ""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="course_join_test_teacher", password="course_join_test_teacher"
+        )
+        teacher.save()
+
+        student = User.objects.create_user(
+            username="course_join_test_student", password="course_join_test_student"
+        )
+        student.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {
+                "username": "course_join_test_teacher",
+                "password": "course_join_test_teacher",
+            },
+            format="json",
+        )
+        cls.TOKEN = response.data["refresh"]
+
+        super(CourseJoinTest, cls).setUpClass()
+
+    def test_join_course(self):
+
+        teacher = User.objects.get(username="course_join_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription", join_code="12345678"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        #log in as student
+        response = self.client.post(
+            self.BASE_URL + "/api/auth/token/",
+            {
+                "username": "course_join_test_student",
+                "password": "course_join_test_student",
+            },
+            format="json",
+        )
+        self.TOKEN = response.data["refresh"]
+
+        endpoint = self.BASE_URL + "/api/course_join/"
+        response = self.client.post(
+            endpoint,
+            {"join_code": "12345678"},
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        # check if student is in course
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["course_id"], course.id
+        )
