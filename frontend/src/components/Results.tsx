@@ -48,7 +48,7 @@ const Results = () => {
 
     const CustomToggle = React.forwardRef(({ children, onClick }: any, ref) => (
         <a
-            className='h2 text-dark px-2 py-1 text-decoration-none shadow-sm border rounded-4'
+            className='h2 text-dark px-2 py-1 text-decoration-none shadow-sm border bg-light border-4 rounded-4'
             href="#dropdown"
             ref={ref as any}
             onClick={(e) => {
