@@ -107,7 +107,7 @@ const TeacherList = (props: any) => {
         <Col md>
             <div className="bg-light p-3 border rounded">
                 <h3>Owners</h3>
-                <p className="text-muted">Owners can see, edit and delete courses.</p>
+                <p className="text-muted">Owners manage sessions and exercises on this course.<br />They also manage students and see their results.</p>
                 <ListGroup className="rounded-4">
                     {owners.map((owner: any) => (
                         <ListGroup.Item key={owner.id} className="d-flex align-items-center justify-content-between">
@@ -139,7 +139,7 @@ const TeacherList = (props: any) => {
                             <Form onSubmit={handleAddOwner}>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Add teacher"
+                                    placeholder="Add owner"
                                     list="teacherOptions"
                                     value={ownerToAdd}
                                     onChange={(e: any) => setOwnerToAdd(e.target.value)}
@@ -169,7 +169,7 @@ const TeacherList = (props: any) => {
         <Col md>
             <div className="bg-light p-3 border rounded">
                 <h3>Tutors</h3>
-                <p className="text-muted">Tutors can see student results for this course.</p>
+                <p className="text-muted">Tutors can manage students and see their results.</p>
                 <ListGroup className="rounded-4">
                     {tutors.map((tutor: any) => (
                         <ListGroup.Item key={tutor.id} className="d-flex align-items-center justify-content-between">
@@ -191,7 +191,7 @@ const TeacherList = (props: any) => {
                             <Form onSubmit={handleAddTutor}>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Add teacher"
+                                    placeholder="Add tutor"
                                     list="teacherOptions"
                                     value={tutorToAdd}
                                     onChange={(e: any) => setTutorToAdd(e.target.value)}

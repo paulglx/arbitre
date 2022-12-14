@@ -76,7 +76,7 @@ const StudentsList = (props: any) => {
                 </tr>
             </thead>
             <tbody>
-                {students.map((student: any, i: number) => (
+                {students.length > 0 ? students.map((student: any, i: number) => (
                     <tr key={i}>
                         <td>{student.username}</td>
                         <td className='text-end'>
@@ -89,7 +89,14 @@ const StudentsList = (props: any) => {
                             </Button>
                         </td>
                     </tr>
-                ))}
+                )) : (
+                    <tr>
+                        <td colSpan={2} className='text-center bg-light'>
+                            There are no students in this course yet. <br />
+                            <span className='text-muted'>Add students by giving them the course code or by entering their username below.</span>
+                        </td>
+                    </tr>
+                )}
                 <tr key={-1} className="">
                     <td className='align-items-center'>
                         <Form.Control
