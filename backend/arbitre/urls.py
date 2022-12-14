@@ -21,6 +21,7 @@ from api.views import (
     CourseJoinViewSet,
     CourseOwnerViewSet,
     CoursesSessionsExercisesViewSet,
+    CourseStudentViewSet,
     CourseTutorViewSet,
     CourseViewSet,
     ExerciseViewSet,
@@ -58,6 +59,7 @@ router.register(r"session", SessionViewSet, basename="session")
 router.register(r"course", CourseViewSet, basename="course")
 router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
 router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
+router.register(r"course_student", CourseStudentViewSet, basename="course_student")
 router.register(r"course_join", CourseJoinViewSet, basename="course_join")
 
 router.register(

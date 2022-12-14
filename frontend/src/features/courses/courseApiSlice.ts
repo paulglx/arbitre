@@ -99,6 +99,28 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: { user_id: data.user_id } //Must include : course_id, user_id
             })
         }),
+        getStudents: builder.query({
+            query: params => ({
+                url: `/api/course_student?course_id=${params.course_id}`,
+                method: 'GET',
+            })
+        }),
+        addStudent: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_student/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : course_id, user_id
+            })
+        }),
+        removeStudent: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_student/${data.course_id}/`,
+                method: 'DELETE',
+                credentials: 'include',
+                body: { user_id: data.user_id } //Must include : course_id, user_id
+            })
+        }),
         updateLanguage: builder.mutation({
             query: (data: any) => ({
                 url: `/api/course/${data.course_id}/`,
@@ -120,6 +142,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useAddOwnerMutation,
+    useAddStudentMutation,
     useAddTutorMutation,
     useCreateCourseMutation,
     useDeleteCourseMutation,
@@ -127,9 +150,11 @@ export const {
     useGetCourseQuery,
     useGetCoursesSessionsExercisesQuery,
     useGetOwnersQuery,
+    useGetStudentsQuery,
     useGetTutorsQuery,
     useJoinCourseWithCodeMutation,
     useRemoveOwnerMutation,
+    useRemoveStudentMutation,
     useRemoveTutorMutation,
     useUpdateCourseMutation,
     useUpdateLanguageMutation,
