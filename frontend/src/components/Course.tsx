@@ -1,6 +1,7 @@
 import { Breadcrumb, Button, Container, Dropdown, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../features/courses/courseApiSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -9,13 +10,14 @@ import Markdown from "./Markdown";
 import Students from "./Students";
 import TeacherList from "./TeacherList";
 import autosize from "autosize";
+import { pushNotification } from "../features/notification/notificationSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { useSelector } from "react-redux";
 
 const Course = () => {
 
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
+    const dispatch = useDispatch();
     const [editDescription, setEditDescription] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
     const [language, setLanguage] = useState("");
@@ -100,8 +102,16 @@ const Course = () => {
                 title,
                 description
             });
+            dispatch(pushNotification({
+                message: "The course has been updated",
+                type: "light"
+            }));
+
         } catch (e) {
-            console.log(e);
+            dispatch(pushNotification({
+                message: "Something went wrong. The course could not be updated",
+                type: "danger"
+            }));
         }
     }
 
@@ -121,6 +131,10 @@ const Course = () => {
             course_id: course?.id,
             language: lang
         });
+        dispatch(pushNotification({
+            message: `The course language has been updated to ${lang}`,
+            type: "light"
+        }));
     }
 
     const deletePopover = (
