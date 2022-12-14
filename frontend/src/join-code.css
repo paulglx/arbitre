@@ -39,4 +39,5 @@
     cursor: pointer;
     border: 3px solid var(--bs-gray-500) !important;
     background-color: var(--bs-gray-400) !important;
+    margin: -2px;
 }
