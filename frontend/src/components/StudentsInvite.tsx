@@ -6,7 +6,7 @@ import { selectIsTeacher } from "../features/auth/authSlice"
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 
-const Students = (props: any) => {
+const StudentsInvite = (props: any) => {
 
     const [tooltipText, setTooltipText] = useState('Click to copy to clipboard')
     const isTeacher = useSelector(selectIsTeacher)
@@ -66,4 +66,4 @@ const Students = (props: any) => {
     </>) : (<></>)
 }
 
-export default Students
+export default StudentsInvite
