@@ -82,6 +82,32 @@ class CourseJoinViewSet(viewsets.ViewSet):
         )
 
 
+class CourseRefreshCodeViewSet(viewsets.ViewSet):
+    """
+    Refresh course code
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        course.join_code = CourseViewSet.generate_join_code(self)
+        course.save()
+        return Response(
+            {
+                "message": "Success",
+                "course_id": course.id,
+                "join_code": course.join_code,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
     """
     List all courses of user, including sessions and exercises (GET)

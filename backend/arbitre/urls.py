@@ -19,6 +19,7 @@ from api.views import (
     AllResultsOfSessionViewSet,
     AllResultsViewSet,
     CourseJoinViewSet,
+    CourseRefreshCodeViewSet,
     CourseOwnerViewSet,
     CoursesSessionsExercisesViewSet,
     CourseStudentViewSet,
@@ -54,13 +55,14 @@ auth_router.register(r"teachers", TeachersViewSet, basename="teachers")
 
 # Models API router
 router = routers.DefaultRouter()
+router.register(r"course_join", CourseJoinViewSet, basename="course_join")
+router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
+router.register(r"course_refresh_code", CourseRefreshCodeViewSet, basename="course_refresh_code")
+router.register(r"course_student", CourseStudentViewSet, basename="course_student")
+router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
+router.register(r"course", CourseViewSet, basename="course")
 router.register(r"exercise", ExerciseViewSet, basename="exercise")
 router.register(r"session", SessionViewSet, basename="session")
-router.register(r"course", CourseViewSet, basename="course")
-router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
-router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
-router.register(r"course_student", CourseStudentViewSet, basename="course_student")
-router.register(r"course_join", CourseJoinViewSet, basename="course_join")
 
 router.register(
     r"courses_sessions_exercises",
