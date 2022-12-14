@@ -77,6 +77,9 @@ const Course = () => {
     const ownersUsernames = course?.owners.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
+    const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
+    const isTutor = tutorsUsernames?.includes(username);
+
     useEffect(() => {
         setTitle(course?.title);
         setDescription(course?.description);
@@ -333,7 +336,7 @@ const Course = () => {
                     </div>
                 </div>
 
-                {isTeacher ? (<>
+                {isOwner || isTutor ? (<>
                     <Tabs className="mb-3" variant="pills">
 
                         <Tab eventKey="default" title="Description">
