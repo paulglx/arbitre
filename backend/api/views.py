@@ -261,6 +261,73 @@ class CourseTutorViewSet(viewsets.ViewSet):
             )
 
 
+class CourseStudentViewSet(viewsets.ViewSet):
+    """
+    List (GET), add (POST) or remove (DELETE) students from a course
+    - course_id: number
+    - user_id: number
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+        course = Course.objects.get(pk=request.query_params.get("course_id"))
+        return Response(
+            {
+                "students": [
+                    {"id": user.id, "username": user.username}
+                    for user in course.students.all()
+                ]
+            }
+        )
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner of this course"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user = User.objects.get(id=request.data.get("user_id"))
+        if user in course.students.all():
+            return Response(
+                {"message": "User is already a student of this course"},
+                status=status.HTTP_409_CONFLICT,
+            )
+        if user not in course.students.all():
+            course.students.add(user)
+            course.save()
+            return Response(
+                {"message": "Student added to course",},
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "User is already a student"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def destroy(self, request, pk=None):
+        course = Course.objects.get(pk=pk)
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user = User.objects.get(id=request.data.get("user_id"))
+        if user in course.students.all():
+            course.students.remove(user)
+            course.save()
+            return Response(
+                {"message": "Student removed from course"}, status=status.HTTP_200_OK
+            )
+
+        else:
+            return Response(
+                {"message": "User is not a student"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
 class SessionViewSet(viewsets.ModelViewSet):
     """
     List all sessions (GET), or create a new session (POST).
