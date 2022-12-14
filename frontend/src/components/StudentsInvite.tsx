@@ -12,11 +12,10 @@ const StudentsInvite = (props: any) => {
     const isTeacher = useSelector(selectIsTeacher)
 
     const course = props.course
-    console.log(course)
 
     return isTeacher ? (<>
 
-        <Container className='bg-light p-3 rounded-4 pb-1'>
+        <Container className='bg-light p-3 rounded-4'>
             <h3>Invite students</h3>
             <div className='text-center'>
                 <p className="text-muted mb-2">Course code</p>
@@ -41,7 +40,7 @@ const StudentsInvite = (props: any) => {
             </div>
 
             <br />
-
+            <p className='text-muted'>Students can click "Join course" on the homepage and enter this code.</p>
             <span>Join link :&nbsp;</span>
             <OverlayTrigger
                 placement="right"
@@ -59,9 +58,6 @@ const StudentsInvite = (props: any) => {
                     {window.location.origin}/course/join/{course.join_code}
                 </span>
             </OverlayTrigger>
-
-            <br />
-            <p className='text-muted'>Students can click "Join course" on the homepage and enter this code.</p>
         </Container>
     </>) : (<></>)
 }
