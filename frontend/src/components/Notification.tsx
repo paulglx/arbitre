@@ -7,15 +7,20 @@ const Notification = () => {
     const dispatch = useDispatch();
     const notifications = useSelector(selectCurrentNotifications);
 
-    console.log(notifications)
-
     return notifications ? (
         <ToastContainer className='p-3' position="bottom-end">
 
             {notifications.map((notif: any, i: number) => (
-                <Toast key={i} bg={notif.type} onClose={() => { dispatch(removeNotification({ id: notif.id })) }} show={true} delay={3000} autohide>
+                <Toast
+                    key={i}
+                    bg={notif.type}
+                    onClose={() => { dispatch(removeNotification({ id: notif.id })) }}
+                    show={true}
+                    delay={3000}
+                    autohide
+                >
                     <Toast.Header>
-                        Notification
+                        <strong>Arbitre</strong>
                     </Toast.Header>
                     <Toast.Body>
                         {notif.message}
