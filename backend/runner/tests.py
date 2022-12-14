@@ -1051,6 +1051,115 @@ class CourseTutorsTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
+class CourseStudentsTest(TestCase):
+
+    TOKEN = ""
+    BASE_URL = "http://localhost:8000"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="cst_teacher1", password="cst_teacher1"
+        )
+        teacher.save()
+
+        course = Course.objects.create(
+            title="cst_course", description="cst_course"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {"username": "cst_teacher1", "password": "cst_teacher1"},
+            format="json",
+        )
+        cls.TOKEN = response.data["refresh"]
+
+        super(CourseStudentsTest, cls).setUpClass()
+
+    def test_get_course_students(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student1", password="cst_student1"
+        )
+        student.save()
+        course.students.add(student)
+        course.save()
+
+        endpoint = self.BASE_URL + f"/api/course_student?course_id={course.id}/"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+
+    def test_add_course_student(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student1", password="cst_student1"
+        )
+        student.save()
+
+        endpoint = self.BASE_URL + "/api/course_student/"
+        data = {"course_id": course.id, "user_id": student.id}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "Student added to course")
+
+    def test_add_course_student_already_in_course(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student2", password="cst_student2"
+        )
+        student.save()
+        course.students.add(student)
+        course.save()
+
+        endpoint = self.BASE_URL + "/api/course_student/"
+        data = {"course_id": course.id, "user_id": student.id}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.data["message"], "User is already a student of this course"
+        )
+
+    def test_remove_course_student(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student3", password="cst_student3"
+        )
+        student.save()
+        course.students.add(student)
+        course.save()
+
+        endpoint = self.BASE_URL + f"/api/course_student/{course.id}/"
+        data = {"user_id": student.id}
+        response = self.client.delete(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "Student removed from course")
+
 class SessionAPITest(TestCase):
     """
     Test Session API
@@ -1571,7 +1680,7 @@ class CourseJoinTest(TestCase):
         course.owners.add(teacher)
         course.save()
 
-        # log in as student
+        # Log in as student
         response = self.client.post(
             self.BASE_URL + "/api/auth/token/",
             {
