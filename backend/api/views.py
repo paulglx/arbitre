@@ -294,17 +294,12 @@ class CourseStudentViewSet(viewsets.ViewSet):
                 {"message": "User is already a student of this course"},
                 status=status.HTTP_409_CONFLICT,
             )
-        if user not in course.students.all():
+        else:
             course.students.add(user)
             course.save()
             return Response(
-                {"message": "Student added to course",},
+                {"message": "Student added to course"},
                 status=status.HTTP_200_OK
-            )
-        else:
-            return Response(
-                {"message": "User is already a student"},
-                status=status.HTTP_400_BAD_REQUEST,
             )
 
     def destroy(self, request, pk=None):
