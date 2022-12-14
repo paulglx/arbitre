@@ -4,7 +4,9 @@ import { Button, Container, Form } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 
 import Header from './Header'
+import { pushNotification } from '../features/notification/notificationSlice';
 import useDigitInput from 'react-digit-input';
+import { useDispatch } from 'react-redux';
 import { useJoinCourseWithCodeMutation } from '../features/courses/courseApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
@@ -15,6 +17,7 @@ const JoinCourse = (props: any) => {
     const [err, setErr] = useState<any>("")
     const [joinCourseWithCode] = useJoinCourseWithCodeMutation()
     const { join_code: join_code_parameter } = useParams<{ join_code: string }>()
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const handleCodeInput = (value: any) => {
@@ -36,10 +39,18 @@ const JoinCourse = (props: any) => {
         try {
             setCodeInput(codeInput.toUpperCase())
             const response = await joinCourseWithCode({ join_code: codeInput }).unwrap()
+            dispatch(pushNotification({
+                message: "You have successfully joined the course.",
+                type: "success"
+            }))
             navigate(`/course/${response.course_id}`)
 
         } catch (err: any) {
             if (err.data.course_id) {
+                dispatch(pushNotification({
+                    message: "You are already in this course.",
+                    type: "warning"
+                }))
                 navigate(`/course/${err.data.course_id}`)
                 return
             }
@@ -54,7 +65,6 @@ const JoinCourse = (props: any) => {
                 setCodeInput(code.toUpperCase())
                 const response = await joinCourseWithCode({ join_code: code }).unwrap()
                 navigate(`/course/${response.course_id}`)
-
             } catch (err: any) {
                 if (err.data.course_id) {
                     navigate(`/course/${err.data.course_id}`)

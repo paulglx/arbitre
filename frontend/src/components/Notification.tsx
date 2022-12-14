@@ -1,22 +1,13 @@
 import { Toast, ToastContainer } from 'react-bootstrap'
-import { pushNotification, removeNotification, selectCurrentNotifications } from '../features/notification/notificationSlice'
+import { removeNotification, selectCurrentNotifications } from '../features/notification/notificationSlice'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { useEffect } from 'react';
 
 const Notification = () => {
 
     const dispatch = useDispatch();
     const notifications = useSelector(selectCurrentNotifications);
 
-    //testing
-    useEffect(() => {
-        dispatch(pushNotification({
-            id: 1,
-            message: "This is a test notif",
-            type: "light"
-        }))
-    }, [dispatch])
+    console.log(notifications)
 
     return notifications ? (
         <ToastContainer className='p-3' position="bottom-end">

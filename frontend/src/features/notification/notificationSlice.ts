@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 interface notification {
-    id: number,
-    message: string,
-    type: string
+  id: number,
+  message: string,
+  type: string
 }
 
 const initialState = {
-    notifications: [] as notification[],
+  notifications: [] as notification[],
 }
 
 const notificationSlice = createSlice({
@@ -15,19 +15,20 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     pushNotification: (state, action) => {
-      const { id, message, type } = action.payload;
-      const notification:notification = { id, message, type };
+      const { message, type } = action.payload;
+      const id = state.notifications.length + 1;
+      const notification: notification = { id, message, type };
       state.notifications.push(notification);
     },
     removeNotification: (state, action) => {
-        const { id } = action.payload;
-        state.notifications = state.notifications.filter((notif) => {return notif.id !== id});
+      const { id } = action.payload;
+      state.notifications = state.notifications.filter((notif) => { return notif.id !== id });
     }
   }
 });
 
-export const {pushNotification, removeNotification} = notificationSlice.actions
+export const { pushNotification, removeNotification } = notificationSlice.actions
 
 export default notificationSlice.reducer
 
-export const selectCurrentNotifications = (state:any) => state.notification.notifications
+export const selectCurrentNotifications = (state: any) => state.notification.notifications

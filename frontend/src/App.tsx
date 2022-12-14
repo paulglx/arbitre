@@ -20,7 +20,11 @@ import Users from "./components/Users";
 
 function App() {
 	return (<>
+
+		<Notification />
+
 		<Routes>
+
 			<Route path="/" element={<Layout />}>
 
 				{/* Public routes */}
