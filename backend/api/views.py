@@ -66,6 +66,11 @@ class CourseJoinViewSet(viewsets.ViewSet):
                 {"message": "Course not found"}, status=status.HTTP_404_NOT_FOUND
             )
         course = courses[0]
+        if not course.join_code_enabled:
+            return Response(
+                {"message": "Join code is disabled"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         if request.user in course.students.all():
             return Response(
                 {"message": "You are already in this course", "course_id": course.id},
