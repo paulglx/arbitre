@@ -20,6 +20,7 @@ class CourseAdmin(admin.ModelAdmin):
         "title",
         "description",
         "join_code",
+        "join_code_enabled",
         "students",
         "owners",
         "tutors",

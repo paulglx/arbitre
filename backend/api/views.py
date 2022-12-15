@@ -82,6 +82,34 @@ class CourseJoinViewSet(viewsets.ViewSet):
         )
 
 
+class CourseJoinCodeEnabledViewSet(viewsets.ViewSet):
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        course.join_code_enabled = request.data.get("enabled")
+        if not isinstance(course.join_code_enabled, bool):
+            return Response(
+                {"message": "join_code_enabled must be a boolean"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        course.save()
+        return Response(
+            {
+                "message": "Success",
+                "course_id": course.id,
+                "join_code_enabled": course.join_code_enabled,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class CourseRefreshCodeViewSet(viewsets.ViewSet):
     """
     Refresh course code
@@ -324,8 +352,7 @@ class CourseStudentViewSet(viewsets.ViewSet):
             course.students.add(user)
             course.save()
             return Response(
-                {"message": "Student added to course"},
-                status=status.HTTP_200_OK
+                {"message": "Student added to course"}, status=status.HTTP_200_OK
             )
 
     def destroy(self, request, pk=None):
