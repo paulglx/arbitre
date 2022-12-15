@@ -1065,9 +1065,7 @@ class CourseStudentsTest(TestCase):
         )
         teacher.save()
 
-        course = Course.objects.create(
-            title="cst_course", description="cst_course"
-        )
+        course = Course.objects.create(title="cst_course", description="cst_course")
         course.owners.add(teacher)
         course.save()
 
@@ -1159,6 +1157,7 @@ class CourseStudentsTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "Student removed from course")
+
 
 class SessionAPITest(TestCase):
     """
@@ -1701,6 +1700,4 @@ class CourseJoinTest(TestCase):
 
         # check if student is in course
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.data["course_id"], course.id
-        )
+        self.assertEqual(response.data["course_id"], course.id)
