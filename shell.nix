@@ -16,4 +16,22 @@ pkgs.mkShell {
     ]))
     nodejs
   ];
+
+  shellHook = ''
+
+    cd backend
+
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py runserver &
+
+    celery -A arbitre worker -l info -B -E &
+
+    cd ../frontend
+
+    npm start &
+
+    cd ..
+
+  '';
 }
