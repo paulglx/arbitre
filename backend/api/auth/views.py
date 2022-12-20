@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework import permissions, viewsets
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from .serializers import MinimalUserSerializer, UserSerializer
@@ -9,9 +9,13 @@ from .serializers import MinimalUserSerializer, UserSerializer
 
 class LogoutView(APIView):
     def post(self, request):
-        token = RefreshToken(request.data.get("refresh"))
-        token.blacklist()
-        return Response("Success")
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError:
+            return Response(data={"message": "Invalid token"}, status=400)
+        return Response(data={"message": "Successfully logged out"}, status=200)
 
 
 class UserGroup(APIView):
