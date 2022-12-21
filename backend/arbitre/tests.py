@@ -127,8 +127,8 @@ class SimpleJWTTest(TestCase):
         body = {
             "refresh": "thisisawrongtoken",
         }
-        with self.assertRaises(Exception):
-            self.client.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 400)
 
     def test_register_user_via_api(self):
         endpoint = "/api/auth/users/"
@@ -147,7 +147,7 @@ class SimpleJWTTest(TestCase):
         }
         response = self.client.post(self.BASE_URL + endpoint, data=body)
 
-        token = response.json()["refresh"]
+        token = response.json()["access"]
 
         endpoint = "/api/auth/users/"
         body = {
@@ -219,7 +219,7 @@ class TeacherTest(TestCase):
         }
         response = self.client.post(endpoint, data=body)
 
-        token = response.json()["refresh"]
+        token = response.json()["access"]
 
         endpoint = "/api/auth/teachers/"
         body = {
@@ -437,8 +437,6 @@ class CourseAPITest(TestCase):
             content_type="application/json",
             **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
         )
-
-        print(response.data)
 
         endpoint = self.BASE_URL + "/api/course/"
         response = self.client.get(
@@ -1090,14 +1088,14 @@ class CourseStudentsTest(TestCase):
         course.students.add(student)
         course.save()
 
-        endpoint = self.BASE_URL + f"/api/course_student?course_id={course.id}/"
+        endpoint = self.BASE_URL + f"/api/course_student/?course_id={course.id}"
         response = self.client.get(
             endpoint,
             content_type="application/json",
             **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(len(response.data), 1)
 
     def test_add_course_student(self):
         course = Course.objects.get(title="cst_course")
