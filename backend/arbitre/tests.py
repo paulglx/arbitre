@@ -376,7 +376,7 @@ class CourseAPITest(TestCase):
             {"username": "course_test_teacher", "password": "course_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN =response.data["access"]
 
         super(CourseAPITest, cls).setUpClass()
 
@@ -438,6 +438,8 @@ class CourseAPITest(TestCase):
             **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
         )
 
+        print(response.data)
+
         endpoint = self.BASE_URL + "/api/course/"
         response = self.client.get(
             endpoint,
@@ -481,7 +483,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_teacher1", "password": "cot_teacher1"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN =response.data["access"]
 
         super(CourseOwnersTest, cls).setUpClass()
 
@@ -532,7 +534,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_owner", "password": "cot_owner"},
             format="json",
         )
-        COT_TOKEN = response.data["refresh"]
+        COT_TOKEN =response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_owner/"
         data = {"course_id": course.id, "user_id": other_user.id}
@@ -648,7 +650,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_not_an_owner", "password": "cot_not_an_owner"},
             format="json",
         )
-        COT_NOT_OWNER_TOKEN = response.data["refresh"]
+        COT_NOT_OWNER_TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_owner/"
         data = {"course_id": course.id, "user_id": not_an_owner.id}
@@ -740,7 +742,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_teacher2", "password": "cot_teacher2"},
             format="json",
         )
-        TOKEN = response.data["refresh"]
+        TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + f"/api/course_owner/{course.id}/"
         data = {"user_id": teacher2.id}
@@ -779,7 +781,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_teacher1", "password": "ctt_teacher1"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(CourseTutorsTest, cls).setUpClass()
 
@@ -830,7 +832,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_owner", "password": "ctt_owner"},
             format="json",
         )
-        ctt_TOKEN = response.data["refresh"]
+        ctt_TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_tutor/"
         data = {"course_id": course.id, "user_id": other_user.id}
@@ -946,7 +948,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_not_an_owner", "password": "ctt_not_an_owner"},
             format="json",
         )
-        ctt_NOT_owner_TOKEN = response.data["refresh"]
+        ctt_NOT_owner_TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_tutor/"
         data = {"course_id": course.id, "user_id": not_an_owner.id}
@@ -1037,7 +1039,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_teacher2", "password": "ctt_teacher2"},
             format="json",
         )
-        TOKEN = response.data["refresh"]
+        TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + f"/api/course_tutor/{course.id}/"
         data = {"user_id": teacher2.id}
@@ -1075,7 +1077,7 @@ class CourseStudentsTest(TestCase):
             {"username": "cst_teacher1", "password": "cst_teacher1"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(CourseStudentsTest, cls).setUpClass()
 
@@ -1182,7 +1184,7 @@ class SessionAPITest(TestCase):
             {"username": "session_test_teacher", "password": "session_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(SessionAPITest, cls).setUpClass()
 
@@ -1302,7 +1304,7 @@ class ExerciseAPITest(TestCase):
             {"username": "exercise_test_teacher", "password": "exercise_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(ExerciseAPITest, cls).setUpClass()
 
@@ -1516,7 +1518,7 @@ class ResultsOfSessionTest(TestCase):
             {"username": "ros_test_teacher", "password": "ros_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(ResultsOfSessionTest, cls).setUpClass()
 
@@ -1551,7 +1553,7 @@ class CoursesSessionsExercisesTest(TestCase):
             {"username": "cse_test_teacher", "password": "cse_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(CoursesSessionsExercisesTest, cls).setUpClass()
 
@@ -1665,7 +1667,7 @@ class CourseJoinTest(TestCase):
             },
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(CourseJoinTest, cls).setUpClass()
 
@@ -1688,7 +1690,7 @@ class CourseJoinTest(TestCase):
             },
             format="json",
         )
-        self.TOKEN = response.data["refresh"]
+        self.TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_join/"
         response = self.client.post(
