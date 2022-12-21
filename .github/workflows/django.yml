@@ -30,16 +30,16 @@ jobs:
         nix develop
 
     - name: Start Celery
+      working-directory: backend
       run: |
-        cd backend
         celery -A arbitre worker -l info -E -B &
         
     - name: Run Tests
+      working-directory: backend
       run: |
-        cd backend
         coverage run manage.py test  
 
     - name: Print Coverage report
+      working-directory: backend
       run: |
-        cd backend
         coverage report
