@@ -1,20 +1,23 @@
 import { Breadcrumb, Button, Container, Dropdown, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../features/courses/courseApiSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Markdown from "./Markdown";
+import Students from "./Students";
 import TeacherList from "./TeacherList";
 import autosize from "autosize";
+import { pushNotification } from "../features/notification/notificationSlice";
 import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
-import { useSelector } from "react-redux";
 
 const Course = () => {
 
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
+    const dispatch = useDispatch();
     const [editDescription, setEditDescription] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
     const [language, setLanguage] = useState("");
@@ -76,6 +79,9 @@ const Course = () => {
     const ownersUsernames = course?.owners.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
+    const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
+    const isTutor = tutorsUsernames?.includes(username);
+
     useEffect(() => {
         setTitle(course?.title);
         setDescription(course?.description);
@@ -96,8 +102,16 @@ const Course = () => {
                 title,
                 description
             });
+            dispatch(pushNotification({
+                message: "The course has been updated",
+                type: "light"
+            }));
+
         } catch (e) {
-            console.log(e);
+            dispatch(pushNotification({
+                message: "Something went wrong. The course could not be updated",
+                type: "danger"
+            }));
         }
     }
 
@@ -117,6 +131,10 @@ const Course = () => {
             course_id: course?.id,
             language: lang
         });
+        dispatch(pushNotification({
+            message: `The course language has been updated to ${lang}`,
+            type: "light"
+        }));
     }
 
     const deletePopover = (
@@ -332,7 +350,7 @@ const Course = () => {
                     </div>
                 </div>
 
-                {isTeacher ? (<>
+                {isOwner || isTutor ? (<>
                     <Tabs className="mb-3" variant="pills">
 
                         <Tab eventKey="default" title="Description">
@@ -341,6 +359,10 @@ const Course = () => {
 
                         <Tab eventKey="sessions" title="Sessions">
                             {sessionContent()}
+                        </Tab>
+
+                        <Tab eventKey="students" title="Students">
+                            <Students course={course} />
                         </Tab>
 
                         <Tab eventKey="teachers" title="Teachers">

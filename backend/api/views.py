@@ -13,6 +13,8 @@ from rest_framework.response import Response
 from runner.models import Submission
 from runner.serializers import SubmissionSerializer
 import json
+import secrets
+import string
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -23,6 +25,15 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     serializer_class = CourseSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def generate_join_code(self):
+        alphabet = string.ascii_uppercase + string.digits
+
+        join_code = "".join(secrets.choice(alphabet) for i in range(8))
+        while Course.objects.filter(join_code=join_code).exists():
+            join_code = "".join(secrets.choice(alphabet) for i in range(8))
+
+        return join_code
 
     # Allow students, tutors or owners to get their courses
     def get_queryset(self):
@@ -38,7 +49,96 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     # Add current user to owners
     def perform_create(self, serializer):
-        serializer.save(owners=[self.request.user])
+        serializer.save(owners=[self.request.user], join_code=self.generate_join_code())
+
+
+class CourseJoinViewSet(viewsets.ViewSet):
+    """
+    Join a course with a join code
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        courses = Course.objects.filter(join_code=request.data.get("join_code"))
+        if not courses.exists():
+            return Response(
+                {"message": "Course not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        course = courses[0]
+        if not course.join_code_enabled:
+            return Response(
+                {"message": "Join code is disabled"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if request.user in course.students.all():
+            return Response(
+                {"message": "You are already in this course", "course_id": course.id},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        course.students.add(request.user)
+        course.save()
+        return Response(
+            {
+                "message": "Success",
+                "course_id": course.id,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class CourseJoinCodeEnabledViewSet(viewsets.ViewSet):
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        course.join_code_enabled = request.data.get("enabled")
+        if not isinstance(course.join_code_enabled, bool):
+            return Response(
+                {"message": "join_code_enabled must be a boolean"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        course.save()
+        return Response(
+            {
+                "message": "Success",
+                "course_id": course.id,
+                "join_code_enabled": course.join_code_enabled,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class CourseRefreshCodeViewSet(viewsets.ViewSet):
+    """
+    Refresh course code
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        course.join_code = CourseViewSet.generate_join_code(self)
+        course.save()
+        return Response(
+            {
+                "message": "Success",
+                "course_id": course.id,
+                "join_code": course.join_code,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
@@ -217,6 +317,67 @@ class CourseTutorViewSet(viewsets.ViewSet):
         else:
             return Response(
                 {"message": "User is not a tutor"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class CourseStudentViewSet(viewsets.ViewSet):
+    """
+    List (GET), add (POST) or remove (DELETE) students from a course
+    - course_id: number
+    - user_id: number
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def list(self, request):
+        course = Course.objects.get(pk=request.query_params.get("course_id"))
+        return Response(
+            {
+                "students": [
+                    {"id": user.id, "username": user.username}
+                    for user in course.students.all()
+                ]
+            }
+        )
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner of this course"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user = User.objects.get(id=request.data.get("user_id"))
+        if user in course.students.all():
+            return Response(
+                {"message": "User is already a student of this course"},
+                status=status.HTTP_409_CONFLICT,
+            )
+        else:
+            course.students.add(user)
+            course.save()
+            return Response(
+                {"message": "Student added to course"}, status=status.HTTP_200_OK
+            )
+
+    def destroy(self, request, pk=None):
+        course = Course.objects.get(pk=pk)
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user = User.objects.get(id=request.data.get("user_id"))
+        if user in course.students.all():
+            course.students.remove(user)
+            course.save()
+            return Response(
+                {"message": "Student removed from course"}, status=status.HTTP_200_OK
+            )
+
+        else:
+            return Response(
+                {"message": "User is not a student"}, status=status.HTTP_404_NOT_FOUND
             )
 
 

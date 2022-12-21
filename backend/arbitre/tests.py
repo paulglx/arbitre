@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
+from runner.models import Submission, Test
 
 
 # Create your tests here.
@@ -126,8 +127,8 @@ class SimpleJWTTest(TestCase):
         body = {
             "refresh": "thisisawrongtoken",
         }
-        with self.assertRaises(Exception):
-            self.client.post(self.BASE_URL + endpoint, data=body)
+        response = self.client.post(self.BASE_URL + endpoint, data=body)
+        self.assertEqual(response.status_code, 400)
 
     def test_register_user_via_api(self):
         endpoint = "/api/auth/users/"
@@ -146,7 +147,7 @@ class SimpleJWTTest(TestCase):
         }
         response = self.client.post(self.BASE_URL + endpoint, data=body)
 
-        token = response.json()["refresh"]
+        token = response.json()["access"]
 
         endpoint = "/api/auth/users/"
         body = {
@@ -218,7 +219,7 @@ class TeacherTest(TestCase):
         }
         response = self.client.post(endpoint, data=body)
 
-        token = response.json()["refresh"]
+        token = response.json()["access"]
 
         endpoint = "/api/auth/teachers/"
         body = {
@@ -375,7 +376,7 @@ class CourseAPITest(TestCase):
             {"username": "course_test_teacher", "password": "course_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN =response.data["access"]
 
         super(CourseAPITest, cls).setUpClass()
 
@@ -480,7 +481,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_teacher1", "password": "cot_teacher1"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN =response.data["access"]
 
         super(CourseOwnersTest, cls).setUpClass()
 
@@ -531,7 +532,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_owner", "password": "cot_owner"},
             format="json",
         )
-        COT_TOKEN = response.data["refresh"]
+        COT_TOKEN =response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_owner/"
         data = {"course_id": course.id, "user_id": other_user.id}
@@ -647,7 +648,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_not_an_owner", "password": "cot_not_an_owner"},
             format="json",
         )
-        COT_NOT_OWNER_TOKEN = response.data["refresh"]
+        COT_NOT_OWNER_TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_owner/"
         data = {"course_id": course.id, "user_id": not_an_owner.id}
@@ -739,7 +740,7 @@ class CourseOwnersTest(TestCase):
             {"username": "cot_teacher2", "password": "cot_teacher2"},
             format="json",
         )
-        TOKEN = response.data["refresh"]
+        TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + f"/api/course_owner/{course.id}/"
         data = {"user_id": teacher2.id}
@@ -778,7 +779,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_teacher1", "password": "ctt_teacher1"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(CourseTutorsTest, cls).setUpClass()
 
@@ -829,7 +830,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_owner", "password": "ctt_owner"},
             format="json",
         )
-        ctt_TOKEN = response.data["refresh"]
+        ctt_TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_tutor/"
         data = {"course_id": course.id, "user_id": other_user.id}
@@ -945,7 +946,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_not_an_owner", "password": "ctt_not_an_owner"},
             format="json",
         )
-        ctt_NOT_owner_TOKEN = response.data["refresh"]
+        ctt_NOT_owner_TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + "/api/course_tutor/"
         data = {"course_id": course.id, "user_id": not_an_owner.id}
@@ -1036,7 +1037,7 @@ class CourseTutorsTest(TestCase):
             {"username": "ctt_teacher2", "password": "ctt_teacher2"},
             format="json",
         )
-        TOKEN = response.data["refresh"]
+        TOKEN = response.data["access"]
 
         endpoint = self.BASE_URL + f"/api/course_tutor/{course.id}/"
         data = {"user_id": teacher2.id}
@@ -1048,6 +1049,114 @@ class CourseTutorsTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+
+class CourseStudentsTest(TestCase):
+
+    TOKEN = ""
+    BASE_URL = "http://localhost:8000"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="cst_teacher1", password="cst_teacher1"
+        )
+        teacher.save()
+
+        course = Course.objects.create(title="cst_course", description="cst_course")
+        course.owners.add(teacher)
+        course.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {"username": "cst_teacher1", "password": "cst_teacher1"},
+            format="json",
+        )
+        cls.TOKEN = response.data["access"]
+
+        super(CourseStudentsTest, cls).setUpClass()
+
+    def test_get_course_students(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student1", password="cst_student1"
+        )
+        student.save()
+        course.students.add(student)
+        course.save()
+
+        endpoint = self.BASE_URL + f"/api/course_student/?course_id={course.id}"
+        response = self.client.get(
+            endpoint,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_add_course_student(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student1", password="cst_student1"
+        )
+        student.save()
+
+        endpoint = self.BASE_URL + "/api/course_student/"
+        data = {"course_id": course.id, "user_id": student.id}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "Student added to course")
+
+    def test_add_course_student_already_in_course(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student2", password="cst_student2"
+        )
+        student.save()
+        course.students.add(student)
+        course.save()
+
+        endpoint = self.BASE_URL + "/api/course_student/"
+        data = {"course_id": course.id, "user_id": student.id}
+        response = self.client.post(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.data["message"], "User is already a student of this course"
+        )
+
+    def test_remove_course_student(self):
+        course = Course.objects.get(title="cst_course")
+        student = User.objects.create_user(
+            username="cst_student3", password="cst_student3"
+        )
+        student.save()
+        course.students.add(student)
+        course.save()
+
+        endpoint = self.BASE_URL + f"/api/course_student/{course.id}/"
+        data = {"user_id": student.id}
+        response = self.client.delete(
+            endpoint,
+            data,
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "Student removed from course")
 
 
 class SessionAPITest(TestCase):
@@ -1073,7 +1182,7 @@ class SessionAPITest(TestCase):
             {"username": "session_test_teacher", "password": "session_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(SessionAPITest, cls).setUpClass()
 
@@ -1193,7 +1302,7 @@ class ExerciseAPITest(TestCase):
             {"username": "exercise_test_teacher", "password": "exercise_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(ExerciseAPITest, cls).setUpClass()
 
@@ -1407,7 +1516,7 @@ class ResultsOfSessionTest(TestCase):
             {"username": "ros_test_teacher", "password": "ros_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(ResultsOfSessionTest, cls).setUpClass()
 
@@ -1442,7 +1551,7 @@ class CoursesSessionsExercisesTest(TestCase):
             {"username": "cse_test_teacher", "password": "cse_test_teacher"},
             format="json",
         )
-        cls.TOKEN = response.data["refresh"]
+        cls.TOKEN = response.data["access"]
 
         super(CoursesSessionsExercisesTest, cls).setUpClass()
 
@@ -1473,3 +1582,122 @@ class CoursesSessionsExercisesTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+
+
+class SubmissionTest(TestCase):
+    def test_submission_string_is_file_name(self):
+
+        user = User.objects.create_user(username="testuser", password="testpassword")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        submission = Submission.objects.create(
+            exercise=exercise,
+            file="runner/fixtures/test_files/double_string.py",
+            owner=user,
+        )
+        submission.save()
+        self.assertEqual(str(submission), "runner/fixtures/test_files/double_string.py")
+
+
+class TestTest(TestCase):
+    def test_test_string_is_test_name_plus_exercise_name(self):
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        test = Test.objects.create(
+            name="testname", stdin="", stdout="", exercise=exercise
+        )
+        test.save()
+        self.assertEqual(str(test), "testname (testexercise)")
+
+
+class CourseJoinTest(TestCase):
+    BASE_URL = "http://localhost:8000"
+    TOKEN = ""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = Client()
+
+        teacher = User.objects.create_user(
+            username="course_join_test_teacher", password="course_join_test_teacher"
+        )
+        teacher.save()
+
+        student = User.objects.create_user(
+            username="course_join_test_student", password="course_join_test_student"
+        )
+        student.save()
+
+        # Log in as teacher
+        response = cls.client.post(
+            cls.BASE_URL + "/api/auth/token/",
+            {
+                "username": "course_join_test_teacher",
+                "password": "course_join_test_teacher",
+            },
+            format="json",
+        )
+        cls.TOKEN = response.data["access"]
+
+        super(CourseJoinTest, cls).setUpClass()
+
+    def test_join_course(self):
+
+        teacher = User.objects.get(username="course_join_test_teacher")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription", join_code="12345678"
+        )
+        course.owners.add(teacher)
+        course.save()
+
+        # Log in as student
+        response = self.client.post(
+            self.BASE_URL + "/api/auth/token/",
+            {
+                "username": "course_join_test_student",
+                "password": "course_join_test_student",
+            },
+            format="json",
+        )
+        self.TOKEN = response.data["access"]
+
+        endpoint = self.BASE_URL + "/api/course_join/"
+        response = self.client.post(
+            endpoint,
+            {"join_code": "12345678"},
+            content_type="application/json",
+            **{"HTTP_AUTHORIZATION": f"Bearer {self.TOKEN}"},
+        )
+
+        # check if student is in course
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["course_id"], course.id)

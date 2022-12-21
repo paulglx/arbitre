@@ -99,6 +99,28 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: { user_id: data.user_id } //Must include : course_id, user_id
             })
         }),
+        getStudents: builder.query({
+            query: params => ({
+                url: `/api/course_student?course_id=${params.course_id}`,
+                method: 'GET',
+            })
+        }),
+        addStudent: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_student/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : course_id, user_id
+            })
+        }),
+        removeStudent: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_student/${data.course_id}/`,
+                method: 'DELETE',
+                credentials: 'include',
+                body: { user_id: data.user_id } //Must include : course_id, user_id
+            })
+        }),
         updateLanguage: builder.mutation({
             query: (data: any) => ({
                 url: `/api/course/${data.course_id}/`,
@@ -107,11 +129,36 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: { language: data.language } //Must include : course_id, language
             })
         }),
+        joinCourseWithCode: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_join/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : join_code
+            })
+        }),
+        refreshJoinCode: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_refresh_code/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : course_id
+            })
+        }),
+        setJoinCodeEnabled: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course_join_code_enabled/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data //Must include : course_id, enabled
+            })
+        }),
     })
 })
 
 export const {
     useAddOwnerMutation,
+    useAddStudentMutation,
     useAddTutorMutation,
     useCreateCourseMutation,
     useDeleteCourseMutation,
@@ -119,9 +166,14 @@ export const {
     useGetCourseQuery,
     useGetCoursesSessionsExercisesQuery,
     useGetOwnersQuery,
+    useGetStudentsQuery,
     useGetTutorsQuery,
+    useJoinCourseWithCodeMutation,
+    useRefreshJoinCodeMutation,
     useRemoveOwnerMutation,
+    useRemoveStudentMutation,
     useRemoveTutorMutation,
+    useSetJoinCodeEnabledMutation,
     useUpdateCourseMutation,
     useUpdateLanguageMutation,
 } = courseApiSlice;

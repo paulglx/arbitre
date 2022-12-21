@@ -45,9 +45,6 @@ const Header = () => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item href="/course">Courses</Dropdown.Item>
-                            <Dropdown.Item href="/exercise">Submissions</Dropdown.Item>
-                            <Dropdown.Divider />
                             <Dropdown.Item as="button" onClick={signout}>Sign Out</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>

@@ -5,22 +5,37 @@
 
 Arbitre is an automated code correction platform.
 
-## Installation
-
-See [installation](./config/README.md) for details on setting up Arbitre.
-
 ## Usage
 
-### Start Arbitre
-
-```bash
-chmod +x run.sh
-./run.sh
-```
-
-#### Make sure the runner server is set up
+### 1. Set up the worker server
 
 [See installation](./config/README.md)
+
+### 2. Install Nix package manager
+
+For more information, see [the official Nix website](https://nixos.org/download.html)
+
+#### Linux, Windows (WSL2)
+
+```bash
+sh <(curl -L https://nixos.org/nix/install) --daemon
+```
+
+#### macOS
+
+```bash
+sh <(curl -L https://nixos.org/nix/install)
+```
+
+
+
+### 3. Run Nix shell
+
+```bash
+nix develop -i
+```
+
+This will install all the dependencies and run the shell.
 
 ## Credits
 

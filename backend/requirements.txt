@@ -4,7 +4,7 @@ coverage==6.5.0
 Django==4.1.2
 django-cors-headers==3.13.0
 djangorestframework==3.14.0
-djangorestframework_simplejwt==5.2.1
+djangorestframework-simplejwt==5.2.2
 drf_yasg==1.21.4
 pylama==8.4.1
 requests==2.28.1

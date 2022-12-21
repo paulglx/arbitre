@@ -18,8 +18,12 @@ from api.auth.views import LogoutView, UserGroup, UserViewSet, TeachersViewSet
 from api.views import (
     AllResultsOfSessionViewSet,
     AllResultsViewSet,
+    CourseJoinCodeEnabledViewSet,
+    CourseJoinViewSet,
     CourseOwnerViewSet,
+    CourseRefreshCodeViewSet,
     CoursesSessionsExercisesViewSet,
+    CourseStudentViewSet,
     CourseTutorViewSet,
     CourseViewSet,
     ExerciseViewSet,
@@ -52,11 +56,22 @@ auth_router.register(r"teachers", TeachersViewSet, basename="teachers")
 
 # Models API router
 router = routers.DefaultRouter()
+router.register(r"course_join", CourseJoinViewSet, basename="course_join")
+router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
+router.register(
+    r"course_refresh_code", CourseRefreshCodeViewSet, basename="course_refresh_code"
+)
+router.register(
+    r"course_join_code_enabled",
+    CourseJoinCodeEnabledViewSet,
+    basename="course_join_code_enabled",
+)
+router.register(r"course_student", CourseStudentViewSet, basename="course_student")
+router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
+router.register(r"course", CourseViewSet, basename="course")
 router.register(r"exercise", ExerciseViewSet, basename="exercise")
 router.register(r"session", SessionViewSet, basename="session")
-router.register(r"course", CourseViewSet, basename="course")
-router.register(r"course_owner", CourseOwnerViewSet, basename="course_owner")
-router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
+
 router.register(
     r"courses_sessions_exercises",
     CoursesSessionsExercisesViewSet,
