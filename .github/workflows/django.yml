@@ -28,18 +28,13 @@ jobs:
     - name: Start Nix development environment
       run: |
         nix develop
-
-    - name: Start Celery
-      working-directory: backend
-      run: |
-        celery -A arbitre worker -l info -E -B &
         
     - name: Run Tests
       working-directory: backend
       run: |
-        coverage run manage.py test  
+        nix shell -c coverage run manage.py test  
 
     - name: Print Coverage report
       working-directory: backend
       run: |
-        coverage report
+        nix shell -c coverage report
