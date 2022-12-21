@@ -27,4 +27,4 @@ jobs:
 
     - name: Run tests in nix development environment
       run: |
-        nix develop --command bash -c "coverage run manage.py test && coverage report"
+        nix develop --command bash -c "cd backend && coverage run manage.py test && coverage report"
