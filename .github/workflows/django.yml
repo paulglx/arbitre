@@ -25,16 +25,6 @@ jobs:
         name: arbitre
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-    - name: Start Nix development environment
+    - name: Run tests in nix development environment
       run: |
-        nix develop
-        
-    - name: Run Tests
-      working-directory: backend
-      run: |
-        nix shell -c coverage run manage.py test  
-
-    - name: Print Coverage report
-      working-directory: backend
-      run: |
-        nix shell -c coverage report
+        nix develop --command bash -c "coverage run manage.py test && coverage report"
