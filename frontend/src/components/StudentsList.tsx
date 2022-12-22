@@ -18,13 +18,11 @@ const StudentsList = (props: any) => {
     const {
         data: studentsData,
         isSuccess: studentsSuccess,
-        error
     } = useGetStudentsQuery({ course_id: course.id })
 
     const {
         data: usersData,
         isSuccess: usersSuccess,
-        error: usersError
     } = useGetUsersQuery({})
 
     const handleAddStudent = async () => {
