@@ -82,6 +82,7 @@ const StudentsList = (props: any) => {
                                 variant="outline-danger"
                                 className='p-0 px-1'
                                 onClick={() => handleRemoveStudent(student.id)}
+                                aria-label={"Remove student"}
                             >
                                 <PersonDash />
                             </Button>
@@ -104,6 +105,7 @@ const StudentsList = (props: any) => {
                             size="sm"
                             value={studentToAdd}
                             onChange={(e: any) => setStudentToAdd(e.target.value)}
+                            aria-label="Add student"
                         />
                         <datalist id="studentOptions">
                             {addableStudents && addableStudents.map((u: any, i: number) => (
