@@ -27,8 +27,6 @@ sh <(curl -L https://nixos.org/nix/install) --daemon
 sh <(curl -L https://nixos.org/nix/install)
 ```
 
-
-
 ### 3. Run Nix shell
 
 ```bash
