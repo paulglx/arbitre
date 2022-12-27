@@ -83,15 +83,24 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
 
 class SubmissionFileViewSet(viewsets.ViewSet):
     """
-    Returns submission file
+    Returns submission file with content
     """
 
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
+
         try:
             submission = Submission.objects.get(
                 pk=request.query_params["submission_id"]
             )
+
+            if (
+                request.user != submission.owner
+                and request.user not in submission.exercise.session.course.owners.all()
+                and request.user not in submission.exercise.session.course.tutors.all()
+            ):
+                return JsonResponse({"file": "Not Found", "content": ""})
+
             try:
                 with submission.file.open(mode="rb") as f:
                     file_content = f.read().decode()
