@@ -85,7 +85,7 @@ const TestResult = (props: any) => {
 
     return (submissionData && submissionData.length > 0 && isSuccess && testResults) ? (<>
 
-        <Modal show={showCodePreview} onHide={() => { setShowCodePreview(false) }} size="lg">
+        <Modal show={showCodePreview} onHide={() => { setShowCodePreview(false) }} size="lg" fullscreen="md-down">
             <Modal.Header closeButton>
                 <Modal.Title>{submissionData[0]?.file?.split("/").pop()}</Modal.Title>
             </Modal.Header>

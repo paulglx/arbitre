@@ -89,27 +89,40 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
 
+        error_response = JsonResponse(
+            {"file": "Not Found", "content": "", "language": ""}
+        )
+
         try:
             submission = Submission.objects.get(
                 pk=request.query_params["submission_id"]
             )
+
+            language = submission.exercise.session.course.language
 
             if (
                 request.user != submission.owner
                 and request.user not in submission.exercise.session.course.owners.all()
                 and request.user not in submission.exercise.session.course.tutors.all()
             ):
-                return JsonResponse({"file": "Not Found", "content": ""})
+                return error_response
 
             try:
                 with submission.file.open(mode="rb") as f:
                     file_content = f.read().decode()
             except FileNotFoundError:
-                return JsonResponse({"file": "Not Found", "content": ""})
+                return error_response
 
-            return JsonResponse({"file": str(submission.file), "content": file_content})
+            return JsonResponse(
+                {
+                    "file": str(submission.file),
+                    "content": file_content,
+                    "language": language,
+                }
+            )
+
         except Submission.DoesNotExist:
-            return JsonResponse({"file": "Not Found", "content": ""})
+            return error_response
 
 
 class TestViewSet(viewsets.ModelViewSet):
