@@ -1,5 +1,7 @@
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "@fontsource/inter/variable.css"
+import "@fontsource/jetbrains-mono"
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import store, { Persistor } from './app/store';

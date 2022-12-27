@@ -88,6 +88,7 @@ const Results = () => {
                                     <Dropdown.Item
                                         key={session.id}
                                         eventKey={session.id}
+                                        aria-selected={session.id === currentSession}
                                         className={"text-wrap" + (session.id === currentSession ? " bg-primary text-white" : "")}
                                         onClick={(eventKey: any) => {
                                             setCurrentSession(session.id)

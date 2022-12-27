@@ -2,7 +2,6 @@ import { FetchArgs, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/rea
 import { logOut, setCredentials } from '../../features/auth/authSlice';
 
 import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
-import { json } from 'stream/consumers';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8000',

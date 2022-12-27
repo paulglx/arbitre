@@ -1,5 +1,5 @@
 :root {
-  --mono-font: 'JetBrains Mono', monospace;
+  --mono-font: "JetBrains Mono", monospace;
 }
 
 body {
@@ -169,6 +169,8 @@ p > code {
 
 .teacher.title-input {
   -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   outline: none;
   border: 1px dashed var(--bs-gray-400);
   border-radius: 5px;

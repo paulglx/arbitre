@@ -16,6 +16,8 @@ EOF
 
 echo -e "${BLUE} Automated code correction platform ${NC}"
 
+echo ""
+
 (
     set -Ee
 
@@ -24,11 +26,20 @@ echo -e "${BLUE} Automated code correction platform ${NC}"
         exit 0  # optional; use if you don't want to propagate (rethrow) error to outer shell
     }
     function _finally {
-        echo -e "${BLUE}Arbitre has been stopped successfully.${NC}"
+        echo -e "
+${BLUE}Setup complete. Run './run.sh' to start Arbitre.${NC}"
     }
 
     trap _catch ERR
     trap _finally EXIT
-    (trap 'kill 0' SIGINT; cd backend && python manage.py runserver & cd backend && celery -A arbitre worker -l info -B -E & cd frontend && npm start)
-    #TODO prod: switch back to (trap 'kill 0' SIGINT; cd backend && python manage.py runserver & cd backend && celery -A arbitre worker -l info -B -E & cd frontend && npm run build && serve -s build)
+
+    echo "Installing dependencies..."
+    cd frontend
+    npm install &> /dev/null
+    echo "Setting up database..."
+    cd ../backend
+    python manage.py makemigrations > /dev/null
+    python manage.py migrate > /dev/null
+    cd ..
+    chmod +x run.sh
 )

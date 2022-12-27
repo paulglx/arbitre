@@ -15,5 +15,6 @@ pkgs.mkShell {
       requests
     ]))
     nodejs
+    nodePackages.serve
   ];
 }

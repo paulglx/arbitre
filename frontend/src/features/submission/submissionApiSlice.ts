@@ -36,6 +36,12 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        getSubmissionFileContent: builder.query({
+            query: params => ({
+                url: `/runner/api/submission-file?submission_id=${params.submission_id}`,
+                method: 'GET',
+            })
+        }),
     })
 })
 
@@ -45,4 +51,5 @@ export const {
     useGetSubmissionByExerciseQuery,
     useGetSubmissionQuery,
     useGetSubmissionTestResultsQuery,
+    useGetSubmissionFileContentQuery,
 } = submissionApiSlice;

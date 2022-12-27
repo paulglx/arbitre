@@ -41,7 +41,7 @@ const StudentsInvite = (props: any) => {
     return isOwner || isTutor ? (<>
 
         <Container className='bg-light p-3 rounded-4'>
-            <h3>Invite students</h3>
+            <h2 className="h3">Invite students</h2>
             <div className='text-center'>
                 <p className="text-muted mb-2">Course code</p>
 
