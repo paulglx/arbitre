@@ -3,9 +3,7 @@
 ![Django Logo](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![React Logo](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
-Arbitre is an open source automated code correction platform.
-
-It allows computer science teachers to easily create and grade assignments for their students. Create assignments, share them with students, and view the results of automated testing in real time.
+Arbitre allows computer science teachers to create and grade assignments for their students. Create exercises, share them with students, and view the results of automated testing in real time.
 
 ## Installation 🧑‍💻
 
