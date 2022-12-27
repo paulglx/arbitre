@@ -6,6 +6,7 @@
   "dependencies": {
     "@fontsource/inter": "^4.5.14",
     "@fontsource/jetbrains-mono": "^4.5.11",
+    "@monaco-editor/react": "^4.4.6",
     "@reduxjs/toolkit": "^1.8.6",
     "@types/jest": "^29.1.2",
     "@types/react": "^18.0.21",
