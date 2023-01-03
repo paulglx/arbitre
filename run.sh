@@ -29,6 +29,6 @@ echo -e "${BLUE} Automated code correction platform ${NC}"
 
     trap _catch ERR
     trap _finally EXIT
-    (trap 'kill 0' SIGINT; cd backend && python manage.py runserver & cd backend && celery -A arbitre worker -l info -B -E & cd frontend && npm start)
+    (trap 'kill 0' SIGINT; cd frontend && COLOR=1 npm start | cat & cd backend && python manage.py runserver & cd backend && celery -A arbitre worker -l info -B -E)
     #TODO prod: switch back to (trap 'kill 0' SIGINT; cd backend && python manage.py runserver & cd backend && celery -A arbitre worker -l info -B -E & cd frontend && npm run build && serve -s build)
 )
