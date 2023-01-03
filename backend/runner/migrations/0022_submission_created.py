@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('runner', '0021_alter_testresult_stdout'),
+        ("runner", "0021_alter_testresult_stdout"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='submission',
-            name='created',
+            model_name="submission",
+            name="created",
             field=models.DateTimeField(auto_now=True),
         ),
     ]
