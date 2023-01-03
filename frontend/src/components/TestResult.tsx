@@ -1,7 +1,8 @@
-import { Badge, Button, ListGroup, Modal, Spinner } from 'react-bootstrap';
+import { Badge, Button, ListGroup, Modal, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
 import CodePreview from './CodePreview';
+import moment from 'moment';
 import { useState } from 'react';
 
 const TestResult = (props: any) => {
@@ -40,7 +41,7 @@ const TestResult = (props: any) => {
         }
         else if (result.status === "success") {
             return (<>
-                <Badge bg="secondary">{result.time} s</Badge>
+                <Badge bg="light" className='border border-secondary text-secondary'>{result.time} s</Badge>
                 &nbsp;
                 <Badge bg="success">Success</Badge>
             </>)
@@ -83,6 +84,21 @@ const TestResult = (props: any) => {
         }
     }
 
+    const time_badge = (time: string) => {
+        return <OverlayTrigger
+            placement='auto'
+            overlay={
+                <Tooltip>
+                    {moment(time).format('MMMM Do YYYY, h:mm:ss a')}
+                </Tooltip>
+            }
+        >
+            <Badge bg="secondary" className='ms-2'>
+                {moment(time).fromNow()}
+            </Badge>
+        </OverlayTrigger>
+    }
+
     return (submissionData && submissionData.length > 0 && isSuccess && testResults) ? (<>
 
         <Modal show={showCodePreview} onHide={() => { setShowCodePreview(false) }} size="lg" fullscreen="md-down">
@@ -111,6 +127,9 @@ const TestResult = (props: any) => {
                     >
                         View file
                     </span>
+
+                    {time_badge(submissionData[0].created)}
+
                 </span>
                 {statusContent(submissionData[0].status)}
             </ListGroup.Item>
