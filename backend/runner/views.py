@@ -141,7 +141,7 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]  # TODO fix
 
     # GET runner/api?exercise_id=...
     def get_queryset(self):
