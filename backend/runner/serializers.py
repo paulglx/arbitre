@@ -13,7 +13,7 @@ class TestSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = ["id", "exercise", "file", "status"]
+        fields = ["id", "exercise", "file", "status", "created"]
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
