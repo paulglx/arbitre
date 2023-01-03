@@ -65,13 +65,13 @@ ol.breadcrumb li.active {
   overflow-x: scroll;
 }
 
-button, .list-group, ol.breadcrumb, input {
+/* button, .list-group, ol.breadcrumb, input {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .badge {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);;
-}
+} */
 
 .editable-test {
   border: 2px solid transparent;
