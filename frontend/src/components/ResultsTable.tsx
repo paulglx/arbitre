@@ -111,7 +111,7 @@ const ResultsTable = (props: any) => {
 
     return isResultsSuccess ? (<>
 
-        <Modal show={showModal} onHide={handleModalClose}>
+        <Modal show={showModal} onHide={handleModalClose} size="lg" fullscreen="md-down">
             <Modal.Header closeButton>
                 <Modal.Title className='h6'>
                     {modalTitle}
