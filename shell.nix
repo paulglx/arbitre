@@ -7,6 +7,7 @@ pkgs.mkShell {
       coverage
       django
       django-cors-headers
+      django-environ
       djangorestframework
       djangorestframework-simplejwt
       drf-yasg
