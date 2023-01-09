@@ -4,7 +4,7 @@ import { logOut, setCredentials } from '../../features/auth/authSlice';
 import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:8000',
+    baseUrl: window.location.protocol + '//' + window.location.hostname,
     credentials: 'include',
     prepareHeaders: (headers: Headers, { getState }: any) => {
         const accessToken = getState().auth.accessToken
