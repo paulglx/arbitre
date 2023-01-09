@@ -7,6 +7,7 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
+#TODO remove verify=False
 
 @shared_task
 def run_camisole(submission_id, test_id, file_content, lang) -> None:
@@ -17,7 +18,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     base_url = "https://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
-    test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
+    test = json.loads(requests.get(f"{base_url}/test/{test_id}/", verify=False).content)
 
     # Save the empty test result with "running" status
     testresult_before_data = {
@@ -25,7 +26,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
         "exercise_test_pk": test_id,
         "status": "running",
     }
-    requests.post(testresult_post_url, data=testresult_before_data)
+    requests.post(testresult_post_url, data=testresult_before_data, verify=False)
 
     # Configure the data used to run camisole
     hostname = env("CAMISOLE_HOSTNAME", default="localhost")
@@ -39,6 +40,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
             "source": source,
             "tests": [{"name": test["name"], "stdin": test["stdin"]}],
         },
+        verify=False
     )
 
     response_text = json.loads(response_object.text)
@@ -76,7 +78,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
         }
 
     print("data to send:" + str(after_data))
-    finalpost = requests.post(testresult_post_url, data=after_data)
+    finalpost = requests.post(testresult_post_url, data=after_data, verify=False)
     print("final post:", finalpost)
 
 
