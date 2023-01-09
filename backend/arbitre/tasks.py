@@ -28,7 +28,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     requests.post(testresult_post_url, data=testresult_before_data)
 
     # Configure the data used to run camisole
-    hostname = env("HOSTNAME")
+    hostname = env("CAMISOLE_HOSTNAME", default="localhost")
     camisole_server_url = f"http://{hostname}:42920/run"
     source = file_content
 

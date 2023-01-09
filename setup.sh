@@ -42,7 +42,7 @@ ${BLUE}Setup complete. Run './run.sh' to start Arbitre.${NC}"
     python manage.py migrate > /dev/null
 
     echo "Starting queue messaging service..."
-    sudo rabbitmq-server -detached
+    rabbitmq-server -detached
 
     cd ..
     chmod +x run.sh
