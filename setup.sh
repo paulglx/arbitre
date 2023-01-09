@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -40,6 +40,10 @@ ${BLUE}Setup complete. Run './run.sh' to start Arbitre.${NC}"
     cd ../backend
     python manage.py makemigrations > /dev/null
     python manage.py migrate > /dev/null
+
+    echo "Starting queue messaging service..."
+    sudo rabbitmq-server -detached
+
     cd ..
     chmod +x run.sh
 )
