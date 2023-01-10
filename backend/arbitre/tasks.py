@@ -17,7 +17,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     base_url = "https://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
-    test = json.loads(requests.get(f"{base_url}/test/{test_id}/", verify=False).content)
+    test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
 
     # Save the empty test result with "running" status
     testresult_before_data = {
