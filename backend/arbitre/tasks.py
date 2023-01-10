@@ -7,7 +7,6 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
-#TODO remove verify=False
 
 @shared_task
 def run_camisole(submission_id, test_id, file_content, lang) -> None:
@@ -26,7 +25,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
         "exercise_test_pk": test_id,
         "status": "running",
     }
-    requests.post(testresult_post_url, data=testresult_before_data, verify=False)
+    requests.post(testresult_post_url, data=testresult_before_data)
 
     # Configure the data used to run camisole
     hostname = env("CAMISOLE_HOSTNAME", default="localhost")
@@ -40,7 +39,6 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
             "source": source,
             "tests": [{"name": test["name"], "stdin": test["stdin"]}],
         },
-        verify=False
     )
 
     response_text = json.loads(response_object.text)
@@ -78,7 +76,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
         }
 
     print("data to send:" + str(after_data))
-    finalpost = requests.post(testresult_post_url, data=after_data, verify=False)
+    finalpost = requests.post(testresult_post_url, data=after_data)
     print("final post:", finalpost)
 
 
