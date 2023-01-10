@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
-    permission_classes = [permissions.AllowAny] #TODO fix
+    permission_classes = [permissions.AllowAny]  # TODO fix
 
     def perform_create(self, serializer):
         submission, created = Submission.objects.update_or_create(
@@ -141,7 +141,7 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
-    permission_classes = [permissions.AllowAny] #TODO fix
+    permission_classes = [permissions.AllowAny]  # TODO fix
     # GET runner/api?exercise_id=...
     def get_queryset(self):
         exercise_id = self.request.query_params.get("exercise_id")
