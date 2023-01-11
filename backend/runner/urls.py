@@ -6,7 +6,7 @@ from . import views
 router = DefaultRouter()
 router.register(r"submission", views.SubmissionViewSet)
 router.register(r"test", views.TestViewSet)
-router.register(r"testresult", views.TestResultViewSet, basename="testresults")
+router.register(r"testresult", views.TestResultViewSet, basename="testresult")
 router.register(
     r"refresh-submission", views.RefreshSubmissionViewSet, basename="refresh"
 )
