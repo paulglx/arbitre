@@ -89,6 +89,6 @@ class TestResultSerializer(serializers.ModelSerializer):
                 status = "running"
         else:
             status = "pending"
-        Submission.objects.filter(pk=submission.id).update(status=status)
+        Submission.objects.filter(pk=testresult.submission.id).update(status=status)
 
         return testresult
