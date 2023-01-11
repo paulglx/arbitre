@@ -301,7 +301,7 @@ const Session = () => {
                             {descriptionContent()}
                         </Tab>
 
-                        <Tab eventKey="submission" title="Submission">
+                        <Tab eventKey="exercises" title="Exercises">
                             {exercisesContent()}
                         </Tab>
 

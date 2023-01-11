@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from arbitre.tasks import run_camisole
+from django.utils import timezone
+from datetime import timedelta
 
 
 class Submission(models.Model):
@@ -25,6 +27,7 @@ class Submission(models.Model):
         choices=SubmissionStatus.choices,
         default=SubmissionStatus.PENDING,
     )
+    created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.file.name
@@ -42,12 +45,12 @@ class Submission(models.Model):
 
             for test in tests:
                 # Add camisole task to queue
-                run_camisole.delay(
+                run_camisole.s(
                     submission_id=self.id,
                     test_id=test.id,
                     file_content=file_content,
                     lang=course.language,
-                )
+                ).delay()
 
     class Meta:
         unique_together = ("exercise", "owner")
@@ -101,3 +104,37 @@ class TestResult(models.Model):
             + str(self.submission.owner)
             + ")"
         )
+
+    def run_all_pending_testresults():
+
+        print("Running all pending testresults...")
+
+        pending_testresults = TestResult.objects.filter(
+            status=TestResult.TestResultStatus.PENDING
+        )
+
+        if (len(pending_testresults) == 0):
+            print("No pending testresults to run")
+            return
+
+        for testresult in pending_testresults:
+            submission = testresult.submission
+            exercise_test = testresult.exercise_test
+
+            # read file content
+            with open(submission.file.path, "r") as f:
+                file_content = f.read()
+
+            lang = submission.exercise.session.course.language
+
+            # if submission created more than 5 minutes ago
+            if (submission.created < timezone.now() - timedelta(minutes=5)):
+                # Add camisole task to queue
+                run_camisole.s(
+                    submission_id=submission.id,
+                    test_id=exercise_test.id,
+                    file_content=file_content,
+                    lang=lang,
+                ).delay()
+
+        print(f"Ran {len(pending_testresults)} pending testresults")

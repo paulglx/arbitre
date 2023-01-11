@@ -15,6 +15,14 @@ class ExerciseAdmin(admin.ModelAdmin):
     inlines = [TestInline]
 
 
+class SubmissionAdmin(admin.ModelAdmin):
+    fields = ["exercise", "owner", "file", "created", "status"]
+    readonly_fields = ["status", "file", "created"]
+    list_display = ["exercise", "owner", "status", "created"]
+    list_filter = ["status", "exercise", "owner", "created"]
+    search_fields = ["exercise", "owner", "status"]
+
+
 class CourseAdmin(admin.ModelAdmin):
     fields = [
         "title",
@@ -33,7 +41,7 @@ class CourseAdmin(admin.ModelAdmin):
     ]
 
 
-admin.site.register(Submission)
+admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(TestResult)
 
 admin.site.register(Exercise, ExerciseAdmin)
