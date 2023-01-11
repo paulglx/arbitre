@@ -41,6 +41,9 @@ ${BLUE}Setup complete. Run './run.sh' to start Arbitre.${NC}"
     python manage.py makemigrations > /dev/null
     python manage.py migrate > /dev/null
 
+    echo "Collecting static files..."
+    python manage.py collectstatic --noinput > /dev/null
+
     echo "Starting queue messaging service..."
     rabbitmq-server -detached
 
