@@ -185,6 +185,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
     permission_classes = [permissions.AllowAny]  # TODO fix
+
     # GET runner/api?exercise_id=...
     def get_queryset(self):
         exercise_id = self.request.query_params.get("exercise_id")
