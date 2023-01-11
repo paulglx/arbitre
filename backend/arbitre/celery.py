@@ -21,8 +21,8 @@ app.autodiscover_tasks()
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
 
-    # Executes every 15 minutes
-    sender.add_periodic_task(
-        crontab(minute="*/5"),
+    # Executes every minute
+     sender.add_periodic_task(
+        crontab(),
         run_all_pending_testresults.s(),
     )

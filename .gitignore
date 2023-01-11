@@ -3,6 +3,7 @@
 *uploads
 *tests-examples/*
 *.hurricane-api-token
+*.dump
 
 # Django
 *.log
