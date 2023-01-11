@@ -1,6 +1,11 @@
 from celery import shared_task
 import json
 import requests
+import environ
+
+# Reading .env file
+env = environ.Env()
+environ.Env.read_env()
 
 
 @shared_task
@@ -9,7 +14,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     Runs one test on a submission, and stores the result in the database.
     """
 
-    base_url = "http://localhost:8000/runner/api"
+    base_url = "https://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
@@ -23,7 +28,8 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     requests.post(testresult_post_url, data=testresult_before_data)
 
     # Configure the data used to run camisole
-    camisole_server_url = "http://oasis:1234/run"
+    hostname = env("CAMISOLE_HOSTNAME", default="localhost")
+    camisole_server_url = f"http://{hostname}:42920/run"
     source = file_content
 
     response_object = requests.post(
@@ -70,7 +76,8 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
         }
 
     print("data to send:" + str(after_data))
-    requests.post(testresult_post_url, data=after_data)
+    finalpost = requests.post(testresult_post_url, data=after_data)
+    print("final post:", finalpost)
 
 
 @shared_task
@@ -79,7 +86,7 @@ def run_all_pending_tests() -> None:
     Runs all pending submissions in the database
     """
 
-    base_url = "http://localhost:8000"
+    base_url = "https://" + env("HOSTNAME")
     test_results = json.loads(
         requests.get(f"{base_url}/runner/api/testresult/").content
     )

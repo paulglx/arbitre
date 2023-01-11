@@ -76,9 +76,19 @@ class TestResultSerializer(serializers.ModelSerializer):
         testresult.save()
 
         # Refresh submission status
-        requests.get(
-            f"http://localhost:8000/runner/api/"
-            f"refresh-submission?submission_id={testresult.submission.id}"
-        )
+        test_results = TestResult.objects.filter(submission=testresult.submission)
+        status = ""
+        if test_results:
+            if all([result.status == "success" for result in test_results]):
+                status = "success"
+            elif any([result.status == "failed" for result in test_results]):
+                status = "failed"
+            elif any([result.status == "error" for result in test_results]):
+                status = "error"
+            else:
+                status = "running"
+        else:
+            status = "pending"
+        Submission.objects.filter(pk=testresult.submission.id).update(status=status)
 
         return testresult
