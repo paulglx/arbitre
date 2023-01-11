@@ -2,6 +2,7 @@
 *inventory.ini
 *uploads
 *tests-examples/*
+*.hurricane-api-token
 
 # Django
 *.log
