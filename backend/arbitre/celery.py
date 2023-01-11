@@ -1,7 +1,7 @@
 from celery import Celery
 from celery.schedules import crontab
 import os
-from runner.tasks import run_all_pending_tests
+from arbitre.tasks import run_all_pending_testresults
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "arbitre.settings")
@@ -23,6 +23,6 @@ def setup_periodic_tasks(sender, **kwargs):
 
     # Executes every 15 minutes
     sender.add_periodic_task(
-        crontab(),  # minute="*/5"
-        run_all_pending_tests.s(),
+        crontab(minute="*/5"),
+        run_all_pending_testresults.s(),
     )
