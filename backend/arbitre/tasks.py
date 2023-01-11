@@ -14,7 +14,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     Runs one test on a submission, and stores the result in the database.
     """
 
-    base_url = "https://" + env("HOSTNAME") + "/runner/api"
+    base_url = "http://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
@@ -86,7 +86,7 @@ def run_all_pending_tests() -> None:
     Runs all pending submissions in the database
     """
 
-    base_url = "https://" + env("HOSTNAME")
+    base_url = "http://" + env("HOSTNAME")
     test_results = json.loads(
         requests.get(f"{base_url}/runner/api/testresult/").content
     )
@@ -127,8 +127,8 @@ def run_all_pending_tests() -> None:
             ).content
         )["content"]
 
-        run_camisole.delay(
+        run_camisole.s(
             submission["id"], test["id"], file_content, course["language"]
-        )
+        ).delay()
 
     print(f"[PERIODIC] {len(pending_test_results)} pending tests have been restarted.")

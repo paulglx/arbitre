@@ -43,12 +43,12 @@ class Submission(models.Model):
 
             for test in tests:
                 # Add camisole task to queue
-                run_camisole.delay(
+                run_camisole.s(
                     submission_id=self.id,
                     test_id=test.id,
                     file_content=file_content,
                     lang=course.language,
-                )
+                ).delay()
 
     class Meta:
         unique_together = ("exercise", "owner")
