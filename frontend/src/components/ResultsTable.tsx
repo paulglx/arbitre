@@ -27,11 +27,9 @@ const ResultsTable = (props: any) => {
                     <span className="visually-hidden">Running...</span>
                 </Spinner>
             );
-        } else if (status === "PENDING" || status === "pending") {
+        } else if (status === "pending") {
             return (
-                <Spinner animation="border" role="status" as="span" size="sm">
-                    <span className="visually-hidden">Pending...</span>
-                </Spinner>
+                <Badge bg="secondary">Pending</Badge>
             );
         } else if (status === "success") {
             return <Badge bg="success">Success</Badge>;
@@ -111,7 +109,7 @@ const ResultsTable = (props: any) => {
 
     return isResultsSuccess ? (<>
 
-        <Modal show={showModal} onHide={handleModalClose}>
+        <Modal show={showModal} onHide={handleModalClose} size="lg" fullscreen="md-down">
             <Modal.Header closeButton>
                 <Modal.Title className='h6'>
                     {modalTitle}

@@ -14,7 +14,7 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     Runs one test on a submission, and stores the result in the database.
     """
 
-    base_url = "https://" + env("HOSTNAME") + "/runner/api"
+    base_url = "http://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
@@ -80,55 +80,14 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     print("final post:", finalpost)
 
 
-@shared_task
-def run_all_pending_tests() -> None:
+@shared_task(ignore_result=True)
+def run_all_pending_testresults() -> None:
+
+    from runner.models import TestResult
+
     """
     Runs all pending submissions in the database
     """
 
-    base_url = "https://" + env("HOSTNAME")
-    test_results = json.loads(
-        requests.get(f"{base_url}/runner/api/testresult/").content
-    )
-    pending_test_results = [
-        test_result
-        for test_result in test_results
-        if test_result["status"] == "pending"
-    ]
-
-    print("[PERIODIC] Running all pending tests...")
-
-    if len(pending_test_results) == 0:
-        print("[PERIODIC] No pending tests to run.")
-        return
-
-    for test_result in pending_test_results:
-        submission = json.loads(
-            requests.get(
-                f"{base_url}/runner/api/submission/{test_result['submission']['id']}/"
-            ).content
-        )
-        exercise = json.loads(
-            requests.get(f"{base_url}/api/exercise/{submission['exercise']}/").content
-        )
-        course = json.loads(
-            requests.get(
-                f"{base_url}/api/course/{exercise['session']['course']['id']}/?all=true"
-            ).content
-        )
-        test = json.loads(
-            requests.get(
-                f"{base_url}/runner/api/test/{test_result['exercise_test']['id']}/"
-            ).content
-        )
-        file_content = json.loads(
-            requests.get(
-                f"{base_url}/runner/api/submission-file?submission_id={submission['id']}"
-            ).content
-        )["content"]
-
-        run_camisole.delay(
-            submission["id"], test["id"], file_content, course["language"]
-        )
-
-    print(f"[PERIODIC] {len(pending_test_results)} pending tests have been restarted.")
+    print("[PERIODIC] Running all pending tests")
+    TestResult.run_all_pending_testresults()
