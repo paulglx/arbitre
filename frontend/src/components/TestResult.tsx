@@ -123,7 +123,7 @@ const TestResult = (props: any) => {
         </>
     }
 
-    return (submissionData.length > 0) ? (<>
+    return (submissionData && submissionData.length > 0) ? (<>
 
         <Modal show={showCodePreview} onHide={() => { setShowCodePreview(false) }} size="lg" fullscreen="md-down">
             <Modal.Header closeButton>
