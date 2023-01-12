@@ -63,8 +63,8 @@ class Test(models.Model):
 
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default="")
-    stdin = models.TextField(default="")
-    stdout = models.TextField(default="")
+    stdin = models.TextField(default="", blank=True)
+    stdout = models.TextField(default="", blank=True)
     # TODO add all test criterias
 
     def __str__(self):
