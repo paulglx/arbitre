@@ -15,12 +15,21 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]  # TODO fix
 
     def perform_create(self, serializer):
+
+        print("Creating submission...")
+
+        tests = Test.objects.filter(exercise=self.request.data["exercise"])
+        if len(tests) == 0:
+            status = "success"
+        else:
+            status = "pending"
+
         submission, created = Submission.objects.update_or_create(
             exercise_id=self.request.data["exercise"],
             owner=self.request.user,
             defaults={
                 "file": self.request.data["file"],
-                "status": "pending",
+                "status": status,
             },
         )
         submission.save()

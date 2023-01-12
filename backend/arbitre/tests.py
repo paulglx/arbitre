@@ -1,8 +1,9 @@
-from django.test import TestCase, Client
-from django.contrib.auth.models import User, Group
-from django.contrib.auth import authenticate
 from api.models import Course, Session, Exercise
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User, Group
+from django.test import TestCase, Client
 from runner.models import Submission, Test
+from runner.serializers import SubmissionSerializer
 
 
 # Create your tests here.
@@ -1611,6 +1612,72 @@ class SubmissionTest(TestCase):
         )
         submission.save()
         self.assertEqual(str(submission), "runner/fixtures/test_files/double_string.py")
+
+    def test_submission_status_on_exercise_with_tests_is_pending(self):
+
+        user = User.objects.create_user(username="testuser", password="testpassword")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription"
+        )
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        test = Test.objects.create(
+            exercise=exercise,
+            name="testtest",
+            stdin="testinput",
+            stdout="testoutput",
+        )
+        test.save()
+
+        submission = Submission.objects.create(
+            exercise=exercise,
+            file="runner/fixtures/test_files/double_string.py",
+            owner=user,
+        )
+        submission.save()
+
+        serialized_submission = SubmissionSerializer(submission)
+
+        self.assertEqual(serialized_submission.status, Submission.SubmissionStatus.PENDING)
+
+    def test_submission_status_on_exercise_without_tests_is_success(self):
+
+        user = User.objects.create_user(username="testuser", password="testpassword")
+
+        course = Course.objects.create(
+            title="testcourse", description="testdescription", language="python"
+        )
+        course.save()
+
+        session = Session.objects.create(
+            title="testsession", description="testdescription", course=course
+        )
+        session.save()
+
+        exercise = Exercise.objects.create(
+            title="testexercise", description="testdescription", session=session
+        )
+        exercise.save()
+
+        submission = Submission.objects.create(
+            exercise=exercise,
+            file="runner/fixtures/test_files/double_string.py",
+            owner=user,
+        )
+        submission.save()
+
+        self.assertEqual(submission.status, Submission.SubmissionStatus.SUCCESS)
 
 
 class TestTest(TestCase):

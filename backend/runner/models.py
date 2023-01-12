@@ -41,9 +41,11 @@ class Submission(models.Model):
         tests = Test.objects.filter(exercise=self.exercise)
 
         with self.file.open(mode="rb") as f:
+
             file_content = f.read().decode()
 
             for test in tests:
+
                 # Add camisole task to queue
                 run_camisole.s(
                     submission_id=self.id,
