@@ -1,24 +1,43 @@
 import { Badge, Button, ListGroup, Modal, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
 
 import CodePreview from './CodePreview';
 import moment from 'moment';
-import { useState } from 'react';
 
 const TestResult = (props: any) => {
 
     const exercise_id = props.exercise_id;
+    const [pollingInterval, setPollingInterval] = useState(125)
     const user_id = props.user_id || "";
     const [showCodePreview, setShowCodePreview] = useState(false)
+    const [skipQueries, setSkipQueries] = useState(false)
 
     const {
         data: testResults,
-        isSuccess,
-    } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id });
+    } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id }, {
+        pollingInterval: skipQueries ? 0 : pollingInterval
+    });
 
     const {
         data: submissionData,
-    } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id });
+    } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id }, {
+        pollingInterval: skipQueries ? 0 : pollingInterval,
+    });
+
+    console.log(pollingInterval)
+
+    useEffect(() => {
+        if (!submissionData || !testResults) { return }
+
+        if (submissionData[0].status === "pending" || submissionData[0].status === "running" || testResults.some((result: any) => result.status === "running" || result.status === "pending")) {
+            setSkipQueries(false)
+            setPollingInterval(pollingInterval * 2)
+        }
+        else {
+            setSkipQueries(true)
+        }
+    }, [submissionData, testResults])
 
     const testResultContent = (result: any) => {
         if (result.running) {
@@ -99,7 +118,14 @@ const TestResult = (props: any) => {
         </OverlayTrigger>
     }
 
-    return (submissionData && submissionData.length > 0 && isSuccess && testResults) ? (<>
+    if (!submissionData || !testResults) {
+        return <>
+            <p className='text-danger'>There was an error while trying to display the test results.</p>
+            <p>Try submitting the file again.</p>
+        </>
+    }
+
+    return (submissionData.length > 0) ? (<>
 
         <Modal show={showCodePreview} onHide={() => { setShowCodePreview(false) }} size="lg" fullscreen="md-down">
             <Modal.Header closeButton>
@@ -147,10 +173,7 @@ const TestResult = (props: any) => {
             ))}
 
         </ListGroup>
-    </>) : (<>
-        <p className='text-danger'>There was an error while trying to display the test results.</p>
-        <p>Try submitting the file again.</p>
-    </>)
+    </>) : (<></>)
 }
 
 export default TestResult
