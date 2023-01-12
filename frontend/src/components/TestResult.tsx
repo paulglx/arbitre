@@ -25,8 +25,6 @@ const TestResult = (props: any) => {
         pollingInterval: skipQueries ? 0 : pollingInterval,
     });
 
-    console.log(pollingInterval)
-
     useEffect(() => {
         if (!submissionData || !testResults) { return }
 
