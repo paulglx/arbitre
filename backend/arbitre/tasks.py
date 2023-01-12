@@ -14,7 +14,10 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     Runs one test on a submission, and stores the result in the database.
     """
 
-    base_url = "https://" + env("HOSTNAME") + "/runner/api"
+    if env("DEV", default=False):
+        base_url = "http://" + env("HOSTNAME") + "/runner/api"
+    else:
+        base_url = "https://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
@@ -49,6 +52,8 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
 
         status = ""
         if response["exitcode"] == 0:
+            if test["stdout"] == "":  # nothing to test for
+                status = "success"
             if response["stdout"] == test["stdout"]:
                 status = "success"
             else:

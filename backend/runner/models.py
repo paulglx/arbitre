@@ -32,6 +32,26 @@ class Submission(models.Model):
     def __str__(self):
         return self.file.name
 
+    def refresh_status(self):
+        # Refresh submission status
+        test_results = TestResult.objects.filter(submission=self)
+        status = ""
+        if test_results:
+            if all([result.status == "success" for result in test_results]):
+                status = "success"
+            elif any([result.status == "error" for result in test_results]):
+                status = "error"
+            elif any([result.status == "failed" for result in test_results]):
+                status = "failed"
+            elif any([result.status == "pending" for result in test_results]):
+                status = "pending"
+            else:
+                status = "running"
+        else:
+            status = "pending"
+        submission = Submission.objects.filter(pk=self.id)
+        submission.update(status=status)
+
     def save(self, *args, **kwargs):
 
         # Save submission to database
@@ -40,19 +60,23 @@ class Submission(models.Model):
         course = self.exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
 
-        with self.file.open(mode="rb") as f:
+        if tests:
+            with self.file.open(mode="rb") as f:
 
-            file_content = f.read().decode()
+                file_content = f.read().decode()
 
-            for test in tests:
+                for test in tests:
 
-                # Add camisole task to queue
-                run_camisole.s(
-                    submission_id=self.id,
-                    test_id=test.id,
-                    file_content=file_content,
-                    lang=course.language,
-                ).delay()
+                    # Add camisole task to queue
+                    run_camisole.s(
+                        submission_id=self.id,
+                        test_id=test.id,
+                        file_content=file_content,
+                        lang=course.language,
+                    ).delay()
+        else:
+            self.status = "success"
+        super(Submission, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ("exercise", "owner")

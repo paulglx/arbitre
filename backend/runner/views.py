@@ -33,6 +33,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             },
         )
         submission.save()
+        submission.refresh_status()
 
     # Get submission for  exercise if exercise_id is given
     def get_queryset(self):
@@ -164,16 +165,13 @@ class TestViewSet(viewsets.ModelViewSet):
                 status="pending",
             )
 
-        # Take all submissions for the exercise and set their status to "pending"
-        Submission.objects.filter(exercise_id=self.request.data["exercise"]).update(
-            status="pending"
-        )
+        # Take all associated submissions and refresh their statuses
+        for submission in Submission.objects.filter(exercise_id=self.request.data["exercise"]):
+            submission.refresh_status()
 
         return super().perform_create(serializer)
 
     def perform_update(self, serializer):
-
-        print("Wowzers! i been updated!")
 
         # Take all test results for this exercise and this test and set their status to "pending"
         TestResult.objects.filter(
@@ -181,13 +179,21 @@ class TestViewSet(viewsets.ModelViewSet):
             exercise_test=self.request.data["id"],
         ).update(status="pending")
 
-        # Take all submissions for the exercise and set their status to "pending"
-        Submission.objects.filter(exercise_id=self.request.data["exercise"]).update(
-            status="pending"
-        )
+        # Take all associated submissions and refresh their statuses
+        for submission in Submission.objects.filter(exercise_id=self.request.data["exercise"]):
+            submission.refresh_status()
 
         serializer.save()
         return super().perform_update(serializer)
+
+    def perform_destroy(self, instance):
+
+        # Take all associated submissions and refresh their statuses
+        exercise_id = instance.exercise.id
+        for submission in Submission.objects.filter(exercise_id=exercise_id):
+            submission.refresh_status()
+
+        return super().perform_destroy(instance)
 
 
 class TestResultViewSet(viewsets.ModelViewSet):

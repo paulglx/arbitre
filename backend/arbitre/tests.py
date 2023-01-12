@@ -1588,24 +1588,25 @@ class CoursesSessionsExercisesTest(TestCase):
 class SubmissionTest(TestCase):
     def test_submission_string_is_file_name(self):
 
-        user = User.objects.create_user(username="testuser", password="testpassword")
+        user = User(username="testuser", password="testpassword")
+        user.save()
 
-        course = Course.objects.create(
+        course = Course(
             title="testcourse", description="testdescription"
         )
         course.save()
 
-        session = Session.objects.create(
+        session = Session(
             title="testsession", description="testdescription", course=course
         )
         session.save()
 
-        exercise = Exercise.objects.create(
+        exercise = Exercise(
             title="testexercise", description="testdescription", session=session
         )
         exercise.save()
 
-        submission = Submission.objects.create(
+        submission = Submission(
             exercise=exercise,
             file="runner/fixtures/test_files/double_string.py",
             owner=user,
@@ -1615,24 +1616,25 @@ class SubmissionTest(TestCase):
 
     def test_submission_status_on_exercise_with_tests_is_pending(self):
 
-        user = User.objects.create_user(username="testuser", password="testpassword")
+        user = User(username="testuser", password="testpassword")
+        user.save()
 
-        course = Course.objects.create(
+        course = Course(
             title="testcourse", description="testdescription"
         )
         course.save()
 
-        session = Session.objects.create(
+        session = Session(
             title="testsession", description="testdescription", course=course
         )
         session.save()
 
-        exercise = Exercise.objects.create(
+        exercise = Exercise(
             title="testexercise", description="testdescription", session=session
         )
         exercise.save()
 
-        test = Test.objects.create(
+        test = Test(
             exercise=exercise,
             name="testtest",
             stdin="testinput",
@@ -1640,37 +1642,36 @@ class SubmissionTest(TestCase):
         )
         test.save()
 
-        submission = Submission.objects.create(
+        submission = Submission(
             exercise=exercise,
             file="runner/fixtures/test_files/double_string.py",
             owner=user,
         )
         submission.save()
 
-        serialized_submission = SubmissionSerializer(submission)
-
-        self.assertEqual(serialized_submission.status, Submission.SubmissionStatus.PENDING)
+        self.assertEqual(submission.status, Submission.SubmissionStatus.PENDING)
 
     def test_submission_status_on_exercise_without_tests_is_success(self):
 
-        user = User.objects.create_user(username="testuser", password="testpassword")
+        user = User(username="testuser", password="testpassword")
+        user.save()
 
-        course = Course.objects.create(
-            title="testcourse", description="testdescription", language="python"
+        course = Course(
+            title="testcourse", description="testdescription"
         )
         course.save()
 
-        session = Session.objects.create(
+        session = Session(
             title="testsession", description="testdescription", course=course
         )
         session.save()
 
-        exercise = Exercise.objects.create(
+        exercise = Exercise(
             title="testexercise", description="testdescription", session=session
         )
         exercise.save()
 
-        submission = Submission.objects.create(
+        submission = Submission(
             exercise=exercise,
             file="runner/fixtures/test_files/double_string.py",
             owner=user,
