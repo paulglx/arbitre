@@ -161,6 +161,9 @@ const Exercise = () => {
 
         await createSubmission(formData).unwrap()
 
+        // refresh page
+        window.location.reload(); //TODO update state instead
+
     }
 
     //Prevent blurring test div when focusing one of its inputs
