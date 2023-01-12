@@ -1591,9 +1591,7 @@ class SubmissionTest(TestCase):
         user = User(username="testuser", password="testpassword")
         user.save()
 
-        course = Course(
-            title="testcourse", description="testdescription"
-        )
+        course = Course(title="testcourse", description="testdescription")
         course.save()
 
         session = Session(
@@ -1619,9 +1617,7 @@ class SubmissionTest(TestCase):
         user = User(username="testuser", password="testpassword")
         user.save()
 
-        course = Course(
-            title="testcourse", description="testdescription"
-        )
+        course = Course(title="testcourse", description="testdescription")
         course.save()
 
         session = Session(
@@ -1656,9 +1652,7 @@ class SubmissionTest(TestCase):
         user = User(username="testuser", password="testpassword")
         user.save()
 
-        course = Course(
-            title="testcourse", description="testdescription"
-        )
+        course = Course(title="testcourse", description="testdescription")
         course.save()
 
         session = Session(

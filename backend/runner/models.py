@@ -54,17 +54,14 @@ class Submission(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # Save submission to database
-        super(Submission, self).save(*args, **kwargs)
-
         course = self.exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
 
         if tests:
+            super(Submission, self).save(*args, **kwargs)
+
             with self.file.open(mode="rb") as f:
-
                 file_content = f.read().decode()
-
                 for test in tests:
 
                     # Add camisole task to queue
@@ -76,7 +73,7 @@ class Submission(models.Model):
                     ).delay()
         else:
             self.status = "success"
-        super(Submission, self).save(*args, **kwargs)
+            super(Submission, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ("exercise", "owner")
@@ -139,7 +136,7 @@ class TestResult(models.Model):
             status=TestResult.TestResultStatus.PENDING
         )
 
-        if (len(pending_testresults) == 0):
+        if len(pending_testresults) == 0:
             print("No pending testresults to run")
             return
 
@@ -154,7 +151,7 @@ class TestResult(models.Model):
             lang = submission.exercise.session.course.language
 
             # if submission created more than 5 minutes ago
-            if (submission.created < timezone.now() - timedelta(minutes=5)):
+            if submission.created < timezone.now() - timedelta(minutes=5):
                 # Add camisole task to queue
                 run_camisole.s(
                     submission_id=submission.id,

@@ -166,7 +166,9 @@ class TestViewSet(viewsets.ModelViewSet):
             )
 
         # Take all associated submissions and refresh their statuses
-        for submission in Submission.objects.filter(exercise_id=self.request.data["exercise"]):
+        for submission in Submission.objects.filter(
+            exercise_id=self.request.data["exercise"]
+        ):
             submission.refresh_status()
 
         return super().perform_create(serializer)
@@ -180,7 +182,9 @@ class TestViewSet(viewsets.ModelViewSet):
         ).update(status="pending")
 
         # Take all associated submissions and refresh their statuses
-        for submission in Submission.objects.filter(exercise_id=self.request.data["exercise"]):
+        for submission in Submission.objects.filter(
+            exercise_id=self.request.data["exercise"]
+        ):
             submission.refresh_status()
 
         serializer.save()
