@@ -14,10 +14,10 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     Runs one test on a submission, and stores the result in the database.
     """
 
-    if env("DEV", default=False):
-        base_url = "http://" + env("HOSTNAME") + "/runner/api"
-    else:
+    if env("USE_HTTPS", default=True):
         base_url = "https://" + env("HOSTNAME") + "/runner/api"
+    else:
+        base_url = "http://" + env("HOSTNAME") + "/runner/api"
     testresult_post_url = f"{base_url}/testresult/"
 
     test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
