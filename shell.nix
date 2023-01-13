@@ -6,6 +6,7 @@ pkgs.mkShell {
       celery
       coverage
       django
+      django-celery-beat
       django-cors-headers
       django-environ
       djangorestframework
