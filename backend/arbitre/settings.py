@@ -69,7 +69,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = env("USE_HTTPS", default=True)
 SESSION_COOKIE_SECURE = env("USE_HTTPS", default=True)
-SECURE_SSL_REDIRECT = env("USE_HTTPS", default=True)
 
 ROOT_URLCONF = "arbitre.urls"
 
