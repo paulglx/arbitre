@@ -2,10 +2,10 @@ from api.models import Exercise
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from arbitre.tasks import run_camisole
+from arbitre.tasks import run_camisole, dummy_run_camisole
+from celery import Celery
 from django.utils import timezone
 from datetime import timedelta
-
 
 class Submission(models.Model):
     """
@@ -54,24 +54,39 @@ class Submission(models.Model):
 
     def save(self, *args, **kwargs):
 
+        print("Gettin courses and tests")
+
+        celery = Celery("arbitre", include=["arbitre.tasks"])
+
         course = self.exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
 
+        print("Course and tests gotten")
+
         if tests:
+            print("Running super save")
             super(Submission, self).save(*args, **kwargs)
+            print("Opening file")
 
             with self.file.open(mode="rb") as f:
                 file_content = f.read().decode()
+                print("Read file")
                 for test in tests:
 
+                    print("Adding one task to queue")
                     # Add camisole task to queue
-                    run_camisole.s(
-                        submission_id=self.id,
-                        test_id=test.id,
-                        file_content=file_content,
-                        lang=course.language,
-                    ).delay()
+                    celery.send_task(
+                        'arbitre.tasks.run_camisole',
+                        (
+                            self.id,
+                            test.id,
+                            file_content,
+                            course.language,
+                        )
+                    )
+                    print("One task added")
         else:
+            print("There was no tests to run. Success!")
             self.status = "success"
             super(Submission, self).save(*args, **kwargs)
 
@@ -130,6 +145,8 @@ class TestResult(models.Model):
 
     def run_all_pending_testresults():
 
+        celery = Celery("arbitre", include=["arbitre.tasks"])
+
         print("Running all pending testresults...")
 
         pending_testresults = TestResult.objects.filter(
@@ -151,13 +168,17 @@ class TestResult(models.Model):
             lang = submission.exercise.session.course.language
 
             # if submission created more than 5 minutes ago
-            if submission.created < timezone.now() - timedelta(minutes=5):
+            if submission.created < timezone.now() - timedelta(minutes=1):
                 # Add camisole task to queue
-                run_camisole.s(
-                    submission_id=submission.id,
-                    test_id=exercise_test.id,
-                    file_content=file_content,
-                    lang=lang,
-                ).delay()
+                celery.send_task(
+                    "arbitre.tasks.run_camisole",
+                    (
+                        submission.id,
+                        exercise_test.id,
+                        file_content,
+                        lang,
+                    )
+                )
 
         print(f"Ran {len(pending_testresults)} pending testresults")
+
