@@ -2,10 +2,10 @@ from api.models import Exercise
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from arbitre.tasks import run_camisole, dummy_run_camisole
 from celery import Celery
 from django.utils import timezone
 from datetime import timedelta
+
 
 class Submission(models.Model):
     """
@@ -76,13 +76,13 @@ class Submission(models.Model):
                     print("Adding one task to queue")
                     # Add camisole task to queue
                     celery.send_task(
-                        'arbitre.tasks.run_camisole',
+                        "arbitre.tasks.run_camisole",
                         (
                             self.id,
                             test.id,
                             file_content,
                             course.language,
-                        )
+                        ),
                     )
                     print("One task added")
         else:
@@ -177,8 +177,7 @@ class TestResult(models.Model):
                         exercise_test.id,
                         file_content,
                         lang,
-                    )
+                    ),
                 )
 
         print(f"Ran {len(pending_testresults)} pending testresults")
-

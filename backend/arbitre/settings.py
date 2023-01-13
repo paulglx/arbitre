@@ -40,7 +40,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", env("HOSTNAME", default="")]
 INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "corsheaders",
-    'django_celery_beat',
+    "django_celery_beat",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -188,4 +188,4 @@ CELERY_RESULT_BACKEND = "rpc://"
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
