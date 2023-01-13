@@ -41,7 +41,7 @@ const TestResult = (props: any) => {
         if (result.running) {
             return <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         } else {
-            return <span className="font-monospace">{result.stdout}</span>
+            return <span className="font-monospace"> <span className='text-muted text-decoration-underline'>OUTPUT:</span>&nbsp;{result.stdout}</span>
         }
     }
 
