@@ -67,6 +67,13 @@ MIDDLEWARE = [
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://"
+    if env("USE_HTTPS") == "true"
+    else "http://"
+    + env("HOSTNAME", default="localhost")
+]
 CSRF_COOKIE_SECURE = env("USE_HTTPS", default=True)
 SESSION_COOKIE_SECURE = env("USE_HTTPS", default=True)
 
