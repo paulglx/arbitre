@@ -1,114 +1,71 @@
 import '../login-register.css'
 
-import { useEffect, useRef, useState } from 'react'
-import { useGetGroupsMutation, useLoginMutation } from '../features/auth/authApiSlice'
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { Button } from 'react-bootstrap'
 import React from 'react'
 import { setCredentials } from '../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
+import { useGetGroupsMutation } from '../features/auth/authApiSlice'
+import { useKeycloak } from '@react-keycloak/web'
 
 const Login = () => {
-    const userRef = useRef<any>()
-    const errRef = useRef<any>()
-    const [user, setUser] = useState('')
-    const [pwd, setPwd] = useState('')
-    const [errMsg, setErrMsg] = useState('')
-    const navigate = useNavigate()
 
-    const location = useLocation()
-    const from = location.state?.from?.pathname || "/"
+    console.log("Login")
 
-    const [login, { isLoading }] = useLoginMutation()
     const [getGroups] = useGetGroupsMutation();
     const dispatch = useDispatch()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || "/"
+    const navigate = useNavigate()
+    const { keycloak, initialized: keycloakInitialized } = useKeycloak()
 
-    useEffect(() => {
-        userRef?.current?.focus()
-    }, [])
+    console.log("keycloakInitialized: " + keycloakInitialized)
 
-    useEffect(() => {
-        setErrMsg('')
-    }, [user, pwd])
+    if (!keycloakInitialized) {
+        return <div>Loading...</div>
+    }
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault()
+    if (keycloak.authenticated) {
 
-        try {
-            const userData = await login({ username: user, password: pwd }).unwrap()
-            const groupsData = await getGroups({ username: user }).unwrap()
-            const roles = groupsData.groups.map((g: any) => g.id);
+        console.log("Authenticated. Loading user profile")
 
-            dispatch(setCredentials({ ...userData, user, roles }))
-            setUser('')
-            setPwd('')
+        keycloak.loadUserProfile().then(function (profile) {
+            const user = profile.username;
+            const keycloakToken = keycloak.token;
+            const keycloakRefreshToken = keycloak.refreshToken;
+
+            //const groupsData = await getGroups({ username }).unwrap()
+            //const roles = groupsData?.groups.map((g: any) => g.id);
+
+            console.log("Loaded user profile: " + user + ". Dispatching setCredentials")
+
+            dispatch(setCredentials({
+                user,
+                keycloakToken,
+                keycloakRefreshToken,
+                roles: []
+            }));
+
+            console.log("Dispatched setCredentials. navigating now. bye")
+
             if (from === "/") {
                 navigate("/course")
             } else {
                 navigate(from, { replace: true });
             }
-        } catch (err: any) {
-            if (!err?.status) {
-                // isLoading: true until timeout occurs
-                setErrMsg('No Server Response');
-            } else if (err.status === 400) {
-                setErrMsg('Missing Username or Password');
-            } else if (err.status === 401) {
-                setErrMsg('Wrong username or password');
-            } else {
-                setErrMsg('Login Failed');
-            }
-            errRef.current.focus();
-        }
+
+        }).catch(function () {
+            console.log("Failed to load user profile")
+        });
+    } else {
+        console.log("Not authenticated")
     }
 
-    const handleUserInput = (e: any) => setUser(e.target.value)
-    const handlePwdInput = (e: any) => setPwd(e.target.value)
-
-    const content = isLoading ? <></> : (
-
-        <div className="login text-center bg-light border rounded">
-
-            <div className="form-signin w-100 m-auto">
-                <form onSubmit={handleSubmit}>
-                    <h3 className="mb-3 p-3 fw-normal">Welcome back</h3>
-
-                    <p ref={errRef} className={errMsg ? "errmsg text-danger" : "d-none"} aria-live="assertive">{errMsg}</p>
-
-                    <div className="form-floating">
-                        <input
-                            className={errMsg ? 'is-invalid form-control' : 'form-control'}
-                            type="text"
-                            id="username-login"
-                            ref={userRef}
-                            value={user}
-                            onChange={handleUserInput}
-                            autoComplete="off"
-                            required
-                        />
-                        <label htmlFor="username">Username:</label>
-                    </div>
-
-                    <div className="form-floating">
-                        <input
-                            className={errMsg ? 'is-invalid form-control' : 'form-control'}
-                            type="password"
-                            id="password-login"
-                            onChange={handlePwdInput}
-                            value={pwd}
-                            required
-                        />
-                        <label htmlFor="password">Password:</label>
-                    </div>
-                    <br />
-                    <button className='w-100 btn btn-lg btn-primary'>Sign In</button>
-                </form>
-
-                <p className="mt-5 mb-3 text-muted">2022 - WIP</p>
-            </div>
-        </div>
-    )
-
-    return content
+    return (<>
+        <Button className='btn-light' href={keycloak.createLoginUrl()}>
+            Login via SSO
+        </Button >
+    </>)
 }
 export default Login
