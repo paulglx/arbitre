@@ -15,6 +15,7 @@ pkgs.mkShell {
       gunicorn
       pylama
       psycopg2
+      mozilla-django-oidc
       packaging
       requests
       uvicorn
