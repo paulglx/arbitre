@@ -7,17 +7,6 @@ from rest_framework.response import Response
 from .serializers import MinimalUserSerializer, UserSerializer
 
 
-class LogoutView(APIView):
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        except TokenError:
-            return Response(data={"message": "Invalid token"}, status=400)
-        return Response(data={"message": "Successfully logged out"}, status=200)
-
-
 class UserGroup(APIView):
     """
     Get the group(s) that an user belongs to.
