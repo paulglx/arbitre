@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django.contrib.admin",
     "django.contrib.auth",
+    "mozilla_django_oidc",
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.sessions",
@@ -53,6 +54,26 @@ INSTALLED_APPS = [
     "rest_framework",
     "runner.apps.RunnerConfig",
 ]
+
+# Add 'mozilla_django_oidc' authentication backend
+# https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html#changing-how-django-users-are-created
+
+AUTHENTICATION_BACKENDS = (
+    "arbitre.oidc.CustomOIDCAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="arbitre-backend")
+OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="")
+OIDC_OP_AUTHORIZATION_ENDPOINT = (
+    "http://localhost:8080/realms/arbitre/protocol/openid-connect/auth"
+)
+OIDC_OP_TOKEN_ENDPOINT = (
+    "http://localhost:8080/realms/arbitre/protocol/openid-connect/token"
+)
+OIDC_OP_USER_ENDPOINT = (
+    "http://localhost:8080/realms/arbitre/protocol/openid-connect/userinfo"
+)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -71,8 +92,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://"
     if env("USE_HTTPS") == "true"
-    else "http://"
-    + env("HOSTNAME", default="localhost")
+    else "http://" + env("HOSTNAME", default="localhost")
 ]
 CSRF_COOKIE_SECURE = env("USE_HTTPS", default=True)
 SESSION_COOKIE_SECURE = env("USE_HTTPS", default=True)
@@ -158,6 +178,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Django Rest Framework Settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "mozilla_django_oidc.contrib.drf.OIDCAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
 }
