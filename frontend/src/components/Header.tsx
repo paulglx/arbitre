@@ -1,11 +1,11 @@
 import { Container, Dropdown, Nav, Navbar } from 'react-bootstrap'
-import { selectCurrentRefreshToken, selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice'
+import { selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice'
 
 import { PersonCircle } from 'react-bootstrap-icons'
 import React from 'react'
 import { logOut } from '../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
-import { useLogoutMutation } from '../features/auth/authApiSlice'
+import { useKeycloak } from '@react-keycloak/web'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -13,14 +13,14 @@ const Header = () => {
 
     const username = useSelector(selectCurrentUser)
     const isTeacher = useSelector(selectIsTeacher)
-    const refresh = useSelector(selectCurrentRefreshToken)
-
-    const [logout] = useLogoutMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const { keycloak } = useKeycloak()
 
     const signout = () => {
-        logout({ refresh })
+        keycloak.logout({
+            redirectUri: window.location.origin + '/'
+        })
         dispatch(logOut({}))
         navigate('/')
     }
