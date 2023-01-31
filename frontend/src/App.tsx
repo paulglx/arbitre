@@ -8,11 +8,9 @@ import CreateSession from "./components/CreateSession";
 import Exercise from "./components/Exercise";
 import JoinCourse from "./components/JoinCourse";
 import Layout from "./components/Layout";
-import Login from "./components/Login";
 import NotFound from "./components/NotFound";
 import Notification from "./components/Notification";
 import Public from "./components/Public";
-import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
 import Results from "./components/Results";
 import Session from "./components/Session";
@@ -29,8 +27,6 @@ function App() {
 
 				{/* Public routes */}
 				<Route index element={<Public />} />
-				<Route path="login" element={<Login />} />
-				<Route path="register" element={<Register />} />
 
 				{/* Protected routes */}
 				<Route element={<RequireAuth />}>
