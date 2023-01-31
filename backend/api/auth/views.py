@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework import permissions, viewsets
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from .serializers import MinimalUserSerializer, UserSerializer

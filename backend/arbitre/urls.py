@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from api.auth.views import LogoutView, UserGroup, UserViewSet, TeachersViewSet
+from api.auth.views import UserGroup, UserViewSet, TeachersViewSet
 from api.views import (
     AllResultsOfSessionViewSet,
     AllResultsViewSet,
@@ -88,7 +88,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),  # Contains : /exercise, /session, /course
     path("api/auth/", include(auth_router.urls)),  # Contains : /users
-    path("api/auth/logout/", LogoutView.as_view(), name="logout"),
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/users/groups", UserGroup.as_view(), name="user_groups"),
