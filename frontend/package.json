@@ -35,7 +35,8 @@
     "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@playwright/test": "^1.27.1",
     "@types/autosize": "^4.0.1",
-    "@types/node": "^18.11.5"
+    "@types/node": "^18.11.5",
+    "eslint": "^8.33.0"
   }
 }

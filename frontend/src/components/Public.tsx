@@ -1,6 +1,6 @@
-import { Container, Tab, Tabs } from "react-bootstrap";
 import React, { useEffect } from "react";
 
+import { Container } from "react-bootstrap";
 import Login from "./Login";
 import { selectCurrentUser } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
