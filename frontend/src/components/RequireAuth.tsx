@@ -5,42 +5,22 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
+import { useRefreshAuth } from "../hooks/useRefreshAuth";
 
 const RequireAuth = () => {
 
     const { keycloak, initialized } = useKeycloak()
-    const dispatch = useDispatch()
+    const refreshAuth = useRefreshAuth()
     const keycloakToken = useSelector(selectCurrentKeycloakToken)
     const location = useLocation()
-    const roles = useSelector(selectCurrentRoles)
 
+    // Periodically refresh auth if token is about to expire
     useEffect(() => {
         const interval = setInterval(() => {
-            initialized && keycloak.updateToken(60).then((refreshed) => {
-                if (refreshed) {
-                    keycloak.loadUserProfile().then(function (profile) {
-                        const user = profile.username;
-                        const keycloakToken = keycloak.token;
-                        const keycloakRefreshToken = keycloak.refreshToken;
-                        dispatch(setCredentials({
-                            user,
-                            keycloakToken,
-                            keycloakRefreshToken,
-                            roles
-                        }));
-                        console.log("Re-authenticated", user)
-                    }).catch((error) => {
-                        console.log("Failed to load user profile")
-                    });
-                }
-            }).catch(() => {
-                console.log("Failed to refresh token")
-                keycloak.logout()
-                dispatch(logOut({}))
-            });
+            refreshAuth()
         }, 1000);
         return () => clearInterval(interval);
-    }, [keycloak, initialized]);
+    }, [keycloak, initialized, refreshAuth]);
 
     return (
         keycloakToken
