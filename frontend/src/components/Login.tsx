@@ -11,8 +11,6 @@ import { useKeycloak } from '@react-keycloak/web'
 
 const Login = () => {
 
-    console.log("Login")
-
     const [getGroups] = useGetGroupsMutation();
     const dispatch = useDispatch()
     const location = useLocation()
@@ -20,42 +18,35 @@ const Login = () => {
     const navigate = useNavigate()
     const { keycloak, initialized: keycloakInitialized } = useKeycloak()
 
-    console.log("keycloakInitialized: " + keycloakInitialized)
-
     if (!keycloakInitialized) {
         return <div>Loading...</div>
     }
 
     if (keycloak.authenticated) {
-
-        console.log("Authenticated. Loading user profile")
-
         keycloak.loadUserProfile().then(function (profile) {
+
             const user = profile.username;
             const keycloakToken = keycloak.token;
             const keycloakRefreshToken = keycloak.refreshToken;
 
-            //const groupsData = await getGroups({ username }).unwrap()
-            //const roles = groupsData?.groups.map((g: any) => g.id);
+            getGroups({ username: user }).then((data: any) => {
+                const roles = data.data.groups.map((group: any) => group.id)
+                dispatch(setCredentials({
+                    user,
+                    keycloakToken,
+                    keycloakRefreshToken,
+                    roles
+                }));
 
-            console.log("Loaded user profile: " + user + ". Dispatching setCredentials")
-
-            dispatch(setCredentials({
-                user,
-                keycloakToken,
-                keycloakRefreshToken,
-                roles: []
-            }));
-
-            console.log("Dispatched setCredentials. navigating now. bye")
-
-            if (from === "/") {
-                navigate("/course")
-            } else {
-                navigate(from, { replace: true });
-            }
-
-        }).catch(function () {
+                if (from === "/") {
+                    navigate("/course")
+                } else {
+                    navigate(from, { replace: true });
+                }
+            }).catch((error) => {
+                console.log("Failed to load user groups")
+            })
+        }).catch((error) => {
             console.log("Failed to load user profile")
         });
     } else {
