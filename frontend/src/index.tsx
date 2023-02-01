@@ -23,9 +23,6 @@ root.render(
       checkLoginIframe: false,
       silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
     }}
-    onEvent={(event, error) => {
-      event === 'onTokenExpired' && keycloak.updateToken(5).catch(() => keycloak.logout());
-    }}
   >
     {/* <React.StrictMode> */}
     <Provider store={store}>
