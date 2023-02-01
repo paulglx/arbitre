@@ -35,7 +35,7 @@ const TestResult = (props: any) => {
         else {
             setSkipQueries(true)
         }
-    }, [submissionData, testResults])
+    }, [submissionData, testResults, pollingInterval])
 
     const testResultContent = (result: any) => {
         if (result.running) {
