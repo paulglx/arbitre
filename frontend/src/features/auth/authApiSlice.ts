@@ -13,8 +13,5 @@ export const authApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    /*     useLoginMutation,
-        useRegisterMutation,
-        useLogoutMutation, */
     useGetGroupsMutation
 } = authApiSlice;
