@@ -22,16 +22,12 @@ class UserGroup(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # TODO fix permissions
-    permission_classes = [permissions.AllowAny]
 
 
 class TeachersViewSet(viewsets.ViewSet):
     """
     Get all teachers
     """
-
-    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
         teachers = User.objects.filter(groups__id=2)

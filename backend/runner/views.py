@@ -109,14 +109,12 @@ class SubmissionFileViewSet(viewsets.ViewSet):
 
             language = submission.exercise.session.course.language
 
-            # TODO reactivate safety
-
-            """ if (
+            if (
                 request.user != submission.owner
                 and request.user not in submission.exercise.session.course.owners.all()
                 and request.user not in submission.exercise.session.course.tutors.all()
             ):
-                return error_response """
+                return error_response
 
             try:
                 with submission.file.open(mode="rb") as f:

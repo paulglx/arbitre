@@ -46,7 +46,7 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="paul.guilloux@telecom-sudparis.eu"),
     ),
     public=True,
-    permission_classes=[permissions.AllowAny],  # TODO allow admins only in prod
+    permission_classes=[permissions.IsAuthenticatedOrReadOnly],
 )
 
 # Auth router
