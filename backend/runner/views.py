@@ -12,7 +12,6 @@ from django.contrib.auth.models import User
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
-    permission_classes = [permissions.AllowAny]  # TODO fix
 
     def perform_create(self, serializer):
 
@@ -95,8 +94,6 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     """
     Returns submission file with content
     """
-
-    permission_classes = [permissions.AllowAny]  # TODO fix
 
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
@@ -203,7 +200,6 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
-    permission_classes = [permissions.AllowAny]  # TODO fix
 
     # GET runner/api?exercise_id=...
     def get_queryset(self):
