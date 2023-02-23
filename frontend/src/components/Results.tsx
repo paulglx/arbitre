@@ -1,4 +1,4 @@
-import { Container, Dropdown, Form } from 'react-bootstrap'
+import { Button, Container, Dropdown, Form, ListGroup } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 
 import { CaretDownFill } from 'react-bootstrap-icons'
@@ -21,12 +21,18 @@ const Results = () => {
 
     useEffect(() => {
         if (courses) {
-            setCurrentSession(courses[0].sessions[0].id)
-            setCurrentSessionTitle(courses[0].sessions[0].title)
+            if (courses[0].sessions.length === 0) {
+                setCurrentSession(-1)
+                setCurrentSessionTitle('')
+            } else {
+                setCurrentSession(courses[0].sessions[0].id)
+                setCurrentSessionTitle(courses[0].sessions[0].title)
+            }
         }
     }, [courses])
 
     useEffect(() => {
+
         if (sessionSearch) {
             const results = courses?.map((course: any) => {
                 return {
@@ -51,6 +57,7 @@ const Results = () => {
             className='h2 text-dark px-2 py-1 text-decoration-none shadow-sm border bg-light border-4 rounded-4'
             href="#dropdown"
             ref={ref as any}
+            key={currentSession}
             onClick={(e) => {
                 e.preventDefault();
                 onClick(e);
@@ -106,6 +113,8 @@ const Results = () => {
         },
     );
 
+    console.log(courses)
+
     return isCoursesSuccess ? (<>
         <Header />
 
@@ -114,15 +123,28 @@ const Results = () => {
 
         <Container>
 
-            <Dropdown>
-                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                    {currentSessionTitle}
-                </Dropdown.Toggle>
+            {courses?.[0].sessions?.length === 0 ? <>
+                <ListGroup>
+                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
+                        <span className='fw-bold'>No sessions</span> <br />
+                        You don't have a session to display the results of yet.<br />
+                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
+                    </ListGroup.Item>
+                </ListGroup>
+            </>
+                :
 
-                <Dropdown.Menu as={CustomMenu} className="border rounded-4 mt-3 shadow-sm w-50">
+                <Dropdown>
+                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                        {currentSessionTitle}
+                    </Dropdown.Toggle>
 
-                </Dropdown.Menu>
-            </Dropdown>
+                    <Dropdown.Menu as={CustomMenu} className="border rounded-4 mt-3 shadow-sm w-50">
+
+                    </Dropdown.Menu>
+                </Dropdown>
+
+            }
 
             <br />
 

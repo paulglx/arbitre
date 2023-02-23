@@ -30,7 +30,7 @@ const TestResult = (props: any) => {
 
         if (submissionData[0]?.status === "pending" || submissionData[0]?.status === "running" || testResults?.some((result: any) => result.status === "running" || result.status === "pending")) {
             setSkipQueries(false)
-            setPollingInterval(pollingInterval * 2)
+            setPollingInterval(p => p * 2)
         }
         else {
             setSkipQueries(true)

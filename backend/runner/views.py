@@ -12,7 +12,6 @@ from django.contrib.auth.models import User
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
-    permission_classes = [permissions.AllowAny]  # TODO fix
 
     def perform_create(self, serializer):
 
@@ -96,8 +95,6 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     Returns submission file with content
     """
 
-    permission_classes = [permissions.AllowAny]  # TODO fix
-
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
 
@@ -112,14 +109,12 @@ class SubmissionFileViewSet(viewsets.ViewSet):
 
             language = submission.exercise.session.course.language
 
-            # TODO reactivate safety
-
-            """ if (
+            if (
                 request.user != submission.owner
                 and request.user not in submission.exercise.session.course.owners.all()
                 and request.user not in submission.exercise.session.course.tutors.all()
             ):
-                return error_response """
+                return error_response
 
             try:
                 with submission.file.open(mode="rb") as f:
@@ -203,7 +198,6 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestResultViewSet(viewsets.ModelViewSet):
     queryset = TestResult.objects.all()
     serializer_class = TestResultSerializer
-    permission_classes = [permissions.AllowAny]  # TODO fix
 
     # GET runner/api?exercise_id=...
     def get_queryset(self):

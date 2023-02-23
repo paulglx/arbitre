@@ -2,19 +2,19 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const authSlice = createSlice({
     name: 'auth',
-    initialState: { user:null, accessToken:null, refreshToken:null, roles:[] },
+    initialState: { user: null, keycloakToken: null, keycloakRefreshToken: null, roles: [] },
     reducers: {
         setCredentials: (state, action) => {
-            const { user, access, refresh, roles } = action.payload;
+            const { user, keycloakToken, keycloakRefreshToken, roles } = action.payload
             state.user = user;
-            state.accessToken = access;
-            state.refreshToken = refresh;
+            state.keycloakToken = keycloakToken;
+            state.keycloakRefreshToken = keycloakRefreshToken;
             state.roles = roles;
         },
         logOut: (state, action) => {
             state.user = null;
-            state.accessToken = null;
-            state.refreshToken = null;
+            state.keycloakToken = null;
+            state.keycloakRefreshToken = null;
             state.roles = [];
         }
     },
@@ -24,8 +24,8 @@ export const { setCredentials, logOut } = authSlice.actions
 
 export default authSlice.reducer
 
-export const selectCurrentUser = (state:any) => state.auth.user
-export const selectCurrentAccessToken = (state:any) => state.auth.accessToken
-export const selectCurrentRefreshToken = (state:any) => state.auth.refreshToken
-export const selectCurrentRoles = (state:any) => state.auth.roles
-export const selectIsTeacher = (state:any) => state.auth.roles.includes(2)
+export const selectCurrentUser = (state: any) => state.auth.user
+export const selectCurrentKeycloakToken = (state: any) => state.auth.keycloakToken
+export const selectCurrentKeycloakRefreshToken = (state: any) => state.auth.keycloakRefreshToken
+export const selectCurrentRoles = (state: any) => state.auth.roles
+export const selectIsTeacher = (state: any) => state.auth.roles.includes(2)

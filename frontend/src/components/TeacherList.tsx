@@ -105,10 +105,10 @@ const TeacherList = (props: any) => {
 
     return isOwnersSuccess && isTeachersSuccess ? (<Row>
         <Col md>
-            <div className="bg-light p-3 border rounded">
+            <div className="bg-light p-3 rounded-4">
                 <h2 className="h3">Owners</h2>
                 <p className="text-muted">Owners manage sessions and exercises on this course.<br />They also manage students and see their results.</p>
-                <ListGroup className="rounded-4">
+                <ListGroup className="rounded">
                     {owners.map((owner: any) => (
                         <ListGroup.Item key={owner.id} className="d-flex align-items-center justify-content-between">
                             &nbsp;
@@ -166,11 +166,11 @@ const TeacherList = (props: any) => {
             <br />
         </Col>
 
-        <Col md>
-            <div className="bg-light p-3 border rounded">
+        <Col lg>
+            <div className="bg-light p-3 rounded-4">
                 <h2 className="h3">Tutors</h2>
                 <p className="text-muted">Tutors can manage students and see their results.</p>
-                <ListGroup className="rounded-4">
+                <ListGroup className="rounded">
                     {tutors.map((tutor: any) => (
                         <ListGroup.Item key={tutor.id} className="d-flex align-items-center justify-content-between">
                             &nbsp;

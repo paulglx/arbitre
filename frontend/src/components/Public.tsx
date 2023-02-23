@@ -1,13 +1,14 @@
-import { Container, Tab, Tabs } from "react-bootstrap";
 import React, { useEffect } from "react";
 
+import { Container } from "react-bootstrap";
 import Login from "./Login";
-import Register from "./Register";
 import { selectCurrentUser } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Public = () => {
+
+    console.log("Public")
 
     const navigate = useNavigate();
     const user = useSelector(selectCurrentUser);
@@ -18,21 +19,8 @@ const Public = () => {
         }
     }, [user, navigate]);
 
-    const loginRegisterBlock = () => {
-        return (
-            <Tabs defaultActiveKey='login' id='login-register-tab' className='mb-3' variant="pills">
-                <Tab eventKey='login' title='Login'>
-                    <Login />
-                </Tab>
-                <Tab eventKey='register' title='Register'>
-                    <Register />
-                </Tab>
-            </Tabs>
-        )
-    }
-
-    const content = (
-        <div className="vertical-center d-flex align-items-center justify-content-between">
+    return (<>
+        <Container className="vertical-center d-flex align-items-center justify-content-between">
             <Container className="p-3">
                 <div className="ms-auto w-50">
                     <h1 className='border border-3 rounded-pill packed-border border-dark arbitre'>ARBITRE</h1>
@@ -40,14 +28,11 @@ const Public = () => {
                 </div>
             </Container>
 
-            <Container>
-                <div>
-                    {loginRegisterBlock()}
-                </div>
+            <Container className="p-3">
+                <Login />
             </Container>
-        </div>
-    )
-    return content
+        </Container>
+    </>)
 }
 
 export default Public;
