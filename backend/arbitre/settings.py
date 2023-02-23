@@ -63,16 +63,15 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
+KEYCLOAK_URL = env("KEYCLOAK_URL", default="http://localhost:8080")
 OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="arbitre-backend")
 OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="")
 OIDC_OP_AUTHORIZATION_ENDPOINT = (
-    "http://localhost:8080/realms/arbitre/protocol/openid-connect/auth"
+    f"{KEYCLOAK_URL}/realms/arbitre/protocol/openid-connect/auth"
 )
-OIDC_OP_TOKEN_ENDPOINT = (
-    "http://localhost:8080/realms/arbitre/protocol/openid-connect/token"
-)
+OIDC_OP_TOKEN_ENDPOINT = f"{KEYCLOAK_URL}/realms/arbitre/protocol/openid-connect/token"
 OIDC_OP_USER_ENDPOINT = (
-    "http://localhost:8080/realms/arbitre/protocol/openid-connect/userinfo"
+    f"{KEYCLOAK_URL}/realms/arbitre/protocol/openid-connect/userinfo"
 )
 
 MIDDLEWARE = [
