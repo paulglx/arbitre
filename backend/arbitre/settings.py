@@ -64,14 +64,16 @@ AUTHENTICATION_BACKENDS = (
 )
 
 KEYCLOAK_URL = env("KEYCLOAK_URL", default="http://localhost:8080")
+KEYCLOAK_REALM_NAME = env("KEYCLOAK_REALM_NAME", default="master")
+
 OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="arbitre-backend")
 OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="")
 OIDC_OP_AUTHORIZATION_ENDPOINT = (
-    f"{KEYCLOAK_URL}/realms/arbitre/protocol/openid-connect/auth"
+    f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/auth"
 )
-OIDC_OP_TOKEN_ENDPOINT = f"{KEYCLOAK_URL}/realms/arbitre/protocol/openid-connect/token"
+OIDC_OP_TOKEN_ENDPOINT = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/token"
 OIDC_OP_USER_ENDPOINT = (
-    f"{KEYCLOAK_URL}/realms/arbitre/protocol/openid-connect/userinfo"
+    f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/userinfo"
 )
 
 MIDDLEWARE = [
@@ -88,10 +90,10 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_ORIGIN_PREFIX = "https://" if env("USE_HTTPS") == "true" else "http://"
 CSRF_TRUSTED_ORIGINS = [
-    "https://"
-    if env("USE_HTTPS") == "true"
-    else "http://" + env("HOSTNAME", default="localhost")
+    CSRF_ORIGIN_PREFIX + env("HOSTNAME"),
+    "https://auth.arbitre.tech" #TODO de-hardcode
 ]
 CSRF_COOKIE_SECURE = env("USE_HTTPS", default=True)
 SESSION_COOKIE_SECURE = env("USE_HTTPS", default=True)
