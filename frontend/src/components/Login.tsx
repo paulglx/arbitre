@@ -28,7 +28,6 @@ const Login = () => {
             const keycloakRefreshToken = keycloak.refreshToken;
             const isTeacher = keycloak.hasRealmRole("teacher")
 
-            //const roles = data.data.groups.map((group: any) => group.id)
             dispatch(setCredentials({
                 user,
                 keycloakToken,
