@@ -31,7 +31,7 @@ const Header = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/course">Coursesbb</Nav.Link>
+                        <Nav.Link href="/course">Courses</Nav.Link>
                         {isTeacher ? (<Nav.Link href="/results">Results</Nav.Link>) : (<></>)}
                     </Nav>
 

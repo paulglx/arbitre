@@ -21,34 +21,35 @@ const Results = () => {
 
     useEffect(() => {
         if (courses) {
-            if (courses[0].sessions.length === 0) {
+            if (courses[0]?.sessions?.length === 0) {
                 setCurrentSession(-1)
                 setCurrentSessionTitle('')
             } else {
-                setCurrentSession(courses[0].sessions[0].id)
-                setCurrentSessionTitle(courses[0].sessions[0].title)
+                setCurrentSession(courses[0]?.sessions[0].id)
+                setCurrentSessionTitle(courses[0]?.sessions[0].title)
             }
         }
     }, [courses])
 
     useEffect(() => {
-
-        if (sessionSearch) {
-            const results = courses?.map((course: any) => {
-                return {
-                    course: course,
-                    sessions: course.sessions.filter((session: any) => session.title.toLowerCase().includes(sessionSearch.toLowerCase()))
-                }
-            })
-            setSessionSearchResults(results)
-        } else {
-            const results = courses?.map((course: any) => {
-                return {
-                    course: course,
-                    sessions: course.sessions
-                }
-            })
-            setSessionSearchResults(results)
+        if (courses) {
+            if (sessionSearch) {
+                const results = courses?.map((course: any) => {
+                    return {
+                        course: course,
+                        sessions: course.sessions.filter((session: any) => session.title.toLowerCase().includes(sessionSearch.toLowerCase()))
+                    }
+                })
+                setSessionSearchResults(results)
+            } else {
+                const results = courses?.map((course: any) => {
+                    return {
+                        course: course,
+                        sessions: course.sessions
+                    }
+                })
+                setSessionSearchResults(results)
+            }
         }
     }, [sessionSearch, courses])
 
@@ -115,6 +116,25 @@ const Results = () => {
 
     console.log(courses)
 
+    if (courses?.length === 0) {
+        return <>
+            <Header />
+
+            <br />
+            <br />
+
+            <Container className='p-3'>
+
+                <h2>Results</h2>
+
+                <div className='p-3 mb-3 bg-light rounded border'>
+                    You did not create any courses. Please create a course first.
+                </div>
+                <Button href="/" variant='light'>← Back to main menu</Button>
+            </Container>
+        </>
+    }
+
     return isCoursesSuccess ? (<>
         <Header />
 
@@ -123,7 +143,7 @@ const Results = () => {
 
         <Container>
 
-            {courses?.[0].sessions?.length === 0 ? <>
+            {courses?.[0]?.sessions?.length === 0 ? <>
                 <ListGroup>
                     <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
                         <span className='fw-bold'>No sessions</span> <br />
