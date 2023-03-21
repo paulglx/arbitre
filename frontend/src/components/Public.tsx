@@ -8,8 +8,6 @@ import { useSelector } from "react-redux";
 
 const Public = () => {
 
-    console.log("Public")
-
     const navigate = useNavigate();
     const user = useSelector(selectCurrentUser);
 
