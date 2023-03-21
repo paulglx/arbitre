@@ -24,8 +24,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CourseSerializer
-    permission_classes = (permissions.AllowAny,)
-
+    
     def generate_join_code(self):
         alphabet = string.ascii_uppercase + string.digits
 
