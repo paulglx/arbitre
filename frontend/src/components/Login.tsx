@@ -6,12 +6,10 @@ import { Button } from 'react-bootstrap'
 import React from 'react'
 import { setCredentials } from '../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
-import { useGetGroupsMutation } from '../features/auth/authApiSlice'
 import { useKeycloak } from '@react-keycloak/web'
 
 const Login = () => {
 
-    const [getGroups] = useGetGroupsMutation();
     const dispatch = useDispatch()
     const location = useLocation()
     const from = location.state?.from?.pathname || "/"
@@ -28,24 +26,21 @@ const Login = () => {
             const user = profile.username;
             const keycloakToken = keycloak.token;
             const keycloakRefreshToken = keycloak.refreshToken;
+            const isTeacher = keycloak.hasRealmRole("teacher")
 
-            getGroups({ username: user }).then((data: any) => {
-                const roles = data.data.groups.map((group: any) => group.id)
-                dispatch(setCredentials({
-                    user,
-                    keycloakToken,
-                    keycloakRefreshToken,
-                    roles
-                }));
+            //const roles = data.data.groups.map((group: any) => group.id)
+            dispatch(setCredentials({
+                user,
+                keycloakToken,
+                keycloakRefreshToken,
+                isTeacher
+            }));
 
-                if (from === "/") {
-                    navigate("/course")
-                } else {
-                    navigate(from, { replace: true });
-                }
-            }).catch((error) => {
-                console.log("Failed to load user groups")
-            })
+            if (from === "/") {
+                navigate("/course")
+            } else {
+                navigate(from, { replace: true });
+            }
         }).catch((error) => {
             console.log("Failed to load user profile")
         });
