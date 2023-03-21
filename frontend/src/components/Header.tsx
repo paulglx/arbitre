@@ -18,10 +18,10 @@ const Header = () => {
     const { keycloak } = useKeycloak()
 
     const signout = () => {
+        dispatch(logOut({}))
         keycloak.logout({
             redirectUri: window.location.origin + '/'
         })
-        dispatch(logOut({}))
         navigate('/')
     }
 
@@ -37,6 +37,8 @@ const Header = () => {
                     </Nav>
 
                     <Dropdown align="end">
+
+                        {isTeacher ? (<span className='text-muted'>Teacher &nbsp;</span>) : (<></>)}
 
                         <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
                             <PersonCircle className="align-middle" />
