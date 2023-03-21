@@ -22,7 +22,6 @@ const Header = () => {
         keycloak.logout({
             redirectUri: window.location.origin + '/'
         })
-        navigate('/')
     }
 
     return (
@@ -32,7 +31,7 @@ const Header = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/course">Courses</Nav.Link>
+                        <Nav.Link href="/course">Coursesbb</Nav.Link>
                         {isTeacher ? (<Nav.Link href="/results">Results</Nav.Link>) : (<></>)}
                     </Nav>
 
