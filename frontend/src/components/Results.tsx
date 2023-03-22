@@ -123,19 +123,39 @@ const Results = () => {
             <br />
             <br />
 
-            <Container className='p-3'>
+            <Container>
 
-                <h2>Results</h2>
-
-                <div className='p-3 mb-3 bg-light rounded border'>
-                    You did not create any courses. Please create a course first.
-                </div>
-                <Button href="/" variant='light'>← Back to main menu</Button>
+                <ListGroup>
+                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
+                        <span className='fw-bold'>No courses</span> <br />
+                        You don't have a course to display the results of yet.<br />
+                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
+                    </ListGroup.Item>
+                </ListGroup>
             </Container>
         </>
     }
 
+    if (courses?.[0]?.sessions?.length === 0) {
+        return <>
+
+            <Header />
+
+            <br />
+            <br />
+
+            <ListGroup>
+                <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
+                    <span className='fw-bold'>No sessions</span> <br />
+                    You don't have a session to display the results of yet.<br />
+                    <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
+                </ListGroup.Item>
+            </ListGroup>
+        </>
+    }
+
     return isCoursesSuccess ? (<>
+
         <Header />
 
         <br />
@@ -143,28 +163,15 @@ const Results = () => {
 
         <Container>
 
-            {courses?.[0]?.sessions?.length === 0 ? <>
-                <ListGroup>
-                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
-                        <span className='fw-bold'>No sessions</span> <br />
-                        You don't have a session to display the results of yet.<br />
-                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
-                    </ListGroup.Item>
-                </ListGroup>
-            </>
-                :
+            <Dropdown>
+                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                    {currentSessionTitle}
+                </Dropdown.Toggle>
 
-                <Dropdown>
-                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                        {currentSessionTitle}
-                    </Dropdown.Toggle>
+                <Dropdown.Menu as={CustomMenu} className="border rounded-4 mt-3 shadow-sm w-50">
 
-                    <Dropdown.Menu as={CustomMenu} className="border rounded-4 mt-3 shadow-sm w-50">
-
-                    </Dropdown.Menu>
-                </Dropdown>
-
-            }
+                </Dropdown.Menu>
+            </Dropdown>
 
             <br />
 
