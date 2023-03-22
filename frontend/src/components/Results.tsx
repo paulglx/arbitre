@@ -144,13 +144,15 @@ const Results = () => {
             <br />
             <br />
 
-            <ListGroup>
-                <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
-                    <span className='fw-bold'>No sessions</span> <br />
-                    You don't have a session to display the results of yet.<br />
-                    <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
-                </ListGroup.Item>
-            </ListGroup>
+            <Container>
+                <ListGroup>
+                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
+                        <span className='fw-bold'>No sessions</span> <br />
+                        You don't have a session to display the results of yet.<br />
+                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
+                    </ListGroup.Item>
+                </ListGroup>
+            </Container>
         </>
     }
 
