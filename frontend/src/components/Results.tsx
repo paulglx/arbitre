@@ -21,12 +21,13 @@ const Results = () => {
 
     useEffect(() => {
         if (courses) {
-            if (courses[0]?.sessions?.length === 0) {
+            if (courses?.every((course: any) => course.sessions.length === 0)) {
                 setCurrentSession(-1)
                 setCurrentSessionTitle('')
             } else {
-                setCurrentSession(courses[0]?.sessions[0].id)
-                setCurrentSessionTitle(courses[0]?.sessions[0].title)
+                const firstCourseWithSessions = courses?.find((course: any) => course.sessions.length > 0)
+                setCurrentSession(firstCourseWithSessions.sessions[0].id)
+                setCurrentSessionTitle(firstCourseWithSessions.sessions[0].title)
             }
         }
     }, [courses])
@@ -124,7 +125,6 @@ const Results = () => {
             <br />
 
             <Container>
-
                 <ListGroup>
                     <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
                         <span className='fw-bold'>No courses</span> <br />
@@ -136,7 +136,9 @@ const Results = () => {
         </>
     }
 
-    if (courses?.[0]?.sessions?.length === 0) {
+    console.log(courses)
+
+    if (courses?.every((course: any) => course.sessions.length === 0)) {
         return <>
 
             <Header />

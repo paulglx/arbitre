@@ -100,10 +100,19 @@ const ResultsTable = (props: any) => {
                 ))}
             </tbody >
         ) : (
-            <p className="p-2">
-                No results found. <br></br>
-                <span className="text-muted small">Make sure there are exercises in the session, and students registered on the course.</span>
-            </p>
+            <tbody>
+                <tr>
+                    <td>
+                        <p className="p-2">
+                            No results found. <br></br>
+                            <span className="text-muted small">
+                                Make sure there are exercises in the session, and students registered on the course. <br />
+                                To see your own results here, register yourself as a student on this course.
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
         );
     };
 

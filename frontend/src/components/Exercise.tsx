@@ -266,9 +266,15 @@ const Exercise = () => {
         return (exerciseIsSuccess && tests) ? (
             <>
 
-                <h6 className="text-muted fw-light">
-                    {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
-                </h6>
+                {tests.length > 0 ?
+                    <h6 className="text-muted">
+                        {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
+                    </h6>
+                    :
+                    <h6 className="text-muted">
+                        No tests yet
+                    </h6>
+                }
 
                 {tests.map((test: any) => (
 
