@@ -17,8 +17,8 @@ const Header = () => {
     const navigate = useNavigate()
     const { keycloak } = useKeycloak()
 
-    const signout = () => {
-        dispatch(logOut({}))
+    const signout = async () => {
+        await dispatch(logOut({}))
         keycloak.logout({
             redirectUri: window.location.origin + '/'
         })
