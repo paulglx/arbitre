@@ -12,15 +12,16 @@ body {
 }
 
 div.vertical-center {
-  min-height: 100%;  /* Fallback for browsers that don't support vh unit */
+  min-height: 100%;
+  /* Fallback for browsers that don't support vh unit */
   min-height: 100vh;
 }
 
 ol.breadcrumb {
-  padding:20px;
-  padding-top:10px;
-  padding-bottom:10px;
-  margin-top:20px;
+  padding: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 20px;
   background-color: var(--bs-light);
   border-radius: 5px;
   border: 1px solid var(--bs-border-color);
@@ -28,7 +29,7 @@ ol.breadcrumb {
 
 ol.breadcrumb a {
   color: var(--bs-gray);
-  text-decoration:none;
+  text-decoration: none;
 }
 
 ol.breadcrumb a:hover {
@@ -49,12 +50,12 @@ ol.breadcrumb li.active {
   background-color: var(--bs-gray-200);
   padding-left: 10px;
   padding-right: 10px;
-  margin-left:-10px;
-  margin-right:6px;
+  margin-left: -10px;
+  margin-right: 6px;
 }
 
 .flex-fill {
-  flex:1 1 auto;
+  flex: 1 1 auto;
 }
 
 .dashed-border {
@@ -90,13 +91,16 @@ ol.breadcrumb li.active {
 
 }
 
-code, kbd, pre, samp {
+code,
+kbd,
+pre,
+samp {
   font-family: var(--mono-font) !important;
 }
 
-p > code {
+p>code {
   background-color: var(--bs-light);
-  padding:5px;
+  padding: 5px;
   border-radius: 5px;
 }
 
@@ -131,9 +135,9 @@ p > code {
 }
 
 
-.markdown > pre {
+.markdown>pre {
   background-color: #eaecf1;
-  color:#607196;
+  color: #607196;
   padding: 10px;
   border-radius: 5px;
 }
@@ -160,7 +164,7 @@ p > code {
 }
 
 .teacher.editable-title:hover::after {
-  content:" CLICK TO EDIT";
+  content: " CLICK TO EDIT";
   font-weight: 200;
   font-size: small;
   color: var(--bs-secondary);
@@ -179,8 +183,7 @@ p > code {
 }
 
 .teacher.editable-description:hover {
-  border: 1px dashed var(--bs-gray-400);
-  margin: -1px;
+  border: 1px dashed var(--bs-gray-400) !important;
 }
 
 .teacher.description-input {

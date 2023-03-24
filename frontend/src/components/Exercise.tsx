@@ -216,7 +216,7 @@ const Exercise = () => {
         if (!isOwner || !editDescription) {
             return (
                 <blockquote
-                    className={"p-3 pb-1 bg-light rounded description" + (isOwner ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light rounded border description" + (isOwner ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}
                     tabIndex={0} //allows focus
                 >
@@ -230,7 +230,7 @@ const Exercise = () => {
                         <Form.Control
                             as="textarea"
                             autoFocus
-                            className="teacher description-input"
+                            className="teacher description-input border"
                             onBlur={() => {
                                 if (description === "") {
                                     setDescription("No description");

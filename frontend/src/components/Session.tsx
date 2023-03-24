@@ -157,7 +157,7 @@ const Session = () => {
             return (
                 <blockquote
                     tabIndex={0} //allows focus
-                    className={"p-3 pb-1 bg-light rounded description" + (isOwner ? " teacher editable-description" : "")}
+                    className={"p-3 pb-1 bg-light border rounded description" + (isOwner ? " teacher editable-description" : "")}
                     onFocus={() => setEditDescription(true)}>
                     <Markdown children={description} />
                 </blockquote>

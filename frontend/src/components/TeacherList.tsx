@@ -105,7 +105,7 @@ const TeacherList = (props: any) => {
 
     return isOwnersSuccess && isTeachersSuccess ? (<Row>
         <Col md>
-            <div className="bg-light p-3 rounded-4">
+            <div className="bg-light p-3 border rounded-4">
                 <h2 className="h3">Owners</h2>
                 <p className="text-muted">Owners manage sessions and exercises on this course.<br />They also manage students and see their results.</p>
                 <ListGroup className="rounded">
@@ -167,7 +167,7 @@ const TeacherList = (props: any) => {
         </Col>
 
         <Col lg>
-            <div className="bg-light p-3 rounded-4">
+            <div className="bg-light p-3 border rounded-4">
                 <h2 className="h3">Tutors</h2>
                 <p className="text-muted">Tutors can manage students and see their results.</p>
                 <ListGroup className="rounded">

@@ -65,67 +65,68 @@ const StudentsList = (props: any) => {
         }
     }, [studentsSuccess, usersSuccess, students, allUsers])
 
-    return studentsSuccess ? (<>
-        <Table hover>
-            <thead className='bg-light'>
-                <tr>
-                    <th>Student</th>
-                    <th className="text-end">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {students.length > 0 ? students.map((student: any, i: number) => (
-                    <tr key={i}>
-                        <td>{student.username}</td>
-                        <td className='text-end'>
+    return studentsSuccess ? (
+        <div className='overflow-hidden rounded-4 border'>
+            <Table hover className='mb-0'>
+                <thead className='bg-light'>
+                    <tr>
+                        <th>Student</th>
+                        <th className="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {students.length > 0 ? students.map((student: any, i: number) => (
+                        <tr key={i}>
+                            <td>{student.username}</td>
+                            <td className='text-end'>
+                                <Button
+                                    variant="outline-danger"
+                                    className='p-0 px-1'
+                                    onClick={() => handleRemoveStudent(student.id)}
+                                    aria-label={"Remove student"}
+                                >
+                                    <PersonDash />
+                                </Button>
+                            </td>
+                        </tr>
+                    )) : (
+                        <tr>
+                            <td colSpan={2} className='text-center bg-light'>
+                                There are no students in this course yet. <br />
+                                <span className='text-muted'>Add students by giving them the course code or by entering their username below.</span>
+                            </td>
+                        </tr>
+                    )}
+                    <tr key={-1} className="">
+                        <td className='align-items-center'>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter student username"
+                                list="studentOptions"
+                                size="sm"
+                                value={studentToAdd}
+                                onChange={(e: any) => setStudentToAdd(e.target.value)}
+                                aria-label="Add student"
+                            />
+                            <datalist id="studentOptions">
+                                {addableStudents && addableStudents.map((u: any, i: number) => (
+                                    <option key={i} value={u.username} />
+                                ))}
+                            </datalist>
+                        </td>
+                        <td className='align-items-center text-end'>
                             <Button
-                                variant="outline-danger"
+                                variant="outline-primary"
                                 className='p-0 px-1'
-                                onClick={() => handleRemoveStudent(student.id)}
-                                aria-label={"Remove student"}
+                                onClick={handleAddStudent}
                             >
-                                <PersonDash />
+                                <PersonPlus />
                             </Button>
                         </td>
                     </tr>
-                )) : (
-                    <tr>
-                        <td colSpan={2} className='text-center bg-light'>
-                            There are no students in this course yet. <br />
-                            <span className='text-muted'>Add students by giving them the course code or by entering their username below.</span>
-                        </td>
-                    </tr>
-                )}
-                <tr key={-1} className="">
-                    <td className='align-items-center'>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter student username"
-                            list="studentOptions"
-                            size="sm"
-                            value={studentToAdd}
-                            onChange={(e: any) => setStudentToAdd(e.target.value)}
-                            aria-label="Add student"
-                        />
-                        <datalist id="studentOptions">
-                            {addableStudents && addableStudents.map((u: any, i: number) => (
-                                <option key={i} value={u.username} />
-                            ))}
-                        </datalist>
-                    </td>
-                    <td className='align-items-center text-end'>
-                        <Button
-                            variant="outline-primary"
-                            className='p-0 px-1'
-                            onClick={handleAddStudent}
-                        >
-                            <PersonPlus />
-                        </Button>
-                    </td>
-                </tr>
-            </tbody>
-        </Table>
-    </>) : (<></>)
+                </tbody>
+            </Table>
+        </div>) : (<></>)
 }
 
 export default StudentsList
