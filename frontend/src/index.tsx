@@ -24,16 +24,16 @@ root.render(
       silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
     }}
   >
-    {/* <React.StrictMode> */}
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={Persistor}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/*" element={<App />} />
-          </Routes>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
-    {/* </React.StrictMode> */}
+    <React.StrictMode>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={Persistor}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/*" element={<App />} />
+            </Routes>
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
+    </React.StrictMode>
   </ReactKeycloakProvider>
 );
