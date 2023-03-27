@@ -34,21 +34,19 @@ DEBUG = env("DEBUG", default=False)
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", env("HOSTNAME", default="")]
 
-
 # Application definition
-
 INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "corsheaders",
     "django_celery_beat",
     "django.contrib.admin",
     "django.contrib.auth",
-    "mozilla_django_oidc",
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "drf_yasg",
+    "mozilla_django_oidc",
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework_simplejwt",
     "rest_framework",
@@ -66,10 +64,11 @@ AUTHENTICATION_BACKENDS = (
 KEYCLOAK_URL = env("KEYCLOAK_URL", default="http://localhost:8080")
 KEYCLOAK_REALM_NAME = env("KEYCLOAK_REALM_NAME", default="master")
 
-OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="arbitre-backend")
-OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="")
 OIDC_OP_AUTHORIZATION_ENDPOINT = (
     f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/auth"
+)
+OIDC_OP_JWKS_ENDPOINT = (
+    f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/certs"
 )
 OIDC_OP_TOKEN_ENDPOINT = (
     f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/token"
@@ -77,25 +76,23 @@ OIDC_OP_TOKEN_ENDPOINT = (
 OIDC_OP_USER_ENDPOINT = (
     f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/userinfo"
 )
-
+OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="arbitre-backend")
+OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="")
 OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_OP_JWKS_ENDPOINT = (
-    f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/certs"
-)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.security.SecurityMiddleware",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_ORIGIN_PREFIX = "https://" if env("USE_HTTPS") == "true" else "http://"
 CSRF_TRUSTED_ORIGINS = [
@@ -164,11 +161,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Europe/Paris"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -191,39 +185,10 @@ REST_FRAMEWORK = {
     )
 }
 
-# Simple JWT
-
-SIMPLE_JWT = {
-    # "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5),  # (minutes=5),
-    # "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    # "ROTATE_REFRESH_TOKENS": False,
-    # "BLACKLIST_AFTER_ROTATION": False,
-    # "UPDATE_LAST_LOGIN": False,
-    # "ALGORITHM": "HS256",
-    # "SIGNING_KEY": SECRET_KEY,
-    # "VERIFYING_KEY": None,
-    # "AUDIENCE": None,
-    # "ISSUER": None,
-    # "JWK_URL": None,
-    # "LEEWAY": 0,
-    # "AUTH_HEADER_TYPES": ("Bearer",),
-    # "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    # "USER_ID_FIELD": "id",
-    # "USER_ID_CLAIM": "user_id",
-    # "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
-    # "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    # "TOKEN_TYPE_CLAIM": "token_type",
-    # "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-    # "JTI_CLAIM": "jti",
-    # "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    # "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    # "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
-}
-
 # Celery Settings
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BROKER_URL = "amqp://guest:guest@localhost//"
 CELERY_RESULT_BACKEND = "rpc://"
-CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
