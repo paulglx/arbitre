@@ -125,7 +125,6 @@ const Exercise = () => {
                 stdin: test.stdin,
                 stdout: test.stdout,
             })
-
         } else {
             await updateTest({
                 id: test.id,
@@ -163,7 +162,6 @@ const Exercise = () => {
 
         // refresh page
         window.location.reload(); //TODO update state instead
-
     }
 
     //Prevent blurring test div when focusing one of its inputs
@@ -286,9 +284,7 @@ const Exercise = () => {
                     >
 
                         <Row className="g-2">
-
                             <Col md={3}>
-
                                 <Form.Control
                                     className={"bg-white fw-bold" + (editTest && editTestId === test?.id ? " " : " border")}
                                     placeholder="Test name"
@@ -298,15 +294,11 @@ const Exercise = () => {
                                     onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, name: e.target.value } : t)) }}
                                     {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                 />
-
                             </Col>
 
                             <Col md={4}>
-
                                 <InputGroup>
-
                                     <InputGroup.Text>Input</InputGroup.Text>
-
                                     <Form.Control
                                         as="textarea"
                                         placeholder="Input to test for"
@@ -317,17 +309,12 @@ const Exercise = () => {
                                         onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdin: e.target.value } : t)) }}
                                         {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                     />
-
                                 </InputGroup>
-
                             </Col>
 
                             <Col md={4}>
-
                                 <InputGroup>
-
                                     <InputGroup.Text>Output</InputGroup.Text>
-
                                     <Form.Control
                                         as="textarea"
                                         placeholder="Expected output"
@@ -338,7 +325,6 @@ const Exercise = () => {
                                         onChange={(e) => { setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdout: e.target.value } : t)) }}
                                         {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                     />
-
                                 </InputGroup>
                             </Col>
                             <Col>
@@ -359,7 +345,7 @@ const Exercise = () => {
                     <Button
                         className="btn-link btn-light"
                         onClick={(e) => {
-                            //generates a random id to differentiate between new tests. On creating the test, this id will be ignored by the API.
+                            //generates a random id to differentiate between new tests. Upon creating the test, this id will be ignored by the API.
                             const randomId = Array(16).join().split(',').map(function () { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
                             setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }])
                         }}
@@ -386,9 +372,7 @@ const Exercise = () => {
                     Submit
                 </Button>
             </Form>
-
             <br />
-
             <TestResult exercise_id={exercise.id} />
         </>)
     }
