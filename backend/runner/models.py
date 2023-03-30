@@ -58,8 +58,12 @@ class Submission(models.Model):
 
         celery = Celery("arbitre", include=["arbitre.tasks"])
 
-        course = self.exercise.session.course
+        exercise = self.exercise
+        course = exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
+
+        prefix = exercise.prefix
+        suffix = exercise.suffix
 
         print("Course and tests gotten")
 
@@ -81,6 +85,8 @@ class Submission(models.Model):
                             self.id,
                             test.id,
                             file_content,
+                            prefix,
+                            suffix,
                             course.language,
                         ),
                     )

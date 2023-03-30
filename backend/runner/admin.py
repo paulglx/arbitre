@@ -11,7 +11,7 @@ class TestInline(admin.StackedInline):
 
 
 class ExerciseAdmin(admin.ModelAdmin):
-    fields = ["session", "title", "description"]
+    fields = ["session", "title", "description", "prefix", "suffix"]
     inlines = [TestInline]
 
 
