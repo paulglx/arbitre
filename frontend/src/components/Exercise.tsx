@@ -403,7 +403,7 @@ const Exercise = () => {
                     className="p-0 m-0 mt-2"
                     value={prefix}
                     onChange={(value, e) => { setPrefix(value as string) }}
-                    language="python" //TODO adapt to exercise
+                    language={course.language.toLowerCase()}
                     height="150px"
                     options={{
                         minimap: { enabled: false },
@@ -430,7 +430,7 @@ const Exercise = () => {
                     className="p-0 m-0 mt-2"
                     value={suffix}
                     onChange={(value, e) => { setSuffix(value as string) }}
-                    language="python" //TODO adapt to exercise
+                    language={course.language.toLowerCase()}
                     height="150px"
                     options={{
                         minimap: { enabled: false },
