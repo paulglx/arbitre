@@ -389,6 +389,7 @@ const Exercise = () => {
 
     const handleSuffixUpdate = () => {
         console.log("Updating suffix")
+        handleUpdateExercise()
     }
 
     const prefixSuffixContent = () => {
@@ -451,17 +452,16 @@ const Exercise = () => {
             <hr />
 
             <h5>Code preview</h5>
-            <p className="text-muted mb-1">This is what the code will look like at runtime.</p>
+            <p className="text-muted mb-1">This is what the tested file will look like.</p>
 
             <pre className="border rounded bg-light p-2">
-                {prefix} <br /><br />
+                {prefix !== "" ? (<>{prefix}<br /><br /></>) : (<></>)}
                 <div className="rounded border-0 m-1 student-code-preview">
                     <br />
                     &nbsp;&nbsp;<span className="bg-light p-1 rounded">Student code goes here</span> <br />
                     <br />
                 </div>
-                <br />
-                {suffix}
+                {suffix !== "" ? (<><br />imp{suffix}</>) : (<></>)}
             </pre>
 
         </>)
