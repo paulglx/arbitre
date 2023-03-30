@@ -190,3 +190,12 @@ p>code {
   background-color: var(--bs-light) !important;
   font-family: var(--mono-font);
 }
+
+.student-code-preview {
+  border: 1px solid var(--bs-gray-300);
+    background: repeating-linear-gradient(45deg,
+        var(--bs-gray-200),
+        var(--bs-gray-200) 10px,
+        var(--bs-light) 10px,
+        var(--bs-light) 20px);
+}
