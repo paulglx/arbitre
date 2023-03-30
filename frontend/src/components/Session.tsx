@@ -64,8 +64,8 @@ const Session = () => {
         isError: sessionIsError,
     } = useGetSessionQuery({ id: session_id });
 
-    const ownerUsernames = session?.course.owners.map((o: any) => o.username);
-    const isOwner = ownerUsernames?.includes(username);
+    const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
+    const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
 
     useEffect(() => {
         setTitle(session?.title);
@@ -305,7 +305,7 @@ const Session = () => {
                             {exercisesContent()}
                         </Tab>
 
-                        {isTeacher ? (
+                        {isOwner || isTutor ? (
                             <Tab eventKey="results" title="Results">
                                 <ResultsTable session_id={session_id} />
                             </Tab>

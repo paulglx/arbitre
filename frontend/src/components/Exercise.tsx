@@ -45,8 +45,8 @@ const Exercise = () => {
 
     const session = exercise?.session
     const course = session?.course
-    const ownersUsernames = exercise?.session.course.owners.map((owner: any) => owner.username);
-    const isOwner = ownersUsernames?.includes(username);
+    const isOwner = course?.owners?.map((o: any) => o.username).includes(username);
+    const isTutor = course?.tutors?.map((t: any) => t.username).includes(username);
 
     const {
         data: testsResponse,
@@ -428,7 +428,7 @@ const Exercise = () => {
                     {descriptionContent()}
                 </Tab>
 
-                {isTeacher ? (
+                {isOwner || isTutor ? (
                     <Tab eventKey="tests" title="Tests">
                         {testsContent()}
                     </Tab>
