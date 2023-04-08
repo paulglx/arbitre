@@ -1,17 +1,19 @@
-import { Breadcrumb, Button, Col, Container, Form, InputGroup, OverlayTrigger, Popover, Row, Tab, Tabs } from "react-bootstrap";
-import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
-import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
-import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
+import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
+import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
+import { Breadcrumb, Button, Col, Container, Form, InputGroup, OverlayTrigger, Popover, Row, Tab, Tabs } from "react-bootstrap";
 
-import Editor from "@monaco-editor/react";
-import Header from "./Header";
-import Markdown from "./Markdown";
 import TestResult from "./TestResult";
+import Markdown from "./Markdown";
+import Header from "./Header";
+import Editor from "@monaco-editor/react";
 import autosize from "autosize";
-import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
 import { useSelector } from "react-redux";
+import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
+import { pushNotification } from "../features/notification/notificationSlice";
 
 const Exercise = () => {
 
@@ -34,6 +36,7 @@ const Exercise = () => {
     const [updateTest] = useUpdateTestMutation();
     const { exercise_id }: any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const urlTab = useParams()?.tab;
     const username = useSelector(selectCurrentUser);
@@ -95,8 +98,15 @@ const Exercise = () => {
     const handleUpdateExercise = async () => {
         try {
             await updateExercise({ id: exercise_id, title, description, session_id: session.id, prefix, suffix });
+            dispatch(pushNotification({
+                message: "The exercise has been updated",
+                type: "light"
+            }));
         } catch (error) {
-            console.log(error);
+            dispatch(pushNotification({
+                message: "There was an error updating the exercise.",
+                type: "danger"
+            }));
         }
     }
 
@@ -381,16 +391,6 @@ const Exercise = () => {
         </>)
     }
 
-    const handlePrefixUpdate = () => {
-        console.log("Updating prefix")
-        handleUpdateExercise()
-    }
-
-    const handleSuffixUpdate = () => {
-        console.log("Updating suffix")
-        handleUpdateExercise()
-    }
-
     const prefixSuffixContent = () => {
         return (<>
 
@@ -402,7 +402,7 @@ const Exercise = () => {
                     className="p-0 m-0 mt-2"
                     value={prefix}
                     onChange={(value, e) => { setPrefix(value as string) }}
-                    language={course.language.toLowerCase()}
+                    language={course?.language?.toLowerCase()}
                     height="150px"
                     options={{
                         minimap: { enabled: false },
@@ -417,7 +417,7 @@ const Exercise = () => {
                 />
             </Container>
 
-            <Button variant={prefix !== exercise.prefix ? "primary" : "light"} size="sm" onClick={handlePrefixUpdate}>
+            <Button variant={prefix !== exercise.prefix ? "primary" : "light"} size="sm" onClick={handleUpdateExercise}>
                 Update
             </Button>
 
@@ -429,7 +429,7 @@ const Exercise = () => {
                     className="p-0 m-0 mt-2"
                     value={suffix}
                     onChange={(value, e) => { setSuffix(value as string) }}
-                    language={course.language.toLowerCase()}
+                    language={course?.language?.toLowerCase()}
                     height="150px"
                     options={{
                         minimap: { enabled: false },
@@ -444,7 +444,7 @@ const Exercise = () => {
                 />
             </Container>
 
-            <Button variant={suffix !== exercise.suffix ? "primary" : "light"} size="sm" onClick={handleSuffixUpdate}>
+            <Button variant={suffix !== exercise.suffix ? "primary" : "light"} size="sm" onClick={handleUpdateExercise}>
                 Update
             </Button>
 
@@ -460,7 +460,7 @@ const Exercise = () => {
                     &nbsp;&nbsp;<span className="bg-light p-1 rounded">Student code goes here</span> <br />
                     <br />
                 </div>
-                {suffix !== "" ? (<><br />imp{suffix}</>) : (<></>)}
+                {suffix !== "" ? (<><br />{suffix}</>) : (<></>)}
             </pre>
 
         </>)
