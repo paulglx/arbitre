@@ -34,7 +34,6 @@ const Exercise = () => {
     const [updateTest] = useUpdateTestMutation();
     const { exercise_id }: any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
-    const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
     const urlTab = useParams()?.tab;
     const username = useSelector(selectCurrentUser);

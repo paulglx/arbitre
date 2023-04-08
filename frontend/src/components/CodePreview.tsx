@@ -1,5 +1,4 @@
 import Editor from "@monaco-editor/react";
-import React from 'react'
 import { useGetSubmissionFileContentQuery } from '../features/submission/submissionApiSlice';
 
 const CodePreview = (props: any) => {
