@@ -9,7 +9,7 @@ environ.Env.read_env()
 
 
 @shared_task
-def run_camisole(submission_id, test_id, file_content, lang) -> None:
+def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> None:
     """
     Runs one test on a submission, and stores the result in the database.
     """
@@ -33,7 +33,13 @@ def run_camisole(submission_id, test_id, file_content, lang) -> None:
     # Configure the data used to run camisole
     hostname = env("CAMISOLE_HOSTNAME", default="localhost")
     camisole_server_url = f"http://{hostname}:42920/run"
-    source = file_content
+
+    # Fix prefix line endings
+    if not prefix.endswith("\r") and not prefix.endswith("\n"):
+        prefix += "\n"
+    source = prefix + file_content + suffix
+
+    print("SOURCE: ", source)
 
     response_object = requests.post(
         camisole_server_url,

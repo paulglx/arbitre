@@ -76,6 +76,8 @@ class Exercise(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
+    prefix = models.TextField(blank=True)
+    suffix = models.TextField(blank=True)
 
     def __str__(self):
         return self.title

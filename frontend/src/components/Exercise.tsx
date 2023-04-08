@@ -5,6 +5,7 @@ import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutati
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Editor from "@monaco-editor/react";
 import Header from "./Header";
 import Markdown from "./Markdown";
 import TestResult from "./TestResult";
@@ -25,13 +26,14 @@ const Exercise = () => {
     const [editTestId, setEditTestId] = useState(null);
     const [editTitle, setEditTitle] = useState(false);
     const [hoveredTestId, setHoveredTestId] = useState(-1);
+    const [prefix, setPrefix] = useState("");
+    const [suffix, setSuffix] = useState("");
     const [tests, setTests] = useState([] as any[]);
     const [title, setTitle] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
     const [updateTest] = useUpdateTestMutation();
     const { exercise_id }: any = useParams();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
-    const isTeacher = useSelector(selectIsTeacher);
     const navigate = useNavigate();
     const urlTab = useParams()?.tab;
     const username = useSelector(selectCurrentUser);
@@ -82,6 +84,8 @@ const Exercise = () => {
     useEffect(() => {
         setTitle(exercise?.title);
         setDescription(exercise?.description);
+        setPrefix(exercise?.prefix);
+        setSuffix(exercise?.suffix);
     }, [exercise]);
 
     useEffect(() => {
@@ -90,7 +94,7 @@ const Exercise = () => {
 
     const handleUpdateExercise = async () => {
         try {
-            await updateExercise({ id: exercise_id, title, description, session_id: session.id });
+            await updateExercise({ id: exercise_id, title, description, session_id: session.id, prefix, suffix });
         } catch (error) {
             console.log(error);
         }
@@ -377,6 +381,91 @@ const Exercise = () => {
         </>)
     }
 
+    const handlePrefixUpdate = () => {
+        console.log("Updating prefix")
+        handleUpdateExercise()
+    }
+
+    const handleSuffixUpdate = () => {
+        console.log("Updating suffix")
+        handleUpdateExercise()
+    }
+
+    const prefixSuffixContent = () => {
+        return (<>
+
+            <h5>Prefix</h5>
+            <p className="text-muted mb-1">This will be appended before the student's code at runtime.</p>
+
+            <Container className="border rounded m-0 mb-1">
+                <Editor
+                    className="p-0 m-0 mt-2"
+                    value={prefix}
+                    onChange={(value, e) => { setPrefix(value as string) }}
+                    language={course.language.toLowerCase()}
+                    height="150px"
+                    options={{
+                        minimap: { enabled: false },
+                        lineNumbers: "on",
+                        readOnly: !isOwner,
+                        renderLineHighlight: "none",
+                        renderFinalNewline: false,
+                        renderLineHighlightOnlyWhenFocus: false,
+                        renderValidationDecorations: "on",
+                        renderWhitespace: "none",
+                    }}
+                />
+            </Container>
+
+            <Button variant={prefix !== exercise.prefix ? "primary" : "light"} size="sm" onClick={handlePrefixUpdate}>
+                Update
+            </Button>
+
+            <h5 className="mt-3">Suffix</h5>
+            <p className="text-muted mb-1">This will be appended after the student's code at runtime.</p>
+
+            <Container className="border rounded m-0 mb-1">
+                <Editor
+                    className="p-0 m-0 mt-2"
+                    value={suffix}
+                    onChange={(value, e) => { setSuffix(value as string) }}
+                    language={course.language.toLowerCase()}
+                    height="150px"
+                    options={{
+                        minimap: { enabled: false },
+                        lineNumbers: "on",
+                        readOnly: !isOwner,
+                        renderLineHighlight: "none",
+                        renderFinalNewline: false,
+                        renderLineHighlightOnlyWhenFocus: false,
+                        renderValidationDecorations: "on",
+                        renderWhitespace: "none",
+                    }}
+                />
+            </Container>
+
+            <Button variant={suffix !== exercise.suffix ? "primary" : "light"} size="sm" onClick={handleSuffixUpdate}>
+                Update
+            </Button>
+
+            <hr />
+
+            <h5>Code preview</h5>
+            <p className="text-muted mb-1">This is what the tested file will look like.</p>
+
+            <pre className="border rounded bg-light p-2">
+                {prefix !== "" ? (<>{prefix}<br /><br /></>) : (<></>)}
+                <div className="rounded border-0 m-1 student-code-preview">
+                    <br />
+                    &nbsp;&nbsp;<span className="bg-light p-1 rounded">Student code goes here</span> <br />
+                    <br />
+                </div>
+                {suffix !== "" ? (<><br />imp{suffix}</>) : (<></>)}
+            </pre>
+
+        </>)
+    }
+
     if (exerciseIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
@@ -431,6 +520,12 @@ const Exercise = () => {
                 {isOwner || isTutor ? (
                     <Tab eventKey="tests" title="Tests">
                         {testsContent()}
+                    </Tab>
+                ) : (<></>)}
+
+                {isOwner || isTutor ? (
+                    <Tab eventKey="runtime" title="Runtime">
+                        {prefixSuffixContent()}
                     </Tab>
                 ) : (<></>)}
 

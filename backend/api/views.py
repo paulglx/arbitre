@@ -24,7 +24,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CourseSerializer
-    
+
     def generate_join_code(self):
         alphabet = string.ascii_uppercase + string.digits
 
@@ -403,7 +403,6 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ExerciseSerializer
-    permission_classes = (permissions.AllowAny,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):

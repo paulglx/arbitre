@@ -23,7 +23,7 @@ export const store = configureStore({
         getDefaultMiddleware({
             serializableCheck: false,
         }).concat(apiSlice.middleware),
-    devTools: true, //TODO remove before prod
+    devTools: JSON.parse(process.env.REACT_APP_DEV_TOOLS ? process.env.REACT_APP_DEV_TOOLS : "false"),
 })
 
 export default store
