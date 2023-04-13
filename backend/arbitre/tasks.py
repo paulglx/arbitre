@@ -39,7 +39,28 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
         prefix += "\n"
     source = prefix + file_content + suffix
 
-    print("SOURCE: ", source)
+    # TODO make this configurable
+    compile_limits = {
+        "time": 10,
+        "wall-time": 10,
+        "extra-time": 0,
+        "mem": 1_000_000,  # 1 GB
+        "virt-mem": 100_000,  # 1 GB
+        "fsize": 100_000,  # 100MB
+        "processes": 10,
+        "stack": 100_000,  # 100MB
+    }
+
+    execute_limits = {
+        "time": 10,
+        "wall-time": 10,
+        "extra-time": 0,
+        "mem": 1_000_000,  # 1 GB
+        "virt-mem": 100_000,  # 1 GB
+        "fsize": 100_000,  # 100MB
+        "processes": 10,
+        "stack": 100_000,  # 100MB
+    }
 
     response_object = requests.post(
         camisole_server_url,
@@ -47,21 +68,34 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
             "lang": lang,
             "source": source,
             "tests": [{"name": test["name"], "stdin": test["stdin"]}],
+            "compile": compile_limits,
+            "execute": execute_limits,
         },
     )
 
     response_text = json.loads(response_object.text)
 
+    all_criteria = ["cg_mem", "wall_time", "time"]
+
     if "tests" in response_text:
         response = response_text["tests"][0]
+        detail = ""
         # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
         status = ""
         if response["exitcode"] == 0:
-            if test["stdout"] == "":  # nothing to test for
+            if test["stdout"] == "" or response["stdout"] == test["stdout"]:
+                criteria_to_check = []
+                for criteria in all_criteria:
+                    if test[criteria] != 0:
+                        criteria_to_check.append(criteria)
+
                 status = "success"
-            if response["stdout"] == test["stdout"]:
-                status = "success"
+
+                for criteria in criteria_to_check:
+                    if response["meta"][criteria.replace("_", "-")] > test[criteria]:
+                        status = "failed"
+                        detail = f"({criteria} criteria exceeded)"
             else:
                 status = "failed"
         else:
@@ -71,7 +105,7 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
         after_data = {
             "submission_pk": submission_id,
             "exercise_test_pk": test_id,
-            "stdout": response["stdout"] + "\n" + response["stderr"],
+            "stdout": f"{response['stdout']} {detail}\n {response['stderr']}",
             "status": status,
             "time": response["meta"]["wall-time"],
             "memory": response["meta"]["cg-mem"],
@@ -93,7 +127,6 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
 
 @shared_task(ignore_result=True)
 def run_all_pending_testresults() -> None:
-
     from runner.models import TestResult
 
     """
