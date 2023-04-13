@@ -114,8 +114,8 @@ const TestResult = (props: any) => {
 
     if (!submissionData || !testResults) {
         return <>
-            <p className='text-danger'>There was an error while trying to display the test results.</p>
-            <p>Try submitting the file again.</p>
+            {/* <p className='text-danger'>There was an error while trying to display the test results.</p>
+            <p>Try submitting the file again.</p> */}
         </>
     }
 

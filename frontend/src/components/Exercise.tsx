@@ -402,7 +402,7 @@ const Exercise = () => {
                     className="p-0 m-0 mt-2"
                     value={prefix}
                     onChange={(value, e) => { setPrefix(value as string) }}
-                    language={course.language.toLowerCase()}
+                    language={course?.language?.toLowerCase()}
                     height="150px"
                     options={{
                         minimap: { enabled: false },
@@ -429,7 +429,7 @@ const Exercise = () => {
                     className="p-0 m-0 mt-2"
                     value={suffix}
                     onChange={(value, e) => { setSuffix(value as string) }}
-                    language={course.language.toLowerCase()}
+                    language={course?.language?.toLowerCase()}
                     height="150px"
                     options={{
                         minimap: { enabled: false },
@@ -460,7 +460,7 @@ const Exercise = () => {
                     &nbsp;&nbsp;<span className="bg-light p-1 rounded">Student code goes here</span> <br />
                     <br />
                 </div>
-                {suffix !== "" ? (<><br />imp{suffix}</>) : (<></>)}
+                {suffix !== "" ? (<><br />{suffix}</>) : (<></>)}
             </pre>
 
         </>)
