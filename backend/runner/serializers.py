@@ -7,7 +7,16 @@ import requests
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
-        fields = ["id", "exercise", "name", "stdin", "stdout"]
+        fields = [
+            "id",
+            "exercise",
+            "name",
+            "stdin",
+            "stdout",
+            "cg_mem",
+            "time",
+            "wall_time",
+        ]
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
