@@ -16,13 +16,13 @@ const TestResult = (props: any) => {
     const {
         data: testResults,
     } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id }, {
-        pollingInterval: skipQueries ? 0 : pollingInterval
+        pollingInterval: skipQueries || document.hidden ? 0 : pollingInterval
     });
 
     const {
         data: submissionData,
     } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id }, {
-        pollingInterval: skipQueries ? 0 : pollingInterval,
+        pollingInterval: skipQueries || document.hidden ? 0 : pollingInterval,
     });
 
     useEffect(() => {
