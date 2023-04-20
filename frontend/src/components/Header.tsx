@@ -18,10 +18,10 @@ const Header = () => {
     const { keycloak } = useKeycloak()
 
     const signout = async () => {
-        await dispatch(logOut({}))
         keycloak.logout({
             redirectUri: window.location.origin + '/'
         })
+        dispatch(logOut({}))
     }
 
     return (
