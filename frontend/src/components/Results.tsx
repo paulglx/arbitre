@@ -115,8 +115,6 @@ const Results = () => {
         },
     );
 
-    console.log(courses)
-
     if (courses?.length === 0) {
         return <>
             <Header />
@@ -135,8 +133,6 @@ const Results = () => {
             </Container>
         </>
     }
-
-    console.log(courses)
 
     if (courses?.every((course: any) => course.sessions.length === 0)) {
         return <>
