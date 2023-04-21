@@ -22,23 +22,26 @@ sh <(curl -L https://nixos.org/nix/install) --daemon
 # remove '--daemon' for macOS
 ```
 
-### 3. Setup environment variables
+### 3. Install Postgres and create a database.
+
+### 4. Setup environment variables
 
 Create a `backend/arbitre/.env` file and fill in the variables following the example in `backend/arbitre/.env.example`.
+Do the same thing `frontend/.env`
 
-### 4. Run Nix shell
+### 5. Run Nix shell
 
 ```bash
 nix develop -i
 ```
 
-### 5. Install dependencies
+### 6. Install dependencies
 
 ```bash
 ./setup.sh
 ```
 
-### 6. Run the application
+### 7. Run the application
 
 ```bash
 ./run.sh
