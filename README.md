@@ -7,45 +7,7 @@ Arbitre allows computer science teachers to create and grade assignments for the
 
 ## Installation 🧑‍💻
 
-To install Arbitre on a server, follow these steps:
-
-### 1. Set up the worker server
-
-Set up the runner, on the same server or on a remote server, using the Ansible playbook in the `config` directory. [More details](./config/README.md)
-
-### 2. Install Nix package manager
-
-For more information, see [the official Nix website](https://nixos.org/download.html)
-
-```bash
-sh <(curl -L https://nixos.org/nix/install) --daemon
-# remove '--daemon' for macOS
-```
-
-### 3. Install Postgres and create a database.
-
-### 4. Setup environment variables
-
-Create a `backend/arbitre/.env` file and fill in the variables following the example in `backend/arbitre/.env.example`.
-Do the same thing `frontend/.env`
-
-### 5. Run Nix shell
-
-```bash
-nix develop -i
-```
-
-### 6. Install dependencies
-
-```bash
-./setup.sh
-```
-
-### 7. Run the application
-
-```bash
-./run.sh
-```
+To install and run Arbitre locally, follow [this wiki page](https://github.com/paulglx/arbitre/wiki/Running-Arbitre-locally).
 
 ## Features ✨
 
