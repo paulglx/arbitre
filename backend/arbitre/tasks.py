@@ -75,7 +75,16 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
 
     response_text = json.loads(response_object.text)
 
-    all_criteria = ["cg_mem", "wall_time", "time"]
+    all_criteria = [
+        "cgmem",
+        "exitcode",
+        "exitsig",
+        "killed",
+        "statuscode",
+        "statusmessage",
+        "time",
+        "walltime",
+    ]
 
     if "tests" in response_text:
         response = response_text["tests"][0]
@@ -83,6 +92,7 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
         # This is because of the response's format : {'success': True, 'tests': [{ ... }]}
 
         status = ""
+
         if response["exitcode"] == 0:
             if test["stdout"] == "" or response["stdout"] == test["stdout"]:
                 criteria_to_check = []
@@ -93,9 +103,33 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
                 status = "success"
 
                 for criteria in criteria_to_check:
-                    if response["meta"][criteria.replace("_", "-")] > test[criteria]:
-                        status = "failed"
-                        detail = f"({criteria} criteria exceeded)"
+                    match criteria:
+                        case "cgmem":
+                            if response["meta"]["cg-mem"] > test[criteria]:
+                                status = "failed"
+                                detail = f"Used too much memory ({test[criteria]})"
+                        case "exitcode":
+                            if response["exitcode"] != test[criteria]:
+                                status = "failed"
+                                detail = f"Wrong exit code ({test[criteria]})"
+                        case "exitsig":
+                            if response["exitsig"] != test[criteria]:
+                                status = "failed"
+                                detail = f"Wrong exit signal ({test[criteria]})"
+                        case "killed":
+                            if response["killed"] != test[criteria]:
+                                status = "failed"
+                                detail = "Was killed"
+                        case "time":
+                            if response["meta"]["time"] > test[criteria]:
+                                status = "failed"
+                                detail = f"Took too much time ({test[criteria]})"
+                        case "walltime":
+                            if response["meta"]["wall-time"] > test[criteria]:
+                                status = "failed"
+                                detail = f"Took too much wall-time ({test[criteria]})"
+                        case _:
+                            pass
             else:
                 status = "failed"
         else:
@@ -107,8 +141,9 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
             "exercise_test_pk": test_id,
             "stdout": f"{response['stdout']} {detail}\n {response['stderr']}",
             "status": status,
-            "time": response["meta"]["wall-time"],
-            "memory": response["meta"]["cg-mem"],
+            "time": response["meta"]["walltime"],
+            "memory": response["meta"]["cgmem"],
+            "detail": detail,
         }
     else:
         after_data = {
@@ -118,6 +153,7 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
             "status": "error",
             "time": 0,
             "memory": 0,
+            "detail": "",
         }
 
     print("data to send:" + str(after_data))

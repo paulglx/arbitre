@@ -92,12 +92,18 @@ class Submission(models.Model):
 class Test(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default="")
+
     stdin = models.TextField(default="", blank=True)
     stdout = models.TextField(default="", blank=True)
 
-    cg_mem = models.IntegerField(default=0)
+    cgmem = models.IntegerField(default=0)
+    exitcode = models.IntegerField(default=0)
+    exitsig = models.IntegerField(default=0)
+    killed = models.BooleanField(default=False)
+    statuscode = models.IntegerField(default=0)
+    statusmessage = models.TextField(default="", blank=True)
     time = models.FloatField(default=0)
-    wall_time = models.FloatField(default=0)
+    walltime = models.FloatField(default=0)
 
     def __str__(self):
         return self.name + " (" + str(self.exercise) + ")"
@@ -125,6 +131,7 @@ class TestResult(models.Model):
         choices=TestResultStatus.choices,
         default=TestResultStatus.PENDING,
     )
+    detail = models.TextField(default="", blank=True)
 
     class Meta:
         unique_together = ("submission", "exercise_test")

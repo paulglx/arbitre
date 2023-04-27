@@ -1,7 +1,6 @@
 from .models import Submission, Test, TestResult
 from rest_framework import serializers, validators
 import copy
-import requests
 
 
 class TestSerializer(serializers.ModelSerializer):
@@ -13,9 +12,14 @@ class TestSerializer(serializers.ModelSerializer):
             "name",
             "stdin",
             "stdout",
-            "cg_mem",
+            "cgmem",
+            "exitcode",
+            "exitsig",
+            "killed",
+            "statuscode",
+            "statusmessage",
             "time",
-            "wall_time",
+            "walltime",
         ]
 
 
@@ -44,15 +48,16 @@ class TestResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestResult
         fields = (
-            "id",
-            "submission",
-            "submission_pk",
-            "exercise_test",
+            "detail",
             "exercise_test_pk",
+            "exercise_test",
+            "id",
+            "memory",
             "status",
             "stdout",
+            "submission_pk",
+            "submission",
             "time",
-            "memory",
         )
         depth = 1
 
