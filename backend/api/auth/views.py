@@ -20,13 +20,19 @@ class UserGroup(APIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    GET and POST users.
+    Used to create users (DEPRECATED since Keycloak).
+    Only admin can create users (DEPRECATED since Keycloak).
+    """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class TeachersViewSet(viewsets.ViewSet):
     """
-    Get all teachers
+    GET all users in "Teachers" group.
     """
 
     def list(self, request):

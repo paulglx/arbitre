@@ -19,8 +19,14 @@ import string
 
 class CourseViewSet(viewsets.ModelViewSet):
     """
-    List all courses of student, or courses created by teacher (GET)
+    Manage courses.
+
+    GET all courses :
+    /api/course?all=true
+
+    Get all courses of student, or courses created by teacher (GET)
     Create a new course (POST)
+    /api/course
     """
 
     serializer_class = CourseSerializer
@@ -36,7 +42,6 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     # Allow students, tutors or owners to get their courses
     def get_queryset(self):
-
         # if param 'all' is set, return all courses
         if self.request.query_params.get("all", None) == "true":
             return Course.objects.all()
@@ -53,7 +58,12 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 class CourseJoinViewSet(viewsets.ViewSet):
     """
-    Join a course with a join code
+    Join a course with a join code.
+
+    POST : Join a course with a join code
+    body : {
+        "join_code": "XXXXXXX"
+    }
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -87,6 +97,15 @@ class CourseJoinViewSet(viewsets.ViewSet):
 
 
 class CourseJoinCodeEnabledViewSet(viewsets.ViewSet):
+    """
+    Manage join code.
+
+    POST : Enable or disable join code
+    body : {
+        "course_id": 1,
+        "enabled": true
+    }
+    """
 
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -116,7 +135,12 @@ class CourseJoinCodeEnabledViewSet(viewsets.ViewSet):
 
 class CourseRefreshCodeViewSet(viewsets.ViewSet):
     """
-    Refresh course code
+    Refresh join code.
+
+    POST : Refresh join code
+    body : {
+        "course_id": 1
+    }
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -142,7 +166,9 @@ class CourseRefreshCodeViewSet(viewsets.ViewSet):
 
 class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
     """
-    List all courses of user, including sessions and exercises (GET)
+    Return all courses, sessions and exercises.
+
+    GET : Get all courses, sessions and exercises of current user
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -156,11 +182,9 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
 
         courses_data = []
         for course in courses:
-
             sessions = Session.objects.filter(course=course)
             sessions_data = []
             for session in sessions:
-
                 exercises = Exercise.objects.filter(session=session)
                 exercises_data = []
                 for exercise in exercises:
@@ -192,9 +216,13 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
 
 class CourseOwnerViewSet(viewsets.ViewSet):
     """
-    List (GET), add (POST) or remove (DELETE) teachers from a course
-    - course_id: number
-    - user_id: number
+    Manage course owners.
+
+    List (GET), add (POST) or remove (DELETE) owners from a course
+    body : {
+        course_id: 1,
+        user_id: 1, //user to make an owner
+    }
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -256,9 +284,13 @@ class CourseOwnerViewSet(viewsets.ViewSet):
 
 class CourseTutorViewSet(viewsets.ViewSet):
     """
-    List (GET), add (POST) or remove (DELETE) tutors from a course.
-    - course_id: number
-    - user_id: number
+    Manage course tutors.
+
+    List (GET), add (POST) or remove (DELETE) tutors from a course
+    body : {
+        course_id: 1,
+        user_id: 1, //user to make a tutor
+    }
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -321,9 +353,13 @@ class CourseTutorViewSet(viewsets.ViewSet):
 
 class CourseStudentViewSet(viewsets.ViewSet):
     """
+    Manage course students.
+
     List (GET), add (POST) or remove (DELETE) students from a course
-    - course_id: number
-    - user_id: number
+    body : {
+        course_id: 1,
+        user_id: 1, //user to make a student
+    }
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -382,7 +418,15 @@ class CourseStudentViewSet(viewsets.ViewSet):
 
 class SessionViewSet(viewsets.ModelViewSet):
     """
+    Manage sessions.
+
     List all sessions (GET), or create a new session (POST).
+
+    body : {
+        course_id: 1,
+        title: "Session 1",
+        description: "This is the first session"
+    }
     """
 
     serializer_class = SessionSerializer
@@ -415,6 +459,8 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
 class ResultsOfSessionViewSet(viewsets.ViewSet):
     """
+    Get results of a session.
+
     Get submission statuses for all exercises of a session, for a given user.
     Params: user_id, session_id
     """
@@ -422,7 +468,6 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-
         user = User.objects.get(id=request.data["user_id"])
         session = Session.objects.get(id=request.data["session_id"])
 
@@ -455,14 +500,17 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
 
 class AllResultsOfSessionViewSet(viewsets.ViewSet):
     """
+    Get results of a session.
+
     Get submission statuses for all exercises of a session, for all students.
     Params: session_id
+
+    Used to create a table of results for a session.
     """
 
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-
         session = Session.objects.get(id=self.request.GET.get("session_id"))
 
         all_students = session.course.students.all()
@@ -470,7 +518,6 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
 
         students_data = []
         for student_id in all_students_ids:
-
             result_request = HttpRequest()
             result_request.method = "GET"
             result_request.data = {
@@ -493,8 +540,12 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
 
 class AllResultsViewSet(viewsets.ViewSet):
     """
+    Get all results of a teacher's courses.
+
     Get submission statuses for all exercises for all students of all user's courses.
     User : logged in user
+
+    Used to create a table of results for all courses.
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -508,17 +559,14 @@ class AllResultsViewSet(viewsets.ViewSet):
         courses_to_send = []
 
         for course in courses:
-
             all_students = course.students.all()
             all_students_ids = [student.id for student in all_students]
 
             session_data = []
 
             for session in course.session_set.all():
-
                 students_data = []
                 for student_id in all_students_ids:
-
                     result_request = HttpRequest()
                     result_request.method = "GET"
                     result_request.data = {
