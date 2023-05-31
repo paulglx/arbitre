@@ -1,5 +1,5 @@
 import { Toast, ToastContainer } from 'react-bootstrap'
-import { removeNotification, selectCurrentNotifications } from '../features/notification/notificationSlice'
+import { removeNotification, selectCurrentNotifications } from '../../features/notification/notificationSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Notification = () => {

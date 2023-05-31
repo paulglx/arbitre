@@ -1,9 +1,9 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { selectCurrentKeycloakToken } from "../features/auth/authSlice";
+import { selectCurrentKeycloakToken } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
-import { useRefreshAuth } from "../hooks/useRefreshAuth";
+import { useRefreshAuth } from "../../../hooks/useRefreshAuth";
 import { useSelector } from "react-redux";
 
 const RequireAuth = () => {

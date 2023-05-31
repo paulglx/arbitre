@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
 import { Container } from "react-bootstrap";
-import Login from "./Login";
-import { selectCurrentUser } from "../features/auth/authSlice";
+import LoginButton from "./LoginButton";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -27,7 +27,7 @@ const Public = () => {
             </Container>
 
             <Container className="p-3">
-                <Login />
+                <LoginButton />
             </Container>
         </Container>
     </>)

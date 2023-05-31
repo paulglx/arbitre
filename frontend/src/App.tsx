@@ -1,20 +1,19 @@
 import { Route, Routes } from "react-router-dom";
 
-import Course from "./components/Course";
-import Courses from "./components/Courses";
-import CreateCourse from "./components/CreateCourse";
-import CreateExercise from "./components/CreateExercise";
-import CreateSession from "./components/CreateSession";
-import Exercise from "./components/Exercise";
-import JoinCourse from "./components/JoinCourse";
-import Layout from "./components/Layout";
-import NotFound from "./components/NotFound";
-import Notification from "./components/Notification";
-import Public from "./components/Public";
-import RequireAuth from "./components/RequireAuth";
-import Results from "./components/Results";
-import Session from "./components/Session";
-import Users from "./components/Users";
+import Course from "./components/Course/Course";
+import Courses from "./components/Course/Courses";
+import CreateCourse from "./components/Course/CreateCourse";
+import CreateExercise from "./components/Exercise/CreateExercise";
+import CreateSession from "./components/Session/CreateSession";
+import Dashboard from "./components/Dashboard/Dashboard";
+import Exercise from "./components/Exercise/Exercise";
+import JoinCourse from "./components/Course/JoinCourse";
+import Layout from "./components/Util/Layout";
+import NotFound from "./components/Util/NotFound";
+import Notification from "./components/Util/Notification";
+import Public from "./components/Landing/Public";
+import RequireAuth from "./components/Util/Auth/RequireAuth";
+import Session from "./components/Session/Session";
 
 function App() {
 
@@ -31,8 +30,6 @@ function App() {
 
 				{/* Protected routes */}
 				<Route element={<RequireAuth />}>
-					<Route path="users" element={<Users />} />
-
 					<Route path="course/" element={<Courses />} />
 					<Route path="course/create" element={<CreateCourse />} />
 					<Route path="course/:id" element={<Course />} />
@@ -48,7 +45,7 @@ function App() {
 					<Route path="exercise/:exercise_id/:tab" element={<Exercise />} />
 					<Route path="exercise/create" element={<CreateExercise />} />
 
-					<Route path="results" element={<Results />} />
+					<Route path="dashboard" element={<Dashboard />} />
 				</Route>
 
 				{/* 404 page when no routes match*/}

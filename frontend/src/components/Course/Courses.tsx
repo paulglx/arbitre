@@ -1,10 +1,10 @@
 import { Container, ListGroup } from 'react-bootstrap'
-import { selectCurrentUser, selectIsTeacher } from '../features/auth/authSlice';
+import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlice';
 
 import { BoxArrowInDownRight } from 'react-bootstrap-icons';
-import Error from './Error';
-import Header from './Header'
-import { useGetAllCoursesQuery } from '../features/courses/courseApiSlice'
+import Error from '../Util/Error';
+import Header from '../Header/Header'
+import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
 import { useSelector } from "react-redux";
 
 const Courses = () => {

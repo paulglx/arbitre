@@ -1,8 +1,8 @@
 import { Badge, Button, ListGroup, Modal, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../features/submission/submissionApiSlice'
+import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../features/submission/submissionApiSlice'
 
-import CodePreview from './CodePreview';
+import CodePreview from '../Util/CodePreview';
 import moment from 'moment';
 
 const TestResult = (props: any) => {

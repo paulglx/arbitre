@@ -1,19 +1,19 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../features/courses/exerciseApiSlice";
-import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../features/courses/testApiSlice";
-import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
 import { Breadcrumb, Button, Col, Container, Form, InputGroup, OverlayTrigger, Popover, Row, Tab, Tabs } from "react-bootstrap";
+import { selectCurrentUser, selectIsTeacher } from "../../features/auth/authSlice";
+import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
+import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import TestResult from "./TestResult";
-import Markdown from "./Markdown";
-import Header from "./Header";
 import Editor from "@monaco-editor/react";
+import Header from "../Header/Header";
+import Markdown from "../Util/Markdown";
+import TestResult from "../Dashboard/TestResult";
 import autosize from "autosize";
+import { pushNotification } from "../../features/notification/notificationSlice";
+import { useCreateSubmissionMutation } from "../../features/submission/submissionApiSlice";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useCreateSubmissionMutation } from "../features/submission/submissionApiSlice";
-import { pushNotification } from "../features/notification/notificationSlice";
 
 const Exercise = () => {
 
