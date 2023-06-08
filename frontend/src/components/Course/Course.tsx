@@ -1,33 +1,35 @@
 import { Breadcrumb, Button, Container, Dropdown, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
-import { selectCurrentUser, selectIsTeacher } from "../features/auth/authSlice";
-import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../features/courses/courseApiSlice";
+import { selectCurrentUser, selectIsTeacher } from "../../features/auth/authSlice";
+import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../../features/courses/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Header from "./Header";
-import Markdown from "./Markdown";
-import Students from "./Students";
-import TeacherList from "./TeacherList";
+import Header from "../Header/Header";
+import Markdown from "../Util/Markdown";
+import Students from "./Students/Students";
+import TeacherList from "./Teachers/TeacherList";
 import autosize from "autosize";
-import { pushNotification } from "../features/notification/notificationSlice";
-import { useGetSessionsOfCourseQuery } from "../features/courses/sessionApiSlice";
+import { pushNotification } from "../../features/notification/notificationSlice";
+import { useGetSessionsOfCourseQuery } from "../../features/courses/sessionApiSlice";
 
 const Course = () => {
 
-    const [deleteCourse] = useDeleteCourseMutation();
-    const [description, setDescription] = useState("");
     const dispatch = useDispatch();
-    const [editDescription, setEditDescription] = useState(false);
-    const [editTitle, setEditTitle] = useState(false);
-    const [language, setLanguage] = useState("");
-    const [title, setTitle] = useState("");
-    const [updateCourse] = useUpdateCourseMutation();
-    const [updateLanguage] = useUpdateLanguageMutation();
     const { id }: any = useParams();
-    const isTeacher = useSelector(selectIsTeacher);
-    const navigate = useNavigate();
+    const [updateLanguage] = useUpdateLanguageMutation();
+    const [updateCourse] = useUpdateCourseMutation();
+    const [title, setTitle] = useState("");
+    const [language, setLanguage] = useState("");
+    const [editTitle, setEditTitle] = useState(false);
+    const [editDescription, setEditDescription] = useState(false);
+    const [description, setDescription] = useState("");
+    const [deleteCourse] = useDeleteCourseMutation();
+
     const username = useSelector(selectCurrentUser);
+    const navigate = useNavigate();
+    const isTeacher = useSelector(selectIsTeacher);
+
     const languageChoices = [
         ["ada", "Ada"],
         ["c", "C"],
@@ -50,9 +52,28 @@ const Course = () => {
         ["scheme", "Scheme"],
     ]
 
-    useEffect(() => {
+    const {
+        data: course,
+        isLoading: courseIsLoading,
+        isSuccess: courseIsSuccess,
+        isError: courseIsError,
+    } = useGetCourseQuery({ id });
 
-        //autosize textareas
+    const {
+        data: sessions,
+        isLoading: sessionsIsLoading,
+        isSuccess: sessionsIsSuccess,
+        isError: sessionsIsError,
+    } = useGetSessionsOfCourseQuery({ course_id: id })
+
+    const ownersUsernames = course?.owners.map((owner: any) => owner.username);
+    const isOwner = ownersUsernames?.includes(username);
+
+    const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
+    const isTutor = tutorsUsernames?.includes(username);
+
+    // Autosize textareas and add event listeners for enter and escape
+    useEffect(() => {
         const textareas = document.getElementsByTagName("textarea");
         autosize(textareas);
 
@@ -69,31 +90,12 @@ const Course = () => {
         });
     });
 
-    const {
-        data: course,
-        isLoading: courseIsLoading,
-        isSuccess: courseIsSuccess,
-        isError: courseIsError,
-    } = useGetCourseQuery({ id });
-
-    const ownersUsernames = course?.owners.map((owner: any) => owner.username);
-    const isOwner = ownersUsernames?.includes(username);
-
-    const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
-    const isTutor = tutorsUsernames?.includes(username);
-
+    // Set title and description when course is loaded
     useEffect(() => {
         setTitle(course?.title);
         setDescription(course?.description);
         setLanguage(course?.language);
     }, [course, courseIsSuccess]);
-
-    const {
-        data: sessions,
-        isLoading: sessionsIsLoading,
-        isSuccess: sessionsIsSuccess,
-        isError: sessionsIsError,
-    } = useGetSessionsOfCourseQuery({ course_id: id })
 
     const handleUpdate = async () => {
         try {

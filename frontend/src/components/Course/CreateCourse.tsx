@@ -1,37 +1,24 @@
-import { Breadcrumb, Button, Container, Form } from 'react-bootstrap'
+import { Button, Container, Form } from 'react-bootstrap'
 import React, { useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useCreateSessionMutation } from '../features/courses/sessionApiSlice'
-import { useGetCourseQuery } from '../features/courses/courseApiSlice'
+import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
-const CreateSession = () => {
+const CreateCourse = () => {
 
-    const [title, setTitle] = useState("New session")
+    const [title, setTitle] = useState("New course")
     const [description, setDescription] = useState("")
     const [errMsg, setErrMsg] = useState("")
-    const [createSession] = useCreateSessionMutation()
+    const [createCourse] = useCreateCourseMutation()
     const navigate = useNavigate()
-
-    const [searchParams] = useSearchParams()
-    const course_id: number = Number(searchParams.get("course_id"))
-
-    const {
-        data: course,
-        isSuccess: courseIsSuccess,
-    } = useGetCourseQuery({ id: course_id });
 
     useEffect(() => {
         setErrMsg("")
     }, [title, description])
 
     const handleTitleInput = (e: any) => {
-        setTitle(e.target.value ? e.target.value : "New session")
-    }
-
-    const goBack = () => {
-        navigate(-1)
+        setTitle(e.target.value ? e.target.value : "New course")
     }
 
     const handleDescriptionInput = (e: any) => {
@@ -43,16 +30,13 @@ const CreateSession = () => {
 
         if (title && description) {
             try {
-                //Create session
-                const newSession: any = await createSession({
-                    title,
-                    description,
-                    course_id
-                }).unwrap()
-                //Redirect to previous page
-                navigate(`/session/${newSession?.id}`)
+                //Create course
+                const newCourse: any = await createCourse({ title, description }).unwrap()
+                //Redirect to courses page
+                navigate(`/course/${newCourse?.id}`)
             } catch (err) {
-                setErrMsg("An error occured while trying to create session.")
+                console.log(err)
+                setErrMsg("An error occured while trying to create course.")
             }
         }
         else {
@@ -60,27 +44,15 @@ const CreateSession = () => {
         }
     }
 
-    return courseIsSuccess ? (
-        <Container className="container d-flex flex-column align-items-center vh-100">
-
-            <Container>
-                <Breadcrumb>
-                    <Breadcrumb.Item href="/course">
-                        Courses
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item href={"/course/" + course.id}>
-                        {course.title}
-                    </Breadcrumb.Item>
-                </Breadcrumb>
-            </Container>
-
+    return (
+        <Container className="container-fluid d-flex align-items-center vh-100">
             <Container className='p-3'>
-                <Button variant="light mb-3" onClick={goBack}>
-                    ← Back to course
+                <Button variant="light mb-3" href="/course">
+                    ← Back to courses
                 </Button>
 
                 <h1
-                    className={title === "New session" ? "text-muted fw-bold" : "fw-bold"}
+                    className={title === "New course" ? "text-muted fw-bold" : "fw-bold"}
                 >
                     {title}
                 </h1>
@@ -89,7 +61,7 @@ const CreateSession = () => {
 
                 <Form>
                     <Form.Group className="mb-3">
-                        <Form.Label>Session title</Form.Label>
+                        <Form.Label>Course title</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Enter title"
@@ -99,12 +71,12 @@ const CreateSession = () => {
                             required
                         />
                         <Form.Text className="text-muted">
-                            Give a short title to your session.
+                            Give a short title to your course.
                         </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Session description <span className='text-muted'></span></Form.Label>
+                        <Form.Label>Course description <span className='text-muted'></span></Form.Label>
                         <Form.Control
                             value={description}
                             as="textarea"
@@ -120,11 +92,11 @@ const CreateSession = () => {
                     </Form.Group>
 
                     <Button variant="primary" type="submit" onClick={handleSubmit}>
-                        Submit
+                        Create course
                     </Button>
                 </Form>
             </Container>
-        </Container>) : (<></>)
+        </Container>)
 }
 
-export default CreateSession
+export default CreateCourse

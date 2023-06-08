@@ -1,22 +1,22 @@
-import "../join-code.css"
+import "../../../join-code.css"
 
 import { ArrowClockwise, ToggleOff, ToggleOn } from "react-bootstrap-icons"
 import { Container, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { useRefreshJoinCodeMutation, useSetJoinCodeEnabledMutation } from "../features/courses/courseApiSlice"
+import { useRefreshJoinCodeMutation, useSetJoinCodeEnabledMutation } from "../../../features/courses/courseApiSlice"
 
-import { selectCurrentUser } from "../features/auth/authSlice"
+import { selectCurrentUser } from "../../../features/auth/authSlice"
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
 
 const StudentsInvite = (props: any) => {
 
-    const [tooltipText, setTooltipText] = useState('Click to copy to clipboard')
-    const [refreshJoinCode] = useRefreshJoinCodeMutation()
-    const [enableJoinCode] = useSetJoinCodeEnabledMutation()
-    const [joinCode, setJoinCode] = useState(props.course.join_code)
-    const [joinCodeEnabled, setJoinCodeEnabled] = useState(props.course.join_code_enabled)
     const username = useSelector(selectCurrentUser)
     const course = props.course
+    const [tooltipText, setTooltipText] = useState('Click to copy to clipboard')
+    const [refreshJoinCode] = useRefreshJoinCodeMutation()
+    const [joinCodeEnabled, setJoinCodeEnabled] = useState(props.course.join_code_enabled)
+    const [joinCode, setJoinCode] = useState(props.course.join_code)
+    const [enableJoinCode] = useSetJoinCodeEnabledMutation()
 
     const ownersUsernames = course?.owners.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
@@ -46,7 +46,6 @@ const StudentsInvite = (props: any) => {
                 <p className="text-muted mb-2">Course code</p>
 
                 {joinCodeEnabled ? (
-
                     <OverlayTrigger
                         placement="left"
                         overlay={<Tooltip>{tooltipText}</Tooltip>}
@@ -64,7 +63,6 @@ const StudentsInvite = (props: any) => {
                             {joinCode}
                         </span>
                     </OverlayTrigger>
-
                 ) : (
                     <span
                         id="join-code"
@@ -73,7 +71,9 @@ const StudentsInvite = (props: any) => {
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </span>
                 )}
+
                 &nbsp;
+
                 {isOwner ? (<>
                     <OverlayTrigger
                         placement="top"

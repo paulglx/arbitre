@@ -2,8 +2,8 @@ import { Breadcrumb, Button, Container, Form } from 'react-bootstrap'
 import React, { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useCreateExerciseMutation } from '../features/courses/exerciseApiSlice'
-import { useGetSessionQuery } from '../features/courses/sessionApiSlice'
+import { useCreateExerciseMutation } from '../../features/courses/exerciseApiSlice'
+import { useGetSessionQuery } from '../../features/courses/sessionApiSlice'
 import { useState } from 'react'
 
 const CreateExercise = () => {

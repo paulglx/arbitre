@@ -1,7 +1,7 @@
 import { Badge, Container, Modal, Spinner, Table } from "react-bootstrap";
 
 import TestResult from "./TestResult";
-import { useGetResultsOfSessionQuery } from "../features/results/resultsApiSlice";
+import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useState } from "react";
 
 const ResultsTable = (props: any) => {
