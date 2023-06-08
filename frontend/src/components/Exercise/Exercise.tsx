@@ -1,41 +1,31 @@
-import { Breadcrumb, Button, Col, Container, Form, InputGroup, OverlayTrigger, Popover, Row, Tab, Tabs } from "react-bootstrap";
-import { selectCurrentUser, selectIsTeacher } from "../../features/auth/authSlice";
-import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
+import { Breadcrumb, Button, Container, Form, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Editor from "@monaco-editor/react";
+import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
+import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
+import ExerciseTestsTab from "./ExerciseTestsTab";
 import Header from "../Header/Header";
 import Markdown from "../Util/Markdown";
-import TestResult from "../Dashboard/TestResult";
 import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
-import { useCreateSubmissionMutation } from "../../features/submission/submissionApiSlice";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 const Exercise = () => {
 
     const [activeTab, setActiveTab] = useState("description");
-    const [createSubmission] = useCreateSubmissionMutation();
-    const [createTest] = useCreateTestMutation();
     const [deleteExercise] = useDeleteExerciseMutation();
-    const [deleteTest] = useDeleteTestMutation();
     const [description, setDescription] = useState("");
     const [editDescription, setEditDescription] = useState(false);
-    const [editTest, setEditTest] = useState(false);
-    const [editTestId, setEditTestId] = useState(null);
     const [editTitle, setEditTitle] = useState(false);
-    const [hoveredTestId, setHoveredTestId] = useState(-1);
     const [prefix, setPrefix] = useState("");
     const [suffix, setSuffix] = useState("");
-    const [tests, setTests] = useState([] as any[]);
     const [title, setTitle] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
-    const [updateTest] = useUpdateTestMutation();
     const { exercise_id }: any = useParams();
-    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const urlTab = useParams()?.tab;
@@ -52,10 +42,6 @@ const Exercise = () => {
     const course = session?.course
     const isOwner = course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = course?.tutors?.map((t: any) => t.username).includes(username);
-
-    const {
-        data: testsResponse,
-    } = useGetTestsOfExerciseQuery({ exercise_id });
 
     const toggle = (tab: any) => {
         if (activeTab !== tab) navigate(`/exercise/${exercise_id}/${tab}`, { replace: true });
@@ -91,10 +77,6 @@ const Exercise = () => {
         setSuffix(exercise?.suffix);
     }, [exercise]);
 
-    useEffect(() => {
-        setTests(testsResponse);
-    }, [testsResponse]);
-
     const handleUpdateExercise = async () => {
         try {
             await updateExercise({ id: exercise_id, title, description, session_id: session.id, prefix, suffix });
@@ -128,63 +110,6 @@ const Exercise = () => {
             </Popover.Body>
         </Popover>
     )
-
-    const handleCreateOrUpdateTest = async (testId: any) => {
-        const test = tests.filter((t: any) => t.id === testId)[0]
-        const newTest: boolean = test?.new;
-        if (newTest) {
-            await createTest({
-                exercise: exercise_id,
-                name: test.name,
-                stdin: test.stdin,
-                stdout: test.stdout,
-            })
-        } else {
-            await updateTest({
-                id: test.id,
-                exercise: exercise_id,
-                name: test.name,
-                stdin: test.stdin,
-                stdout: test.stdout
-            })
-        }
-    }
-
-    const handeDeleteTest = async (testId: any) => {
-        try {
-            await deleteTest({ id: testId });
-            //remove test from tests state
-            setTests(tests.filter((t: any) => t.id !== testId));
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-
-        const form = e.target[0];
-        if (form.checkValidity() === false) {
-            e.stopPropagation();
-        }
-
-        const formData = new FormData();
-        formData.append("exercise", exercise.id)
-        formData.append("file", form.files[0])
-
-        await createSubmission(formData).unwrap()
-
-        // refresh page
-        window.location.reload(); //TODO update state instead
-    }
-
-    //Prevent blurring test div when focusing one of its inputs
-    const handleTestBlur = (e: any) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-            setEditTest(false);
-            handleCreateOrUpdateTest(editTestId);
-        }
-    }
 
     // Show title or edit title
     const titleContent = () => {
@@ -274,198 +199,6 @@ const Exercise = () => {
         ) : <></>
     }
 
-    const testsContent = () => {
-        return (exerciseIsSuccess && tests) ? (
-            <>
-
-                {tests.length > 0 ?
-                    <h6 className="text-muted">
-                        {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
-                    </h6>
-                    :
-                    <h6 className="text-muted">
-                        No tests yet
-                    </h6>
-                }
-
-                {tests.map((test: any) => (
-
-                    <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " editable-test-focused" : "")} key={test?.id} tabIndex={0}
-                        onFocus={() => { isOwner && setEditTestId(test?.id); setEditTest(true) }}
-                        onBlur={(e) => { isOwner && handleTestBlur(e) }}
-                        onMouseEnter={() => isOwner && setHoveredTestId(test?.id)}
-                        onMouseLeave={() => isOwner && setHoveredTestId(-1)}
-                    >
-
-                        <Row className="g-2">
-                            <Col md={3}>
-                                <Form.Control
-                                    className={"bg-white fw-bold" + (editTest && editTestId === test?.id ? " " : " border")}
-                                    placeholder="Test name"
-                                    aria-label="Test name"
-                                    value={test?.name}
-                                    autoComplete="off"
-                                    onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, name: e.target.value } : t)) }}
-                                    {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                />
-                            </Col>
-
-                            <Col md={4}>
-                                <InputGroup>
-                                    <InputGroup.Text>Input</InputGroup.Text>
-                                    <Form.Control
-                                        as="textarea"
-                                        placeholder="Input to test for"
-                                        rows={1}
-                                        aria-label="Input"
-                                        value={test?.stdin}
-                                        autoComplete="off"
-                                        onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdin: e.target.value } : t)) }}
-                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                    />
-                                </InputGroup>
-                            </Col>
-
-                            <Col md={4}>
-                                <InputGroup>
-                                    <InputGroup.Text>Output</InputGroup.Text>
-                                    <Form.Control
-                                        as="textarea"
-                                        placeholder="Expected output"
-                                        rows={1}
-                                        aria-label="Ouput"
-                                        value={test?.stdout}
-                                        autoComplete="off"
-                                        onChange={(e) => { setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdout: e.target.value } : t)) }}
-                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                    />
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
-                                    <Button
-                                        className="btn-link delete-button btn-light text-danger text-decoration-none float-end"
-                                        onClick={(e) => { isOwner && handeDeleteTest(editTestId) }}
-                                    >
-                                        Delete
-                                    </Button>
-                                ) : (<></>)}
-                            </Col>
-                        </Row>
-                    </div>
-                ))}
-
-                {isOwner ? (
-                    <Button
-                        className="btn-link btn-light"
-                        onClick={(e) => {
-                            //generates a random id to differentiate between new tests. Upon creating the test, this id will be ignored by the API.
-                            const randomId = Array(16).join().split(',').map(function () { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
-                            setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }])
-                        }}
-                    >
-                        + ADD TEST
-                    </Button>
-                ) : (<></>)}
-
-            </>
-        ) : (<></>)
-
-    }
-
-    const submissionContent = () => {
-        return (<>
-            <Form className="submission p-4 border rounded bg-light" onSubmit={handleSubmit} encType="multipart/form-data">
-                <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>Submission file</Form.Label>
-                    <Form.Control required type="file" name="file" />
-                    <Form.Text className="text-muted">You are logged in as <u>{username}</u></Form.Text>
-                </Form.Group>
-
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Form>
-            <br />
-            <TestResult exercise_id={exercise.id} />
-        </>)
-    }
-
-    const prefixSuffixContent = () => {
-        return (<>
-
-            <h5>Prefix</h5>
-            <p className="text-muted mb-1">This will be appended before the student's code at runtime.</p>
-
-            <Container className="border rounded m-0 mb-1">
-                <Editor
-                    className="p-0 m-0 mt-2"
-                    value={prefix}
-                    onChange={(value, e) => { setPrefix(value as string) }}
-                    language={course?.language?.toLowerCase()}
-                    height="150px"
-                    options={{
-                        minimap: { enabled: false },
-                        lineNumbers: "on",
-                        readOnly: !isOwner,
-                        renderLineHighlight: "none",
-                        renderFinalNewline: false,
-                        renderLineHighlightOnlyWhenFocus: false,
-                        renderValidationDecorations: "on",
-                        renderWhitespace: "none",
-                    }}
-                />
-            </Container>
-
-            <Button variant={prefix !== exercise.prefix ? "primary" : "light"} size="sm" onClick={handleUpdateExercise}>
-                Update
-            </Button>
-
-            <h5 className="mt-3">Suffix</h5>
-            <p className="text-muted mb-1">This will be appended after the student's code at runtime.</p>
-
-            <Container className="border rounded m-0 mb-1">
-                <Editor
-                    className="p-0 m-0 mt-2"
-                    value={suffix}
-                    onChange={(value, e) => { setSuffix(value as string) }}
-                    language={course?.language?.toLowerCase()}
-                    height="150px"
-                    options={{
-                        minimap: { enabled: false },
-                        lineNumbers: "on",
-                        readOnly: !isOwner,
-                        renderLineHighlight: "none",
-                        renderFinalNewline: false,
-                        renderLineHighlightOnlyWhenFocus: false,
-                        renderValidationDecorations: "on",
-                        renderWhitespace: "none",
-                    }}
-                />
-            </Container>
-
-            <Button variant={suffix !== exercise.suffix ? "primary" : "light"} size="sm" onClick={handleUpdateExercise}>
-                Update
-            </Button>
-
-            <hr />
-
-            <h5>Code preview</h5>
-            <p className="text-muted mb-1">This is what the tested file will look like.</p>
-
-            <pre className="border rounded bg-light p-2">
-                {prefix !== "" ? (<>{prefix}<br /><br /></>) : (<></>)}
-                <div className="rounded border-0 m-1 student-code-preview">
-                    <br />
-                    &nbsp;&nbsp;<span className="bg-light p-1 rounded">Student code goes here</span> <br />
-                    <br />
-                </div>
-                {suffix !== "" ? (<><br />{suffix}</>) : (<></>)}
-            </pre>
-
-        </>)
-    }
-
     if (exerciseIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
@@ -519,18 +252,18 @@ const Exercise = () => {
 
                 {isOwner || isTutor ? (
                     <Tab eventKey="tests" title="Tests">
-                        {testsContent()}
+                        <ExerciseTestsTab exercise_id={exercise.id} isOwner={isOwner} exerciseIsSuccess={exerciseIsSuccess} />
                     </Tab>
                 ) : (<></>)}
 
                 {isOwner || isTutor ? (
                     <Tab eventKey="runtime" title="Runtime">
-                        {prefixSuffixContent()}
+                        <ExerciseRuntimeTab course={course} session={session} exercise={exercise} isOwner={isOwner} />
                     </Tab>
                 ) : (<></>)}
 
                 <Tab eventKey="submission" title="Submission">
-                    {submissionContent()}
+                    <ExerciseSubmissionTab exercise={exercise} username={username} />
                 </Tab>
 
             </Tabs>
