@@ -127,6 +127,7 @@ const Exercise = () => {
         } else if (isOwner && editTitle) {
             return (
                 <input
+                    aria-label="Enter exercise title"
                     autoComplete="false"
                     autoFocus
                     className="teacher title-input h2 fw-bold p-2"
