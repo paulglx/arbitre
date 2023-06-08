@@ -57,7 +57,7 @@
     ]
   },
   "devDependencies": {
-    "@playwright/test": "^1.27.1",
+    "@playwright/test": "^1.33.0",
     "@types/autosize": "^4.0.1",
     "@types/node": "^18.11.5",
     "eslint": "^8.33.0"
