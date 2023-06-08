@@ -1,14 +1,14 @@
-import '../login-register.css'
+import '../../login-register.css'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Button } from 'react-bootstrap'
 import React from 'react'
-import { setCredentials } from '../features/auth/authSlice'
+import { setCredentials } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
 
-const Login = () => {
+const LoginButton = () => {
 
     const dispatch = useDispatch()
     const location = useLocation()
@@ -53,4 +53,4 @@ const Login = () => {
         </Button >
     </>)
 }
-export default Login
+export default LoginButton

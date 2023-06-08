@@ -1,9 +1,9 @@
 import { Button, Form, Table } from 'react-bootstrap'
 import { PersonDash, PersonPlus } from 'react-bootstrap-icons'
-import { useAddStudentMutation, useGetStudentsQuery, useRemoveStudentMutation } from '../features/courses/courseApiSlice'
+import { useAddStudentMutation, useGetStudentsQuery, useRemoveStudentMutation } from '../../../features/courses/courseApiSlice'
 import { useEffect, useState } from 'react'
 
-import { useGetUsersQuery } from '../features/users/usersApiSlice'
+import { useGetUsersQuery } from '../../../features/users/usersApiSlice'
 
 const StudentsList = (props: any) => {
 
@@ -26,7 +26,6 @@ const StudentsList = (props: any) => {
     } = useGetUsersQuery({})
 
     const handleAddStudent = async () => {
-
         const username = studentToAdd
         const user_id = allUsers.find((u: any) => u.username === username).id
         try {
@@ -36,7 +35,6 @@ const StudentsList = (props: any) => {
         } catch (e) {
             console.log(e)
         }
-
     }
 
     const handleRemoveStudent = async (user_id: number) => {

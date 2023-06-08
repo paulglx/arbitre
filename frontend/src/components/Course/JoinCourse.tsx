@@ -1,24 +1,24 @@
-import '../join-code.css'
+import '../../join-code.css'
 
 import { Button, Container, Form } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 
-import Header from './Header'
-import { pushNotification } from '../features/notification/notificationSlice';
+import Header from '../Header/Header'
+import { pushNotification } from '../../features/notification/notificationSlice';
 import useDigitInput from 'react-digit-input';
 import { useDispatch } from 'react-redux';
-import { useJoinCourseWithCodeMutation } from '../features/courses/courseApiSlice';
+import { useJoinCourseWithCodeMutation } from '../../features/courses/courseApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 
 const JoinCourse = (props: any) => {
 
-    const [codeInput, setCodeInput] = useState<any>('')
-    const [err, setErr] = useState<any>("")
-    const [joinCourseWithCode] = useJoinCourseWithCodeMutation()
-    const { join_code: join_code_parameter } = useParams<{ join_code: string }>()
-    const dispatch = useDispatch()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { join_code: join_code_parameter } = useParams<{ join_code: string }>()
+    const [joinCourseWithCode] = useJoinCourseWithCodeMutation()
+    const [err, setErr] = useState<any>("")
+    const [codeInput, setCodeInput] = useState<any>('')
 
     const handleCodeInput = (value: any) => {
         setErr("")
