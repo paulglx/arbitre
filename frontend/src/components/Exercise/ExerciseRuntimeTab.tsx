@@ -1,7 +1,7 @@
 import { Button, Container } from 'react-bootstrap'
+import React, { useEffect } from 'react'
 
 import Editor from "@monaco-editor/react";
-import React from 'react'
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useDispatch } from 'react-redux';
 import { useState } from 'react'
@@ -15,6 +15,11 @@ const ExerciseRuntimeTab = (props: any) => {
     const [suffix, setSuffix] = useState("");
     const dispatch = useDispatch();
     const [updateExercise] = useUpdateExerciseMutation();
+
+    useEffect(() => {
+        setPrefix(exercise.prefix);
+        setSuffix(exercise.suffix);
+    }, [exercise])
 
     const handleUpdateExercise = async () => {
         try {

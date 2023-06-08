@@ -37,7 +37,7 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
     # Fix prefix line endings
     if not prefix.endswith("\r") and not prefix.endswith("\n"):
         prefix += "\n"
-    source = prefix + file_content + suffix
+    source = prefix + "\n" + file_content + "\n" + suffix
 
     print("SOURCE: ", source)
 
