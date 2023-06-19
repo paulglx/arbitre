@@ -1,5 +1,5 @@
 import './index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import "@fontsource/inter/variable.css"
 import "@fontsource/jetbrains-mono"
 
