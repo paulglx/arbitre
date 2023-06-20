@@ -4,6 +4,7 @@ from .serializers import (
     SessionSerializer,
     ExerciseSerializer,
     MinimalExerciseSerializer,
+    StudentGroupSerializer,
 )
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -15,6 +16,18 @@ from runner.serializers import SubmissionSerializer
 import json
 import secrets
 import string
+
+
+class StudentGroupViewSet(viewsets.ModelViewSet):
+    """
+    Manage Student Groups.
+
+    Set the whole student group at once.
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    serializer_class = StudentGroupSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
