@@ -55,6 +55,22 @@ class Course(models.Model):
         return self.title
 
 
+class StudentGroup(models.Model):
+    """
+    A group of students, related to one course.
+    """
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    students = models.ManyToManyField(User, related_name="%(class)s_students")
+
+    def __str__(self):
+        return f"{self.name} ({self.course.title})"
+
+    # TODO check if student in course
+    # TODO check if student not in other group of course
+
+
 class Session(models.Model):
     """
     A part of a course, that includes exercises
