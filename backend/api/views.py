@@ -1,4 +1,4 @@
-from .models import Course, Session, Exercise
+from .models import Course, Session, Exercise, StudentGroup
 from .serializers import (
     CourseSerializer,
     SessionSerializer,
@@ -23,11 +23,22 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
     Manage Student Groups.
 
     Set the whole student group at once.
+
+    GET all student groups of a course (GET)
+    params :
+    - course_id : id of the course (number)
     """
 
     permission_classes = (permissions.IsAuthenticated,)
 
     serializer_class = StudentGroupSerializer
+
+    def get_queryset(self):
+        course_id = self.request.query_params.get("course_id", None)
+        if course_id:
+            return StudentGroup.objects.filter(course=course_id)
+        else:
+            return StudentGroup.objects.all()
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -475,7 +486,9 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
     Get results of a session.
 
     Get submission statuses for all exercises of a session, for a given user.
-    Params: user_id, session_id
+    Params:
+    - user_id : number
+    - session_id : number
     """
 
     permission_classes = (permissions.IsAuthenticated,)
@@ -516,7 +529,9 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
     Get results of a session.
 
     Get submission statuses for all exercises of a session, for all students.
-    Params: session_id
+    Params:
+    - session_id :  number
+    - groups :      array (?groups=1,2,3) (optional)
 
     Used to create a table of results for a session.
     """
@@ -526,11 +541,34 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
     def list(self, request):
         session = Session.objects.get(id=self.request.GET.get("session_id"))
 
-        all_students = session.course.students.all()
-        all_students_ids = [student.id for student in all_students]
+        if "groups" in self.request.GET:
+            groups = []
+            for group_id in self.request.GET.get("groups").split(","):
+                group = StudentGroup.objects.get(id=group_id)
+                groups.append(group)
+
+            # Check if the groups exist and belong to the course
+            for group in groups:
+                if (
+                    group not in StudentGroup.objects.all()
+                    or group.course != session.course
+                ):
+                    return Response(
+                        {"message": "NOT FOUND: Group not found or not in course"},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+
+            students = []
+            for group in groups:
+                for student in group.students.all():
+                    students.append(student)
+
+        else:
+            students = session.course.students.all()
+        students_ids = [student.id for student in students]
 
         students_data = []
-        for student_id in all_students_ids:
+        for student_id in students_ids:
             result_request = HttpRequest()
             result_request.method = "GET"
             result_request.data = {
@@ -540,10 +578,18 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
 
             result_response = ResultsOfSessionViewSet.list(self, result_request).data
 
+            try:
+                student_group = StudentGroup.objects.get(
+                    students__in=[student_id], course=session.course
+                ).id
+            except StudentGroup.DoesNotExist:
+                student_group = None
+
             students_data.append(
                 {
                     "user_id": student_id,
                     "username": User.objects.get(id=student_id).username,
+                    "group": student_group,
                     "exercises": result_response,
                 }
             )

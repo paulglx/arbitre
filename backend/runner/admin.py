@@ -1,6 +1,6 @@
-from django.contrib import admin
 from .models import Submission, Test, TestResult
 from api.models import Exercise, Session, Course, StudentGroup
+from django.contrib import admin
 
 
 # Register your models here.
