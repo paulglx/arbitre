@@ -6,7 +6,7 @@ from django.contrib import admin
 # Register your models here.
 class StudentGroupInline(admin.StackedInline):
     model = StudentGroup
-    extra = 1
+    extra = 0
     filter_horizontal = ["students"]
 
 
@@ -46,6 +46,9 @@ class CourseAdmin(admin.ModelAdmin):
         "owners",
         "tutors",
         "language",
+        "auto_groups",
+        "auto_groups_type",
+        "auto_groups_number",
     ]
     filter_horizontal = [
         "students",
