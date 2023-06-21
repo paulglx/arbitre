@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
@@ -51,8 +51,59 @@ class Course(models.Model):
     join_code = models.CharField(max_length=8, blank=False, default="00000000")
     join_code_enabled = models.BooleanField(default=True)
 
+    auto_groups = models.BooleanField(default=False)
+    auto_groups_type = models.CharField(
+        max_length=12,
+        choices=[
+            ("alphabetical", _("Alphabetical")),
+            # ("random", _("Random")), ##TODO add random groups
+        ],
+        default="alphabetical",
+    )
+    auto_groups_number = models.IntegerField(default=1)
+
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.handle_groups_update()
+
+    def handle_groups_update(self):
+        print("handle_groups_update")
+        if self.auto_groups:
+            self.make_auto_groups()
+
+    def make_auto_groups(self):
+        """
+        Create groups of students, ordered alphabetically by last name.
+        """
+
+        # Delete previous groups
+        student_groups = StudentGroup.objects.filter(course=self)
+        for group in student_groups:
+            group.delete()
+
+        students = list(self.students.all().order_by("username"))
+        number_of_groups = self.auto_groups_number
+
+        # Evenly distribute students into groups
+        group_repartition = [
+            len(students) // number_of_groups
+            + (1 if x < len(students) % number_of_groups else 0)
+            for x in range(number_of_groups)
+        ]
+
+        # Create groups and add students to them
+        for i in range(number_of_groups):
+            group = StudentGroup.objects.create(
+                course=self,
+                name=f"Group {i + 1}",
+            )
+            group.save()
+            for j in range(group_repartition[i]):
+                group.students.add(students.pop(0))
+            group.save()
 
 
 class StudentGroup(models.Model):
@@ -66,9 +117,6 @@ class StudentGroup(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.course.title})"
-
-    # TODO check if student in course
-    # TODO check if student not in other group of course
 
 
 class Session(models.Model):
