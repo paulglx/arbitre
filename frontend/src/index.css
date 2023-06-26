@@ -47,16 +47,9 @@ ol.breadcrumb li.active {
 }
 
 .arbitre {
+  cursor: default;
   font-weight: 900 !important;
-}
-
-.arbitre:hover {
-  border-radius: 5px;
-  background-color: var(--bs-gray-200);
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-left: -10px;
-  margin-right: 6px;
+  user-select: none;
 }
 
 .flex-fill {
