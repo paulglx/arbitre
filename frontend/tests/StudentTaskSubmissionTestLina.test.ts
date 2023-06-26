@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('Student task Submission Test', async ({ page }) => {
 
@@ -28,14 +28,14 @@ test('Student task Submission Test', async ({ page }) => {
         await page.locator('button.btn.btn-primary').click();
 
     });
-    
+
     await test.step('submission', async () => {
-            // enter in the session
-            await expect(page.locator('a.list-group-item.list-group-item-light.list-group-item-action').nth(0)).toBeVisible();
-            await page.locator('a.list-group-item.list-group-item-light.list-group-item-action').click();
+        // enter in the session
+        await expect(page.locator('a.list-group-item.list-group-item-light.list-group-item-action').nth(0)).toBeVisible();
+        await page.locator('a.list-group-item.list-group-item-light.list-group-item-action').click();
 
         for (let i = 1; i <= 9; i++) {
-            
+
             // enter in the exercise
             await expect(page.locator('div.list-group a').nth(i - 1)).toBeVisible();
             await page.locator('div.list-group a').nth(i - 1).click();
@@ -45,10 +45,10 @@ test('Student task Submission Test', async ({ page }) => {
             await page.locator('button#exercise-tabs-tab-submission').click();
 
             await expect(page.locator('input#formFile')).toBeVisible();
-            await page.setInputFiles('input#formFile', '/home/lili/testArbitre/sol.py');
+            await page.setInputFiles('input#formFile', './tests/test-files/sol.py');
             await expect(page.locator('button.btn.btn-primary:has-text("Submit")')).toBeVisible();
             await page.locator('button.btn.btn-primary:has-text("Submit")').click();
-    
+
             await expect(page.locator('li.breadcrumb-item a').nth(2)).toBeVisible();
             await page.locator('li.breadcrumb-item a').nth(2).click();
 

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('Create Course and add Exercises', async ({ page }) => {
 
@@ -18,7 +18,7 @@ test('Create Course and add Exercises', async ({ page }) => {
     });
 
     await test.step('create a course', async () => {
-    
+
         // create a course
         await expect(page.locator('#create-course')).toBeVisible();
         await page.locator('#create-course').click();
@@ -39,8 +39,8 @@ test('Create Course and add Exercises', async ({ page }) => {
         await page.locator('textarea.form-control').fill('Binary search is a commonly used searching algorithm that efficiently finds the position of a target element in a sorted array.');
         await page.locator('button.btn.btn-primary').click();
 
-    }); 
-   
+    });
+
     await test.step('create a exercises', async () => {
 
         // create a exercises
@@ -51,11 +51,11 @@ test('Create Course and add Exercises', async ({ page }) => {
         await page.locator('input.form-control').fill('Linear Search');
         await page.locator('textarea.form-control').fill('In this exercise, you are given a list of numbers and a target number. Your task is to implement a linear search algorithm to find if the target number exists in the list. The linear search algorithm sequentially checks each element in the list until the target number is found or the end of the list is reached.');
         await page.locator('button.btn.btn-primary').click();
-        
-    }); 
-   
+
+    });
+
     await test.step('create a test', async () => {
-    
+
         // create a test
         await expect(page.locator('ul li button:has-text("Test")')).toBeVisible();
         await page.locator('ul li button#exercise-tabs-tab-tests').click();
@@ -66,18 +66,18 @@ test('Create Course and add Exercises', async ({ page }) => {
         await expect(page.locator('input.form-control').nth(0)).toBeVisible();
         await page.locator('input.form-control').nth(0).fill('Test 1');
         await expect(page.locator('textarea.form-control').nth(0)).toBeVisible();
-        
+
         await page.locator('textarea.form-control').nth(0).type('5,2,8,10,3');
         await page.keyboard.press('Enter');
         await page.type('textarea.form-control', '8');
-        
+
         await expect(page.locator('textarea.form-control').nth(1)).toBeVisible();
         await page.locator('textarea.form-control').nth(1).fill('True');
         await expect(page.locator('div.fade.tab-pane.active.show')).toBeVisible();
         await page.locator('div.fade.tab-pane.active.show').click();
 
-    }); 
-    
+    });
+
     await test.step('create runtime', async () => {
 
         // create runtime
@@ -89,19 +89,19 @@ test('Create Course and add Exercises', async ({ page }) => {
         await expect(page.locator('button.btn.btn-primary.btn-sm').nth(0)).toBeVisible();
         await page.locator('button.btn.btn-primary.btn-sm').nth(0).click();
 
-    }); 
-    
+    });
+
     await test.step('create submission', async () => {
 
         // create submission
         await expect(page.locator('button#exercise-tabs-tab-submission')).toBeVisible();
         await page.locator('button#exercise-tabs-tab-submission').click();
         await expect(page.locator('input#formFile')).toBeVisible();
-        await page.setInputFiles('input#formFile', '/home/lili/testArbitre/sol_search_number.py');
+        await page.setInputFiles('input#formFile', './tests/test-files/sol_search_number.py');
         await expect(page.locator('button.btn.btn-primary:has-text("Submit")')).toBeVisible();
         await page.locator('button.btn.btn-primary:has-text("Submit")').click();
 
-    }); 
+    });
     /*await test.step('delete course', async () => {
 
                 // go back to course
@@ -116,4 +116,4 @@ test('Create Course and add Exercises', async ({ page }) => {
 
     }); 
     */
- });
+});
