@@ -1,6 +1,6 @@
 import { Container, ListGroup } from "react-bootstrap"
 
-import Header from "../Header/Header"
+import Header from "../Common/Header"
 
 const Error = (props: any) => {
 

@@ -8,7 +8,7 @@ import CreateSession from "./components/Session/CreateSession";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Exercise from "./components/Exercise/Exercise";
 import JoinCourse from "./components/Course/JoinCourse";
-import Layout from "./components/Util/Layout";
+import Layout from "./components/Common/Layout";
 import NotFound from "./components/Util/NotFound";
 import Notification from "./components/Util/Notification";
 import Public from "./components/Landing/Public";

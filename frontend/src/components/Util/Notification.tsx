@@ -7,7 +7,7 @@ const Notification = () => {
     const dispatch = useDispatch();
     const notifications = useSelector(selectCurrentNotifications);
 
-    return notifications ? (
+    return notifications.length > 0 ? (
         <ToastContainer className='p-3' position="bottom-end">
 
             {notifications.map((notif: any, i: number) => (

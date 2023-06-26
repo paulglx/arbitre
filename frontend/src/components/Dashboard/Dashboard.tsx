@@ -2,7 +2,7 @@ import { Button, Container, Dropdown, Form, ListGroup } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 
 import { CaretDownFill } from 'react-bootstrap-icons'
-import Header from '../Header/Header'
+import Header from '../Common/Header'
 import React from 'react'
 import ResultsTable from './ResultsTable'
 import { useGetCoursesSessionsExercisesQuery } from '../../features/courses/courseApiSlice'

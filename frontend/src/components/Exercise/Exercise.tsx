@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
-import Header from "../Header/Header";
+import Header from "../Common/Header";
 import Markdown from "../Util/Markdown";
 import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";

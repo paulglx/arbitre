@@ -1,17 +1,17 @@
-import { Breadcrumb, Button, Container, Dropdown, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
 import { selectCurrentUser, selectIsTeacher } from "../../features/auth/authSlice";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../../features/courses/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import Header from "../Header/Header";
-import Markdown from "../Util/Markdown";
 import Students from "./Students/Students";
 import TeacherList from "./Teachers/TeacherList";
 import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useGetSessionsOfCourseQuery } from "../../features/courses/sessionApiSlice";
+import { Exclamation, Trash } from "heroicons-react";
+import { Modal, Select, Header, Tabs } from "../Common";
+import DescriptionContent from "./CourseComponents/DescriptionContent";
+import SessionContent from "./CourseComponents/SessionContent";
 
 const Course = () => {
 
@@ -29,28 +29,29 @@ const Course = () => {
     const username = useSelector(selectCurrentUser);
     const navigate = useNavigate();
     const isTeacher = useSelector(selectIsTeacher);
+    const [IsOpen, setIsOpen] = useState(false);
 
     const languageChoices = [
-        ["ada", "Ada"],
-        ["c", "C"],
-        ["c#", "C#"],
-        ["c++", "C++"],
-        ["d", "D"],
-        ["go", "Go"],
-        ["haskell", "Haskell"],
-        ["java", "Java"],
-        ["javascript", "JavaScript"],
-        ["lua", "Lua"],
-        ["ocaml", "OCaml"],
-        ["pascal", "Pascal"],
-        ["perl", "Perl"],
-        ["php", "PHP"],
-        ["prolog", "Prolog"],
-        ["python", "Python"],
-        ["ruby", "Ruby"],
-        ["rust", "Rust"],
-        ["scheme", "Scheme"],
-    ]
+        { code: "ada", name: "Ada" },
+        { code: "c", name: "C" },
+        { code: "c#", name: "C#" },
+        { code: "c++", name: "C++" },
+        { code: "d", name: "D" },
+        { code: "go", name: "Go" },
+        { code: "haskell", name: "Haskell" },
+        { code: "java", name: "Java" },
+        { code: "javascript", name: "JavaScript" },
+        { code: "lua", name: "Lua" },
+        { code: "ocaml", name: "OCaml" },
+        { code: "pascal", name: "Pascal" },
+        { code: "perl", name: "Perl" },
+        { code: "php", name: "PHP" },
+        { code: "prolog", name: "Prolog" },
+        { code: "python", name: "Python" },
+        { code: "ruby", name: "Ruby" },
+        { code: "rust", name: "Rust" },
+        { code: "scheme", name: "Scheme" },
+    ];
 
     const {
         data: course,
@@ -138,23 +139,20 @@ const Course = () => {
             type: "light"
         }));
     }
-
-    const deletePopover = (
-        <Popover id="popover-basic">
-            <Popover.Header as="h3">Are you sure?</Popover.Header>
-            <Popover.Body>
-                This will <strong>remove permanently</strong> this course, all its sessions and all the session's exercises. <br /><br />
-                <Button id="confirm-delete" onClick={handleDelete} type="submit" size="sm" variant="danger">Delete course</Button>
-            </Popover.Body>
-        </Popover>
-    )
+    // Modal
+    const handleOpenModal = () => {
+        setIsOpen(true);
+    };
+    const handleCloseModal = () => {
+        setIsOpen(false);
+    };
 
     // Show title or edit title
     const titleContent = () => {
         if (!isOwner || !editTitle) {
             return (
                 <h1
-                    className={"h2 fw-bold p-2" + (isOwner ? " teacher editable-title" : "")}
+                    className={"fw-bold hover:bg-blue-600 " + (isOwner ? " teacher editable-title" : "")}
                     id="title-editable"
                     onFocus={() => isOwner ? setEditTitle(true) : null}
                     tabIndex={0} //allows focus
@@ -185,201 +183,115 @@ const Course = () => {
         }
     }
 
-    // Show description or edit description
-    // TODO implement ctrl+z
-    const descriptionContent = () => {
-        if (!isOwner || !editDescription) {
-            return (
-                <blockquote
-                    className={"p-3 pb-1 bg-light border rounded description" + (isOwner ? " teacher editable-description" : "")}
-                    onFocus={() => setEditDescription(true)}
-                    tabIndex={0} //allows focus
-                >
-                    <Markdown
-                        children={description}
-                    />
-                </blockquote>
-            )
-        } else if (isOwner && editDescription) {
-            return (
-                <Form>
-                    <Form.Group className="mb-3" controlId="description">
-                        <Form.Control
-                            as="textarea"
-                            autoFocus
-                            className="teacher description-input"
-                            onBlur={() => {
-                                if (description === "") {
-                                    setDescription("No description");
-                                }
-                                setEditDescription(false);
-                                handleUpdate();
-                            }}
-                            onChange={(e: any) => setDescription(e.target.value)}
-                            placeholder="Enter course description. Markdown is supported."
-                            value={description}
-                        />
-                        <Form.Text className="text-muted">
-                            You are editing the description - Markdown supported !
-                        </Form.Text>
-                    </Form.Group>
-                </Form>
-            )
-        }
-    }
-
     // Delete button (teacher only)
     const ownerActionsContent = () => {
         return isOwner ? (
-            <div className="d-flex justify-content-end">
-                <Dropdown align="end">
-                    <Dropdown.Toggle id="language-dropdown" className="text-capitalize" variant="outline-dark">
-                        {language}
-                    </Dropdown.Toggle>
+            <div className="flex justify-end items-center space-x-2">
+                <div className="relative inline-block text-left">
+                    <Select
+                        options={languageChoices}
+                        title="Langages"
+                    />
 
-                    <Dropdown.Menu className="gap-1 p-2 rounded-3 mx-0">
-                        {languageChoices.map((choice: any) => (
-                            <Dropdown.Item
-                                className="rounded-2"
-                                key={choice[0]}
-                                eventKey={choice[0]}
-                                onClick={() => handleLanguageChange(choice[0])}
-                                active={choice[0] === language}
-                            >
-                                {choice[1]}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
-
-                &nbsp;
-
-                <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
-                    <Button variant="light border border-danger text-danger" id="delete-button">Delete</Button>
-                </OverlayTrigger>
+                </div>
+                <div className="ml-2">
+                    <button onClick={handleOpenModal} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">
+                        <Trash className="w-6 h-6" />
+                    </button>
+                </div>
             </div>
-        ) : <></>
-    }
+        ) : null;
+    };
 
-    //Create session button (teacher only)
-    const sessionListOwnerContent = () => {
-        return isOwner ? (
-            <ListGroup.Item id="create-session" action href={"/session/create?course_id=" + id}>
-                + Create Session
-            </ListGroup.Item>
-        ) : (<></>)
-    }
+    const tabs = [
+        {
+            eventKey: 'session',
+            title: 'Session',
+            component: <SessionContent
+                            course={course}
+                            id={id}
+                        />,
+            buttonClassName: "rounded-l-md"
+        },
+        {
+            eventKey: 'student',
+            title: 'Student',
+            component: <Students course={course} />,
+            buttonClassName:""
+        },
+        {
+            eventKey: 'teacher',
+            title: 'Teacher',
+            component: <TeacherList courseId={id} isOwner={isOwner} />,
+            buttonClassName: "rounded-r-md"
+        },
 
-    //Create session button, on "no sessions" block (teacher only)
-    const sessionListOwnerContentNoSessions = () => {
-        return isOwner ? (
-            <Button id="create-session-no-sessions" variant="light mb-3 border" href={"/session/create?course_id=" + id}>
-                + Create session
-            </Button>
-        ) : (<></>)
-    }
-
-    //Session list, or "no sessions" block if no sessions
-    const sessionContent = () => {
-        if (sessionsIsLoading) {
-            return (
-                <p>Loading sessions...</p>
-            )
-        }
-        else if (sessionsIsSuccess && sessions.length === 0) {
-            return (
-                <ListGroup>
-                    <ListGroup.Item id="no-sessions-warning" className="text-muted text-center dashed-border">
-                        <br />
-                        <p>This course doesn't have any sessions.</p>
-                        {sessionListOwnerContentNoSessions()}
-                    </ListGroup.Item>
-                </ListGroup>
-            )
-        }
-        else if (sessionsIsSuccess) {
-            return (
-                <ListGroup>
-                    {sessions.map((session: any, i: number) => {
-                        return <ListGroup.Item
-                            action
-                            variant="light"
-                            href={"/session/" + session.id}
-                            key={i}
-                        >
-                            {session.title}
-                        </ListGroup.Item>
-                    })}
-                    {sessionListOwnerContent()}
-                </ListGroup>
-            )
-        }
-    }
-
-    //Session not found or not authorized
-    if (courseIsError || sessionsIsError) {
-        return isTeacher ? (
-            <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
-            </div>
-        ) : (<></>)
-    }
-
+    ]
     //Main content
     return courseIsLoading ? (
         <></>
     ) : (
         <>
             <Header />
-
-            <Container className="mb-3">
-
-                <Breadcrumb>
-                    <Breadcrumb.Item href="/course">
-                        Courses
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item active>
+            <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+                <ol className="flex items-center space-x-1 md:space-x-3">
+                    <li className="flex items-center">
+                        <a href="/course" className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                            Courses
+                        </a>
+                    </li>
+                    <li className="flex items-center text-gray-500" aria-current="page">
+                        <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                        </svg>
                         {title}
-                    </Breadcrumb.Item>
-                </Breadcrumb>
+                    </li>
+                </ol>
+            </nav>
 
-                <br />
+            <br />
 
-                <div className="d-flex align-items-center justify-content-between">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold text-center hover:bg-gray-200">
                     {titleContent()}
-                    <div className="p-0 mb-2">
-                        {ownerActionsContent()}
-                    </div>
+                </h1>
+                <div className="flex gap-2">
+                    {ownerActionsContent()}
                 </div>
+            </div>
+            <DescriptionContent 
+                    course={course}
+                    description={description}
+                    setDescription={setDescription}
+                    handleUpdate={handleUpdate}
+            />
+            {isOwner || isTutor ? (<>
+                <Tabs
+                    tabs={tabs}
+                />
+            </>) : (<>
+                <DescriptionContent 
+                    course={course}
+                    description={description}
+                    setDescription={setDescription}
+                    handleUpdate={handleUpdate}
+                />
 
-                {isOwner || isTutor ? (<>
-                    <Tabs className="mb-3" variant="pills">
-
-                        <Tab eventKey="default" title="Description">
-                            {descriptionContent()}
-                        </Tab>
-
-                        <Tab eventKey="sessions" title="Sessions">
-                            {sessionContent()}
-                        </Tab>
-
-                        <Tab eventKey="students" title="Students">
-                            <Students course={course} />
-                        </Tab>
-
-                        <Tab eventKey="teachers" title="Teachers">
-                            <TeacherList courseId={id} isOwner={isOwner} />
-                        </Tab>
-
-                    </Tabs>
-                </>) : (<>
-                    {descriptionContent()}
-
-                    <h2>Sessions</h2>
-                    {sessionContent()}
-                </>)}
-
-            </Container>
+                <h2>Sessions</h2>
+                <SessionContent
+                    course={course}
+                    id={id}
+                />
+            </>)}
+            
+            {IsOpen &&
+                <Modal
+                    title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
+                    icon={<Exclamation className="text-yellow-500 w-12 h-12 mb-2" />}
+                    decription={<p className="mb-4">This will remove permanently this course, all its sessions and all the session's exercises.</p>}
+                    handleCloseModal={handleCloseModal}
+                    delete={handleDelete}
+                />}
         </>
     )
 }

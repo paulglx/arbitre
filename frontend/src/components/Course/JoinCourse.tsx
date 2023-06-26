@@ -1,15 +1,15 @@
 import '../../join-code.css'
 
-import { Button, Container, Form } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 
-import Header from '../Header/Header'
+import Header from '../Common/Header'
 import { pushNotification } from '../../features/notification/notificationSlice';
 import useDigitInput from 'react-digit-input';
 import { useDispatch } from 'react-redux';
 import { useJoinCourseWithCodeMutation } from '../../features/courses/courseApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
+import { ChevronLeft } from 'heroicons-react';
 
 const JoinCourse = (props: any) => {
 
@@ -91,50 +91,51 @@ const JoinCourse = (props: any) => {
 
     return (
         <>
-            <Header />
-
-            <br /><br />
-
-            <Container className='p-3'>
-
-                <Button variant="light mb-3" href="/course">
-                    ← Back to courses
-                </Button>
-
-                <br /><br />
-
-                <h1 className='fw-bold'>Join a course</h1>
-                <hr />
-                {err === "" ?
-                    <p className='text-muted'>Enter the 8 character course code to join a course.</p>
-                    :
-                    <p className='text-danger'>{err}</p>
-                }
-
-                <Form className="jc-input-group">
-                    {Array(8).fill(0).map((_, i: number) => (
-                        <input
-                            type="text"
-                            placeholder='X'
-                            key={i}
-                            autoFocus={i === 0}
-                            className={err === "" ? "" : "jc-input-error"}
-                            {...digits[i]}
-                        />
-                    ))}
-                </Form>
-
-                <br />
-
-                <Button
-                    variant='primary'
-                    disabled={codeInput.replace(" ", "").length < 8}
-                    onClick={(e: any) => handleSubmit(e)}
-                >
-                    Join
-                </Button>
-
-            </Container>
+          <Header />
+    
+          <br />
+          <br />
+          <a href="/course" className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center m-4 md:m-6">
+                <ChevronLeft className="h-5 w-5" /> 
+                Back to courses
+            </a>
+    
+          <div className="bg-gray-200 rounded-3xl shadow-lg shadow-gray-400/50 p-4 md:p-6 md:h-auto h-5/6 w-full  flex flex-col items-center justify-center">
+    
+            <h1 className="text-4xl font-bold mb-4 text-gray-700 hidden md:block">Join a course</h1>
+            <hr />
+            {err === '' ? (
+              <p className="text-gray-600 hidden md:block m-2">Enter the 8 character course code to join a course.</p>
+            ) : (
+              <p className="text-red-500">{err}</p>
+            )}
+    
+            <form className="jc-input-group m-2 md:n-4 bg-slate-50 rounded-3xl shadow-lg shadow-gray-400/50  p-4 md:p-6 w-5/6 overflow-x-auto flex md:justify-center">
+              {Array(8)
+                .fill(0)
+                .map((_, i) => (
+                  <input
+                    type="text"
+                    placeholder="X"
+                    key={i}
+                    autoFocus={i === 0}
+                    className={"w-2 h-4 p-0" + (err === '' ? '' : 'jc-input-error')}
+                    {...digits[i]}
+                    onChange={(e) => handleCodeInput(e.target.value)}
+                  />
+                ))}
+            </form>
+    
+            <br />
+    
+            <button
+              className="block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded pl-6 pr-6 p-4 hover:bg-gray-100 transition duration-300 rounded-lg justify-center flex items-center"
+              disabled={codeInput.replace(' ', '').length < 8}
+              onClick={handleSubmit}
+            >
+              Join
+            </button>
+        </div>
         </>
     )
 }
