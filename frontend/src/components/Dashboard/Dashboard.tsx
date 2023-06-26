@@ -1,7 +1,9 @@
-import { Button, Container, Dropdown, Form, ListGroup } from 'react-bootstrap'
+import 'flowbite'
+
+import { Button, Container, ListGroup } from 'react-bootstrap'
+import { ChevronDown, Search } from "heroicons-react"
 import { useEffect, useState } from 'react'
 
-import { CaretDownFill } from 'react-bootstrap-icons'
 import Header from '../Common/Header'
 import React from 'react'
 import ResultsTable from './ResultsTable'
@@ -19,15 +21,16 @@ const Dashboard = () => {
         isSuccess: isCoursesSuccess,
     } = useGetCoursesSessionsExercisesQuery({});
 
+    // Set current session at first render
     useEffect(() => {
         if (courses) {
             if (courses?.every((course: any) => course.sessions.length === 0)) {
                 setCurrentSession(-1)
                 setCurrentSessionTitle('')
             } else {
-                const firstCourseWithSessions = courses?.find((course: any) => course.sessions.length > 0)
-                setCurrentSession(firstCourseWithSessions.sessions[0].id)
-                setCurrentSessionTitle(firstCourseWithSessions.sessions[0].title)
+                const firstCourseWithExercises = courses.find((course: any) => course.sessions.length > 0 && course.sessions[0]?.exercises?.length > 0)
+                setCurrentSession(firstCourseWithExercises.sessions[0].id)
+                setCurrentSessionTitle(firstCourseWithExercises.sessions[0].title)
             }
         }
     }, [courses])
@@ -54,68 +57,82 @@ const Dashboard = () => {
         }
     }, [sessionSearch, courses])
 
-    const CustomToggle = React.forwardRef(({ children, onClick }: any, ref) => (
-        <a
-            className='h2 text-dark px-2 py-1 text-decoration-none shadow-sm border bg-light border-4 rounded-4'
-            href="#dropdown"
-            ref={ref as any}
-            key={currentSession}
-            onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
-            }}
-        >
-            {children} <CaretDownFill />
-        </a>
-    ));
+    // TODO make it open and close - https://flowbite.com/docs/components/dropdowns/#dropdown-with-search
 
-    const CustomMenu = React.forwardRef(
-        ({ children, className, 'aria-labelledby': labeledBy }: any, ref) => {
+    const sessionDropdown = () => {
+        return (<>
+            <button
+                className='text-2xl font-bold px-4 py-2 border-4 border-gray-300 bg-gray-100 rounded-md'
+                data-dropdown-placement="bottom-start"
+                data-dropdown-toggle="sessions-dropdown-menu"
+                id="sessions-dropdown-search-button"
+                key={currentSession}
+                type="button"
+            >
+                {currentSessionTitle ? currentSessionTitle : "Select a session"}
+                <ChevronDown className="inline-block ml-2" />
+            </button>
 
-            return (
-                <div
-                    ref={ref as any}
-                    className={className}
-                    aria-labelledby={labeledBy}
-                >
-                    <Form.Control
-                        autoFocus
-                        className="rounded-3 mx-2 w-75"
-                        placeholder="Type to filter"
-                        onChange={(e) => setSessionSearch(e.target.value)}
-                        value={sessionSearch}
-                    />
-                    <ul className="list-unstyled">
-                        {
-                            sessionSearchResults?.map((course: any) => (<>
-                                <Dropdown.Divider />
-                                {course.sessions.length > 0 ?
-                                    <Dropdown.Header key={course.course.id} className="text-wrap">{course.course.title}</Dropdown.Header>
-                                    : null
-                                }
-                                {course.sessions.map((session: any) => (<>
-                                    <Dropdown.Item
-                                        key={session.id}
-                                        eventKey={session.id}
-                                        aria-selected={session.id === currentSession}
-                                        className={"text-wrap" + (session.id === currentSession ? " bg-primary text-white" : "")}
-                                        onClick={(eventKey: any) => {
-                                            setCurrentSession(session.id)
-                                            setCurrentSessionTitle(session.title)
-                                        }}
-                                    >
-                                        {session.title}
-                                    </Dropdown.Item>
-                                </>))}
-                            </>))
-                        }
-                    </ul>
+
+            <div
+                id="sessions-dropdown-menu"
+                className="z-10 w-96 visible mt-2 bg-white border-4 border-gray-300 rounded-md shadow-md"
+            >
+                <div className="p-3">
+                    <label htmlFor="input-group-search" className="sr-only">
+                        Search
+                    </label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <Search className="w-5 h-5 text-gray-400" />
+                        </div>
+                        <input
+                            autoFocus
+                            id="input-group-search"
+                            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Type to filter"
+                            type="search"
+                            onChange={(e) => setSessionSearch(e.target.value)}
+                            value={sessionSearch}
+                        />
+                    </div>
                 </div>
-            );
-        },
-    );
 
-    console.log(courses)
+                <ul className='h-48 px-3 overflow-y-auto text-sm text-gray-700'>
+                    {
+                        sessionSearchResults?.map((course: any) => (<>
+                            {course.sessions.length > 0 ?
+                                <li key={course.course.id} className="my-2">
+                                    <span
+                                        className="px-4 py-2 rounded-md text-gray-700 bg-gray-100 font-bold cursor-default"
+                                    >
+                                        {course.course.title}
+                                    </span>
+                                </li>
+                                : null
+                            }
+                            {course.sessions.map((session: any) => (<>
+                                <li
+                                    key={session.id}
+                                    onClick={() => {
+                                        setCurrentSession(session.id)
+                                        setCurrentSessionTitle(session.title)
+                                    }}
+                                    className='my-4'
+                                >
+                                    <span className={"px-4 py-2 text-sm rounded-md " + (session.id === currentSession ? "cursor-default font-bold bg-gray-700 text-gray-100 " : "cursor-pointer hover:bg-gray-200")}>
+                                        {session.title}
+                                    </span>
+                                </li>
+                            </>))}
+                        </>))
+                    }
+                </ul >
+
+            </div>
+
+        </>)
+    }
 
     if (courses?.length === 0) {
         return <>
@@ -124,7 +141,7 @@ const Dashboard = () => {
             <br />
             <br />
 
-            <Container>
+            <div className="container mx-auto">
                 <ListGroup>
                     <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
                         <span className='fw-bold'>No courses</span> <br />
@@ -132,11 +149,9 @@ const Dashboard = () => {
                         <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
                     </ListGroup.Item>
                 </ListGroup>
-            </Container>
+            </div>
         </>
     }
-
-    console.log(courses)
 
     if (courses?.every((course: any) => course.sessions.length === 0)) {
         return <>
@@ -165,17 +180,9 @@ const Dashboard = () => {
         <br />
         <br />
 
-        <Container>
+        <div className="container mx-auto">
 
-            <Dropdown>
-                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                    {currentSessionTitle}
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu as={CustomMenu} className="border rounded-4 mt-3 shadow-sm w-50">
-
-                </Dropdown.Menu>
-            </Dropdown>
+            {sessionDropdown()}
 
             <br />
 
@@ -185,7 +192,7 @@ const Dashboard = () => {
                 <></>
             }
 
-        </Container>
+        </div>
     </>) : (<></>)
 }
 
