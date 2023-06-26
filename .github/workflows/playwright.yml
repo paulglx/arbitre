@@ -35,6 +35,22 @@ jobs:
     #   run: python manage.py runserver &
     #   working-directory: backend
 
+    - uses: iamsauravsharma/create-dotenv@v1.2.2
+      with:
+        env-prefix: 'envkey_' # Optional (default: '')
+        file-name: '.env' # Optional (default : '.env')
+        directory: 'backend/arbitre/' # Optional (default: '.')
+      env: # env available for only this steps
+        IS_SERVER: true
+        envkey_DEBUG: false
+        envkey_HOSTNAME: "localhost"
+        envkey_SECRET_KEY: "django-insecure-9p0it%1(1)sv%+s&bv0n@8330j*_)qm76ejwrzg(nea-m=v278"
+        envkey_DB_NAME: arbitre-test
+        envkey_DB_USER: test
+        envkey_DB_PASSWORD: test
+        envkey_DB_HOST: localhost
+        envkey_DB_PORT: ''
+
     - name: Run Django and Run Playwright tests
       run: |
         cd backend
