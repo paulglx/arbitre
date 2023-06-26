@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   pull_request:
-    branches: [ none ] #[ main, master ] TODO fix and reactivate playwright tests
+    branches: [ main, master ]
 jobs:
   test:
     timeout-minutes: 60
