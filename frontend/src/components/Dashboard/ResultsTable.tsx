@@ -1,53 +1,67 @@
-import { Badge, Container, Modal, Spinner, Table } from "react-bootstrap";
-
+import StatusBadge from "../Util/StatusBadge";
 import TestResult from "./TestResult";
+import { X } from "heroicons-react"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useState } from "react";
 
 const ResultsTable = (props: any) => {
 
     const [modalContent, setModalContent] = useState(<></>)
-    const [modalTitle, setModalTitle] = useState("")
     const [showModal, setShowModal] = useState(false)
-    const handleModalClose = () => setShowModal(false)
-    const handleModalShow = () => setShowModal(true)
     const session_id = props.session_id;
+
+    console.log("showModal : ", showModal)
 
     const {
         data: results,
         isSuccess: isResultsSuccess,
     } = useGetResultsOfSessionQuery({ session_id });
 
-    const statusContent = (status: string) => {
-        if (status === "not submitted") {
-            return <span className="text-muted">-</span>;
-        } else if (status === "running") {
-            return (
-                <Spinner animation="border" role="status" as="span" size="sm">
-                    <span className="visually-hidden">Running...</span>
-                </Spinner>
-            );
-        } else if (status === "pending") {
-            return (
-                <Badge bg="secondary">Pending</Badge>
-            );
-        } else if (status === "success") {
-            return <Badge bg="success">Success</Badge>;
-        } else if (status === "failed") {
-            return <Badge bg="secondary">Fail</Badge>;
-        } else if (status === "error") {
-            return <Badge bg="danger">Error</Badge>;
-        }
+    const modal = (exercise: any, student: any) => {
+        return (
+            <div
+                id="detailsModal"
+                aria-hidden={!showModal}
+                className="fixed grid h-screen place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white bg-opacity-50"
+            >
+                <div className="relative w-full max-w-4xl max-h-full">
+                    <div className="relative bg-white rounded-lg shadow border">
+
+                        <div className="flex items-start justify-between p-4 border-b rounded-t">
+                            <h3 className="text-xl font-semibold text-gray-900">
+                                {exercise.exercise_title} - {student.username}
+                            </h3>
+                            <button
+                                type="button"
+                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                                onClick={() => {
+                                    console.log("close modal")
+                                    setShowModal(false)
+                                }}
+
+                            >
+                                <X className="w-6 h-6" />
+                                <span className="sr-only">Close modal</span>
+                            </button>
+                        </div>
+
+                        <TestResult exercise_id={exercise.exercise_id} user_id={student.user_id} />
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     const tableHeadContent = (results: any) => {
         return results[0]?.exercises.length > 0 ? (
-            <thead>
-                <tr key={-1} className="bg-light">
-                    <th key={-1}>Student</th>
+            <thead
+                className="text-gray-800 bg-gray-100 rounded-lg"
+            >
+                <tr key={-1} className="">
+                    <th key={-1} className="w-24">Student</th>
                     {results[0]?.exercises?.map(
                         (exercise: any, i: number) => (
-                            <th className="fw-normal" key={i}>
+                            <th scope="col" className="truncate py-3 px-2 w-32" key={i}>
                                 {exercise.exercise_title}
                             </th>
                         )
@@ -63,41 +77,35 @@ const ResultsTable = (props: any) => {
         return results[0]?.exercises.length > 0 ? (
             <tbody>
                 {results.map((student: any, i: number) => (
-                    <tr key={i}>
-                        <td key={-1}>{student.username}</td>
+                    <tr
+                        key={i}
+                        className="border-t hover:bg-gray-100"
+                    >
+                        <td
+                            key={-1}
+                            className="px-2 py-4 font-semibold bg-gray-50"
+                        >
+                            {student.username}
+                        </td>
                         {student.exercises.map((exercise: any, j: number) => (
                             <td
-                                className='text-center cursor-pointer'
+                                className='text-center cursor-pointer py-4'
                                 role={exercise.status !== "not submitted" ? "button" : ""}
                                 key={j}
                                 onClick={exercise.status !== "not submitted" ? (() => {
-                                    setModalTitle('Submission Result')
-                                    setModalContent(<>
-                                        <TestResult exercise_id={exercise.exercise_id} user_id={student.user_id} />
-                                        <div className="bg-light border rounded mt-2 p-2">
-                                            <p className='text-muted m-1'>
-                                                <span className='fw-bold'>Exercise : </span>
-                                                <a href={`/exercise/${exercise.exercise_id}`} >
-                                                    {exercise.exercise_title}
-                                                </a>
-                                            </p>
-                                            <p className='text-muted m-1'>
-                                                <span className='fw-bold'>Submitted by : </span>
-                                                {student.username}
-                                            </p>
-                                        </div>
-                                    </>)
-                                    handleModalShow()
+                                    setModalContent(modal(exercise, student))
+                                    setShowModal(true)
                                 }) : (
                                     undefined
                                 )}
                             >
-                                {statusContent(exercise.status)}
+                                <StatusBadge status={exercise.status} />
                             </td>
                         ))
                         }
                     </tr >
-                ))}
+                ))
+                }
             </tbody >
         ) : (
             <tbody>
@@ -118,23 +126,16 @@ const ResultsTable = (props: any) => {
 
     return isResultsSuccess ? (<>
 
-        <Modal show={showModal} onHide={handleModalClose} size="lg" fullscreen="md-down">
-            <Modal.Header closeButton>
-                <Modal.Title className='h6'>
-                    {modalTitle}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {modalContent}
-            </Modal.Body>
-        </Modal>
+        {showModal ? modalContent : null}
 
-        <Container className='overflow-scroll p-0 m-0 rounded-4'>
-            <Table hover className='mb-0'>
+        <br />
+
+        <div className='mx-auto overflow-x-auto rounded-md'>
+            <table className="w-full text-sm rounded border">
                 {tableHeadContent(results)}
                 {tableBodyContent(results)}
-            </Table>
-        </Container>
+            </table>
+        </div>
     </>) : (
         <p className="p-3 border rounded">
             Unable to fetch results. Please try again later.
