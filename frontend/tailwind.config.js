@@ -2,7 +2,6 @@
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     container: {
@@ -15,5 +14,5 @@ module.exports = {
       },
     },
   }, 
-  plugins: [require('flowbite/plugin')],
+  plugins: [],
 }
