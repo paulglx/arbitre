@@ -4,7 +4,8 @@ import { logOut } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
 import { useSelector } from 'react-redux'
-import { UserCircle } from 'heroicons-react';
+import { UserCircleIcon } from '@heroicons/react/24/solid'
+
 import Dropdown from './Dropdown';
 
 const Header = () => {
@@ -48,7 +49,7 @@ const Header = () => {
                     <Dropdown 
                         title={username}
                         titleClassName="hidden sm:block"
-                        icon={<UserCircle className="text-white sm:mr-2 w-6 h-6 items" />}
+                        icon={<UserCircleIcon className="text-white sm:mr-2 w-6 h-6 items" />}
                         signout={signout}
                         elements={[
                             {

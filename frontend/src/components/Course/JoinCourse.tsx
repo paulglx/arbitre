@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { useJoinCourseWithCodeMutation } from '../../features/courses/courseApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
-import { ChevronLeft } from 'heroicons-react';
+import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 
 const JoinCourse = (props: any) => {
 
@@ -96,7 +96,7 @@ const JoinCourse = (props: any) => {
           <br />
           <br />
           <a href="/course" className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center m-4 md:m-6">
-                <ChevronLeft className="h-5 w-5" /> 
+                <ChevronLeftIcon className="h-5 w-5" /> 
                 Back to courses
             </a>
     

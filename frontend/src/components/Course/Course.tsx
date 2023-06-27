@@ -8,7 +8,9 @@ import TeacherList from "./Teachers/TeacherList";
 import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useGetSessionsOfCourseQuery } from "../../features/courses/sessionApiSlice";
-import { Exclamation, Trash } from "heroicons-react";
+import { ExclamationTriangleIcon , TrashIcon } from '@heroicons/react/24/solid'
+
+
 import { Modal, Select, Header, Tabs } from "../Common";
 import DescriptionContent from "./CourseComponents/DescriptionContent";
 import SessionContent from "./CourseComponents/SessionContent";
@@ -196,7 +198,7 @@ const Course = () => {
                 </div>
                 <div className="ml-2">
                     <button onClick={handleOpenModal} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">
-                        <Trash className="w-6 h-6" />
+                        <TrashIcon className="w-6 h-6" />
                     </button>
                 </div>
             </div>
@@ -287,7 +289,7 @@ const Course = () => {
             {IsOpen &&
                 <Modal
                     title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
-                    icon={<Exclamation className="text-yellow-500 w-12 h-12 mb-2" />}
+                    icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
                     decription={<p className="mb-4">This will remove permanently this course, all its sessions and all the session's exercises.</p>}
                     handleCloseModal={handleCloseModal}
                     delete={handleDelete}

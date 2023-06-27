@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
 import { selectCurrentUser, selectIsTeacher } from "../../../features/auth/authSlice";
 import { useGetCourseQuery } from "../../../features/courses/courseApiSlice";
-import { Plus, LockOpen ,Clock } from 'heroicons-react';
+import { PlusIcon, LockOpenIcon ,ClockIcon } from '@heroicons/react/24/solid'
 
 const SessionContent = (props: any) => {
     const username = useSelector(selectCurrentUser);
@@ -33,7 +33,7 @@ const SessionContent = (props: any) => {
             className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
             href={"/session/create?course_id=" + props.id}
           >
-                <Plus className="w-5 h-5" />
+                <PlusIcon className="w-5 h-5" />
                 Create Session
           </a>
           
@@ -47,7 +47,7 @@ const SessionContent = (props: any) => {
             className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
             href={"/session/create?course_id=" + props.id}
             >
-                <Plus className="w-6 h-6 mr-2" />
+                <PlusIcon className="w-6 h-6 mr-2" />
                 <span>Create session</span>
             </a> 
         ) : (<></>)
@@ -82,11 +82,11 @@ const SessionContent = (props: any) => {
                 >
                     <span className="text-gray-700 text-xl font-medium mb-2">{session.title}</span>
                         <div className="flex items-center">
-                            <Clock className="w-6 h-6 mr-1 text-gray-500" />
+                            <ClockIcon className="w-6 h-6 mr-1 text-gray-500" />
                             <span className="text-gray-500 text-sm">{session.duration}</span>
                                 {session.openingTime && (
                             <div className="flex items-center ml-2">
-                            <LockOpen className="w-5 h-5 mr-1 text-gray-500" />
+                            <LockOpenIcon className="w-5 h-5 mr-1 text-gray-500" />
                                 <span className="text-gray-500 text-sm">{session.openingTime}</span>
                             </div>
                             )}

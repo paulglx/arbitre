@@ -3,8 +3,7 @@ import Error from '../Util/Error';
 import Header from '../Common/Header'
 import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
 import { useSelector } from "react-redux";
-import { PlusCircle } from 'heroicons-react';
-import { ArrowRight } from 'heroicons-react';
+import { PlusCircleIcon , ArrowRightIcon } from '@heroicons/react/24/solid'
 
 
 const Courses = () => {
@@ -29,7 +28,7 @@ const Courses = () => {
                 id="create-course"
               >
                 <span className="inline-flex items-center">
-                <PlusCircle className="mr-1" />
+                <PlusCircleIcon className="mr-1 w-6 h-6" />
                   New course
                 </span>
               </a>
@@ -56,7 +55,7 @@ const Courses = () => {
                         href="/course/join"
                         className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center"
                         >
-                            <ArrowRight className="mr-2 h-5 w-5"/>
+                            <ArrowRightIcon className="mr-2 h-5 w-5"/>
                             Join a course
                         </a>
                     </div>
