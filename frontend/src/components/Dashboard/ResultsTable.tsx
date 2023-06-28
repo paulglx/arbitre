@@ -22,18 +22,18 @@ const ResultsTable = (props: any) => {
             <div
                 id="detailsModal"
                 aria-hidden={!showModal}
-                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full bg-white bg-opacity-50"
+                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50"
             >
                 <div className="relative w-full max-w-4xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow border">
 
-                        <div className="flex items-start justify-between p-4 border-b rounded-t">
+                        <div className="flex items-start justify-between px-4 py-3 border-b rounded-t bg-gray-50">
                             <h3 className="text-xl font-semibold text-gray-900">
                                 {exercise.exercise_title} - {student.username}
                             </h3>
                             <button
                                 type="button"
-                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 mt-1 rounded-lg text-sm ml-auto inline-flex items-center"
                                 onClick={() => {
                                     console.log("close modal")
                                     setShowModal(false)

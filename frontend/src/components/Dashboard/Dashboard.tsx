@@ -1,4 +1,3 @@
-import { Button, ListGroup } from 'react-bootstrap'
 import { ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid"
 import { useEffect, useState } from 'react'
 
@@ -66,7 +65,7 @@ const Dashboard = () => {
     const sessionDropdown = () => {
         return (<>
             <button
-                className='text-2xl font-bold px-4 py-2 border-4 border-gray-300 bg-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500'
+                className='text-2xl font-bold px-4 py-2 border-2 border-gray-300 bg-gray-100 rounded-md'
                 id="sessions-dropdown-search-button"
                 key={currentSession}
                 type="button"
@@ -164,13 +163,9 @@ const Dashboard = () => {
             <br />
 
             <div className="container mx-auto">
-                <ListGroup>
-                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
-                        <span className='fw-bold'>No courses</span> <br />
-                        You don't have a course to display the results of yet.<br />
-                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
-                    </ListGroup.Item>
-                </ListGroup>
+                <span className='font-bold'>No courses</span> <br />
+                You don't have a course to display the results of yet.<br />
+                <a className='mt-2 text-blue-700' href="/course">← Back to courses</a>
             </div>
         </>
     }
@@ -184,13 +179,9 @@ const Dashboard = () => {
             <br />
 
             <div className="container mx-auto">
-                <ListGroup>
-                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
-                        <span className='fw-bold'>No sessions</span> <br />
-                        You don't have a session to display the results of yet.<br />
-                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
-                    </ListGroup.Item>
-                </ListGroup>
+                <span className='font-bold'>No sessions</span> <br />
+                You don't have a session to display the results of yet.<br />
+                <a className='mt-2 text-blue-700' href="/course">← Back to courses</a>
             </div>
         </>
     }
