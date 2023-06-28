@@ -11,9 +11,9 @@ const SessionDropdown = (props: any) => {
         setCurrentSession,
     } = props
 
+    const [currentSessionTitle, setCurrentSessionTitle] = useState('')
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [sessionSearch, setSessionSearch] = useState('')
-    const [currentSessionTitle, setCurrentSessionTitle] = useState('')
     const [sessionSearchResults, setSessionSearchResults] = useState<any>([])
     const dropdownButtonRef = React.createRef<HTMLButtonElement>()
     const dropdownMenuRef = React.createRef<HTMLDivElement>()
@@ -60,51 +60,51 @@ const SessionDropdown = (props: any) => {
 
     return (<>
         <button
-            className='text-2xl font-bold px-4 py-2 border-2 border-gray-300 bg-gray-100 rounded-md'
             id="sessions-dropdown-search-button"
-            key={currentSession}
-            type="button"
-            aria-haspopup="true"
             aria-expanded="true"
+            aria-haspopup="true"
+            className='text-3xl font-bold px-4 py-2 border-2 border-gray-300 bg-gray-100 rounded-md'
+            key={currentSession}
             onClick={toggleDropdown}
             ref={dropdownButtonRef}
+            type="button"
         >
             {currentSessionTitle ? currentSessionTitle : "Select a session"}
             {dropdownOpen ?
-                <ChevronUpIcon className="inline-block h-6 w-6 ml-1 mb-1" />
+                <ChevronUpIcon id="chevron-up-icon" className="inline-block h-8 w-8 ml-2" />
                 :
-                <ChevronDownIcon className="inline-block h-6 w-6 ml-1 mb-1" />
+                <ChevronDownIcon id="chevron-down-icon" className="inline-block h-8 w-8 ml-2" />
             }
         </button>
 
 
         <div
             id="sessions-dropdown-menu"
-            className={"fixed z-10 w-96 mt-2 bg-white border-4 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
             aria-labelledby="sessions-dropdown-search-button"
+            className={"fixed z-10 w-96 mt-2 bg-white border-4 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
             ref={dropdownMenuRef}
         >
-            <div className="p-3">
+            <div id="dropdown" className="p-3">
                 <label htmlFor="input-group-search" className="sr-only">
                     Search
                 </label>
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />
+                <div id="dropdown-content" className="relative">
+                    <div id="search-icon-wrapper" className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <MagnifyingGlassIcon id="search-icon" className="w-5 h-5 text-gray-400" />
                     </div>
                     <input
-                        autoFocus
                         id="input-group-search"
+                        autoFocus
                         className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        onChange={(e) => setSessionSearch(e.target.value)}
                         placeholder="Search session"
                         type="search"
-                        onChange={(e) => setSessionSearch(e.target.value)}
                         value={sessionSearch}
                     />
                 </div>
             </div>
 
-            <ul className='h-48 px-3 overflow-y-auto text-sm text-gray-700'>
+            <ul id="results-list" className='h-48 px-3 overflow-y-auto text-sm text-gray-700'>
                 {
                     sessionSearchResults?.map((course: any) => (
                         <div key={course.course.id}>

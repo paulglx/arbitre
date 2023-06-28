@@ -61,7 +61,7 @@ const ResultsTable = (props: any) => {
                     <th key={-1} className="w-24">Student</th>
                     {results[0]?.exercises?.map(
                         (exercise: any, i: number) => (
-                            <th scope="col" className="truncate py-3 px-2 w-32" key={i}>
+                            <th scope="col" className="truncate py-3 px-2 w-32 border-l border-gray-200" key={i}>
                                 {exercise.exercise_title}
                             </th>
                         )
@@ -79,11 +79,11 @@ const ResultsTable = (props: any) => {
                 {results.map((student: any, i: number) => (
                     <tr
                         key={i}
-                        className="border-t hover:bg-gray-100"
+                        className="border-t hover:bg-gray-50"
                     >
                         <td
                             key={-1}
-                            className="px-2 py-4 font-semibold bg-gray-50"
+                            className="px-2 py-4 bg-gray-50 border-r border-gray-200"
                         >
                             {student.username}
                         </td>
@@ -137,8 +137,8 @@ const ResultsTable = (props: any) => {
             </table>
         </div>
     </>) : (
-        <p className="p-3 border rounded">
-            Unable to fetch results. Please try again later.
+        <p className="px-4 py-2 mt-2 border rounded-md text-red-500 bg-red-50 border-red-200">
+            Unable to fetch results.
         </p>
     );
 };
