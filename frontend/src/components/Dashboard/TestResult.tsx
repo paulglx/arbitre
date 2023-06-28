@@ -1,5 +1,5 @@
 import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { DocumentSearch, Terminal } from 'heroicons-react';
+import { CommandLineIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../features/submission/submissionApiSlice'
 
@@ -50,7 +50,7 @@ const TestResult = (props: any) => {
             </>
         } else {
             return <span className="font-monospace">
-                <Terminal className="inline w-5 h-5 text-gray-600" />
+                <CommandLineIcon className="inline w-5 h-5 text-gray-600" />
                 &nbsp;
                 <code>
                     {result.stdout}
@@ -100,13 +100,13 @@ const TestResult = (props: any) => {
         <ul
             className='m-4 text-gray-900 bg-white border-gray-200 rounded-lg'
         >
-            <li className={`w-full flex justify-between px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg`}>
+            <li className={`w-full flex justify-between items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg`}>
                 <span>
                     <span className='font-bold'>
                         {submissionData[0]?.file?.split("/").pop()}
                     </span>
                     &nbsp;
-                    <DocumentSearch
+                    <DocumentMagnifyingGlassIcon
                         className='inline w-5 h-5'
                         role="button"
                         onClick={() => { setShowCodePreview(true) }}
@@ -121,7 +121,7 @@ const TestResult = (props: any) => {
             {testResults.map((result: any, i: number) => (
                 <li className={`px-4 py-2 my-2 border border-white bg-gray-50 hover:border-gray-200 rounded-lg`} key={i}>
                     <div className=''>
-                        <div className="font-bold flex justify-between">
+                        <div className="font-bold flex justify-between items-center">
                             {result.exercise_test.name}
                             <StatusBadge status={result.status} />
                         </div>

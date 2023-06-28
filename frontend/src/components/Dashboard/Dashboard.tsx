@@ -1,5 +1,5 @@
 import { Button, ListGroup } from 'react-bootstrap'
-import { ChevronDown, Search } from "heroicons-react"
+import { ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid"
 import { useEffect, useState } from 'react'
 
 import Header from '../Common/Header'
@@ -65,9 +65,8 @@ const Dashboard = () => {
 
     const sessionDropdown = () => {
         return (<>
-            <script src="../../../node_modules/flowbite/dist/flowbite.min.js"></script>
             <button
-                className='text-2xl font-bold px-4 py-2 border-4 border-gray-300 bg-gray-100 rounded-md'
+                className='text-2xl font-bold px-4 py-2 border-4 border-gray-300 bg-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500'
                 id="sessions-dropdown-search-button"
                 key={currentSession}
                 type="button"
@@ -77,13 +76,17 @@ const Dashboard = () => {
                 ref={dropdownButtonRef}
             >
                 {currentSessionTitle ? currentSessionTitle : "Select a session"}
-                <ChevronDown className="inline-block ml-2" />
+                {dropdownOpen ?
+                    <ChevronUpIcon className="inline-block h-6 w-6 ml-1 mb-1" />
+                    :
+                    <ChevronDownIcon className="inline-block h-6 w-6 ml-1 mb-1" />
+                }
             </button>
 
 
             <div
                 id="sessions-dropdown-menu"
-                className={"z-10 w-96 mt-2 bg-white border-4 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
+                className={"fixed z-10 w-96 mt-2 bg-white border-4 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
                 aria-labelledby="sessions-dropdown-search-button"
                 ref={dropdownMenuRef}
             >
@@ -93,13 +96,13 @@ const Dashboard = () => {
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <Search className="w-5 h-5 text-gray-400" />
+                            <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />
                         </div>
                         <input
                             autoFocus
                             id="input-group-search"
                             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            placeholder="Type to filter"
+                            placeholder="Search session"
                             type="search"
                             onChange={(e) => setSessionSearch(e.target.value)}
                             value={sessionSearch}

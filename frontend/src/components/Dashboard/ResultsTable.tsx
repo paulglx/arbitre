@@ -1,6 +1,6 @@
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "./TestResult";
-import { X } from "heroicons-react"
+import { XMarkIcon } from "@heroicons/react/24/solid"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useState } from "react";
 
@@ -22,7 +22,7 @@ const ResultsTable = (props: any) => {
             <div
                 id="detailsModal"
                 aria-hidden={!showModal}
-                className="fixed grid h-screen place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white bg-opacity-50"
+                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full bg-white bg-opacity-50"
             >
                 <div className="relative w-full max-w-4xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow border">
@@ -40,7 +40,7 @@ const ResultsTable = (props: any) => {
                                 }}
 
                             >
-                                <X className="w-6 h-6" />
+                                <XMarkIcon className="w-6 h-6" />
                                 <span className="sr-only">Close modal</span>
                             </button>
                         </div>
