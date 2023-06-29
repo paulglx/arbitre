@@ -1,3 +1,4 @@
+import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
@@ -13,6 +14,7 @@ const DashboardResultsTable = (props: any) => {
     const {
         data: results,
         isSuccess: isResultsSuccess,
+        isLoading: isResultsLoading,
     } = useGetResultsOfSessionQuery({ session_id });
 
     const modal = (exercise: any, student: any) => {
@@ -133,11 +135,18 @@ const DashboardResultsTable = (props: any) => {
                 {tableBodyContent(results)}
             </table>
         </div>
-    </>) : (
-        <p className="px-4 py-2 mt-2 border rounded-md text-red-500 bg-red-50 border-red-200">
-            Unable to fetch results.
-        </p>
-    );
+    </>) : isResultsLoading ? (<>
+
+        <br />
+
+        <DashboardResultsTableLoading />
+
+    </>)
+        : (
+            <p className="px-4 py-2 mt-2 border rounded-md text-red-500 bg-red-50 border-red-200">
+                Unable to fetch results.
+            </p>
+        );
 };
 
 export default DashboardResultsTable;
