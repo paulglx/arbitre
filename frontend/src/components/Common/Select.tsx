@@ -31,7 +31,7 @@ const Select = (props: any) => {
 
       {isOpen && (
         <ul
-          aria-label="Language Options"
+          aria-label="options"
           className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           tabIndex={-1}
           role="listbox"
@@ -66,7 +66,10 @@ export default Select;
 
 const Select = (props: any) => {
     return (
-        <select className="bg-gray-200 border border-gray-200 text-gray-500 h-10 text-sm rounded-lg block w-full p-2.5">
+        <select
+          className="bg-gray-200 border border-gray-200 text-gray-500 h-10 text-sm rounded-lg block w-full p-2.5"
+          aria-label="options"
+        >
           {props.options.map((option: any, index: any) => (
             <option key={index} value={option.code}>
               {option.name}

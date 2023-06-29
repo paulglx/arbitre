@@ -123,6 +123,7 @@ const StudentsList = (props: any) => {
               <button
                 className="flex items-center px-3 text-gray-600 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 w-12 h-12"
                 onClick={handleAddStudent}
+                aria-label="Add student"
               >
                 <UserPlusIcon className="w-5 h-5" />
               </button>
