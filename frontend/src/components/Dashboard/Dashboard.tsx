@@ -1,5 +1,6 @@
 import { Button, ListGroup } from 'react-bootstrap'
-import { ChevronDown, Search } from "heroicons-react"
+import { ChevronDownIcon , XCircleIcon } from '@heroicons/react/24/solid'
+
 import { useEffect, useState } from 'react'
 
 import Header from '../Common/Header'
@@ -77,7 +78,7 @@ const Dashboard = () => {
                 ref={dropdownButtonRef}
             >
                 {currentSessionTitle ? currentSessionTitle : "Select a session"}
-                <ChevronDown className="inline-block ml-2" />
+                <ChevronDownIcon className="inline-block ml-2" />
             </button>
 
 
@@ -93,7 +94,7 @@ const Dashboard = () => {
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <Search className="w-5 h-5 text-gray-400" />
+                            <XCircleIcon className="w-5 h-5 text-gray-400" />
                         </div>
                         <input
                             autoFocus

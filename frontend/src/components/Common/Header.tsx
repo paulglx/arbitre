@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
 import { useSelector } from 'react-redux'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
+import {Link} from "react-router-dom";
 
 import Dropdown from './Dropdown';
 
@@ -35,12 +36,12 @@ const Header = () => {
                     <span className="ml-3 text-xl hidden md:block">ARBITRE</span>
                 </a>
                 <nav className="mr-auto ml-0 md:ml-4 py-1 pl-4 md:border-l md:border-gray-400 flex flex-wrap items-center text-base justify-center">
-                    <a href="/course" className="mr-5 hover:text-gray-900">
+                    <Link to="/course" className="mr-5 hover:text-gray-900">
                         Courses
-                    </a>
-                    <a href="/dashboard" className="mr-5 hover:text-gray-900">
+                    </Link>
+                    <Link to="/dashboard" className="mr-5 hover:text-gray-900">
                         Dashboard
-                    </a>
+                    </Link>
                 </nav>
                 <div className="dropdown flex flex-wrap items-center text-base justify-center relative">
                     {isTeacher && (

@@ -10,6 +10,8 @@ import { useJoinCourseWithCodeMutation } from '../../features/courses/courseApiS
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import {Link} from "react-router-dom";
+
 
 const JoinCourse = (props: any) => {
 
@@ -95,46 +97,49 @@ const JoinCourse = (props: any) => {
     
           <br />
           <br />
-          <a href="/course" className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center m-4 md:m-6">
+
+          <div className="container mx-auto">
+            <Link to="/course" className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center my-4 md:my-6">
                 <ChevronLeftIcon className="h-5 w-5" /> 
-                Back to courses
-            </a>
-    
-          <div className="bg-gray-200 rounded-3xl shadow-lg shadow-gray-400/50 p-4 md:p-6 md:h-auto h-5/6 w-full  flex flex-col items-center justify-center">
-    
-            <h1 className="text-4xl font-bold mb-4 text-gray-700 hidden md:block">Join a course</h1>
-            <hr />
-            {err === '' ? (
-              <p className="text-gray-600 hidden md:block m-2">Enter the 8 character course code to join a course.</p>
-            ) : (
-              <p className="text-red-500">{err}</p>
-            )}
-    
-            <form className="jc-input-group m-2 md:n-4 bg-slate-50 rounded-3xl shadow-lg shadow-gray-400/50  p-4 md:p-6 w-5/6 overflow-x-auto flex md:justify-center">
-              {Array(8)
-                .fill(0)
-                .map((_, i) => (
-                  <input
-                    type="text"
-                    placeholder="X"
-                    key={i}
-                    autoFocus={i === 0}
-                    className={"w-2 h-4 p-0" + (err === '' ? '' : 'jc-input-error')}
-                    {...digits[i]}
-                    onChange={(e) => handleCodeInput(e.target.value)}
-                  />
-                ))}
-            </form>
-    
-            <br />
-    
-            <button
-              className="block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded pl-6 pr-6 p-4 hover:bg-gray-100 transition duration-300 rounded-lg justify-center flex items-center"
-              disabled={codeInput.replace(' ', '').length < 8}
-              onClick={handleSubmit}
-            >
-              Join
-            </button>
+                    Back to courses
+            </Link>
+        
+            <div className="bg-gray-200 rounded-xl md:rounded-3xl shadow-lg shadow-gray-400/50 p-4 md:p-6 md:h-auto h-5/6 w-full  flex flex-col items-center justify-center">
+        
+                <h1 className="text-4xl font-bold mb-4 text-gray-700 hidden md:block">Join a course</h1>
+                <hr />
+                {err === '' ? (
+                <p className="text-gray-600 hidden md:block m-2">Enter the 8 character course code to join a course.</p>
+                ) : (
+                <p className="text-red-500">{err}</p>
+                )}
+        
+                <form className="jc-input-group m-2 md:n-4 bg-slate-50 rounded-xl md:rounded-3xl shadow-lg shadow-gray-400/50  p-4 md:p-6 w-5/6 overflow-x-auto flex md:justify-center">
+                {Array(8)
+                    .fill(0)
+                    .map((_, i) => (
+                        <input
+                        type="text"
+                        placeholder="X"
+                        key={i}
+                        autoFocus={i === 0}
+                        className="w-1 h-2 md:w-2 md:h-4 p-0 text-gray-500 placeholder-gray-400 border border-gray-400"
+                        {...digits[i]}
+                        onChange={(e) => handleCodeInput(e.target.value)}
+                    />
+                    ))}
+                </form>
+        
+                <br />
+        
+                <button
+                className="block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded pl-6 pr-6 p-4 hover:bg-gray-100 transition duration-300 rounded-lg justify-center flex items-center"
+                disabled={codeInput.replace(' ', '').length < 8}
+                onClick={handleSubmit}
+                >
+                Join
+                </button>
+            </div>
         </div>
         </>
     )

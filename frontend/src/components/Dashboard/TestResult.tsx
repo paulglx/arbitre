@@ -1,5 +1,5 @@
 import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { DocumentSearch, Terminal } from 'heroicons-react';
+import { XCircleIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from 'react';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../features/submission/submissionApiSlice'
 
@@ -50,7 +50,7 @@ const TestResult = (props: any) => {
             </>
         } else {
             return <span className="font-monospace">
-                <Terminal className="inline w-5 h-5 text-gray-600" />
+                <XCircleIcon className="inline w-5 h-5 text-gray-600" />
                 &nbsp;
                 <code>
                     {result.stdout}
@@ -106,7 +106,7 @@ const TestResult = (props: any) => {
                         {submissionData[0]?.file?.split("/").pop()}
                     </span>
                     &nbsp;
-                    <DocumentSearch
+                    <XCircleIcon
                         className='inline w-5 h-5'
                         role="button"
                         onClick={() => { setShowCodePreview(true) }}

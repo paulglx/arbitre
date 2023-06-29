@@ -1,6 +1,6 @@
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "./TestResult";
-import { X } from "heroicons-react"
+import { XCircleIcon } from "@heroicons/react/24/solid"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useState } from "react";
 
@@ -40,7 +40,7 @@ const ResultsTable = (props: any) => {
                                 }}
 
                             >
-                                <X className="w-6 h-6" />
+                                <XCircleIcon className="w-6 h-6" />
                                 <span className="sr-only">Close modal</span>
                             </button>
                         </div>
