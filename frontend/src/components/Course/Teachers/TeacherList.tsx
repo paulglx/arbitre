@@ -1,6 +1,7 @@
+import { MinusIcon, PlusIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../features/courses/courseApiSlice"
 import { useEffect, useState } from "react";
-import { TrashIcon, XCircleIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/solid';
+
 import { selectCurrentUser } from '../../../features/auth/authSlice';
 import { useGetTeachersQuery } from '../../../features/users/usersApiSlice';
 import { useSelector } from 'react-redux';
@@ -108,80 +109,80 @@ const TeacherList = (props: any) => {
                     <h2 className="text-xl font-bold">Owners</h2>
                     <p className="text-gray-500 mt-2">Owners manage the sessions and exercises for this course. They also manage students and view their results.</p>
                     <ul className="mt-4">
-                    {owners.map((owner: any) => (
-                    <li key={owner.id} className="flex items-center justify-between">
-                        <span className="mr-2">{owner.username}</span>
-                        {isOwner ? (
-                            owner.username !== current_username ? (
-                            <TrashIcon className="text-secondary cursor-pointer w-6 h-6" onClick={() => handleDeleteOwner(owner.id)} />
-                            ) : (
-                            <XCircleIcon className="text-gray-500 cursor-not-allowed w-6 h-6" data-toggle="tooltip" title="You cannot remove yourself." />
-                            )
-        ) : null}
-                    </li>
-                    ))}
-                    {isOwner && (
-                        <li className="flex items-center justify-between mt-4 w-full">
-                            <form onSubmit={handleAddOwner} className="flex items-center w-full">
-                            <input
-                                type="text"
-                                placeholder="Add owner"
-                                list="teacherOptions"
-                                value={ownerToAdd}
-                                onChange={(e: any) => setOwnerToAdd(e.target.value)}
-                                className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
-                            />
-                            <datalist id="teacherOptions">
-                                {addableUsers && addableUsers.map((user: any) => (
-                                <option key={user.id} value={user.username} />
-                                ))}
-                            </datalist>
-                                <PlusIcon role="button" className={`${ownerToAdd !== "" ? "text-primary" : "text-gray-500"} w-6 h-6`} onClick={handleAddOwner} type="submit" />
-                            </form>
-                        </li>
-                    )}
+                        {owners.map((owner: any) => (
+                            <li key={owner.id} className="flex items-center justify-between">
+                                <span className="mr-2">{owner.username}</span>
+                                {isOwner ? (
+                                    owner.username !== current_username ? (
+                                        <TrashIcon className="text-secondary cursor-pointer w-6 h-6" onClick={() => handleDeleteOwner(owner.id)} />
+                                    ) : (
+                                        <XCircleIcon className="text-gray-500 cursor-not-allowed w-6 h-6" data-toggle="tooltip" title="You cannot remove yourself." />
+                                    )
+                                ) : null}
+                            </li>
+                        ))}
+                        {isOwner && (
+                            <li className="flex items-center justify-between mt-4 w-full">
+                                <form onSubmit={handleAddOwner} className="flex items-center w-full">
+                                    <input
+                                        type="text"
+                                        placeholder="Add owner"
+                                        list="teacherOptions"
+                                        value={ownerToAdd}
+                                        onChange={(e: any) => setOwnerToAdd(e.target.value)}
+                                        className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
+                                    />
+                                    <datalist id="teacherOptions">
+                                        {addableUsers && addableUsers.map((user: any) => (
+                                            <option key={user.id} value={user.username} />
+                                        ))}
+                                    </datalist>
+                                    <PlusIcon role="button" className={`${ownerToAdd !== "" ? "text-primary" : "text-gray-500"} w-6 h-6`} onClick={handleAddOwner} type="submit" />
+                                </form>
+                            </li>
+                        )}
                     </ul>
                 </div>
-            <br />
+                <br />
             </div>
             <div className="w-full md:w-full ">
-            <div className="bg-light p-3 border rounded-3xl bg-gray-200 p-2 md:p-6">
-                <h2 className="text-xl font-bold">Tutors</h2>
-                <p className="text-gray-500 mt-2">Tutors can manage students and see their results.</p>
-                <ul className="mt-4">
-                    {tutors.map((tutor: any) => (
-                    <li key={tutor.id} className="flex items-center justify-between">
-                        <span className="mr-2">{tutor.username}</span>
-                        {isOwner ? (
-                            <MinusIcon className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)} />
-                        ) : null}
-                    </li>
-                    ))}
-                    {isOwner && (
-                        <li className="flex items-center justify-between mt-4">
-                            <form onSubmit={handleAddTutor} className="flex items-center w-full">
-                                <input
-                                    type="text"
-                                    placeholder="Add tutor"
-                                    list="teacherOptions"
-                                    value={tutorToAdd}
-                                    onChange={(e: any) => setTutorToAdd(e.target.value)}
-                                    className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
-                                />
-                                <datalist id="teacherOptions">
-                                    {addableUsers && addableUsers.map((user: any) => (
-                                        <option key={user.id} value={user.username} />
-                                    ))}
-                                </datalist>
-                                <PlusIcon role="button" className={`${tutorToAdd !== "" ? "text-primary" : "text-gray-500"} h-6 w-6`} onClick={handleAddTutor} type="submit" />
-                            </form>
-                        </li>
-                    )}
-                </ul>
-            </div>  
+                <div className="bg-light p-3 border rounded-3xl bg-gray-200 p-2 md:p-6">
+                    <h2 className="text-xl font-bold">Tutors</h2>
+                    <p className="text-gray-500 mt-2">Tutors can manage students and see their results.</p>
+                    <ul className="mt-4">
+                        {tutors.map((tutor: any) => (
+                            <li key={tutor.id} className="flex items-center justify-between">
+                                <span className="mr-2">{tutor.username}</span>
+                                {isOwner ? (
+                                    <MinusIcon className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)} />
+                                ) : null}
+                            </li>
+                        ))}
+                        {isOwner && (
+                            <li className="flex items-center justify-between mt-4">
+                                <form onSubmit={handleAddTutor} className="flex items-center w-full">
+                                    <input
+                                        type="text"
+                                        placeholder="Add tutor"
+                                        list="teacherOptions"
+                                        value={tutorToAdd}
+                                        onChange={(e: any) => setTutorToAdd(e.target.value)}
+                                        className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
+                                    />
+                                    <datalist id="teacherOptions">
+                                        {addableUsers && addableUsers.map((user: any) => (
+                                            <option key={user.id} value={user.username} />
+                                        ))}
+                                    </datalist>
+                                    <PlusIcon role="button" className={`${tutorToAdd !== "" ? "text-primary" : "text-gray-500"} h-6 w-6`} onClick={handleAddTutor} type="submit" />
+                                </form>
+                            </li>
+                        )}
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-    ) : null;      
+    ) : null;
 }
 
 export default TeacherList

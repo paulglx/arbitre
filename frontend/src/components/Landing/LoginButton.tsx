@@ -1,6 +1,7 @@
 import '../../login-register.css'
 
 import { useLocation, useNavigate } from 'react-router-dom'
+
 import { setCredentials } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
@@ -45,13 +46,13 @@ const LoginButton = () => {
     }
     return (
         <>
-          <a
-            href={keycloak.createLoginUrl()}
-            className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Login via SSO
-          </a>
+            <a
+                href={keycloak.createLoginUrl()}
+                className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+                Login via SSO
+            </a>
         </>
-      );
+    );
 }
 export default LoginButton

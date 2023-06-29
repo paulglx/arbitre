@@ -1,9 +1,10 @@
-import { useSelector } from "react-redux";
-import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
+import { ClockIcon, LockOpenIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { selectCurrentUser, selectIsTeacher } from "../../../features/auth/authSlice";
+
+import { Link } from "react-router-dom";
 import { useGetCourseQuery } from "../../../features/courses/courseApiSlice";
-import { PlusIcon, LockOpenIcon ,ClockIcon } from '@heroicons/react/24/solid'
-import {Link} from "react-router-dom";
+import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
+import { useSelector } from "react-redux";
 
 const SessionContent = (props: any) => {
     const username = useSelector(selectCurrentUser);
@@ -17,7 +18,7 @@ const SessionContent = (props: any) => {
         isSuccess: courseIsSuccess,
         isError: courseIsError,
     } = useGetCourseQuery({ course_id: props.id });
-    
+
     const {
         data: sessions,
         isLoading: sessionsIsLoading,
@@ -30,27 +31,27 @@ const SessionContent = (props: any) => {
     const sessionListOwnerContent = () => {
         return isOwner ? (
             <Link
-            id="create-session"
-            className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
-            to={"/session/create?course_id=" + props.id}
+                id="create-session"
+                className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
+                to={"/session/create?course_id=" + props.id}
             >
                 <PlusIcon className="w-5 h-5" />
                 Create Session
             </Link>
-          
+
         ) : (<></>)
     }
     //Create session button, on "no sessions" block (teacher only)
     const sessionListOwnerContentNoSessions = () => {
         return isOwner ? (
             <Link
-            id="create-session-no-sessions"
-            className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
-            to={"/session/create?course_id=" + props.id}
+                id="create-session-no-sessions"
+                className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
+                to={"/session/create?course_id=" + props.id}
             >
                 <PlusIcon className="w-6 h-6 mr-2" />
                 <span>Create session</span>
-            </Link> 
+            </Link>
         ) : (<></>)
     }
 
@@ -74,32 +75,32 @@ const SessionContent = (props: any) => {
     else if (sessionsIsSuccess) {
         return (
             <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
-                {sessions.map((session: any, i: number) => (
-                <Link
-                key={i}
-                className="border border-gray-300 rounded-md hover:shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105"
-                to={"/session/" + session.id}
-                >
-                    <span className="text-gray-700 text-xl font-medium mb-2">{session.title}</span>
-                        <div className="flex items-center">
-                            <ClockIcon className="w-6 h-6 mr-1 text-gray-500" />
-                            <span className="text-gray-500 text-sm">{session.duration}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
+                    {sessions.map((session: any, i: number) => (
+                        <Link
+                            key={i}
+                            className="border border-gray-300 rounded-md hover:shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105"
+                            to={"/session/" + session.id}
+                        >
+                            <span className="text-gray-700 text-xl font-medium mb-2">{session.title}</span>
+                            <div className="flex items-center">
+                                <ClockIcon className="w-6 h-6 mr-1 text-gray-500" />
+                                <span className="text-gray-500 text-sm">{session.duration}</span>
                                 {session.openingTime && (
-                            <div className="flex items-center ml-2">
-                            <LockOpenIcon className="w-5 h-5 mr-1 text-gray-500" />
-                                <span className="text-gray-500 text-sm">{session.openingTime}</span>
+                                    <div className="flex items-center ml-2">
+                                        <LockOpenIcon className="w-5 h-5 mr-1 text-gray-500" />
+                                        <span className="text-gray-500 text-sm">{session.openingTime}</span>
+                                    </div>
+                                )}
                             </div>
-                            )}
-                        </div>
-                </Link>
-        ))}
-            </div>
-            <div className="flex justify-center mt-1 md:mt-2">
-                {sessionListOwnerContent()}
-            </div>
+                        </Link>
+                    ))}
+                </div>
+                <div className="flex justify-center mt-1 md:mt-2">
+                    {sessionListOwnerContent()}
+                </div>
             </>
-    )
+        )
     }
 
     //Session not found or not authorized
@@ -110,7 +111,7 @@ const SessionContent = (props: any) => {
             </div>
         ) : (<></>)
     }
-    
+
     return null;
 }
 

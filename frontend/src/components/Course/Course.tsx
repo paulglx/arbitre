@@ -1,19 +1,19 @@
+import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { Header, Modal, Select, Tabs } from "../Common";
 import { selectCurrentUser, selectIsTeacher } from "../../features/auth/authSlice";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../../features/courses/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+import DescriptionContent from "./CourseComponents/DescriptionContent";
+import { Link } from "react-router-dom";
+import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./Students/Students";
 import TeacherList from "./Teachers/TeacherList";
 import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useGetSessionsOfCourseQuery } from "../../features/courses/sessionApiSlice";
-import { ExclamationTriangleIcon , TrashIcon } from '@heroicons/react/24/solid'
-import {Link} from "react-router-dom";
-
-import { Modal, Select, Header, Tabs } from "../Common";
-import DescriptionContent from "./CourseComponents/DescriptionContent";
-import SessionContent from "./CourseComponents/SessionContent";
 
 const Course = () => {
 
@@ -210,16 +210,16 @@ const Course = () => {
             eventKey: 'session',
             title: 'Session',
             component: <SessionContent
-                            course={course}
-                            id={id}
-                        />,
+                course={course}
+                id={id}
+            />,
             buttonClassName: "rounded-l-md"
         },
         {
             eventKey: 'student',
             title: 'Student',
             component: <Students course={course} />,
-            buttonClassName:""
+            buttonClassName: ""
         },
         {
             eventKey: 'teacher',
@@ -235,7 +235,7 @@ const Course = () => {
     ) : (
         <>
             <Header />
-            
+
             <br />
             <br />
 
@@ -267,18 +267,18 @@ const Course = () => {
                         {ownerActionsContent()}
                     </div>
                 </div>
-                <DescriptionContent 
-                        course={course}
-                        description={description}
-                        setDescription={setDescription}
-                        handleUpdate={handleUpdate}
+                <DescriptionContent
+                    course={course}
+                    description={description}
+                    setDescription={setDescription}
+                    handleUpdate={handleUpdate}
                 />
                 {isOwner || isTutor ? (<>
                     <Tabs
                         tabs={tabs}
                     />
                 </>) : (<>
-                    <DescriptionContent 
+                    <DescriptionContent
                         course={course}
                         description={description}
                         setDescription={setDescription}
@@ -291,7 +291,7 @@ const Course = () => {
                         id={id}
                     />
                 </>)}
-                
+
                 {IsOpen &&
                     <Modal
                         title={<h2 className="text-xl font-semibold">Are you sure?</h2>}

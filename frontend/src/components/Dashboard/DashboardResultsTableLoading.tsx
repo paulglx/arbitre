@@ -22,7 +22,7 @@ const DashboardResultsTableLoading = () => {
                 </thead>
                 <tbody>
                     <tr className="border-t">
-                        <td className="px-2 py-4 bg-gray-50 border-r border-gray-200 py-4">
+                        <td className="px-2 bg-gray-50 border-r border-gray-200 py-4">
                             <div className="h-3 bg-gray-300 rounded-full w-12"></div>
                         </td>
                         <td className="px-2 py-4">

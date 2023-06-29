@@ -8,7 +8,7 @@ const Modal = (props: any) => {
           <div className="flex flex-col items-center mb-4">
             {props.icon}
             {props.title}
-            
+
           </div>
           {props.decription}
           <div className="flex justify-center">

@@ -7,17 +7,17 @@ import { useSelector } from "react-redux";
 
 const Public = () => {
 
-    const navigate = useNavigate();
-    const user = useSelector(selectCurrentUser);
+  const navigate = useNavigate();
+  const user = useSelector(selectCurrentUser);
 
-    useEffect(() => {
-        if (user) {
-            navigate('/course');
-        }
-    }, [user, navigate]);
+  useEffect(() => {
+    if (user) {
+      navigate('/course');
+    }
+  }, [user, navigate]);
 
-    return (
-      <>
+  return (
+    <>
       <header className="text-gray-600 body-font">
         <div className="container mx-auto flex flex-wrap p-1 md:p-2 flex-row items-center m-2">
           <a className="arbitre flex title-font font-medium items-center text-gray-900 mb-0">
@@ -43,10 +43,10 @@ const Public = () => {
         </div>
       </div>
       <div className="mx-auto">
-        <img src="/resource/cropped-logo2.png" alt="logo Télécom Sud Paris" className="w-1/4 mx-auto"/>
+        <img src="/resource/cropped-logo2.png" alt="logo Télécom Sud Paris" className="w-1/4 mx-auto" />
       </div>
     </>
-    );
+  );
 }
 
 export default Public;

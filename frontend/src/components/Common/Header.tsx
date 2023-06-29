@@ -1,13 +1,13 @@
 import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlice'
-import { useState } from 'react';
+
+import Dropdown from './Dropdown';
+import { Link } from "react-router-dom";
+import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { logOut } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
 import { useSelector } from 'react-redux'
-import { UserCircleIcon } from '@heroicons/react/24/solid'
-import {Link} from "react-router-dom";
-
-import Dropdown from './Dropdown';
+import { useState } from 'react';
 
 const Header = () => {
 
@@ -27,8 +27,8 @@ const Header = () => {
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown)
     }
-    
-    return(
+
+    return (
         <header className="text-white-600 body-font border border-gray-3400 bg-gray-200">
             <div className="container mx-auto flex flex-wrap md:p-2 flex-row items-center">
                 <a className="arbitre flex title-font font-medium items-center text-gray-900 mb-0">
@@ -47,7 +47,7 @@ const Header = () => {
                     {isTeacher && (
                         <span className="text-muted hidden md:block m-2">Teacher&nbsp;</span>
                     )}
-                    <Dropdown 
+                    <Dropdown
                         title={username}
                         titleClassName="hidden sm:block"
                         icon={<UserCircleIcon className="text-white sm:mr-2 w-6 h-6 items" />}
@@ -55,7 +55,7 @@ const Header = () => {
                         elements={[
                             {
                                 name: "Sign Out",
-                                action: signout 
+                                action: signout
                             }
                         ]}
                     />

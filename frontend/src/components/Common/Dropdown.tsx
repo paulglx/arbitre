@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-
 const Dropdown = (props: any) => {
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -8,7 +7,7 @@ const Dropdown = (props: any) => {
         setShowDropdown(!showDropdown);
     };
 
-    return(
+    return (
         <div className="dropdown flex flex-wrap items-center text-base justify-center relative">
             <button
                 id="dropdown-basic"
@@ -23,7 +22,7 @@ const Dropdown = (props: any) => {
             {showDropdown && (
                 <div className="absolute inline-block border border-gray-200 z-10 top-12 right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-basic">
-                        { props.elements.map((e: any) => {
+                        {props.elements.map((e: any) => {
                             return <li>
                                 <a
                                     href="#"
