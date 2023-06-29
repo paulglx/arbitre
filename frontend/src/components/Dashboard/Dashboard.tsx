@@ -8,6 +8,7 @@ import { useState } from 'react'
 const Dashboard = () => {
 
     const [currentSession, setCurrentSession] = useState(-1)
+    const [currentSessionTitle, setCurrentSessionTitle] = useState('')
 
     const {
         data: courses,
@@ -37,7 +38,13 @@ const Dashboard = () => {
 
         } else {
             return <>
-                <DashboardSessionPicker courses={courses} currentSession={currentSession} setCurrentSession={setCurrentSession} />
+                <DashboardSessionPicker
+                    courses={courses}
+                    currentSession={currentSession}
+                    setCurrentSession={setCurrentSession}
+                    currentSessionTitle={currentSessionTitle}
+                    setCurrentSessionTitle={setCurrentSessionTitle}
+                />
                 <br />
                 {currentSession !== -1 ?
                     <DashboardResultsTable session_id={currentSession} />

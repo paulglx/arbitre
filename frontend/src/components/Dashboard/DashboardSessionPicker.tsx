@@ -9,9 +9,9 @@ const DashboardSessionPicker = (props: any) => {
         courses,
         currentSession,
         setCurrentSession,
+        currentSessionTitle,
+        setCurrentSessionTitle
     } = props
-
-    const [currentSessionTitle, setCurrentSessionTitle] = useState('')
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [sessionSearch, setSessionSearch] = useState('')
     const [sessionSearchResults, setSessionSearchResults] = useState<any>([])
@@ -24,7 +24,7 @@ const DashboardSessionPicker = (props: any) => {
 
     // Set current session at first render
     useEffect(() => {
-        if (courses) {
+        if (courses && currentSession === -1) {
             if (courses?.every((course: any) => course.sessions.length === 0)) {
                 setCurrentSession(-1)
                 setCurrentSessionTitle('')
@@ -34,7 +34,7 @@ const DashboardSessionPicker = (props: any) => {
                 setCurrentSessionTitle(firstCourseWithExercises.sessions[0].title)
             }
         }
-    }, [courses, setCurrentSession, setCurrentSessionTitle])
+    }, [courses, currentSession, setCurrentSession, setCurrentSessionTitle])
 
     useEffect(() => {
         if (courses) {
