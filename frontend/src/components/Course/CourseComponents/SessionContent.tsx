@@ -1,8 +1,7 @@
-import { ClockIcon, LockOpenIcon, PlusIcon } from '@heroicons/react/24/solid'
+import { ClockIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { selectCurrentUser, selectIsTeacher } from "../../../features/auth/authSlice";
 
 import { Link } from "react-router-dom";
-import { useGetCourseQuery } from "../../../features/courses/courseApiSlice";
 import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
 import { useSelector } from "react-redux";
 
@@ -11,13 +10,6 @@ const SessionContent = (props: any) => {
     const ownersUsernames = props.course?.owners.map((owner: any) => owner.username);
     const isTeacher = useSelector(selectIsTeacher);
     const isOwner = ownersUsernames?.includes(username);
-
-    const {
-        data: course,
-        isLoading: courseIsLoading,
-        isSuccess: courseIsSuccess,
-        isError: courseIsError,
-    } = useGetCourseQuery({ course_id: props.id });
 
     const {
         data: sessions,
@@ -85,6 +77,8 @@ const SessionContent = (props: any) => {
                             <span className="text-gray-700 text-xl font-medium mb-2">{session.title}</span>
                             <div className="flex items-center">
                                 <ClockIcon className="w-6 h-6 mr-1 text-gray-500" />
+
+                                {/*
                                 <span className="text-gray-500 text-sm">{session.duration}</span>
                                 {session.openingTime && (
                                     <div className="flex items-center ml-2">
@@ -92,6 +86,7 @@ const SessionContent = (props: any) => {
                                         <span className="text-gray-500 text-sm">{session.openingTime}</span>
                                     </div>
                                 )}
+                                */}
                             </div>
                         </Link>
                     ))}
@@ -104,7 +99,7 @@ const SessionContent = (props: any) => {
     }
 
     //Session not found or not authorized
-    if (courseIsError || sessionsIsError) {
+    if (sessionsIsError) {
         return isTeacher ? (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
                 <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><Link to="/course" className='text-decoration-none'>⬅ Back to courses</Link></h3>

@@ -1,27 +1,23 @@
-import { Button, Container, Form } from 'react-bootstrap'
-import { ChevronLeftIcon, MinusIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/solid'
+//import { MinusIcon, PlusIcon, PhotoIcon } from '@heroicons/react/24/solid'
 import React, { useEffect } from 'react'
 
+import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Link } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
-import { log } from 'console';
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 const CreateCourse = () => {
 
-    const [image, setImage] = useState(null);
-    const [title, setTitle] = useState("New course")
-    const [description, setDescription] = useState("")
-    const [groups, setGroups] = useState<string[]>([]);
-    const [numSessions, setNumSessions] = useState(0)
-
-    const [errMsg, setErrMsg] = useState("")
+    //const [groups, setGroups] = useState<string[]>([]);
+    //const [image, setImage] = useState(null);
     const [createCourse] = useCreateCourseMutation()
+    const [description, setDescription] = useState("")
+    const [errMsg, setErrMsg] = useState("")
+    const [title, setTitle] = useState("New course")
     const navigate = useNavigate()
-    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         setErrMsg("")
@@ -35,16 +31,16 @@ const CreateCourse = () => {
         setDescription(e.target.value)
     }
 
+    /*
+
     const handleGroupsInput = (e: any) => {
         setGroups(e.target.value)
     }
 
-    const handleNumSessions = (e: any) => {
-        setNumSessions(e.target.value)
-    }
     const handleAddGroup = (e: any) => {
         setGroups([...groups, ""]);
     }
+    
 
     const handleGroupChange = (index: number, value: string) => {
         const updatedGroups = [...groups];
@@ -57,15 +53,18 @@ const CreateCourse = () => {
         updatedGroups.splice(index, 1);
         setGroups(updatedGroups);
     }
+
     const handleImageChange = (e: any) => {
         const selectedImage = e.target.files[0];
         setImage(selectedImage);
     }
 
+    */
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        if (title && description && groups) {
+        if (title && description) { //&& groups 
             try {
                 const newCourse: any = await createCourse({ title, description });
                 navigate(`/course/${newCourse.data.id}`);
@@ -81,7 +80,7 @@ const CreateCourse = () => {
     return (
         <>
             <div className="container mx-auto">
-                <Link to="/course" className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center my-4 md:my-6">
+                <Link to="/course" className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center my-4 md:my-6">
                     <ChevronLeftIcon className="h-5 w-5" />
                     Back to courses
                 </Link>
@@ -96,8 +95,9 @@ const CreateCourse = () => {
                     </h1>
                     <p className="text-red-500 mb-4">{errMsg}</p>
                     <form className="w-full">
+                        {/*
                         <div className="flex flex-col mb-6">
-                            <label className="text-gray-700 m-1 md:m-2 text-gray-500 font-bold">Course Image</label>
+                            <label className="m-1 md:m-2 text-gray-500 font-bold">Course Image</label>
                             <div className="flex items-center">
                                 <input
                                     type="text"
@@ -121,8 +121,9 @@ const CreateCourse = () => {
                                 </label>
                             </div>
                         </div>
+                        */}
                         <div className="mb-6">
-                            <label className="block text-gray-700 text-gray-500 font-bold">Course title</label>
+                            <label className="block text-gray-500 font-bold">Course title</label>
                             <input
                                 type="text"
                                 placeholder="Enter title"
@@ -135,7 +136,7 @@ const CreateCourse = () => {
                             <p className="text-gray-500 text-sm">Give a short title to your course.</p>
                         </div>
                         <div className="mb-6">
-                            <label className="block text-gray-700 text-gray-500 font-bold">Course description</label>
+                            <label className="block text-gray-500 font-bold">Course description</label>
                             <textarea
                                 value={description}
                                 rows={5}
@@ -154,7 +155,7 @@ const CreateCourse = () => {
                                 <InformationCircleIcon className="w-6 h-6 m-2" />
                                 <p className="text-sm">
                                     Markdown supported!{' '}
-                                    <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" className="text-blue-500 underline">
+                                    <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noreferrer" className="text-blue-500 underline">
                                         See reference
                                     </a>
                                 </p>
@@ -204,7 +205,7 @@ const CreateCourse = () => {
                 <div className="mx-auto rounded-3xl shadow-lg shadow-gray-400/50 md:h-auto flex flex-col mt-4 md:mt-6 w-5/6">
                     <button
                         type="submit"
-                        className="block bg-gray-200 border border-gray-200 rounded-full p-2 mt-2 md:mt-6 hover:bg-gray-100 transition duration-300 rounded-full flex items-center justify-center text-gray-700 font-bold"
+                        className="bg-gray-200 border border-gray-200 p-2 mt-2 md:mt-6 hover:bg-gray-100 transition duration-300 rounded-full flex items-center justify-center text-gray-700 font-bold"
                         onClick={handleSubmit}
                     >
                         Create course

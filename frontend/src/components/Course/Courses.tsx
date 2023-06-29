@@ -25,7 +25,7 @@ const Courses = () => {
                 <li>
                     <Link
                         to="/course/create"
-                        className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+                        className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
                         id="create-course"
                     >
                         <span className="inline-flex items-center">
@@ -82,7 +82,7 @@ const Courses = () => {
                                                 {course.description.length > 20 ? (
                                                     <div>
                                                         <p className="text-gray-600 hidden md:block">{course.description.substring(0, 20)}...</p>
-                                                        <Link to={`/course/${course.id}`} className="hidden md:block text-gray-700 hover:text-gray-800 font-medium mt-2 inline-block flex justify-end">
+                                                        <Link to={`/course/${course.id}`} className="md:block text-gray-700 hover:text-gray-800 font-medium mt-2 justify-end">
                                                             Read more
                                                         </Link>
                                                     </div>) : (

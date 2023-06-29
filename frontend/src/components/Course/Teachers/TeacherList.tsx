@@ -105,7 +105,7 @@ const TeacherList = (props: any) => {
     return isOwnersSuccess && isTeachersSuccess ? (
         <div className="flex flex-wrap">
             <div className="w-full md:w-full">
-                <div className="bg-light p-3 border rounded-3xl bg-gray-200 p-2 md:p-6">
+                <div className="bg-light border rounded-3xl bg-gray-200 p-4 md:p-6">
                     <h2 className="text-xl font-bold">Owners</h2>
                     <p className="text-gray-500 mt-2">Owners manage the sessions and exercises for this course. They also manage students and view their results.</p>
                     <ul className="mt-4">
@@ -137,7 +137,13 @@ const TeacherList = (props: any) => {
                                             <option key={user.id} value={user.username} />
                                         ))}
                                     </datalist>
-                                    <PlusIcon role="button" className={`${ownerToAdd !== "" ? "text-primary" : "text-gray-500"} w-6 h-6`} onClick={handleAddOwner} type="submit" />
+                                    <PlusIcon
+                                        aria-label='Add owner'
+                                        className={`${ownerToAdd !== "" ? "text-primary" : "text-gray-500"} w-6 h-6`}
+                                        onClick={handleAddOwner}
+                                        role="button"
+                                        type="submit"
+                                    />
                                 </form>
                             </li>
                         )}
@@ -146,7 +152,7 @@ const TeacherList = (props: any) => {
                 <br />
             </div>
             <div className="w-full md:w-full ">
-                <div className="bg-light p-3 border rounded-3xl bg-gray-200 p-2 md:p-6">
+                <div className="bg-light border rounded-3xl bg-gray-200 p-2 md:p-6">
                     <h2 className="text-xl font-bold">Tutors</h2>
                     <p className="text-gray-500 mt-2">Tutors can manage students and see their results.</p>
                     <ul className="mt-4">
@@ -174,7 +180,13 @@ const TeacherList = (props: any) => {
                                             <option key={user.id} value={user.username} />
                                         ))}
                                     </datalist>
-                                    <PlusIcon role="button" className={`${tutorToAdd !== "" ? "text-primary" : "text-gray-500"} h-6 w-6`} onClick={handleAddTutor} type="submit" />
+                                    <PlusIcon
+                                        aria-label='Add tutor'
+                                        className={`${tutorToAdd !== "" ? "text-primary" : "text-gray-500"} h-6 w-6`}
+                                        onClick={handleAddTutor}
+                                        role="button"
+                                        type="submit"
+                                    />
                                 </form>
                             </li>
                         )}

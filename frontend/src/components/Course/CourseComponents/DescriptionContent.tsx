@@ -9,13 +9,12 @@ const DescriptionContent = (props: any) => {
     const isOwner = ownersUsernames?.includes(username);
 
     const [editDescription, setEditDescription] = useState(false);
-    const [expanded, setExpanded] = useState(false);
 
     if (!isOwner || !editDescription) {
         return (
 
             <blockquote
-                className={"mt-4 md:mt-6 mb-4 md:mb-6 p-4 md:p-6 bg-gray-200 border rounded-xl bg-gray-200 w-full text-justify" + (isOwner ? " teacher editable-description" : "")}
+                className={"mt-4 md:mt-6 mb-4 md:mb-6 p-4 md:p-6 border rounded-xl bg-gray-200 w-full text-justify" + (isOwner ? " teacher editable-description" : "")}
                 onFocus={() => setEditDescription(true)}
                 tabIndex={0}
             >
@@ -30,6 +29,7 @@ const DescriptionContent = (props: any) => {
                 <div className="mt-4 md:mt-6 mb-4 md:mb-6 p-2 md:p-4">
                     <textarea
                         autoFocus
+                        aria-label="Course description"
                         className="teacher description-input w-full p-4 rounded-lg border border-gray-300"
                         onBlur={() => {
                             if (props.description === "") {

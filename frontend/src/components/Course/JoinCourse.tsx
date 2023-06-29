@@ -1,4 +1,4 @@
-import '../../join-code.css'
+// import '../../join-code.css'
 
 import { useEffect, useState } from 'react'
 
@@ -113,7 +113,7 @@ const JoinCourse = (props: any) => {
                         <p className="text-red-500">{err}</p>
                     )}
 
-                    <form className="jc-input-group m-2 md:n-4 bg-slate-50 rounded-xl md:rounded-3xl shadow-lg shadow-gray-400/50  p-4 md:p-6 w-5/6 overflow-x-auto flex md:justify-center">
+                    <form className="jc-input-group m-2 md:n-4 bg-slate-50 rounded-xl md:rounded-3xl shadow-lg shadow-gray-400/50  p-4 md:p-6 w-5/6 overflow-x-auto flex justify-center">
                         {Array(8)
                             .fill(0)
                             .map((_, i) => (
@@ -122,7 +122,7 @@ const JoinCourse = (props: any) => {
                                     placeholder="X"
                                     key={i}
                                     autoFocus={i === 0}
-                                    className="w-1 h-2 md:w-2 md:h-4 p-0 text-gray-500 placeholder-gray-400 border border-gray-400"
+                                    className="w-6 mx-2 text-gray-700 placeholder-gray-300 border border-gray-300 rounded-md text-2xl text-center focus:placeholder:opacity-0 caret-transparent"
                                     {...digits[i]}
                                     onChange={(e) => handleCodeInput(e.target.value)}
                                 />
@@ -132,7 +132,7 @@ const JoinCourse = (props: any) => {
                     <br />
 
                     <button
-                        className="block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded pl-6 pr-6 p-4 hover:bg-gray-100 transition duration-300 rounded-lg justify-center flex items-center"
+                        className="bg-gray-500 text-white font-bold py-2 px-4 pl-6 pr-6 p-4 hover:bg-gray-100 transition duration-300 rounded-lg justify-center flex items-center"
                         disabled={codeInput.replace(' ', '').length < 8}
                         onClick={handleSubmit}
                     >

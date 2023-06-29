@@ -20,7 +20,7 @@ const Public = () => {
     <>
       <header className="text-gray-600 body-font">
         <div className="container mx-auto flex flex-wrap p-1 md:p-2 flex-row items-center m-2">
-          <a className="arbitre flex title-font font-medium items-center text-gray-900 mb-0">
+          <a className="arbitre flex title-font items-center text-gray-900 mb-0" href="/">
             <img src="/resource/logo.svg" alt="Logo arbitre" className="h-8 w-8 m-2 block md:hidden " />
             <span className="ml-3 text-xl hidden md:block">ARBITRE</span>
           </a>
