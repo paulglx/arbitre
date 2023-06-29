@@ -43,7 +43,7 @@ const Public = () => {
         </div>
       </div>
       <div className="mx-auto">
-        <img src="/resource/cropped-logo2.png" alt="logo Télécom Sud Paris" className="w-1/4 mx-auto opacity-60"/>
+        <img src="/resource/cropped-logo2.png" alt="logo Télécom Sud Paris" className="w-1/4 mx-auto"/>
       </div>
     </>
     );

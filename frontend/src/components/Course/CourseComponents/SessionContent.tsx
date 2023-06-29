@@ -3,6 +3,7 @@ import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionAp
 import { selectCurrentUser, selectIsTeacher } from "../../../features/auth/authSlice";
 import { useGetCourseQuery } from "../../../features/courses/courseApiSlice";
 import { PlusIcon, LockOpenIcon ,ClockIcon } from '@heroicons/react/24/solid'
+import {Link} from "react-router-dom";
 
 const SessionContent = (props: any) => {
     const username = useSelector(selectCurrentUser);
@@ -28,28 +29,28 @@ const SessionContent = (props: any) => {
     //Create session button (teacher only)
     const sessionListOwnerContent = () => {
         return isOwner ? (
-            <a
+            <Link
             id="create-session"
             className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
-            href={"/session/create?course_id=" + props.id}
-          >
+            to={"/session/create?course_id=" + props.id}
+            >
                 <PlusIcon className="w-5 h-5" />
                 Create Session
-          </a>
+            </Link>
           
         ) : (<></>)
     }
     //Create session button, on "no sessions" block (teacher only)
     const sessionListOwnerContentNoSessions = () => {
         return isOwner ? (
-            <a
+            <Link
             id="create-session-no-sessions"
             className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
-            href={"/session/create?course_id=" + props.id}
+            to={"/session/create?course_id=" + props.id}
             >
                 <PlusIcon className="w-6 h-6 mr-2" />
                 <span>Create session</span>
-            </a> 
+            </Link> 
         ) : (<></>)
     }
 
@@ -75,10 +76,10 @@ const SessionContent = (props: any) => {
             <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
                 {sessions.map((session: any, i: number) => (
-                <a
+                <Link
                 key={i}
                 className="border border-gray-300 rounded-md hover:shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105"
-                href={"/session/" + session.id}
+                to={"/session/" + session.id}
                 >
                     <span className="text-gray-700 text-xl font-medium mb-2">{session.title}</span>
                         <div className="flex items-center">
@@ -91,7 +92,7 @@ const SessionContent = (props: any) => {
                             </div>
                             )}
                         </div>
-                </a>
+                </Link>
         ))}
             </div>
             <div className="flex justify-center mt-1 md:mt-2">
@@ -105,7 +106,7 @@ const SessionContent = (props: any) => {
     if (courseIsError || sessionsIsError) {
         return isTeacher ? (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
+                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><Link to="/course" className='text-decoration-none'>⬅ Back to courses</Link></h3>
             </div>
         ) : (<></>)
     }

@@ -9,7 +9,7 @@ import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useGetSessionsOfCourseQuery } from "../../features/courses/sessionApiSlice";
 import { ExclamationTriangleIcon , TrashIcon } from '@heroicons/react/24/solid'
-
+import {Link} from "react-router-dom";
 
 import { Modal, Select, Header, Tabs } from "../Common";
 import DescriptionContent from "./CourseComponents/DescriptionContent";
@@ -235,65 +235,72 @@ const Course = () => {
     ) : (
         <>
             <Header />
-            <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
-                <ol className="flex items-center space-x-1 md:space-x-3">
-                    <li className="flex items-center">
-                        <a href="/course" className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                            Courses
-                        </a>
-                    </li>
-                    <li className="flex items-center text-gray-500" aria-current="page">
-                        <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
-                        </svg>
-                        {title}
-                    </li>
-                </ol>
-            </nav>
-
+            
+            <br />
             <br />
 
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold text-center hover:bg-gray-200">
-                    {titleContent()}
-                </h1>
-                <div className="flex gap-2">
-                    {ownerActionsContent()}
-                </div>
-            </div>
-            <DescriptionContent 
-                    course={course}
-                    description={description}
-                    setDescription={setDescription}
-                    handleUpdate={handleUpdate}
-            />
-            {isOwner || isTutor ? (<>
-                <Tabs
-                    tabs={tabs}
-                />
-            </>) : (<>
-                <DescriptionContent 
-                    course={course}
-                    description={description}
-                    setDescription={setDescription}
-                    handleUpdate={handleUpdate}
-                />
+            <div className="container mx-auto">
+                <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+                    <ol className="flex items-center space-x-1 md:space-x-3">
+                        <li className="flex items-center">
+                            <Link to="/course" className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                                Courses
+                            </Link>
+                        </li>
+                        <li className="flex items-center text-gray-500" aria-current="page">
+                            <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                            </svg>
+                            {title}
+                        </li>
+                    </ol>
+                </nav>
 
-                <h2>Sessions</h2>
-                <SessionContent
-                    course={course}
-                    id={id}
+                <br />
+                <br />
+
+                <div className="flex items-center justify-between">
+                    <h1 className="text-3xl font-bold text-center hover:bg-gray-200">
+                        {titleContent()}
+                    </h1>
+                    <div className="flex gap-2">
+                        {ownerActionsContent()}
+                    </div>
+                </div>
+                <DescriptionContent 
+                        course={course}
+                        description={description}
+                        setDescription={setDescription}
+                        handleUpdate={handleUpdate}
                 />
-            </>)}
-            
-            {IsOpen &&
-                <Modal
-                    title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
-                    icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                    decription={<p className="mb-4">This will remove permanently this course, all its sessions and all the session's exercises.</p>}
-                    handleCloseModal={handleCloseModal}
-                    delete={handleDelete}
-                />}
+                {isOwner || isTutor ? (<>
+                    <Tabs
+                        tabs={tabs}
+                    />
+                </>) : (<>
+                    <DescriptionContent 
+                        course={course}
+                        description={description}
+                        setDescription={setDescription}
+                        handleUpdate={handleUpdate}
+                    />
+
+                    <h2>Sessions</h2>
+                    <SessionContent
+                        course={course}
+                        id={id}
+                    />
+                </>)}
+                
+                {IsOpen &&
+                    <Modal
+                        title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
+                        icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
+                        decription={<p className="mb-4">This will remove permanently this course, all its sessions and all the session's exercises.</p>}
+                        handleCloseModal={handleCloseModal}
+                        delete={handleDelete}
+                    />}
+            </div>
         </>
     )
 }

@@ -1,8 +1,6 @@
-import { Col, Form, ListGroup, OverlayTrigger, Row, Tooltip } from "react-bootstrap"
-import { DashCircle, DashCircleFill, PlusCircleFill } from 'react-bootstrap-icons';
 import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../features/courses/courseApiSlice"
 import { useEffect, useState } from "react";
-
+import { TrashIcon, XCircleIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/solid';
 import { selectCurrentUser } from '../../../features/auth/authSlice';
 import { useGetTeachersQuery } from '../../../features/users/usersApiSlice';
 import { useSelector } from 'react-redux';
@@ -103,119 +101,87 @@ const TeacherList = (props: any) => {
         setTutors(tutors.filter((t: any) => t.id !== user_id))
     }
 
-    return isOwnersSuccess && isTeachersSuccess ? (<Row>
-        <Col md>
-            <div className="bg-light p-3 border rounded-4">
-                <h2 className="h3">Owners</h2>
-                <p className="text-muted">Owners manage sessions and exercises on this course.<br />They also manage students and see their results.</p>
-                <ListGroup className="rounded">
+    return isOwnersSuccess && isTeachersSuccess ? (
+        <div className="flex flex-wrap">
+            <div className="w-full md:w-full">
+                <div className="bg-light p-3 border rounded-3xl bg-gray-200 p-2 md:p-6">
+                    <h2 className="text-xl font-bold">Owners</h2>
+                    <p className="text-gray-500 mt-2">Owners manage the sessions and exercises for this course. They also manage students and view their results.</p>
+                    <ul className="mt-4">
                     {owners.map((owner: any) => (
-                        <ListGroup.Item key={owner.id} className="d-flex align-items-center justify-content-between">
-                            &nbsp;
-                            {owner.username}
-
-                            {isOwner ?
-                                (owner.username !== current_username ? (
-                                    <DashCircleFill className="text-secondary" role="button" onClick={() => handleDeleteOwner(owner.id)} />
-                                ) : (
-                                    <OverlayTrigger placement='right' overlay={
-                                        <Tooltip id="tooltip-disabled">
-                                            You cannot remove yourself.
-                                        </Tooltip>
-                                    }>
-                                        <DashCircle className='text-muted' />
-                                    </OverlayTrigger>
-                                )) : (
-                                    <></>
-                                )}
-
-                        </ListGroup.Item>
-                    ))}
-
-                    {isOwner ? (
-
-                        <ListGroup.Item className="d-flex align-items-center justify-content-between">
-
-                            <Form onSubmit={handleAddOwner}>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Add owner"
-                                    list="teacherOptions"
-                                    value={ownerToAdd}
-                                    onChange={(e: any) => setOwnerToAdd(e.target.value)}
-                                    onSubmit={handleAddOwner}
-                                />
-                                <datalist id="teacherOptions">
-                                    {addableUsers && addableUsers.map((user: any) => (
-                                        <option key={user.id} value={user.username} />
-                                    ))}
-                                </datalist>
-                            </Form>
-
-                            <PlusCircleFill role="button" className={ownerToAdd !== "" ? "text-primary" : "text-secondary"} onClick={handleAddOwner} type="submit" />
-
-                        </ListGroup.Item>
-
-                    ) : (
-                        <></>
-                    )}
-
-                </ListGroup>
-            </div>
-
-            <br />
-        </Col>
-
-        <Col lg>
-            <div className="bg-light p-3 border rounded-4">
-                <h2 className="h3">Tutors</h2>
-                <p className="text-muted">Tutors can manage students and see their results.</p>
-                <ListGroup className="rounded">
-                    {tutors.map((tutor: any) => (
-                        <ListGroup.Item key={tutor.id} className="d-flex align-items-center justify-content-between">
-                            &nbsp;
-                            {tutor.username}
-
-                            {isOwner ? (
-                                <DashCircleFill className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)} />
+                    <li key={owner.id} className="flex items-center justify-between">
+                        <span className="mr-2">{owner.username}</span>
+                        {isOwner ? (
+                            owner.username !== current_username ? (
+                            <TrashIcon className="text-secondary cursor-pointer w-6 h-6" onClick={() => handleDeleteOwner(owner.id)} />
                             ) : (
-                                <></>
-                            )}
-
-                        </ListGroup.Item>
+                            <XCircleIcon className="text-gray-500 cursor-not-allowed w-6 h-6" data-toggle="tooltip" title="You cannot remove yourself." />
+                            )
+        ) : null}
+                    </li>
                     ))}
-
-                    {isOwner ? (
-                        <ListGroup.Item className="d-flex align-items-center justify-content-between">
-
-                            <Form onSubmit={handleAddTutor}>
-                                <Form.Control
+                    {isOwner && (
+                        <li className="flex items-center justify-between mt-4 w-full">
+                            <form onSubmit={handleAddOwner} className="flex items-center w-full">
+                            <input
+                                type="text"
+                                placeholder="Add owner"
+                                list="teacherOptions"
+                                value={ownerToAdd}
+                                onChange={(e: any) => setOwnerToAdd(e.target.value)}
+                                className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
+                            />
+                            <datalist id="teacherOptions">
+                                {addableUsers && addableUsers.map((user: any) => (
+                                <option key={user.id} value={user.username} />
+                                ))}
+                            </datalist>
+                                <PlusIcon role="button" className={`${ownerToAdd !== "" ? "text-primary" : "text-gray-500"} w-6 h-6`} onClick={handleAddOwner} type="submit" />
+                            </form>
+                        </li>
+                    )}
+                    </ul>
+                </div>
+            <br />
+            </div>
+            <div className="w-full md:w-full ">
+            <div className="bg-light p-3 border rounded-3xl bg-gray-200 p-2 md:p-6">
+                <h2 className="text-xl font-bold">Tutors</h2>
+                <p className="text-gray-500 mt-2">Tutors can manage students and see their results.</p>
+                <ul className="mt-4">
+                    {tutors.map((tutor: any) => (
+                    <li key={tutor.id} className="flex items-center justify-between">
+                        <span className="mr-2">{tutor.username}</span>
+                        {isOwner ? (
+                            <MinusIcon className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)} />
+                        ) : null}
+                    </li>
+                    ))}
+                    {isOwner && (
+                        <li className="flex items-center justify-between mt-4">
+                            <form onSubmit={handleAddTutor} className="flex items-center w-full">
+                                <input
                                     type="text"
                                     placeholder="Add tutor"
                                     list="teacherOptions"
                                     value={tutorToAdd}
                                     onChange={(e: any) => setTutorToAdd(e.target.value)}
-                                    onSubmit={handleAddTutor}
+                                    className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
                                 />
                                 <datalist id="teacherOptions">
                                     {addableUsers && addableUsers.map((user: any) => (
                                         <option key={user.id} value={user.username} />
                                     ))}
                                 </datalist>
-                            </Form>
-
-                            <PlusCircleFill role="button" className={tutorToAdd !== "" ? "text-primary" : "text-secondary"} onClick={handleAddTutor} type="submit" />
-
-                        </ListGroup.Item>
-                    ) : (
-                        <></>
+                                <PlusIcon role="button" className={`${tutorToAdd !== "" ? "text-primary" : "text-gray-500"} h-6 w-6`} onClick={handleAddTutor} type="submit" />
+                            </form>
+                        </li>
                     )}
-
-                </ListGroup>
-            </div>
-        </Col>
-
-    </Row>) : (<></>)
+                </ul>
+            </div>  
+        </div>
+    </div>
+    ) : null;      
 }
 
 export default TeacherList
