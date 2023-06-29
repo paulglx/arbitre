@@ -1,6 +1,5 @@
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { Header, Modal, Select, Tabs } from "../Common";
-import { selectCurrentUser, selectIsTeacher } from "../../features/auth/authSlice";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../../features/courses/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -13,6 +12,7 @@ import Students from "./Students/Students";
 import TeacherList from "./Teachers/TeacherList";
 import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const Course = () => {
 
@@ -28,7 +28,6 @@ const Course = () => {
 
     const username = useSelector(selectCurrentUser);
     const navigate = useNavigate();
-    const isTeacher = useSelector(selectIsTeacher);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const languageChoices = [
@@ -57,7 +56,7 @@ const Course = () => {
         data: course,
         isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
-        isError: courseIsError,
+        //isError: courseIsError, TODO handle error
     } = useGetCourseQuery({ id });
 
     const ownersUsernames = course?.owners.map((owner: any) => owner.username);
@@ -134,11 +133,12 @@ const Course = () => {
     }
 
     // Show title or edit title
+    // TODO make reusable component
     const titleContent = () => {
         if (!isOwner || !editTitle) {
             return (
                 <h1
-                    className={"fw-bold hover:bg-blue-600 " + (isOwner ? " teacher editable-title" : "")}
+                    className={"text-3xl font-bold text-center hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "")}
                     id="title-editable"
                     onFocus={() => isOwner ? setEditTitle(true) : null}
                     tabIndex={0} //allows focus
@@ -151,7 +151,7 @@ const Course = () => {
                 <input
                     autoComplete="false"
                     autoFocus
-                    className="teacher title-input h2 fw-bold p-2"
+                    className="w-full text-3xl font-bold rounded-md"
                     id="title-input"
                     onBlur={() => {
                         if (title === "") {
@@ -176,7 +176,8 @@ const Course = () => {
                 <div className="relative inline-block text-left">
                     <Select
                         options={languageChoices}
-                        title="Langages"
+                        title={language}
+                        onChange={(e: any) => handleLanguageChange(e.target.value)}
                     />
 
                 </div>
@@ -194,8 +195,8 @@ const Course = () => {
 
     const tabs = [
         {
-            eventKey: 'session',
-            title: 'Session',
+            eventKey: 'sessions',
+            title: 'Sessions',
             component: <SessionContent
                 course={course}
                 id={id}
@@ -203,14 +204,14 @@ const Course = () => {
             buttonClassName: "rounded-l-md"
         },
         {
-            eventKey: 'student',
-            title: 'Student',
+            eventKey: 'students',
+            title: 'Students',
             component: <Students course={course} />,
             buttonClassName: ""
         },
         {
-            eventKey: 'teacher',
-            title: 'Teacher',
+            eventKey: 'teachers',
+            title: 'Teachers',
             component: <TeacherList courseId={id} isOwner={isOwner} />,
             buttonClassName: "rounded-r-md"
         },
@@ -247,9 +248,7 @@ const Course = () => {
                 <br />
 
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-center hover:bg-gray-200">
-                        {titleContent()}
-                    </h1>
+                    {titleContent()}
                     <div className="flex gap-2">
                         {ownerActionsContent()}
                     </div>
