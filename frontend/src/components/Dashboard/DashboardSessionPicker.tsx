@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import React from 'react'
 
-const SessionDropdown = (props: any) => {
+const DashboardSessionPicker = (props: any) => {
 
     const {
         courses,
@@ -150,4 +150,4 @@ const SessionDropdown = (props: any) => {
     </>)
 }
 
-export default SessionDropdown
+export default DashboardSessionPicker

@@ -1,10 +1,10 @@
 import StatusBadge from "../Util/StatusBadge";
-import TestResult from "./TestResult";
+import TestResult from "../Exercise/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useState } from "react";
 
-const ResultsTable = (props: any) => {
+const DashboardResultsTable = (props: any) => {
 
     const [modalContent, setModalContent] = useState(<></>)
     const [showModal, setShowModal] = useState(false)
@@ -143,4 +143,4 @@ const ResultsTable = (props: any) => {
     );
 };
 
-export default ResultsTable;
+export default DashboardResultsTable;

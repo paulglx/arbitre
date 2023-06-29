@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Header from "../Common/Header";
 import Markdown from "../Util/Markdown";
-import ResultsTable from "../Dashboard/ResultsTable";
+import ResultsTable from "../Dashboard/DashboardResultsTable";
 import autosize from "autosize";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { selectIsTeacher } from "../../features/auth/authSlice";

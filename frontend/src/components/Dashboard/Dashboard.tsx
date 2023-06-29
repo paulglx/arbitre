@@ -1,7 +1,7 @@
+import DashboardResultsTable from './DashboardResultsTable'
+import DashboardSessionPicker from './DashboardSessionPicker'
 import Header from '../Common/Header'
 import React from 'react'
-import ResultsTable from './ResultsTable'
-import SessionDropdown from './SessionDropdown'
 import { useGetCoursesSessionsExercisesQuery } from '../../features/courses/courseApiSlice'
 import { useState } from 'react'
 
@@ -37,10 +37,10 @@ const Dashboard = () => {
 
         } else {
             return <>
-                <SessionDropdown courses={courses} currentSession={currentSession} setCurrentSession={setCurrentSession} />
+                <DashboardSessionPicker courses={courses} currentSession={currentSession} setCurrentSession={setCurrentSession} />
                 <br />
                 {currentSession !== -1 ?
-                    <ResultsTable session_id={currentSession} />
+                    <DashboardResultsTable session_id={currentSession} />
                     :
                     <></>
                 }
