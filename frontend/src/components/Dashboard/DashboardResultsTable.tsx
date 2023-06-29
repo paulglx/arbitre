@@ -1,5 +1,5 @@
 import StatusBadge from "../Util/StatusBadge";
-import TestResult from "../Exercise/TestResult";
+import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useState } from "react";
@@ -9,8 +9,6 @@ const DashboardResultsTable = (props: any) => {
     const [modalContent, setModalContent] = useState(<></>)
     const [showModal, setShowModal] = useState(false)
     const session_id = props.session_id;
-
-    console.log("showModal : ", showModal)
 
     const {
         data: results,
@@ -35,7 +33,6 @@ const DashboardResultsTable = (props: any) => {
                                 type="button"
                                 className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 mt-1 rounded-lg text-sm ml-auto inline-flex items-center"
                                 onClick={() => {
-                                    console.log("close modal")
                                     setShowModal(false)
                                 }}
 

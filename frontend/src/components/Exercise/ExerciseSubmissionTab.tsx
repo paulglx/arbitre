@@ -1,7 +1,7 @@
 import { Button, Form } from 'react-bootstrap'
 
 import React from 'react'
-import TestResult from './TestResult'
+import TestResult from './TestResult/TestResult'
 import { useCreateSubmissionMutation } from "../../features/submission/submissionApiSlice";
 
 const ExerciseSubmissionTab = (props: any) => {

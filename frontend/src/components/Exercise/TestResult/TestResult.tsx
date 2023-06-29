@@ -1,11 +1,10 @@
-import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { CommandLineIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
-import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../features/submission/submissionApiSlice'
+import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../../features/submission/submissionApiSlice'
 
-import CodePreview from '../Util/CodePreview';
-import StatusBadge from '../Util/StatusBadge';
-import moment from 'moment';
+import StatusBadge from '../../Util/StatusBadge';
+import TestResultCodePreviewModal from './TestResultCodePreviewModal';
+import TestResultTimeBadge from './TestResultTimeBadge';
 
 const TestResult = (props: any) => {
 
@@ -59,21 +58,6 @@ const TestResult = (props: any) => {
         }
     }
 
-    const time_badge = (time: string) => {
-        return <OverlayTrigger
-            placement='auto'
-            overlay={
-                <Tooltip>
-                    {moment(time).format('MMMM Do YYYY, h:mm:ss a')}
-                </Tooltip>
-            }
-        >
-            <span className="bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-300">
-                {moment(time).fromNow()}
-            </span>
-        </OverlayTrigger>
-    }
-
     if (!submissionData || !testResults) {
         return <>
             <p className='text-danger'>There was an error while trying to display the test results.</p>
@@ -83,19 +67,7 @@ const TestResult = (props: any) => {
 
     return (submissionData && submissionData.length > 0) ? (<>
 
-        <Modal show={showCodePreview} onHide={() => { setShowCodePreview(false) }} size="lg" fullscreen="md-down">
-            <Modal.Header closeButton>
-                <Modal.Title>{submissionData[0]?.file?.split("/").pop()}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <CodePreview submissionId={submissionData[0].id} />
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => { setShowCodePreview(false) }}>
-                    Close
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        <TestResultCodePreviewModal submission={submissionData[0]} show={showCodePreview} setShow={setShowCodePreview} />
 
         <ul
             className='m-4 text-gray-900 bg-white border-gray-200 rounded-lg'
@@ -112,7 +84,7 @@ const TestResult = (props: any) => {
                         onClick={() => { setShowCodePreview(true) }}
                     />
                     &nbsp;
-                    {time_badge(submissionData[0].created)}
+                    <TestResultTimeBadge time={submissionData[0].created} />
                 </span>
                 <StatusBadge status={submissionData[0].status} className="inline text-right" />
 
