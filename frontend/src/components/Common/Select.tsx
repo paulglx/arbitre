@@ -20,7 +20,7 @@ const Select = (props: any) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="flex items-center">
-          <span className="ml-3 block truncate">{selected.name === null ? props.title : selected.name}</span>
+          <span className="ml-3 block truncate capitalize">{selected.name === null ? props.title : selected.name}</span>
         </span>
         <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
           <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -43,7 +43,7 @@ const Select = (props: any) => {
             {props.options.map((option: any, index: any) => (
               <span
                 key={index}
-                className={`${option === selected ? "font-bold" : "font-normal"} hover:bg-gray-100 rounded-md px-3 py-1 block truncate capitalize`}
+                className={`${option === selected ? "font-bold" : "font-normal"} hover:bg-gray-100 rounded-md px-3 py-1 block truncate`}
                 onClick={() => handleSelection(option)}
                 role="option"
                 aria-selected={option === selected}

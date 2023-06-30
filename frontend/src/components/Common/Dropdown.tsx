@@ -12,7 +12,7 @@ const Dropdown = (props: any) => {
             <button
                 id="dropdown-basic"
                 onClick={toggleDropdown}
-                className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
                 type="button"
             >
                 {props.icon}
@@ -20,17 +20,16 @@ const Dropdown = (props: any) => {
             </button>
 
             {showDropdown && (
-                <div className="absolute inline-block border border-gray-200 z-10 top-12 right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+                <div className="absolute inline-block border border-gray-200 z-10 top-12 right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-basic">
                         {props.elements.map((e: any) => {
                             return <li>
-                                <a
-                                    href="#"
-                                    className="block px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                <button
+                                    className="w-full text-left px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                     onClick={e.action}
                                 >
                                     {e.name}
-                                </a>
+                                </button>
                             </li>
                         })}
                     </ul>

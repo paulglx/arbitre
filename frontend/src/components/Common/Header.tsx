@@ -1,13 +1,12 @@
+import { AcademicCapIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlice'
 
 import Dropdown from './Dropdown';
 import { Link } from "react-router-dom";
-import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { logOut } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
 import { useSelector } from 'react-redux'
-import { useState } from 'react';
 
 const Header = () => {
 
@@ -15,7 +14,6 @@ const Header = () => {
     const isTeacher = useSelector(selectIsTeacher)
     const dispatch = useDispatch()
     const { keycloak } = useKeycloak()
-    const [showDropdown, setShowDropdown] = useState(false);
 
     const signout = async () => {
         dispatch(logOut({}))
@@ -24,14 +22,10 @@ const Header = () => {
         })
     }
 
-    const toggleDropdown = () => {
-        setShowDropdown(!showDropdown)
-    }
-
     return (
-        <header className="text-white-600 body-font border border-gray-3400 bg-gray-200">
+        <header className="bg-gray-200">
             <div className="container mx-auto flex flex-wrap md:p-2 flex-row items-center">
-                <a className="arbitre flex title-font font-medium items-center text-gray-900 mb-0">
+                <a className="font-black items-center text-gray-900 mb-0" href="/">
                     <img src="/resource/logo.svg" alt="Logo arbitre" className="h-8 w-8 m-2 block md:hidden " />
                     <span className="ml-3 text-xl hidden md:block">ARBITRE</span>
                 </a>
@@ -43,14 +37,15 @@ const Header = () => {
                         Dashboard
                     </Link>
                 </nav>
-                <div className="dropdown flex flex-wrap items-center text-base justify-center relative">
-                    {isTeacher && (
-                        <span className="text-muted hidden md:block m-2">Teacher&nbsp;</span>
-                    )}
+                <div className="dropdown flex-wrap items-center text-base justify-center relative">
                     <Dropdown
                         title={username}
                         titleClassName="hidden sm:block"
-                        icon={<UserCircleIcon className="text-white sm:mr-2 w-6 h-6 items" />}
+                        icon={isTeacher ?
+                            <AcademicCapIcon className="text-white sm:mr-2 w-6 h-6 items" />
+                            :
+                            <UserCircleIcon className="text-white sm:mr-2 w-6 h-6 items" />
+                        }
                         signout={signout}
                         elements={[
                             {
