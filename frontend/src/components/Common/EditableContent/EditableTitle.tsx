@@ -19,7 +19,7 @@ const EditableTitle = (props: any) => {
                 }
             }
             if (event.key === 'Escape' && editTitle) {
-                // TODO revert to previous state
+                //TODO revert to previous state
                 (event.target as HTMLElement).blur();
             }
         });
