@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import DescriptionContent from "./CourseComponents/DescriptionContent";
+import EditableDescription from "../Common/EditableContent/EditableDescription";
+import EditableTitle from '../Common/EditableContent/EditableTitle';
 import { Link } from "react-router-dom";
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./Students/Students";
@@ -16,15 +17,15 @@ import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const Course = () => {
 
-    const dispatch = useDispatch();
-    const { id }: any = useParams();
-    const [updateLanguage] = useUpdateLanguageMutation();
-    const [updateCourse] = useUpdateCourseMutation();
-    const [title, setTitle] = useState("");
-    const [language, setLanguage] = useState("");
-    const [editTitle, setEditTitle] = useState(false);
-    const [description, setDescription] = useState("");
     const [deleteCourse] = useDeleteCourseMutation();
+    const [description, setDescription] = useState("");
+    const [editTitle, setEditTitle] = useState(false);
+    const [language, setLanguage] = useState("");
+    const [title, setTitle] = useState("");
+    const [updateCourse] = useUpdateCourseMutation();
+    const [updateLanguage] = useUpdateLanguageMutation();
+    const { id }: any = useParams();
+    const dispatch = useDispatch();
 
     const username = useSelector(selectCurrentUser);
     const navigate = useNavigate();
@@ -99,13 +100,13 @@ const Course = () => {
             });
             dispatch(pushNotification({
                 message: "The course has been updated",
-                type: "light"
+                type: "success"
             }));
 
         } catch (e) {
             dispatch(pushNotification({
-                message: "Something went wrong. The course could not be updated",
-                type: "danger"
+                message: "Something went wrong. The course has not been updated",
+                type: "error"
             }));
         }
     }
@@ -138,12 +139,12 @@ const Course = () => {
         if (!isOwner || !editTitle) {
             return (
                 <h1
-                    className={"text-3xl font-bold text-center hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "")}
+                    className={"text-3xl font-bold text-center hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "") + (title ? "" : " text-gray-400")}
                     id="title-editable"
                     onFocus={() => isOwner ? setEditTitle(true) : null}
                     tabIndex={0} //allows focus
                 >
-                    {title}
+                    {title ? title : "Untitled course"}
                 </h1>
             );
         } else if (isOwner && editTitle) {
@@ -229,9 +230,9 @@ const Course = () => {
 
             <div className="container mx-auto">
                 <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
-                    <ol className="flex items-center space-x-1 md:space-x-3">
+                    <ol className="flex items-center space-x-1">
                         <li className="flex items-center">
-                            <Link to="/course" className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                            <Link to="/course" className="flex items-center text-gray-700 hover:text-blue-600">
                                 Courses
                             </Link>
                         </li>
@@ -239,7 +240,7 @@ const Course = () => {
                             <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
                             </svg>
-                            {title}
+                            {title ? title : "Untitled course"}
                         </li>
                     </ol>
                 </nav>
@@ -248,12 +249,17 @@ const Course = () => {
                 <br />
 
                 <div className="flex items-center justify-between">
-                    {titleContent()}
+                    <EditableTitle
+                        course={course}
+                        title={title}
+                        setTitle={setTitle}
+                        handleUpdate={handleUpdate}
+                    />
                     <div className="flex gap-2">
                         {ownerActionsContent()}
                     </div>
                 </div>
-                <DescriptionContent
+                <EditableDescription
                     course={course}
                     description={description}
                     setDescription={setDescription}
@@ -264,13 +270,6 @@ const Course = () => {
                         tabs={tabs}
                     />
                 </>) : (<>
-                    <DescriptionContent
-                        course={course}
-                        description={description}
-                        setDescription={setDescription}
-                        handleUpdate={handleUpdate}
-                    />
-
                     <h2>Sessions</h2>
                     <SessionContent
                         course={course}
