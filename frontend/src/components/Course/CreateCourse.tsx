@@ -9,6 +9,8 @@ import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
+// TODO delete this file
+
 const CreateCourse = () => {
 
     //const [groups, setGroups] = useState<string[]>([]);

@@ -29,8 +29,8 @@ class Course(models.Model):
         RUST = "rust", _("Rust")
         SCHEME = "scheme", _("Scheme")
 
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    title = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
     language = models.CharField(
         max_length=10,
         choices=Languages.choices,

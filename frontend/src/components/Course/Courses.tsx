@@ -4,7 +4,9 @@ import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlic
 import Error from '../Util/Error';
 import Header from '../Common/Header'
 import { Link } from "react-router-dom";
+import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
 const Courses = () => {
@@ -16,19 +18,35 @@ const Courses = () => {
         error: coursesError
     } = useGetAllCoursesQuery({});
 
-    const user = useSelector(selectCurrentUser)
+    const [createCourse] = useCreateCourseMutation()
     const isTeacher = useSelector(selectIsTeacher)
+    const navigate = useNavigate();
+    const user = useSelector(selectCurrentUser)
+
+    const handleCreateCourse = async (e: any) => {
+        e.preventDefault();
+
+        try {
+            const newCourse: any = await createCourse({
+                title: "",
+                description: ""
+            });
+            navigate(`/course/${newCourse.data.id}`);
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     const teacherContent = () => {
         return isTeacher ? (
-            <Link
-                to="/course/create"
+            <button
+                onClick={handleCreateCourse}
                 className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline flex items-center"
                 id="create-course"
             >
                 <PlusCircleIcon className="mr-2 w-6 h-6" />
                 New course
-            </Link>
+            </button>
         ) : null;
     };
 
@@ -83,7 +101,9 @@ const Courses = () => {
                                                     <div className="bg-gray-600 h-2.5 rounded-full dark:bg-gray-300" style={{ width: '45%' }}></div>
                                                 </div>
                                                 */}
-                                                <h3 className="text-lg font-bold leading-tight mb-1">{course.title}</h3>
+                                                <h3 className={`text-lg font-bold leading-tight mb-1 ${course.title ? "" : " text-gray-500"}`}>
+                                                    {course.title ? course.title : "Untitled Course"}
+                                                </h3>
                                                 {course.description.length > 100 ? (
                                                     <div>
                                                         <p className="text-gray-600 hidden md:block">{course.description.substring(0, 100)}...</p>
