@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
+
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+
 const EditableTitle = (props: any) => {
 
     const username = useSelector(selectCurrentUser);
@@ -8,6 +10,20 @@ const EditableTitle = (props: any) => {
     const isOwner = ownersUsernames?.includes(username);
 
     const [editTitle, setEditTitle] = useState(false);
+
+    useEffect(() => {
+        window.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter' && editTitle) {
+                if (editTitle) {
+                    (event.target as HTMLElement).blur();
+                }
+            }
+            if (event.key === 'Escape' && editTitle) {
+                //TODO revert to previous state
+                (event.target as HTMLElement).blur();
+            }
+        });
+    });
 
     if (!isOwner || !editTitle) {
         return (

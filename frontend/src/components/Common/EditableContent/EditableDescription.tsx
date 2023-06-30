@@ -1,8 +1,9 @@
+import { useEffect, useState } from "react";
+
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Markdown from "../../Util/Markdown";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
-import { useState } from "react";
 
 const EditableDescription = (props: any) => {
     const username = useSelector(selectCurrentUser);
@@ -10,6 +11,14 @@ const EditableDescription = (props: any) => {
     const isOwner = ownersUsernames?.includes(username);
 
     const [editDescription, setEditDescription] = useState(false);
+
+    useEffect(() => {
+        window.addEventListener('keyup', (event) => {
+            if (event.key === 'Escape' && editDescription) {
+                (event.target as HTMLElement).blur();
+            }
+        });
+    });
 
     if ((!isOwner || !editDescription)) {
         return (

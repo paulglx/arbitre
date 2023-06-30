@@ -19,7 +19,6 @@ const Course = () => {
 
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
-    const [editTitle, setEditTitle] = useState(false);
     const [language, setLanguage] = useState("");
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
@@ -66,22 +65,10 @@ const Course = () => {
     const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
     const isTutor = tutorsUsernames?.includes(username);
 
-    // Autosize textareas and add event listeners for enter and escape
+    // Autosize textareas
     useEffect(() => {
         const textareas = document.getElementsByTagName("textarea");
         autosize(textareas);
-
-        window.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') {
-                if (editTitle) {
-                    (event.target as HTMLElement).blur();
-                }
-            }
-            if (event.key === 'Escape') {
-                //TODO revert to previous state
-                (event.target as HTMLElement).blur();
-            }
-        });
     });
 
     // Set title and description when course is loaded
@@ -131,43 +118,6 @@ const Course = () => {
             message: `The course language has been updated to ${lang}`,
             type: "light"
         }));
-    }
-
-    // Show title or edit title
-    // TODO make reusable component
-    const titleContent = () => {
-        if (!isOwner || !editTitle) {
-            return (
-                <h1
-                    className={"text-3xl font-bold text-center hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "") + (title ? "" : " text-gray-400")}
-                    id="title-editable"
-                    onFocus={() => isOwner ? setEditTitle(true) : null}
-                    tabIndex={0} //allows focus
-                >
-                    {title ? title : "Untitled course"}
-                </h1>
-            );
-        } else if (isOwner && editTitle) {
-            return (
-                <input
-                    autoComplete="false"
-                    autoFocus
-                    className="w-full text-3xl font-bold rounded-md"
-                    id="title-input"
-                    onBlur={() => {
-                        if (title === "") {
-                            setTitle("Untitled course");
-                        }
-                        setEditTitle(false)
-                        handleUpdate();
-                    }}
-                    onChange={(e: any) => setTitle(e.target.value)}
-                    placeholder="Enter course title"
-                    type="text"
-                    value={title}
-                />
-            )
-        }
     }
 
     // Delete button (teacher only)
