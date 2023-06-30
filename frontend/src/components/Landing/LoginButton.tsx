@@ -48,9 +48,9 @@ const LoginButton = () => {
         <>
             <a
                 href={keycloak.createLoginUrl()}
-                className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="inline-flex bg-gray-700 hover:bg-gray-600 text-gray-50 font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
             >
-                Login via SSO
+                Login
             </a>
         </>
     );
