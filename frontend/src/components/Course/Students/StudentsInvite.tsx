@@ -51,13 +51,13 @@ const StudentsInvite = (props: any) => {
   };
 
   return isOwner || isTutor ? (
-    <div className="bg-gray-200 border border-gray-300 rounded-lg p-5 md:p-10">
+    <div className="bg-gray-50 border rounded-lg p-3 md:p-6">
       <p className="text-2xl font-bold">Invite students</p>
       <span className="text-gray-600">
         Students can join your course by entering the join code below.
       </span>
       <div className="flex justify-center my-5">
-        <div className="flex items-center mr-2 text-gray-100 justify-center bg-gray-800 border border-gray-900 px-2 rounded-xl">
+        <div className="mr-2 text-gray-100 bg-gray-800 border border-gray-900 px-2 rounded-xl">
           {joinCodeEnabled ? (
             <button
               id="join-code"

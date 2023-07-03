@@ -23,7 +23,7 @@ const Header = () => {
     }
 
     return (
-        <header className="bg-gray-200">
+        <header className="bg-gray-50 border-b">
             <div className="container mx-auto flex flex-wrap md:p-2 flex-row items-center">
                 <a className="font-black items-center text-gray-900 mb-0" href="/">
                     <img src="/resource/logo.svg" alt="Logo arbitre" className="h-8 w-8 m-2 block md:hidden " />
@@ -46,7 +46,6 @@ const Header = () => {
                             :
                             <UserCircleIcon className="text-white sm:mr-2 w-6 h-6 items" />
                         }
-                        signout={signout}
                         elements={[
                             {
                                 name: "Sign Out",
