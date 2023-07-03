@@ -13,6 +13,10 @@ module.exports = {
         "2xl": '7rem'
       },
     },
+    fontFamily: {
+      'sans': ['Inter', '"Helvetica Neue"', 'apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'ui-sans-serif'],
+      'mono': ['"JetBrains Mono"', 'ui-monospace'],
+    }
   }, 
   plugins: [],
 }
