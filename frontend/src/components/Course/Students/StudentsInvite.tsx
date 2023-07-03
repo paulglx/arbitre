@@ -57,33 +57,31 @@ const StudentsInvite = (props: any) => {
         Students can join your course by entering the join code below.
       </span>
       <div className="flex justify-center my-5">
-        <div className="mr-2 text-gray-100 bg-gray-800 border border-gray-900 px-2 rounded-xl">
-          {joinCodeEnabled ? (
-            <button
-              id="join-code"
-              className="font-mono text-center px-2 py-1 rounded-3xl text-4xl"
-              onClick={handleCopyJoinCode}
-            >
-              {joinCode}
-            </button>
-          ) : (
-            <span
-              id="join-code"
-              className="font-mono text-gray-400 select-none text-center px-2 py-1 rounded-3xl text-4xl"
-            >
-              DISABLED
-            </span>
-          )}
-        </div>
+        {joinCodeEnabled ? (
+          <button
+            id="join-code"
+            className="mr-2 text-gray-100 bg-gray-800 border border-gray-900 font-mono text-center px-2 py-1 rounded-xl text-4xl"
+            onClick={handleCopyJoinCode}
+          >
+            {joinCode}
+          </button>
+        ) : (
+          <span
+            id="join-code"
+            className="select-none mr-2 text-gray-400 bg-gray-600 border border-gray-600 font-mono text-center px-2 py-1 rounded-xl text-4xl"
+          >
+            DISABLED
+          </span>
+        )}
         {isOwner && (
           <>
             <div className="flex items-center justify-center">
               <button
-                className="text-blue-500 mr-2 bg-gray-800 rounded-full p-2"
-                onClick={handleRefreshJoinCode}
+                className={`${joinCodeEnabled ? " bg-gray-800 text-gray-50" : "bg-gray-600 text-gray-400"} mr-2 rounded-full p-2`}
+                onClick={joinCodeEnabled ? handleRefreshJoinCode : undefined}
                 aria-label="Refresh join code"
               >
-                <ArrowPathIcon className="w-5 h-5 text-white" />
+                <ArrowPathIcon className="w-5 h-5" />
               </button>
               <button
                 className={`text-blue-500 bg-gray-800 rounded-full p-2`}

@@ -103,17 +103,17 @@ const JoinCourse = (props: any) => {
                     Back to courses
                 </Link>
 
-                <div className="bg-gray-200 rounded-xl md:rounded-3xl shadow-lg shadow-gray-400/50 p-4 md:p-6 md:h-auto h-5/6 w-full  flex flex-col items-center justify-center">
+                <div className="bg-gray-50 rounded-xl md:rounded-3xl border shadow-gray-400/50 p-4 md:p-6 md:h-auto h-5/6 flex flex-col items-center justify-center">
 
-                    <h1 className="text-4xl font-bold mb-4 text-gray-700 hidden md:block">Join a course</h1>
+                    <h1 className="text-4xl font-bold mb-4 text-gray-700">Join a course</h1>
                     <hr />
                     {err === '' ? (
-                        <p className="text-gray-600 hidden md:block m-2">Enter the 8 character course code to join a course.</p>
+                        <p className="text-gray-600 m-2">Enter the 8 character course code to join a course.</p>
                     ) : (
-                        <p className="text-red-500">{err}</p>
+                        <p className="text-red-500 m-2">{err}</p>
                     )}
 
-                    <form className="jc-input-group m-2 md:n-4 bg-slate-50 rounded-xl md:rounded-3xl shadow-lg shadow-gray-400/50  p-4 md:p-6 w-5/6 overflow-x-auto flex justify-center">
+                    <form className="m-2 md:n-4 bg-gray-100 border rounded-xl md:rounded-3xl shadow-sm shadow-gray-400/50  p-4 md:p-6 overflow-x-auto flex justify-center">
                         {Array(8)
                             .fill(0)
                             .map((_, i) => (
@@ -122,7 +122,7 @@ const JoinCourse = (props: any) => {
                                     placeholder="X"
                                     key={i}
                                     autoFocus={i === 0}
-                                    className="w-6 mx-2 text-gray-700 placeholder-gray-300 border border-gray-300 rounded-md text-2xl text-center focus:placeholder:opacity-0 caret-transparent"
+                                    className="font-mono w-8 mx-1 text-gray-700 placeholder-gray-300 border border-gray-300 rounded-md text-4xl text-center focus:placeholder:opacity-0 caret-transparent"
                                     {...digits[i]}
                                     onChange={(e) => handleCodeInput(e.target.value)}
                                 />
@@ -132,7 +132,7 @@ const JoinCourse = (props: any) => {
                     <br />
 
                     <button
-                        className="bg-gray-500 text-white font-bold py-2 px-4 pl-6 pr-6 p-4 hover:bg-gray-100 transition duration-300 rounded-lg justify-center flex items-center"
+                        className={`${codeInput.replace(' ', '').length === 8 ? " text-gray-50 bg-gray-500 hover:bg-gray-700" : "text-gray-100 bg-gray-300"} font-bold py-2 px-4 transition duration-300 rounded-lg justify-center flex items-center`}
                         disabled={codeInput.replace(' ', '').length < 8}
                         onClick={handleSubmit}
                     >
