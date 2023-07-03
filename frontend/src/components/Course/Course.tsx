@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./Students/Students";
 import TeacherList from "./Teachers/TeacherList";
-import autosize from "autosize";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 
@@ -64,12 +63,6 @@ const Course = () => {
 
     const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
     const isTutor = tutorsUsernames?.includes(username);
-
-    // Autosize textareas
-    useEffect(() => {
-        const textareas = document.getElementsByTagName("textarea");
-        autosize(textareas);
-    });
 
     // Set title and description when course is loaded
     useEffect(() => {

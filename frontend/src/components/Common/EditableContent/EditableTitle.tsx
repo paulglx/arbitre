@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import autosize from "autosize";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 
@@ -52,6 +53,7 @@ const EditableTitle = (props: any) => {
                     props.handleUpdate();
                 }}
                 onChange={(e: any) => props.setTitle(e.target.value)}
+                onFocus={(e) => autosize(e.target)}
                 placeholder="Enter course title"
                 type="text"
                 value={props.title}

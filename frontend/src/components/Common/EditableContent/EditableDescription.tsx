@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Markdown from "../../Util/Markdown";
+import autosize from "autosize";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 
@@ -46,6 +47,7 @@ const EditableDescription = (props: any) => {
                         setEditDescription(false);
                         props.handleUpdate();
                     }}
+                    onFocus={(e) => autosize(e.target)}
                     onChange={(e) => props.setDescription(e.target.value)}
                     placeholder="Enter course description."
                     value={props.description}
