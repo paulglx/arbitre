@@ -23,8 +23,9 @@ const Dropdown = (props: any) => {
                 <div className="absolute inline-block border border-gray-200 z-10 top-12 right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-basic">
                         {props.elements.map((e: any) => {
-                            return <li>
+                            return <li key={e.name}>
                                 <button
+                                    key={e.name}
                                     className="w-full text-left px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                     onClick={e.action}
                                 >
