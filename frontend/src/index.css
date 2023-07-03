@@ -83,19 +83,6 @@ ol.breadcrumb li.active {
 
 }
 
-code,
-kbd,
-pre,
-samp {
-  font-family: var(--mono-font) !important;
-}
-
-p>code {
-  background-color: var(--bs-light);
-  padding: 5px;
-  border-radius: 5px;
-}
-
 .markdown h1 {
   font-size: 2em;
   font-weight: 800;
@@ -141,53 +128,5 @@ p>code {
   margin-right: auto;
 }
 
-.fw-extrabold {
-  font-weight: 800 !important;
-}
-
 /* Teacher specific CSS */
 
-.teacher.editable-title {
-  border-radius: 5px;
-}
-
-.teacher.editable-title:hover {
-  background-color: var(--bs-light);
-}
-
-.teacher.editable-title:hover::after {
-  content: " CLICK TO EDIT";
-  font-weight: 200;
-  font-size: small;
-  color: var(--bs-secondary);
-  vertical-align: super;
-}
-
-.teacher.title-input {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  border: 1px dashed var(--bs-gray-400);
-  border-radius: 5px;
-  margin: -1px;
-  margin-bottom: 7px;
-}
-
-.teacher.editable-description:hover {
-  border: 1px dashed var(--bs-gray-400) !important;
-}
-
-.teacher.description-input {
-  background-color: var(--bs-light) !important;
-  font-family: var(--mono-font);
-}
-
-.student-code-preview {
-  border: 1px solid var(--bs-gray-300);
-    background: repeating-linear-gradient(45deg,
-        var(--bs-gray-200),
-        var(--bs-gray-200) 10px,
-        var(--bs-light) 10px,
-        var(--bs-light) 20px);
-}

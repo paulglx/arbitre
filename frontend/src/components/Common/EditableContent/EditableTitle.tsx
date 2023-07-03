@@ -15,9 +15,7 @@ const EditableTitle = (props: any) => {
     useEffect(() => {
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Enter' && editTitle) {
-                if (editTitle) {
-                    (event.target as HTMLElement).blur();
-                }
+                (event.target as HTMLElement).blur();
             }
             if (event.key === 'Escape' && editTitle) {
                 //TODO revert to previous state
