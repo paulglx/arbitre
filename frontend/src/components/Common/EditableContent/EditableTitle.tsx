@@ -34,6 +34,7 @@ const EditableTitle = (props: any) => {
     } else if (isOwner && editTitle) {
         return (
             <input
+                aria-label="Edit title"
                 autoComplete="false"
                 autoFocus
                 className="w-full text-3xl font-bold rounded-md"
