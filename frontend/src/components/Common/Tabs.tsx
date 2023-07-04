@@ -1,12 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const Tabs = (props: any) => {
+export interface Tab {
+  key: string;
+  title: string;
+  content: any;
+  buttonClassName: string;
+}
+
+export interface TabsProps {
+  tabs: Tab[];
+}
+
+const Tabs = ({ tabs }: TabsProps) => {
+
   const urlTab = useParams()?.tab;
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(props.tabs[0].eventKey);
+  const [activeTab, setActiveTab] = useState(tabs[0].key);
 
-  const defaultTab = props.tabs[0].eventKey;
+  const defaultTab = tabs[0].key;
 
   useEffect(() => {
     if (!urlTab) {
@@ -15,29 +27,25 @@ const Tabs = (props: any) => {
     setActiveTab(urlTab!);
   }, [urlTab, navigate, defaultTab]);
 
-  const handleTabClick = (eventKey: String) => {
-    setActiveTab(eventKey);
-    navigate(`./../${eventKey}`, { replace: true });
+  const handleTabClick = (key: String) => {
+    setActiveTab(key as string);
+    navigate(`./../${key}`, { replace: true });
   };
 
   return (
     <>
       <div className="flex mb-3">
-        {props.tabs.map((tab: any) => (
+        {tabs.map((tab: any) => (
           <button
-            key={tab.eventKey}
-            className={`${tab.buttonClassName} ${activeTab === tab.eventKey ? "z-10" : ""} px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeTab === tab.eventKey ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-            onClick={() => handleTabClick(tab.eventKey)}
+            key={tab.key}
+            className={`${tab.buttonClassName} ${activeTab === tab.key ? "z-10" : ""} px-4 py-2 border border-l-0 first:border-l border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeTab === tab.key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => handleTabClick(tab.key)}
           >
             {tab.title}
           </button>
         ))}
       </div>
-      {props.tabs.map((tab: any) => (
-        <div key={tab.eventKey} className={activeTab === tab.eventKey ? '' : 'hidden'}>
-          {tab.component}
-        </div>
-      ))}
+      {tabs.find((tab: any) => tab.key === activeTab)?.content}
     </>
   );
 };

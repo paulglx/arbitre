@@ -26,8 +26,8 @@ const Course = () => {
     const { id }: any = useParams();
     const dispatch = useDispatch();
 
-    const username = useSelector(selectCurrentUser);
     const navigate = useNavigate();
+    const username = useSelector(selectCurrentUser);
 
     const languageChoices = [
         { code: "ada", name: "Ada" },
@@ -163,27 +163,23 @@ const Course = () => {
 
     const tabs = [
         {
-            eventKey: 'sessions',
+            key: 'sessions',
             title: 'Sessions',
-            component: <SessionContent
-                course={course}
-                id={id}
-            />,
+            content: <SessionContent course={course} id={id} />,
             buttonClassName: "rounded-l-md"
         },
         {
-            eventKey: 'students',
+            key: 'students',
             title: 'Students',
-            component: <Students course={course} />,
+            content: <Students course={course} />,
             buttonClassName: ""
         },
         {
-            eventKey: 'teachers',
+            key: 'teachers',
             title: 'Teachers',
-            component: <TeacherList courseId={id} isOwner={isOwner} />,
+            content: <TeacherList courseId={id} isOwner={isOwner} />,
             buttonClassName: "rounded-r-md"
         },
-
     ];
 
     //Main content
@@ -218,25 +214,23 @@ const Course = () => {
 
                 <div className="flex items-center justify-between">
                     <EditableTitle
-                        course={course}
                         title={title}
                         setTitle={setTitle}
                         handleUpdate={handleUpdate}
+                        isOwner={isOwner}
                     />
                     <div className="flex gap-2">
                         <OwnerButtons />
                     </div>
                 </div>
                 <EditableDescription
-                    course={course}
                     description={description}
                     setDescription={setDescription}
                     handleUpdate={handleUpdate}
+                    isOwner={isOwner}
                 />
                 {isOwner || isTutor ? (<>
-                    <Tabs
-                        tabs={tabs}
-                    />
+                    <Tabs tabs={tabs} />
                 </>) : (<>
                     <h2>Sessions</h2>
                     <SessionContent
@@ -249,10 +243,11 @@ const Course = () => {
                     <Modal
                         title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
                         icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                        decription={<p className="mb-4">This will remove permanently this course, all its sessions and all the session's exercises.</p>}
+                        decription={<p className="mb-4">This will permanently remove this course, all of its sessions and all of the session's exercises.</p>}
                         handleCloseModal={() => setModalIsOpen(false)}
                         delete={handleDelete}
-                    />}
+                    />
+                }
             </div>
         </>
     )

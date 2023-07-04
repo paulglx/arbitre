@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 
 import autosize from "autosize";
-import { selectCurrentUser } from "../../../features/auth/authSlice";
-import { useSelector } from "react-redux";
 
 const EditableTitle = (props: any) => {
 
-    const username = useSelector(selectCurrentUser);
-    const ownersUsernames = props.course?.owners.map((owner: any) => owner.username);
-    const isOwner = ownersUsernames?.includes(username);
-
+    const isOwner = props.isOwner;
     const [editTitle, setEditTitle] = useState(false);
 
     useEffect(() => {
@@ -28,7 +23,7 @@ const EditableTitle = (props: any) => {
         return (
             <h1
                 aria-label="Edit title"
-                className={"text-3xl font-bold text-center hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "") + (props.title ? "" : " text-gray-400")}
+                className={"text-3xl font-bold hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "") + (props.title ? "" : " text-gray-400")}
                 id="title-editable"
                 onFocus={() => isOwner ? setEditTitle(true) : null}
                 tabIndex={0} //allows focus

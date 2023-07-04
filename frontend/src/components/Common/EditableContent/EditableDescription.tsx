@@ -3,15 +3,10 @@ import { useEffect, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import Markdown from "../../Util/Markdown";
 import autosize from "autosize";
-import { selectCurrentUser } from "../../../features/auth/authSlice";
-import { useSelector } from "react-redux";
 
 const EditableDescription = (props: any) => {
-    const username = useSelector(selectCurrentUser);
-    const ownersUsernames = props.course?.owners.map((owner: any) => owner.username);
-    const isOwner = ownersUsernames?.includes(username);
-
     const [editDescription, setEditDescription] = useState(false);
+    const isOwner = props.isOwner;
 
     useEffect(() => {
         window.addEventListener('keyup', (event) => {
