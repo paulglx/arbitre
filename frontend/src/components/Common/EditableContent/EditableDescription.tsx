@@ -21,7 +21,7 @@ const EditableDescription = (props: any) => {
     if ((!isOwner || !editDescription)) {
         return (
             <blockquote
-                className={"my-4 p-4 border rounded-lg bg-gray-50 w-full text-justify" + (isOwner ? " teacher hover:border-dashed" : "") + (props.description ? "" : " text-gray-400")}
+                className={"my-4 p-4 border rounded-lg bg-gray-50 w-full text-justify overflow-x-auto" + (isOwner ? " teacher hover:border-dashed" : "") + (props.description ? "" : " text-gray-400")}
                 onFocus={() => {
                     if (!isOwner) return;
                     setEditDescription(true)
