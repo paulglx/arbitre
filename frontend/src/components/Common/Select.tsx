@@ -7,7 +7,11 @@ const Select = (props: any) => {
   const handleSelection = (option: any) => {
     setSelected(option);
     setIsOpen(false);
+    console.log(option)
+    onChange(option);
   }
+
+  const onChange = props.onChange;
 
   return (
     <div className="relative w-32 h-10">
@@ -38,7 +42,6 @@ const Select = (props: any) => {
           aria-labelledby="listbox-label"
           aria-activedescendant="listbox-option-3"
         >
-
           <li className="text-gray-900 relative cursor-default select-none py-2 px-4" id="listbox-option-0">
             {props.options.map((option: any, index: any) => (
               <span
@@ -54,9 +57,7 @@ const Select = (props: any) => {
           </li>
         </ul>
       )}
-
     </div>
-
   )
 };
 

@@ -1,11 +1,11 @@
 // import "../../../join-code.css"
 
-import { useRefreshJoinCodeMutation, useSetJoinCodeEnabledMutation } from "../../../features/courses/courseApiSlice"
+import { useRefreshJoinCodeMutation, useSetJoinCodeEnabledMutation } from "../../../../features/courses/courseApiSlice"
 
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { IoToggleOutline } from 'react-icons/io5';
-import { pushNotification } from '../../../features/notification/notificationSlice';
-import { selectCurrentUser } from "../../../features/auth/authSlice"
+import { pushNotification } from '../../../../features/notification/notificationSlice';
+import { selectCurrentUser } from "../../../../features/auth/authSlice"
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux'
 import { useState } from 'react'

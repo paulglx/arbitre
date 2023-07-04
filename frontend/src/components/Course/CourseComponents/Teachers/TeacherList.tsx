@@ -1,9 +1,9 @@
 import { MinusIcon, PlusIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/solid';
-import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../features/courses/courseApiSlice"
+import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../../features/courses/courseApiSlice"
 import { useEffect, useState } from "react";
 
-import { selectCurrentUser } from '../../../features/auth/authSlice';
-import { useGetTeachersQuery } from '../../../features/users/usersApiSlice';
+import { selectCurrentUser } from '../../../../features/auth/authSlice';
+import { useGetTeachersQuery } from '../../../../features/users/usersApiSlice';
 import { useSelector } from 'react-redux';
 
 const TeacherList = (props: any) => {

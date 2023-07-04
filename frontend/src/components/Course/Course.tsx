@@ -9,8 +9,8 @@ import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import { Link } from "react-router-dom";
 import SessionContent from "./CourseComponents/SessionContent";
-import Students from "./Students/Students";
-import TeacherList from "./Teachers/TeacherList";
+import Students from "./CourseComponents/Students/Students";
+import TeacherList from "./CourseComponents/Teachers/TeacherList";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 
@@ -19,6 +19,7 @@ const Course = () => {
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
     const [language, setLanguage] = useState("");
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
     const [updateLanguage] = useUpdateLanguageMutation();
@@ -27,7 +28,6 @@ const Course = () => {
 
     const username = useSelector(selectCurrentUser);
     const navigate = useNavigate();
-    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const languageChoices = [
         { code: "ada", name: "Ada" },
@@ -55,7 +55,7 @@ const Course = () => {
         data: course,
         isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
-        //isError: courseIsError, TODO handle error
+        //isError: courseIsError, TODO: handle error
     } = useGetCourseQuery({ id });
 
     const ownersUsernames = course?.owners.map((owner: any) => owner.username);
@@ -72,56 +72,80 @@ const Course = () => {
     }, [course, courseIsSuccess]);
 
     const handleUpdate = async () => {
-        try {
-            updateCourse({
-                id: course?.id,
-                title,
-                description
-            });
-            dispatch(pushNotification({
-                message: "The course has been updated",
-                type: "success"
-            }));
-
-        } catch (e) {
-            dispatch(pushNotification({
-                message: "Something went wrong. The course has not been updated",
-                type: "error"
-            }));
-        }
+        await updateCourse({
+            id: course?.id,
+            title,
+            description
+        })
+            .unwrap()
+            .then(() => {
+                dispatch(pushNotification({
+                    message: "The course has been updated",
+                    type: "success"
+                }));
+            })
+            .catch((e) => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. The course has not been updated",
+                    type: "error"
+                }));
+            })
     }
 
-    const handleDelete = (e: any) => {
+    const handleDelete = async (e: any) => {
         e.preventDefault();
-        try {
-            deleteCourse(id);
-            navigate("/course")
-        } catch (e) {
-            console.log(e);
-        }
+        await deleteCourse(id)
+            .unwrap()
+            .then(() => {
+                dispatch(pushNotification({
+                    message: "The course has been deleted",
+                    type: "success"
+                }));
+                navigate("/course");
+            })
+            .catch((e) => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. The course has not been deleted",
+                    type: "error"
+                }));
+            })
     }
 
-    const handleLanguageChange = (lang: string) => {
-        setLanguage(lang);
-        updateLanguage({
+    const handleLanguageChange = async (e: any) => {
+        const lang = e.code;
+        const langName = e.name;
+
+        await updateLanguage({
             course_id: course?.id,
             language: lang
-        });
-        dispatch(pushNotification({
-            message: `The course language has been updated to ${lang}`,
-            type: "light"
-        }));
+        })
+            .unwrap()
+            .then(() => {
+                setLanguage(lang);
+                dispatch(pushNotification({
+                    message: `The course language has been updated to ${langName}`,
+                    type: "success"
+                }));
+            })
+            .catch((e) => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. The course language has not been updated",
+                    type: "error"
+                }));
+            })
     }
 
-    // Delete button (teacher only)
-    const ownerActionsContent = () => {
+    const OwnerButtons = () => {
         return isOwner ? (
             <div className="flex justify-end items-center space-x-2">
                 <div className="relative inline-block text-left">
                     <Select
                         options={languageChoices}
                         title={language}
-                        onChange={(e: any) => handleLanguageChange(e.target.value)}
+                        onChange={(e: any) => {
+                            console.log(e)
+                            handleLanguageChange(e)
+                        }}
                     />
 
                 </div>
@@ -160,7 +184,8 @@ const Course = () => {
             buttonClassName: "rounded-r-md"
         },
 
-    ]
+    ];
+
     //Main content
     return courseIsLoading ? (
         <></>
@@ -199,7 +224,7 @@ const Course = () => {
                         handleUpdate={handleUpdate}
                     />
                     <div className="flex gap-2">
-                        {ownerActionsContent()}
+                        <OwnerButtons />
                     </div>
                 </div>
                 <EditableDescription

@@ -1,10 +1,10 @@
 import { UserMinusIcon, UserPlusIcon } from '@heroicons/react/24/solid'
-import { useAddStudentMutation, useGetStudentsQuery, useRemoveStudentMutation } from '../../../features/courses/courseApiSlice'
-import { useEffect, useState } from 'react'
+import { useAddStudentMutation, useGetStudentsQuery, useRemoveStudentMutation } from '../../../../features/courses/courseApiSlice'
+import { useEffect, useMemo, useState } from 'react'
 
-import { pushNotification } from '../../../features/notification/notificationSlice'
+import { pushNotification } from '../../../../features/notification/notificationSlice'
 import { useDispatch } from 'react-redux'
-import { useGetUsersQuery } from '../../../features/users/usersApiSlice'
+import { useGetUsersQuery } from '../../../../features/users/usersApiSlice'
 
 const StudentsList = (props: any) => {
 
@@ -16,6 +16,12 @@ const StudentsList = (props: any) => {
   const [studentToAdd, setStudentToAdd] = useState<any>("")
   const course = props.course
   const dispatch = useDispatch()
+
+  const sortedStudents = useMemo(() => {
+    const studentsToSort = structuredClone(students)
+    const sortedStudents = studentsToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
+    return sortedStudents
+  }, [students])
 
   const {
     data: studentsData,
@@ -48,7 +54,6 @@ const StudentsList = (props: any) => {
     }
 
     await addStudent({ course_id: course.id, user_id }).catch((e) => {
-      console.log(e)
       dispatch(pushNotification({
         message: "Failed to add student",
         type: "error"
@@ -60,15 +65,19 @@ const StudentsList = (props: any) => {
   };
 
   const handleRemoveStudent = async (user_id: number) => {
-    await removeStudent({ course_id: course.id, user_id: user_id })
-    setStudents(students.filter((s: any) => s.id !== user_id))
+    await removeStudent({ course_id: course.id, user_id: user_id }).catch((e) => {
+      dispatch(pushNotification({
+        message: "Failed to remove student",
+        type: "error"
+      }))
+    }).finally(() => {
+      setStudents(students.filter((s: any) => s.id !== user_id))
+    })
   }
 
   useEffect(() => {
     if (studentsSuccess) {
-      const studentsToSort = structuredClone(studentsData.students)
-      const sortedStudents = studentsToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
-      setStudents(sortedStudents)
+      setStudents(studentsData.students)
     }
   }, [studentsSuccess, studentsData])
 
@@ -91,11 +100,11 @@ const StudentsList = (props: any) => {
     <div className='mx-auto border overflow-x-auto rounded-lg mb-3'>
       <table className="w-full text-sm rounded-lg">
         <tbody className="">
-          {students.length > 0 ? (
-            students.map((student: any, i: number) => (
+          {sortedStudents.length > 0 ? (
+            sortedStudents.map((student: any, i: number) => (
               <tr key={i} className="border-t first:border-t-0 hover:bg-gray-50">
                 <td className="px-3 py-3">{student.username}</td>
-                <td className="text-right pr-3">
+                <td className="text-right pr-3 w-14">
                   <button
                     className=" text-red-500 hover:text-red-600 bg-gray-50 hover:bg-gray-100 border hover:border-red-300 transition-colors duration-300 align-middle p-1 rounded-md"
                     onClick={() => handleRemoveStudent(student.id)}

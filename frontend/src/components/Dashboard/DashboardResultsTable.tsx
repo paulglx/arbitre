@@ -1,9 +1,10 @@
+import { useMemo, useState } from "react";
+
 import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
-import { useState } from "react";
 
 const DashboardResultsTable = (props: any) => {
 
@@ -16,6 +17,13 @@ const DashboardResultsTable = (props: any) => {
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
     } = useGetResultsOfSessionQuery({ session_id });
+
+    const resultsSortedByUsername = useMemo(() => {
+        if (!results) return
+        const resultsToSort = structuredClone(results)
+        const sortedResults = resultsToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
+        return sortedResults
+    }, [results])
 
     const modal = (exercise: any, student: any) => {
         return (
@@ -131,8 +139,8 @@ const DashboardResultsTable = (props: any) => {
 
         <div className='mx-auto overflow-x-auto rounded-md'>
             <table className="w-full text-sm rounded border">
-                {tableHeadContent(results)}
-                {tableBodyContent(results)}
+                {tableHeadContent(resultsSortedByUsername)}
+                {tableBodyContent(resultsSortedByUsername)}
             </table>
         </div>
     </>) : isResultsLoading ? (<>

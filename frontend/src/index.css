@@ -128,5 +128,7 @@ ol.breadcrumb li.active {
   margin-right: auto;
 }
 
-/* Teacher specific CSS */
-
+/* Remove caret from datalist input */
+[list]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
