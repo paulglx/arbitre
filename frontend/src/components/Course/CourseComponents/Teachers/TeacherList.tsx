@@ -1,4 +1,4 @@
-import { MinusIcon, PlusIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import { MinusIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../../features/courses/courseApiSlice"
 import { useEffect, useState } from "react";
 
@@ -103,26 +103,26 @@ const TeacherList = (props: any) => {
     }
 
     return isOwnersSuccess && isTeachersSuccess ? (
-        <div className="flex flex-wrap">
-            <div className="w-full md:w-full">
-                <div className="bg-light border rounded-3xl bg-gray-200 p-4 md:p-6">
-                    <h2 className="text-xl font-bold">Owners</h2>
-                    <p className="text-gray-500 mt-2">Owners manage the sessions and exercises for this course. They also manage students and view their results.</p>
+        <div className="flex flex-wrap mt-6">
+            <div className="w-full md:w-1/2 p-0 md:pr-6 md:border-r">
+                <div className="p-1">
+                    <h2 className="text-2xl font-bold">Owners</h2>
+                    <p className="text-gray-600">Owners manage the sessions and exercises for this course. They also manage students and view their results.</p>
                     <ul className="mt-4">
                         {owners.map((owner: any) => (
-                            <li key={owner.id} className="flex items-center justify-between">
-                                <span className="mr-2">{owner.username}</span>
+                            <li key={owner.id} className="flex items-center justify-between font-medium py-2 pl-4 pr-2 mt-2 first:mt-0 bg-gray-50 hover:bg-gray-100 border rounded-md">
+                                {owner.username}
                                 {isOwner ? (
                                     owner.username !== current_username ? (
-                                        <TrashIcon className="text-secondary cursor-pointer w-6 h-6" onClick={() => handleDeleteOwner(owner.id)} />
+                                        <XMarkIcon className="text-red-500 border rounded-md bg-gray-100 hover:bg-gray-200 text-secondary cursor-pointer w-6 h-6" onClick={() => handleDeleteOwner(owner.id)} />
                                     ) : (
-                                        <XCircleIcon className="text-gray-500 cursor-not-allowed w-6 h-6" data-toggle="tooltip" title="You cannot remove yourself." />
+                                        <XMarkIcon className="text-gray-400 border rounded-md bg-gray-200 text-secondary cursor-default w-6 h-6" data-toggle="tooltip" title="You cannot remove yourself." />
                                     )
                                 ) : null}
                             </li>
                         ))}
                         {isOwner && (
-                            <li className="flex items-center justify-between mt-4 w-full">
+                            <li className="flex items-center justify-between mt-2 w-full">
                                 <form onSubmit={handleAddOwner} className="flex items-center w-full">
                                     <input
                                         type="text"
@@ -139,7 +139,7 @@ const TeacherList = (props: any) => {
                                     </datalist>
                                     <PlusIcon
                                         aria-label='Add owner'
-                                        className={`${ownerToAdd !== "" ? "text-primary" : "text-gray-500"} w-6 h-6`}
+                                        className={`${ownerToAdd ? "text-gray-500 bg-gray-50 hover:bg-gray-100" : "text-gray-300 bg-gray-100"} w-10 h-10 p-1 border rounded-md`}
                                         onClick={handleAddOwner}
                                         role="button"
                                         type="submit"
@@ -149,23 +149,24 @@ const TeacherList = (props: any) => {
                         )}
                     </ul>
                 </div>
-                <br />
             </div>
-            <div className="w-full md:w-full ">
-                <div className="bg-light border rounded-3xl bg-gray-200 p-2 md:p-6">
-                    <h2 className="text-xl font-bold">Tutors</h2>
-                    <p className="text-gray-500 mt-2">Tutors can manage students and see their results.</p>
+            <div className="w-full md:w-1/2 p-0 md:pl-1 mt-6 md:mt-0">
+                <div className="p-1 md:pl-6">
+                    <h2 className="text-2xl font-bold">Tutors</h2>
+                    <p className="text-gray-600">Tutors can manage students and see their results.</p>
                     <ul className="mt-4">
                         {tutors.map((tutor: any) => (
-                            <li key={tutor.id} className="flex items-center justify-between">
-                                <span className="mr-2">{tutor.username}</span>
+                            <li key={tutor.id} className="flex items-center justify-between font-medium py-2 pl-4 pr-2 mt-2 first:mt-0 bg-gray-50 hover:bg-gray-100 border rounded-md">
+                                {tutor.username}
                                 {isOwner ? (
-                                    <MinusIcon className="text-secondary" role="button" onClick={() => handleDeleteTutor(tutor.id)} />
+                                    tutor.username !== current_username ? (
+                                        <XMarkIcon className="text-red-500 border rounded-md bg-gray-100 hover:bg-gray-200 text-secondary cursor-pointer w-6 h-6" onClick={() => handleDeleteTutor(tutor.id)} />
+                                    ) : (null)
                                 ) : null}
                             </li>
                         ))}
                         {isOwner && (
-                            <li className="flex items-center justify-between mt-4">
+                            <li className="flex items-center justify-between mt-2 w-full">
                                 <form onSubmit={handleAddTutor} className="flex items-center w-full">
                                     <input
                                         type="text"
@@ -182,7 +183,7 @@ const TeacherList = (props: any) => {
                                     </datalist>
                                     <PlusIcon
                                         aria-label='Add tutor'
-                                        className={`${tutorToAdd !== "" ? "text-primary" : "text-gray-500"} h-6 w-6`}
+                                        className={`${tutorToAdd ? "text-gray-500 bg-gray-50 hover:bg-gray-100" : "text-gray-300 bg-gray-100"} w-10 h-10 p-1 border rounded-md`}
                                         onClick={handleAddTutor}
                                         role="button"
                                         type="submit"
