@@ -1,10 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Tabs = (props: any) => {
+  const urlTab = useParams()?.tab;
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(props.tabs[0].eventKey);
+
+  const defaultTab = props.tabs[0].eventKey;
+
+  useEffect(() => {
+    if (!urlTab) {
+      navigate(`./${defaultTab}`, { replace: true });
+    }
+    setActiveTab(urlTab!);
+  }, [urlTab, navigate, defaultTab]);
 
   const handleTabClick = (eventKey: String) => {
     setActiveTab(eventKey);
+    navigate(`./../${eventKey}`, { replace: true });
   };
 
   return (

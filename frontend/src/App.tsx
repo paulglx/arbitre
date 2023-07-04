@@ -31,8 +31,9 @@ function App() {
 				{/* Protected routes */}
 				<Route element={<RequireAuth />}>
 					<Route path="course/" element={<Courses />} />
-					<Route path="course/create" element={<CreateCourse />} />
 					<Route path="course/:id" element={<Course />} />
+					<Route path="course/:id/:tab" element={<Course />} />
+					<Route path="course/create" element={<CreateCourse />} />
 
 					<Route path="course/join" element={<JoinCourse />} />
 					<Route path="course/join/:join_code" element={<JoinCourse />} />
