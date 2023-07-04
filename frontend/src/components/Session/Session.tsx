@@ -1,9 +1,9 @@
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { Header, Modal, Tabs } from "../Common/";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
@@ -140,25 +140,22 @@ const Session = () => {
                 <div className="flex items-center justify-between">
                     <div className="w-full">
                         <EditableTitle
-                            title={title}
-                            setTitle={setTitle}
                             handleUpdate={handleUpdate}
                             isOwner={isOwner}
+                            setTitle={setTitle}
+                            title={title}
                         />
                     </div>
                     <div className="flex gap-2">
                         <OwnerButtons />
                     </div>
-                    <div className="p-0 mb-2">
-
-                    </div>
                 </div>
 
                 <EditableDescription
                     description={description}
-                    setDescription={setDescription}
                     handleUpdate={handleUpdate}
                     isOwner={isOwner}
+                    setDescription={setDescription}
                 />
 
                 {isOwner || isTutor ? (<>

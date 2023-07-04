@@ -8,7 +8,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
-import { Link } from "react-router-dom";
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./CourseComponents/Students/Students";
 import TeacherList from "./CourseComponents/Teachers/TeacherList";
@@ -202,10 +201,10 @@ const Course = () => {
 
                 <div className="flex items-center justify-between">
                     <EditableTitle
-                        title={title}
-                        setTitle={setTitle}
                         handleUpdate={handleUpdate}
                         isOwner={isOwner}
+                        setTitle={setTitle}
+                        title={title}
                     />
                     <div className="flex gap-2">
                         <OwnerButtons />
@@ -213,9 +212,9 @@ const Course = () => {
                 </div>
                 <EditableDescription
                     description={description}
-                    setDescription={setDescription}
                     handleUpdate={handleUpdate}
                     isOwner={isOwner}
+                    setDescription={setDescription}
                 />
                 {isOwner || isTutor ? (<>
                     <Tabs tabs={tabs} />
