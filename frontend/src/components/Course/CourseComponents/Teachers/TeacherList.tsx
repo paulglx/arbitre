@@ -1,4 +1,4 @@
-import { MinusIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../../features/courses/courseApiSlice"
 import { useEffect, useState } from "react";
 
