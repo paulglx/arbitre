@@ -67,7 +67,7 @@ const SessionContent = (props: any) => {
                     {sessions.map((session: any, i: number) => (
                         <Link
                             key={i}
-                            className="border border-gray-300 rounded-md hover:shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105"
+                            className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:shadow-lg hover:scale-105"
                             to={"/session/" + session.id}
                         >
                             <span className="text-gray-700 text-xl font-medium">{session.title}</span>

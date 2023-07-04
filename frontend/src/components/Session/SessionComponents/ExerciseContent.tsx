@@ -66,7 +66,7 @@ const ExerciseContent = (props: any) => {
                     {exercises.map((exercise: any, i: number) => (
                         <Link
                             key={i}
-                            className="border border-gray-300 rounded-md hover:shadow-lg p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105"
+                            className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
                             to={"/exercise/" + exercise.id}
                         >
                             <span className="text-gray-700 text-xl font-medium">{exercise.title}</span>
