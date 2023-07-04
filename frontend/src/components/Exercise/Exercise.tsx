@@ -79,14 +79,14 @@ const Exercise = () => {
             .unwrap()
             .then(() => {
                 dispatch(pushNotification({
-                    message: "The session has been deleted",
+                    message: "The exercise has been deleted",
                     type: "success"
                 }));
                 navigate(`/session/${session.id}`)
             })
             .catch((e) => {
                 dispatch(pushNotification({
-                    message: "Something went wrong. The session has not been deleted",
+                    message: "Something went wrong. The exercise has not been deleted",
                     type: "error"
                 }));
             })
