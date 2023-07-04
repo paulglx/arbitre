@@ -5,6 +5,7 @@ import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
+import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import ExerciseContent from "./SessionComponents/ExerciseContent";
@@ -34,10 +35,6 @@ const Session = () => {
 
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
-
-    const truncateIfLong = (text: string, length: number) => {
-        return text.length > length ? text.substring(0, length) + "..." : text;
-    }
 
     useEffect(() => {
         setTitle(session?.title);
@@ -113,13 +110,11 @@ const Session = () => {
             key: "exercises",
             title: "Exercises",
             content: <ExerciseContent session={session} />,
-            buttonClassName: "rounded-l-md"
         },
         {
             key: "results",
             title: "Results",
             content: <ResultsTable session_id={session_id} />,
-            buttonClassName: "rounded-r-md"
         },
     ];
 
@@ -134,29 +129,11 @@ const Session = () => {
 
             <div className="container mx-auto">
 
-                <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
-                    <ol className="flex items-center space-x-1">
-                        <li className="flex items-center">
-                            <Link to="/course" className="flex items-center text-gray-700 hover:text-blue-600">
-                                Courses
-                            </Link>
-                        </li>
-                        <li className="flex items-center text-gray-500" aria-current="page">
-                            <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
-                            </svg>
-                            <Link to={`/course/${course?.id}`} className="flex items-center text-gray-700 hover:text-blue-600">
-                                {truncateIfLong(course?.title, 20)}
-                            </Link>
-                        </li>
-                        <li className="flex items-center text-gray-500" aria-current="page">
-                            <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
-                            </svg>
-                            {title}
-                        </li>
-                    </ol>
-                </nav>
+                <Breadcrumb items={[
+                    { link: "/course", title: "Courses" },
+                    { link: `/course/${course?.id}`, title: course?.title },
+                    { link: null, title: title ? title : "Untilted" },
+                ]} />
 
                 <br />
 
