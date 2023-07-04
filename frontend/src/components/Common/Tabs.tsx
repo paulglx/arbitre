@@ -37,7 +37,15 @@ const Tabs = ({ tabs }: TabsProps) => {
         {tabs.map((tab: any, i: number) => (
           <button
             key={tab.key}
-            className={`${i === 0 ? "rounded-l-md" : ""} ${i === tabs.length - 1 ? "rounded-r-md" : ""} ${activeTab === tab.key ? "z-10" : ""} px-4 py-2 border border-l-0 first:border-l border-gray-300 ${activeTab === tab.key ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+            className={`
+              font-medium
+              rounded-lg px-4 py-2 mx-1 first:ml-0 last:mr-0
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600
+              ${activeTab === tab.key ?
+                'bg-blue-600 hover:bg-blue-700 text-white'
+                :
+                'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-100'
+              }`}
             onClick={() => handleTabClick(tab.key)}
           >
             {tab.title}
