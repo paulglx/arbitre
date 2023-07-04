@@ -5,7 +5,6 @@ export interface Tab {
   key: string;
   title: string;
   content: any;
-  buttonClassName: string;
 }
 
 export interface TabsProps {
@@ -35,10 +34,10 @@ const Tabs = ({ tabs }: TabsProps) => {
   return (
     <>
       <div className="flex mb-3">
-        {tabs.map((tab: any) => (
+        {tabs.map((tab: any, i: number) => (
           <button
             key={tab.key}
-            className={`${tab.buttonClassName} ${activeTab === tab.key ? "z-10" : ""} px-4 py-2 border border-l-0 first:border-l border-gray-300 ${activeTab === tab.key ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+            className={`${i === 0 ? "rounded-l-md" : ""} ${i === tabs.length - 1 ? "rounded-r-md" : ""} ${activeTab === tab.key ? "z-10" : ""} px-4 py-2 border border-l-0 first:border-l border-gray-300 ${activeTab === tab.key ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
             onClick={() => handleTabClick(tab.key)}
           >
             {tab.title}
