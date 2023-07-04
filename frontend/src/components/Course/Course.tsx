@@ -193,6 +193,7 @@ const Course = () => {
             <br />
 
             <div className="container mx-auto">
+
                 <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
                     <ol className="flex items-center space-x-1">
                         <li className="flex items-center">

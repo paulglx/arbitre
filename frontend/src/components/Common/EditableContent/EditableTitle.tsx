@@ -28,7 +28,7 @@ const EditableTitle = (props: any) => {
                 onFocus={() => isOwner ? setEditTitle(true) : null}
                 tabIndex={0} //allows focus
             >
-                {props.title ? props.title : "Untitled course"}
+                {props.title ? props.title : "Untitled"}
             </h1>
         );
     } else if (isOwner && editTitle) {
@@ -40,7 +40,7 @@ const EditableTitle = (props: any) => {
                 id="title-input"
                 onBlur={() => {
                     if (props.title === "") {
-                        props.setTitle("Untitled course");
+                        props.setTitle("Untitled");
                     }
                     setEditTitle(false)
                     props.handleUpdate();

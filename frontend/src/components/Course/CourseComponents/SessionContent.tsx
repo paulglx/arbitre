@@ -1,15 +1,13 @@
-// import { ClockIcon } from '@heroicons/react/24/solid'
-import { selectCurrentUser, selectIsTeacher } from "../../../features/auth/authSlice";
-
 import { Link } from "react-router-dom";
 import { PlusIcon } from '@heroicons/react/24/solid'
+// import { ClockIcon } from '@heroicons/react/24/solid'
+import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
 import { useSelector } from "react-redux";
 
 const SessionContent = (props: any) => {
     const username = useSelector(selectCurrentUser);
     const ownersUsernames = props.course?.owners.map((owner: any) => owner.username);
-    const isTeacher = useSelector(selectIsTeacher);
     const isOwner = ownersUsernames?.includes(username);
 
     const {
@@ -21,32 +19,29 @@ const SessionContent = (props: any) => {
 
 
     //Create session button (teacher only)
-    const sessionListOwnerContent = () => {
-        return isOwner ? (
-            <Link
-                id="create-session"
-                className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
-                to={"/session/create?course_id=" + props.id}
-            >
-                <PlusIcon className="w-5 h-5 mr-1" />
-                Create Session
-            </Link>
+    const CreateSessionButton = () => isOwner ? (
+        <Link
+            id="create-session-button"
+            className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
+            to={"/session/create?course_id=" + props.id}
+        >
+            <PlusIcon className="w-5 h-5 mr-1" />
+            Create Session
+        </Link>
 
-        ) : (<></>)
-    }
+    ) : (<></>)
+
     //Create session button, on "no sessions" block (teacher only)
-    const sessionListOwnerContentNoSessions = () => {
-        return isOwner ? (
-            <Link
-                id="create-session-no-sessions"
-                className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
-                to={"/session/create?course_id=" + props.id}
-            >
-                <PlusIcon className="w-6 h-6 mr-2" />
-                <span>Create session</span>
-            </Link>
-        ) : (<></>)
-    }
+    const CreateSessionButtonNoSessions = () => isOwner ? (
+        <Link
+            id="create-session-no-sessions"
+            className="flex items-center justify-center m-2 md:m-6 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-md shadow-lg transition duration-300 ease-in-out"
+            to={"/session/create?course_id=" + props.id}
+        >
+            <PlusIcon className="w-6 h-6 mr-2" />
+            Create Session
+        </Link>
+    ) : (<></>)
 
     //Session list, or "no sessions" block if no sessions
     if (sessionsIsLoading) {
@@ -60,7 +55,7 @@ const SessionContent = (props: any) => {
                 <li id="no-sessions-warning" className="text-muted text-center border-dashed flex flex-col items-center">
                     <br />
                     <p>This course doesn't have any sessions.</p>
-                    {sessionListOwnerContentNoSessions()}
+                    <CreateSessionButtonNoSessions />
                 </li>
             </ul>
         )
@@ -95,19 +90,15 @@ const SessionContent = (props: any) => {
                     ))}
                 </div>
                 <div className="flex justify-center mt-1 md:mt-2">
-                    {sessionListOwnerContent()}
+                    <CreateSessionButton />
                 </div>
             </>
         )
     }
-
-    //Session not found or not authorized
-    if (sessionsIsError) {
-        return isTeacher ? (
-            <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The course you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><Link to="/course" className='text-decoration-none'>⬅ Back to courses</Link></h3>
-            </div>
-        ) : (<></>)
+    else if (sessionsIsError) {
+        return (
+            <p>Session not found</p>
+        )
     }
 
     return null;

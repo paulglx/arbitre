@@ -1,61 +1,29 @@
-import { Breadcrumb, Button, Container, Form, ListGroup, OverlayTrigger, Popover, Tab, Tabs } from "react-bootstrap";
+import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { Header, Modal, Tabs } from "../Common/";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
-import Header from "../Common/Header";
-import Markdown from "../Util/Markdown";
+import EditableDescription from "../Common/EditableContent/EditableDescription";
+import EditableTitle from '../Common/EditableContent/EditableTitle';
+import ExerciseContent from "./SessionComponents/ExerciseContent";
 import ResultsTable from "../Dashboard/DashboardResultsTable";
-import autosize from "autosize";
+import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
-import { selectIsTeacher } from "../../features/auth/authSlice";
-import { useGetExercisesOfSessionQuery } from "../../features/courses/exerciseApiSlice";
-import { useSelector } from "react-redux";
 
 const Session = () => {
 
-    const [activeTab, setActiveTab] = useState("description");
     const [deleteSession] = useDeleteSessionMutation();
     const [description, setDescription] = useState("");
-    const [editDescription, setEditDescription] = useState(false);
-    const [editTitle, setEditTitle] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [title, setTitle] = useState("");
     const [updateSession] = useUpdateSessionMutation();
     const { session_id }: any = useParams();
-    const isTeacher = useSelector(selectIsTeacher);
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
-    const urlTab = useParams()?.tab;
     const username = useSelector(selectCurrentUser);
-
-    useEffect(() => {
-        if (!urlTab) {
-            navigate(`./description`, { replace: true });
-        }
-        setActiveTab(urlTab!);
-    }, [urlTab, navigate]);
-
-    const toggle = (tab: any) => {
-        if (activeTab !== tab) navigate(`/session/${session_id}/${tab}`, { replace: true });
-    }
-
-    useEffect(() => {
-
-        //autosize textareas
-        const textareas = document.getElementsByTagName("textarea");
-        autosize(textareas);
-
-        window.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') {
-                if (editTitle) {
-                    (event.target as HTMLElement).blur();
-                }
-            }
-            if (event.key === 'Escape') {
-                //TODO revert to previous state
-                (event.target as HTMLElement).blur();
-            }
-        });
-    });
 
     const {
         data: session,
@@ -67,193 +35,72 @@ const Session = () => {
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
 
+    const truncateIfLong = (text: string, length: number) => {
+        return text.length > length ? text.substring(0, length) + "..." : text;
+    }
+
     useEffect(() => {
         setTitle(session?.title);
         setDescription(session?.description);
     }, [session, sessionIsSuccess]);
 
-    const {
-        data: exercises,
-        isLoading: exercisesIsLoading,
-        isSuccess: exercisesIsSuccess,
-        isError: exercisesIsError,
-    } = useGetExercisesOfSessionQuery({ session_id });
-
     const course = session?.course
 
-    const handleUpdate = () => {
-        try {
-            updateSession({
-                course_id: course?.id,
-                id: session?.id,
-                title,
-                description,
-            });
-        } catch (e) {
-            console.log(e);
-        }
+    const handleUpdate = async () => {
+        await updateSession({
+            course_id: course?.id,
+            id: session?.id,
+            title,
+            description,
+        })
+            .unwrap()
+            .then(() => {
+                dispatch(pushNotification({
+                    message: "The session has been updated",
+                    type: "success"
+                }));
+            })
+            .catch((e) => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. The session has not been updated",
+                    type: "error"
+                }));
+            })
     }
 
-    const handleDelete = (e: any) => {
+    const handleDelete = async (e: any) => {
         e.preventDefault();
-        try {
-            deleteSession({ id: session_id });
-        } catch (e) {
-            console.log(e);
-        } finally {
-            navigate(`/course/${course?.id}`);
-        }
+        await deleteSession({ id: session_id })
+            .unwrap()
+            .then(() => {
+                dispatch(pushNotification({
+                    message: "The session has been deleted",
+                    type: "success"
+                }));
+                navigate(`/course/${course?.id}`);
+            })
+            .catch((e) => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. The session has not been deleted",
+                    type: "error"
+                }));
+            })
     }
 
-    const deletePopover = (
-        <Popover id="popover-basic">
-            <Popover.Header as="h3">Are you sure?</Popover.Header>
-            <Popover.Body>
-                This will <strong>remove permanently</strong> this session and all its exercises. <br /><br />
-                <Button onClick={handleDelete} type="submit" size="sm" variant="danger">Delete session</Button>
-            </Popover.Body>
-        </Popover>
-    )
-
-    // Show title or edit title
-    const titleContent = () => {
-        if (!isOwner || !editTitle) {
-            return (
-                <h1
-                    className={"h2 fw-bold p-2" + (isOwner ? " teacher editable-title" : "")}
-                    id="title-editable"
-                    tabIndex={0} //allows focus
-                    onFocus={() => isOwner ? setEditTitle(true) : null}
+    const OwnerButtons = () => {
+        return isOwner ? (
+            <div className="">
+                <button
+                    onClick={() => setModalIsOpen(true)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
                 >
-                    {title}
-                </h1>
-            );
-        } else if (isOwner && editTitle) {
-            return (
-                <input
-                    autoFocus
-                    id="title-input"
-                    type="text"
-                    className="teacher title-input h2 fw-bold p-2"
-                    value={title}
-                    onChange={(e: any) => setTitle(e.target.value)}
-                    onBlur={() => {
-                        if (title === "") {
-                            setTitle("Untitled session");
-                        }
-                        setEditTitle(false)
-                        handleUpdate();
-                    }}
-                    placeholder="Enter session title"
-                />
-            )
-        }
-    }
-
-    // Show description or edit description
-    // TODO implement ctrl+z
-    const descriptionContent = () => {
-        if (!isOwner || !editDescription) {
-            return (
-                <blockquote
-                    tabIndex={0} //allows focus
-                    className={"p-3 pb-1 bg-light border rounded description" + (isOwner ? " teacher editable-description" : "")}
-                    onFocus={() => setEditDescription(true)}>
-                    <Markdown children={description} />
-                </blockquote>
-            )
-        } else if (isOwner && editDescription) {
-            return (
-                <Form>
-                    <Form.Group className="mb-3" controlId="description">
-                        <Form.Control
-                            autoFocus
-                            as="textarea"
-                            className="teacher description-input"
-                            value={description}
-                            onChange={(e: any) => setDescription(e.target.value)}
-                            onBlur={() => {
-                                if (description === "") {
-                                    setDescription("No description");
-                                }
-                                setEditDescription(false);
-                                handleUpdate();
-                            }}
-                            placeholder="Enter course description. Markdown is supported."
-                        />
-                        <Form.Text className="text-muted">
-                            You are editing the description - Markdown supported !
-                        </Form.Text>
-                    </Form.Group>
-                </Form>
-            )
-        }
-    }
-
-    const teacherActionsContent = () => {
-        return isOwner ? (
-            <div className="d-flex justify-content-end">
-                <OverlayTrigger trigger="click" rootClose={true} placement="auto" overlay={deletePopover}>
-                    <Button variant="light border border-danger text-danger">Delete</Button>
-                </OverlayTrigger>
+                    <TrashIcon className="w-6 h-6" />
+                </button>
             </div>
-        ) : <></>
-    }
+        ) : null;
+    };
 
-    const exerciseListTeacherContent = () => {
-        return isOwner ? (
-            <ListGroup.Item action href={"/exercise/create?session_id=" + session_id}>
-                + Create Exercise
-            </ListGroup.Item>
-        ) : (<></>)
-    }
-
-    const exerciseListTeacherContentNoExercises = () => {
-        return isOwner ? (
-            <Button variant="light mb-3 border" href={"/exercise/create?session_id=" + session_id}>
-                + Create exercise
-            </Button>
-        ) : (<></>)
-    }
-
-    //Exercises list, or 'no exercises' block if no exercises
-    const exercisesContent = () => {
-        if (exercisesIsLoading) {
-            return (
-                <p>Loading sessions...</p>
-            )
-        }
-        else if (exercisesIsSuccess && exercises.length === 0) {
-            return (
-                <ListGroup>
-                    <ListGroup.Item className="text-muted text-center dashed-border">
-                        <br />
-                        <p>This session doesn't have any exercises.</p>
-                        {exerciseListTeacherContentNoExercises()}
-                    </ListGroup.Item>
-                </ListGroup>
-            )
-        }
-        else if (exercisesIsSuccess) {
-            return (
-                <ListGroup>
-                    {exercises.map((exercise: any, i: number) => {
-                        return <ListGroup.Item
-                            action
-                            variant="light"
-                            href={"/exercise/" + exercise.id}
-                            key={i}
-                        >
-                            {exercise.title}
-                        </ListGroup.Item>
-                    })}
-                    {exerciseListTeacherContent()}
-                </ListGroup>
-            )
-        }
-    }
-
-    if (exercisesIsError || sessionIsError) {
+    if (sessionIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
                 <h3>The session you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
@@ -261,66 +108,101 @@ const Session = () => {
         )
     }
 
+    const tabs = [
+        {
+            key: "exercises",
+            title: "Exercises",
+            content: <ExerciseContent session={session} />,
+            buttonClassName: "rounded-l-md"
+        },
+        {
+            key: "results",
+            title: "Results",
+            content: <ResultsTable session_id={session_id} />,
+            buttonClassName: "rounded-r-md"
+        },
+    ];
+
     return sessionIsLoading ? (
         <></>
     ) : (
         <>
             <Header />
 
-            <Container>
-                <Breadcrumb>
-                    <Breadcrumb.Item href="/course">
-                        Courses
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item href={"/course/" + course.id}>
-                        {course.title}
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item active>
-                        {title}
-                    </Breadcrumb.Item>
-                </Breadcrumb>
+            <br />
+            <br />
+
+            <div className="container mx-auto">
+
+                <nav className="flex px-5 py-3 mt-2 md:mt-6 w-full text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+                    <ol className="flex items-center space-x-1">
+                        <li className="flex items-center">
+                            <Link to="/course" className="flex items-center text-gray-700 hover:text-blue-600">
+                                Courses
+                            </Link>
+                        </li>
+                        <li className="flex items-center text-gray-500" aria-current="page">
+                            <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                            </svg>
+                            <Link to={`/course/${course?.id}`} className="flex items-center text-gray-700 hover:text-blue-600">
+                                {truncateIfLong(course?.title, 20)}
+                            </Link>
+                        </li>
+                        <li className="flex items-center text-gray-500" aria-current="page">
+                            <svg aria-hidden="true" className="w-6 h-6 text-gray-400 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                            </svg>
+                            {title}
+                        </li>
+                    </ol>
+                </nav>
 
                 <br />
 
-                <div className="d-flex align-items-center justify-content-between">
-                    {titleContent()}
+                <div className="flex items-center justify-between">
+                    <div className="w-full">
+                        <EditableTitle
+                            title={title}
+                            setTitle={setTitle}
+                            handleUpdate={handleUpdate}
+                            isOwner={isOwner}
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        <OwnerButtons />
+                    </div>
                     <div className="p-0 mb-2">
-                        {teacherActionsContent()}
+
                     </div>
                 </div>
 
-                {isTeacher ? (
-                    <Tabs
-                        activeKey={activeTab}
-                        onSelect={(key: any) => { key && toggle(key) }}
-                        id="session-tabs"
-                        className="mb-3"
-                        variant="pills"
-                    >
-                        <Tab eventKey="description" title="Description">
-                            {descriptionContent()}
-                        </Tab>
+                <EditableDescription
+                    description={description}
+                    setDescription={setDescription}
+                    handleUpdate={handleUpdate}
+                    isOwner={isOwner}
+                />
 
-                        <Tab eventKey="exercises" title="Exercises">
-                            {exercisesContent()}
-                        </Tab>
+                {isOwner || isTutor ? (<>
+                    <Tabs tabs={tabs} />
+                </>) : (<>
+                    <h2>Exercises</h2>
+                    <ExerciseContent session={session} />
+                </>)}
 
-                        {isOwner || isTutor ? (
-                            <Tab eventKey="results" title="Results">
-                                <ResultsTable session_id={session_id} />
-                            </Tab>
-                        ) : (<></>)}
-
-                    </Tabs>
-                ) : (<>
-                    {descriptionContent()}
-
-                    <h3>Exercises</h3>
-                    {exercisesContent()}
-                </>)
+                {modalIsOpen &&
+                    <Modal
+                        title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
+                        icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
+                        decription={<p className="mb-4">This will permanently remove this session and all of its exercises.</p>}
+                        handleCloseModal={() => setModalIsOpen(false)}
+                        delete={handleDelete}
+                    />
                 }
 
-            </Container>
+
+            </div>
         </>
     )
 }
