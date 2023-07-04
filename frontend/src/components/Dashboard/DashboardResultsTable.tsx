@@ -52,7 +52,9 @@ const DashboardResultsTable = (props: any) => {
                             </button>
                         </div>
 
-                        <TestResult exercise_id={exercise.exercise_id} user_id={student.user_id} />
+                        <div className="p-4 pb-3">
+                            <TestResult exercise_id={exercise.exercise_id} user_id={student.user_id} />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -70,7 +70,7 @@ const TestResult = (props: any) => {
         <TestResultCodePreviewModal submission={submissionData[0]} show={showCodePreview} setShow={setShowCodePreview} />
 
         <ul
-            className='m-4 text-gray-900 bg-white border-gray-200 rounded-lg'
+            className='text-gray-900 bg-white border-gray-200 rounded-lg'
         >
             <li className={`w-full flex justify-between items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg`}>
                 <span>
