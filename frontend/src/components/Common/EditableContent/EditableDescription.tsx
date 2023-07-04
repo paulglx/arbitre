@@ -6,11 +6,13 @@ import autosize from "autosize";
 
 const EditableDescription = (props: any) => {
     const [editDescription, setEditDescription] = useState(false);
+    const [oldValue, setOldValue] = useState(props.description);
     const isOwner = props.isOwner;
 
     useEffect(() => {
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Escape' && editDescription) {
+                props.setDescription(oldValue);
                 (event.target as HTMLElement).blur();
             }
         });
@@ -20,7 +22,11 @@ const EditableDescription = (props: any) => {
         return (
             <blockquote
                 className={"my-4 p-4 border rounded-lg bg-gray-50 w-full text-justify" + (isOwner ? " teacher hover:border-dashed" : "") + (props.description ? "" : " text-gray-400")}
-                onFocus={() => setEditDescription(true)}
+                onFocus={() => {
+                    if (!isOwner) return;
+                    setEditDescription(true)
+                    setOldValue(props.description)
+                }}
                 tabIndex={0}
             >
                 <Markdown
@@ -40,7 +46,9 @@ const EditableDescription = (props: any) => {
                             props.setDescription("No description");
                         }
                         setEditDescription(false);
-                        props.handleUpdate();
+                        if (props.description !== oldValue) {
+                            props.handleUpdate();
+                        }
                     }}
                     onFocus={(e) => autosize(e.target)}
                     onChange={(e) => props.setDescription(e.target.value)}
