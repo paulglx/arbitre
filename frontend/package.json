@@ -64,7 +64,6 @@
     "@playwright/test": "^1.27.1",
     "@types/autosize": "^4.0.1",
     "@types/node": "^18.11.5",
-    "@types/react-copy-to-clipboard": "^5.0.4",
     "eslint": "^8.33.0"
   }
 }
