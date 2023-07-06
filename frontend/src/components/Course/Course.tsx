@@ -143,7 +143,6 @@ const Course = () => {
                         options={languageChoices}
                         title={language}
                         onChange={(e: any) => {
-                            console.log(e)
                             handleLanguageChange(e)
                         }}
                     />

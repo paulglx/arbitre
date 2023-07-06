@@ -120,9 +120,10 @@ const DashboardResultsTable = (props: any) => {
             <tbody>
                 <tr>
                     <td>
-                        <p className="p-2">
-                            No results found. <br></br>
-                            <span className="text-muted small">
+                        <p className="p-2 bg-gray-50">
+                            <span className="font-semibold">No results found. </span>
+                            <br></br>
+                            <span className="text-gray-600 text-sm">
                                 Make sure there are exercises in the session, and students registered on the course. <br />
                                 To see your own results here, register yourself as a student on this course.
                             </span>

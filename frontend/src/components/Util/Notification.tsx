@@ -64,7 +64,11 @@ const Notification = () => {
         <div className='p-3 fixed bottom-5 right-5'>
 
             {notifications.map((notification: any, i: number) => (
-                <div id="toast-success" className="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+                <div
+                    id="toast-success"
+                    className="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert"
+                    key={i}
+                >
                     {statusIcon(notification.type)}
                     <div className="ml-3 text-sm font-normal">{notification.message}</div>
                     <button

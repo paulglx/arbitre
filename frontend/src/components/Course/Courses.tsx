@@ -1,13 +1,14 @@
 import { ArrowRightIcon, PlusCircleIcon } from '@heroicons/react/24/solid'
 import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlice';
+import { useDispatch, useSelector } from "react-redux";
 
 import Error from '../Util/Error';
 import Header from '../Common/Header'
 import { Link } from "react-router-dom";
+import { pushNotification } from '../../features/notification/notificationSlice';
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from "react-redux";
 
 const Courses = () => {
 
@@ -19,6 +20,7 @@ const Courses = () => {
     } = useGetAllCoursesQuery({});
 
     const [createCourse] = useCreateCourseMutation()
+    const dispatch = useDispatch();
     const isTeacher = useSelector(selectIsTeacher)
     const navigate = useNavigate();
     const user = useSelector(selectCurrentUser)
@@ -32,8 +34,11 @@ const Courses = () => {
                 description: ""
             });
             navigate(`/course/${newCourse.data.id}`);
-        } catch (err) {
-            console.log(err);
+        } catch (e) {
+            dispatch(pushNotification({
+                message: "Something went wrong. The course has not been created.",
+                type: "error"
+            }));
         }
     }
 
@@ -59,15 +64,15 @@ const Courses = () => {
             <br />
 
             <div className="container mx-auto">
-                <div className="mt-2 md:mt-8 flex justify-center">
+                <div className="mt-2 flex justify-center">
                     <div className="bg-gray-100 rounded-xl shadow-lg shadow-gray-400/50 p-6 md:p-6 md:pb-3 md:h-auto w-full">
                         <h1 className="text-3xl font-bold mb-4 text-gray-700 hidden md:block">
                             Welcome back, {user}!
                         </h1>
                         <hr className="border-gray-400 hidden md:block" />
-                        <div className="mt-4 h-auto">
-                            <div className="flex items-center md:justify-between justify-end">
-                                <h2 className="text-2xl font-medium text-gray-700 hidden md:block">
+                        <div className="mt-0 md:mt-4 h-auto">
+                            <div className="flex items-center justify-between">
+                                <h2 className="block text-2xl font-medium text-gray-700">
                                     Your courses
                                 </h2>
                                 <div className='inline-flex'>

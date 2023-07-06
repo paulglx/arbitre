@@ -7,7 +7,6 @@ const Select = (props: any) => {
   const handleSelection = (option: any) => {
     setSelected(option);
     setIsOpen(false);
-    console.log(option)
     onChange(option);
   }
 

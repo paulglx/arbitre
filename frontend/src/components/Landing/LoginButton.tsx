@@ -2,6 +2,7 @@ import '../../login-register.css'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
+import { pushNotification } from '../../features/notification/notificationSlice'
 import { setCredentials } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
@@ -39,11 +40,13 @@ const LoginButton = () => {
                 navigate(from, { replace: true });
             }
         }).catch((error) => {
-            console.log("Failed to load user profile")
+            dispatch(pushNotification({
+                message: "Something went wrong. Please try again.",
+                type: "error"
+            }));
         });
-    } else {
-        console.log("Not authenticated")
     }
+
     return (
         <>
             <a

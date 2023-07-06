@@ -20,10 +20,8 @@ export const useRefreshAuth = () => {
                     keycloakRefreshToken: keycloak.refreshToken,
                     isTeacher
                 }));
-                console.log("Re-authenticated", profile.username)
             }).catch((error) => console.log("Failed to load user profile"));
         }).catch(() => {
-            console.log("Failed to refresh token")
             keycloak.logout()
             dispatch(logOut({}))
         });

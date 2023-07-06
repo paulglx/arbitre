@@ -69,7 +69,10 @@ const DashboardSessionPicker = (props: any) => {
             ref={dropdownButtonRef}
             type="button"
         >
-            {currentSessionTitle ? currentSessionTitle : "Select a session"}
+            {currentSession !== -1 ?
+                currentSessionTitle ? currentSessionTitle : "Untitled session"
+                :
+                "Select a session"}
             {dropdownOpen ?
                 <ChevronUpIcon id="chevron-up-icon" className="inline-block h-8 w-8 ml-2" />
                 :
@@ -115,7 +118,7 @@ const DashboardSessionPicker = (props: any) => {
                                     key={course.course.id}
                                     className="px-4 py-2 rounded-md text-gray-700 bg-gray-100 font-bold cursor-default"
                                 >
-                                    {course.course.title}
+                                    {course.course.title ? course.course.title : "Untitled course"}
                                 </span>
                             </li>
                             {course.sessions.length > 0 ? course.sessions.map((session: any) => (<div key={session.id}>
@@ -131,7 +134,7 @@ const DashboardSessionPicker = (props: any) => {
                                         className={"px-4 py-2 text-sm rounded-md " + (session.id === currentSession ? "cursor-default font-bold bg-gray-700 text-gray-100 " : "cursor-pointer hover:bg-gray-200")}
                                         key={session.id}
                                     >
-                                        {session.title}
+                                        {session.title ? session.title : "Untitled session"}
                                     </span>
                                 </li>
                             </div>))

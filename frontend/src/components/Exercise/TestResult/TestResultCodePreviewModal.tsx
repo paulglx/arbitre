@@ -21,7 +21,6 @@ const TestResultCodePreviewModal = (props: any) => {
                             type="button"
                             className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 mt-1 rounded-lg text-sm ml-auto inline-flex items-center"
                             onClick={() => {
-                                console.log("close modal")
                                 setShow(false)
                             }}
 
