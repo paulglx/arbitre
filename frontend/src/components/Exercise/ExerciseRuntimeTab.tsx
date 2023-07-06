@@ -1,11 +1,8 @@
-import { Button, Container } from 'react-bootstrap'
-import React, { useEffect } from 'react'
-
 import Editor from "@monaco-editor/react";
-import { pushNotification } from "../../features/notification/notificationSlice";
-import { useDispatch } from 'react-redux';
 import { useState } from 'react'
 import { useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
+
 
 const ExerciseRuntimeTab = (props: any) => {
 
@@ -13,13 +10,11 @@ const ExerciseRuntimeTab = (props: any) => {
 
     const [prefix, setPrefix] = useState("");
     const [suffix, setSuffix] = useState("");
-    const dispatch = useDispatch();
     const [updateExercise] = useUpdateExerciseMutation();
+    const [notificationMessage, setNotificationMessage] = useState("");
+    const [notificationType, setNotificationType] = useState("");
+    const [isNotificationVisible, setIsNotificationVisible] = useState(false);
 
-    useEffect(() => {
-        setPrefix(exercise.prefix);
-        setSuffix(exercise.suffix);
-    }, [exercise])
 
     const handleUpdateExercise = async () => {
         try {
@@ -28,92 +23,139 @@ const ExerciseRuntimeTab = (props: any) => {
                 title: exercise.title,
                 description: exercise.description,
                 session_id: session.id,
-                prefix, suffix
+                prefix,
+                suffix,
             });
-            dispatch(pushNotification({
-                message: "The exercise has been updated",
-                type: "light"
-            }));
+            setNotificationMessage("The exercise has been updated");
+            setNotificationType("success");
         } catch (error) {
-            dispatch(pushNotification({
-                message: "There was an error updating the exercise.",
-                type: "danger"
-            }));
+            setNotificationMessage("There was an error updating the exercise.");
+            setNotificationType("error");
         }
-    }
+        setIsNotificationVisible(true);
+    };
+
+    const handleCloseNotification = () => {
+        setIsNotificationVisible(false);
+    };
 
     return (<>
+        <div className="relative border bg-white rounded-2xl shadow-md p-4 mb-8">
+            <h5 className="text-2xl font-bold mb-2">Prefix</h5>
+            <p className="text-gray-600 mb-4">This will be appended before the student's code at runtime.</p>
 
-        <h5>Prefix</h5>
-        <p className="text-muted mb-1">This will be appended before the student's code at runtime.</p>
-
-        <Container className="border rounded m-0 mb-1">
-            <Editor
-                className="p-0 m-0 mt-2"
-                value={prefix}
-                onChange={(value, e) => { setPrefix(value as string) }}
-                language={course?.language?.toLowerCase()}
-                height="150px"
-                options={{
-                    minimap: { enabled: false },
-                    lineNumbers: "on",
-                    readOnly: !isOwner,
-                    renderLineHighlight: "none",
-                    renderFinalNewline: false,
-                    renderLineHighlightOnlyWhenFocus: false,
-                    renderValidationDecorations: "on",
-                    renderWhitespace: "none",
-                }}
-            />
-        </Container>
-
-        <Button variant={prefix !== exercise.prefix ? "primary" : "light"} size="sm" onClick={handleUpdateExercise}>
-            Update
-        </Button>
-
-        <h5 className="mt-3">Suffix</h5>
-        <p className="text-muted mb-1">This will be appended after the student's code at runtime.</p>
-
-        <Container className="border rounded m-0 mb-1">
-            <Editor
-                className="p-0 m-0 mt-2"
-                value={suffix}
-                onChange={(value, e) => { setSuffix(value as string) }}
-                language={course?.language?.toLowerCase()}
-                height="150px"
-                options={{
-                    minimap: { enabled: false },
-                    lineNumbers: "on",
-                    readOnly: !isOwner,
-                    renderLineHighlight: "none",
-                    renderFinalNewline: false,
-                    renderLineHighlightOnlyWhenFocus: false,
-                    renderValidationDecorations: "on",
-                    renderWhitespace: "none",
-                }}
-            />
-        </Container>
-
-        <Button variant={suffix !== exercise.suffix ? "primary" : "light"} size="sm" onClick={handleUpdateExercise}>
-            Update
-        </Button>
-
-        <hr />
-
-        <h5>Code preview</h5>
-        <p className="text-muted mb-1">This is what the tested file will look like.</p>
-
-        <pre className="border rounded bg-light p-2">
-            {prefix !== "" ? (<>{prefix}<br /><br /></>) : (<></>)}
-            <div className="rounded border-0 m-1 student-code-preview">
-                <br />
-                &nbsp;&nbsp;<span className="bg-light p-1 rounded">Student code goes here</span> <br />
-                <br />
+            <div className="relative rounded-2xl">
+                <Editor
+                    className="h-48 p-2 border rounded-lg bg-white shadow-md mb-4 focus:ring-blue-500 focus:border-blue-500"
+                    value={prefix}
+                    onChange={(value, e) => { setPrefix(value as string) }}
+                    language={course?.language?.toLowerCase()}
+                    options={{
+                        minimap: { enabled: false },
+                        lineNumbers: "on",
+                        readOnly: !isOwner,
+                        roundedSelection: false,
+                        scrollbar: {
+                            verticalScrollbarSize: 8,
+                            horizontalScrollbarSize: 8,
+                            useShadows: true,
+                            vertical: "visible",
+                            horizontal: "visible",
+                        },
+                        lineDecorationsWidth: 4,
+                        glyphMargin: true,
+                        renderLineHighlight: "none",
+                        renderFinalNewline: false,
+                        renderLineHighlightOnlyWhenFocus: false,
+                        renderValidationDecorations: "on",
+                        renderWhitespace: "none",
+                    }}
+                />
+                {isOwner && (
+                    <button
+                        className="absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md py-2 px-4 transition-colors duration-300"
+                        onClick={handleUpdateExercise}
+                    >
+                        <ArrowPathIcon className="w-6 h-6" />
+                    </button>
+                )}
             </div>
-            {suffix !== "" ? (<><br />{suffix}</>) : (<></>)}
-        </pre>
 
-    </>)
+            <h5 className="text-2xl font-bold mt-6">Suffix</h5>
+            <p className="text-gray-600 mb-4">This will be appended after the student's code at runtime.</p>
+
+            <div className="relative rounded-2xl">
+                <Editor
+                    className="h-48 p-2 border rounded-lg bg-white shadow-md mb-4 focus:ring-blue-500 focus:border-blue-500"
+                    value={suffix}
+                    onChange={(value, e) => { setSuffix(value as string) }}
+                    language={course?.language?.toLowerCase()}
+                    options={{
+                        minimap: { enabled: false },
+                        lineNumbers: "on",
+                        readOnly: !isOwner,
+                        roundedSelection: false,
+                        scrollbar: {
+                            verticalScrollbarSize: 8,
+                            horizontalScrollbarSize: 8,
+                            useShadows: true,
+                            vertical: "visible",
+                            horizontal: "visible",
+                        },
+                        lineDecorationsWidth: 4,
+                        glyphMargin: true,
+                        renderLineHighlight: "none",
+                        renderFinalNewline: false,
+                        renderLineHighlightOnlyWhenFocus: false,
+                        renderValidationDecorations: "on",
+                        renderWhitespace: "none",
+                    }}
+                />
+                {isOwner && (
+                    <button
+                        className="absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md py-2 px-4 transition-colors duration-300"
+                        onClick={handleUpdateExercise}
+                    >
+                        <ArrowPathIcon className="w-6 h-6" />
+                    </button>
+                )}
+            </div>
+            {isNotificationVisible && (
+                <div
+                    className={`flex items-center justify-between px-4 py-2 mb-4 rounded ${notificationType === "error" ? "bg-red-500" : "bg-green-500"
+                        } text-white`}
+                >
+                    <span>{notificationMessage}</span>
+                    <button onClick={handleCloseNotification}>Close</button>
+                </div>
+            )}
+        </div>
+
+        <div className="border rounded-lg bg-white shadow-md p-4 mb-4">
+            <h5 className="text-2xl font-bold mb-2">Code preview</h5>
+            <p className="text-gray-600 mb-4">This is what the tested file will look like.</p>
+            <pre className="border rounded-lg bg-gray-100 p-4">
+                {prefix && (
+                    <>
+                        <span className="font-bold text-sm text-gray-600">{prefix}</span>
+                        <br /><br />
+                    </>
+                )}
+                <div className="rounded-md border-2 border-gray-300 p-4 bg-white">
+                    <p className="text-gray-600 mb-0">
+                        Student code goes here
+                    </p>
+                </div>
+                {suffix && (
+                    <>
+                        <br />
+                        <span className="font-bold text-sm text-gray-600">{suffix}</span>
+                    </>
+                )}
+            </pre>
+        </div>
+    </>
+    )
 }
 
 export default ExerciseRuntimeTab

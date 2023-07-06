@@ -1,8 +1,7 @@
-import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
 import { useEffect, useState } from 'react'
-
-import React from 'react'
+import { PlusCircleIcon, ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { Modal } from "../Common";
 
 const ExerciseTestsTab = (props: any) => {
 
@@ -16,6 +15,7 @@ const ExerciseTestsTab = (props: any) => {
     const [createTest] = useCreateTestMutation();
     const [updateTest] = useUpdateTestMutation();
     const [deleteTest] = useDeleteTestMutation();
+    const [showModal, setShowModal] = useState(false);
 
     const {
         data: testsResponse,
@@ -48,15 +48,15 @@ const ExerciseTestsTab = (props: any) => {
         }
     }
 
-    const handeDeleteTest = async (testId: any) => {
+    const handleDeleteConfirmation = async () => {
         try {
-            await deleteTest({ id: testId });
-            //remove test from tests state
-            setTests(tests.filter((t: any) => t.id !== testId));
+            await deleteTest({ id: editTestId });
+            setTests(tests.filter((t: any) => t.id !== editTestId));
         } catch (error) {
             console.log(error);
         }
-    }
+        setShowModal(false);
+    };
 
 
     //Prevent blurring test div when focusing one of its inputs
@@ -67,101 +67,177 @@ const ExerciseTestsTab = (props: any) => {
         }
     }
 
-    return (exerciseIsSuccess && tests) ? (
+    return (
         <>
+            {exerciseIsSuccess && tests && (
+                <>
+                    {tests.length > 0 ? (
+                        <h6 className="text-muted">
+                            {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
+                        </h6>
+                    ) : (
+                        <div className="bg-gray-100 shadow-lg shadow-gray-400/70 p-6 md:p-2 flex justify-center items-center flex-col rounded-lg">
+                            <h6 className="text-muted p-2 md:p-4">This course doesn't have any test.</h6>
+                            {isOwner && (
+                                <div className="flex justify-center p-2 md:p-2">
+                                    <button
+                                        className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                        onClick={(e) => {
+                                            const randomId = Array(16)
+                                                .join()
+                                                .split(",")
+                                                .map(function () {
+                                                    return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                                                })
+                                                .join("");
+                                            setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                        }}
+                                    >
+                                        <PlusCircleIcon className="mr-2 w-6 h-6" />
+                                        Create test
+                                    </button>
+                                </div>
 
-            {tests.length > 0 ?
-                <h6 className="text-muted">
-                    {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
-                </h6>
-                :
-                <h6 className="text-muted">
-                    No tests yet
-                </h6>
-            }
+                            )}
+                        </div>
 
-            {tests.map((test: any) => (
+                    )}
 
-                <div className={"p-1 mb-1" + (isOwner ? " editable-test" : "") + (editTest && editTestId === test?.id ? " editable-test-focused" : "")} key={test?.id} tabIndex={0}
-                    onFocus={() => { isOwner && setEditTestId(test?.id); setEditTest(true) }}
-                    onBlur={(e) => { isOwner && handleTestBlur(e) }}
-                    onMouseEnter={() => isOwner && setHoveredTestId(test?.id)}
-                    onMouseLeave={() => isOwner && setHoveredTestId(-1)}
-                >
-
-                    <Row className="g-2">
-                        <Col md={3}>
-                            <Form.Control
-                                className={"bg-white fw-bold" + (editTest && editTestId === test?.id ? " " : " border")}
-                                placeholder="Test name"
-                                aria-label="Test name"
-                                value={test?.name}
-                                autoComplete="off"
-                                onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, name: e.target.value } : t)) }}
-                                {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                            />
-                        </Col>
-
-                        <Col md={4}>
-                            <InputGroup>
-                                <InputGroup.Text>Input</InputGroup.Text>
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Input to test for"
-                                    rows={1}
-                                    aria-label="Input"
-                                    value={test?.stdin}
+                    {tests.map((test) => (
+                        <div
+                            key={test?.id}
+                            className={` mb-1${isOwner ? " editable-test" : ""}${editTest && editTestId === test?.id ? " editable-test-focused" : ""} w-full`}
+                            tabIndex={0}
+                            onFocus={() => {
+                                isOwner && setEditTestId(test?.id);
+                                setEditTest(true);
+                            }}
+                            onBlur={(e) => {
+                                isOwner && handleTestBlur(e);
+                            }}
+                            onMouseEnter={() => {
+                                isOwner && setHoveredTestId(test?.id);
+                            }}
+                            onMouseLeave={() => {
+                                isOwner && setHoveredTestId(-1);
+                            }}
+                        >
+                            <div className="flex items-center w-full gap-2 flex-col md:flex-row">
+                                <input
+                                    type="text"
+                                    placeholder="Test name"
+                                    aria-label="Test name"
+                                    value={test?.name}
                                     autoComplete="off"
-                                    onChange={(e) => { isOwner && setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdin: e.target.value } : t)) }}
+                                    className={`w-full rounded-lg py-2 px-3 text-gray-700 ${editTest && editTestId === test?.id ? "" : "border border-gray-300"
+                                        } focus:outline-none focus:border-blue-500`}
+                                    onChange={(e) => {
+                                        isOwner &&
+                                            setTests(
+                                                tests.map((t) =>
+                                                    t.id === test?.id ? { ...t, name: e.target.value } : t
+                                                )
+                                            );
+                                    }}
                                     {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                 />
-                            </InputGroup>
-                        </Col>
 
-                        <Col md={4}>
-                            <InputGroup>
-                                <InputGroup.Text>Output</InputGroup.Text>
-                                <Form.Control
-                                    as="textarea"
-                                    placeholder="Expected output"
-                                    rows={1}
-                                    aria-label="Ouput"
-                                    value={test?.stdout}
-                                    autoComplete="off"
-                                    onChange={(e) => { setTests(tests.map((t: any) => t.id === test?.id ? { ...t, stdout: e.target.value } : t)) }}
-                                    {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                />
-                            </InputGroup>
-                        </Col>
-                        <Col>
-                            {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
-                                <Button
-                                    className="btn-link delete-button btn-light text-danger text-decoration-none float-end"
-                                    onClick={(e) => { isOwner && handeDeleteTest(editTestId) }}
-                                >
-                                    Delete
-                                </Button>
-                            ) : (<></>)}
-                        </Col>
-                    </Row>
-                </div>
-            ))}
+                                <div className="flex justify-center md:ml-3 border rounded-lg border-gray-300 bg-gray-200 w-full md:w-auto">
+                                    <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Input</span>
+                                    <textarea
+                                        className="form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2 w-full md:w-auto"
+                                        placeholder="Input to test for"
+                                        rows={1}
+                                        aria-label="Input"
+                                        value={test?.stdin}
+                                        autoComplete="off"
+                                        onChange={(e) => {
+                                            isOwner &&
+                                                setTests(
+                                                    tests.map((t) =>
+                                                        t.id === test?.id ? { ...t, stdin: e.target.value } : t
+                                                    )
+                                                );
+                                        }}
+                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                                    />
+                                </div>
 
-            {isOwner ? (
-                <Button
-                    className="btn-link btn-light"
-                    onClick={(e) => {
-                        //generates a random id to differentiate between new tests. Upon creating the test, this id will be ignored by the API.
-                        const randomId = Array(16).join().split(',').map(function () { return alphabet.charAt(Math.floor(Math.random() * alphabet.length)); }).join('');
-                        setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }])
-                    }}
-                >
-                    + ADD TEST
-                </Button>
-            ) : (<></>)}
+                                <div className="flex items-center md:ml-3 border rounded-lg border-gray-300 bg-gray-200 w-full md:w-auto">
+                                    <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Output</span>
+                                    <textarea
+                                        className="form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2  w-full md:w-auto"
+                                        placeholder="Expected output"
+                                        rows={1}
+                                        aria-label="Output"
+                                        value={test?.stdout}
+                                        autoComplete="off"
+                                        onChange={(e) => {
+                                            setTests(
+                                                tests.map((t) =>
+                                                    t.id === test?.id ? { ...t, stdout: e.target.value } : t
+                                                )
+                                            );
+                                        }}
+                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                                    />
+                                </div>
+                                <div className="inline-flex justify-end">
+                                    <button
+                                        className="text-sm font-medium focus:outline-none bg-red-500 hover:bg-red-600 text-white rounded-md px-3 py-2 transition-all duration-300 flex  items-end"
+                                        onClick={() => setShowModal(true)}
+                                    >
+                                        <TrashIcon className="w-6 h-6" />
+                                    </button>
+                                </div>
+                            </div>
 
+                            <div className="md:col-auto">
+                                {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
+                                    <>
+
+                                        {showModal && (
+                                            <Modal
+                                                title={<h2 className="text-xl font-semibold">Confirmation</h2>}
+                                                icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
+                                                decription={<p className="mb-4">Are you sure you want to delete this test?</p>}
+                                                handleCloseModal={() => setShowModal(false)}
+                                                delete={handleDeleteConfirmation}
+                                            />
+
+                                        )}
+                                    </>
+                                ) : null}
+                            </div>
+                        </div>
+                    ))}
+                    {isOwner && tests.length > 0 && (
+                        <div className="flex justify-center mt-6 md:mt-2">
+                            <button
+                                className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                onClick={(e) => {
+                                    const randomId = Array(16)
+                                        .join()
+                                        .split(",")
+                                        .map(function () {
+                                            return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                                        })
+                                        .join("");
+                                    setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                }}
+                            >
+                                <PlusCircleIcon className="mr-2 w-6 h-6" />
+                                Add test
+                            </button>
+                        </div>
+
+                    )}
+
+                </>
+            )}
         </>
-    ) : (<></>)
+    );
+
 }
 
 export default ExerciseTestsTab
