@@ -13,7 +13,7 @@ const EditableDescription = (props: any) => {
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Escape' && editDescription) {
                 props.setDescription(oldValue);
-                (event.target as HTMLElement).blur();
+                setEditDescription(false);
             }
         });
     });
