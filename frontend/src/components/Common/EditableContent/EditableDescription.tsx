@@ -30,7 +30,7 @@ const EditableDescription = (props: any) => {
                 tabIndex={0}
             >
                 <Markdown
-                    children={props.description ? props.description : "Enter course description."}
+                    children={props.description ? props.description : "Enter description"}
                 />
             </blockquote>
         )
@@ -42,9 +42,6 @@ const EditableDescription = (props: any) => {
                     aria-label="Course description"
                     className="teacher description-input w-full p-4 rounded-lg border border-gray-300"
                     onBlur={() => {
-                        if (props.description === "") {
-                            props.setDescription("No description");
-                        }
                         setEditDescription(false);
                         if (props.description !== oldValue) {
                             props.handleUpdate();
@@ -52,7 +49,7 @@ const EditableDescription = (props: any) => {
                     }}
                     onFocus={(e) => autosize(e.target)}
                     onChange={(e) => props.setDescription(e.target.value)}
-                    placeholder="Enter course description."
+                    placeholder="Enter description"
                     value={props.description}
                 />
                 <p className="text-sm bg-blue-100 text-blue-800 py-2 px-4 rounded-md">

@@ -193,7 +193,7 @@ const Course = () => {
 
                 <Breadcrumb items={[
                     { title: "Courses", link: "/course" },
-                    { title: title ? title : "Untitled", link: null }
+                    { title: title, link: null }
                 ]} />
 
                 <br />

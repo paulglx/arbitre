@@ -132,7 +132,7 @@ const Session = () => {
                 <Breadcrumb items={[
                     { link: "/course", title: "Courses" },
                     { link: `/course/${course?.id}`, title: course?.title },
-                    { link: null, title: title ? title : "Untilted" },
+                    { link: null, title: title },
                 ]} />
 
                 <br />

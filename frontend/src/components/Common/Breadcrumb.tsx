@@ -24,11 +24,11 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
                     <li key={i} className="flex items-center">
                         {item.link ? (
                             <Link key={i} to={item.link} className="flex items-center text-gray-700 hover:text-blue-600">
-                                {truncateIfLong(item.title, 20)}
+                                {item.title ? truncateIfLong(item.title, 20) : "Untitled"}
                             </Link>
                         ) : (
                             <span key={i} className="bg-blue-50 px-4 py-2 rounded-lg flex items-center text-blue-600" aria-current="page">
-                                {item.title}
+                                {item.title ? item.title : "Untitled"}
                             </span>
                         )}
                         {i < items.length - 1 ? (
@@ -41,7 +41,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
         <div className="flex md:hidden">
             <Link className="flex bg-gray-50 border px-4 py-2 rounded-lg items-center text-gray-600 hover:bg-gray-100" to={items[items.length - 2].link || ""}>
                 <ArrowLeftIcon className="flex-shrink-0 w-4 h-4 mr-2 text-gray-600" aria-hidden="true" />
-                {items[items.length - 2].title}
+                {items[items.length - 2].title ? items[items.length - 2].title : "Untitled"}
             </Link>
         </div>
     </>)

@@ -33,7 +33,7 @@ const EditableTitle = (props: any) => {
                 }}
                 tabIndex={0} //allows focus
             >
-                {props.title ? props.title : "Untitled"}
+                {props.title ? props.title : "Enter title"}
             </h1 >
         );
     } else if (isOwner && editTitle) {
@@ -45,9 +45,6 @@ const EditableTitle = (props: any) => {
                 className="w-full text-3xl font-bold rounded-md"
                 id="title-input"
                 onBlur={() => {
-                    if (props.title === "") {
-                        props.setTitle("Untitled");
-                    }
                     setEditTitle(false)
                     if (props.title !== oldValue) {
                         props.handleUpdate();
@@ -55,7 +52,7 @@ const EditableTitle = (props: any) => {
                 }}
                 onChange={(e: any) => props.setTitle(e.target.value)}
                 onFocus={(e) => autosize(e.target)}
-                placeholder="Enter course title"
+                placeholder="Enter title"
                 type="text"
                 value={props.title}
             />
