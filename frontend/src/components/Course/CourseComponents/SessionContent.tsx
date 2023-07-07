@@ -7,6 +7,7 @@ import { pushNotification } from "../../../features/notification/notificationSli
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useCreateSessionMutation } from "../../../features/courses/sessionApiSlice";
 import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SessionContent = (props: any) => {
@@ -25,6 +26,17 @@ const SessionContent = (props: any) => {
         isSuccess: sessionsIsSuccess,
         isError: sessionsIsError,
     } = useGetSessionsOfCourseQuery({ course_id: props.id })
+
+    const sortedSessions = useMemo(() => {
+        if (sessionsIsSuccess) {
+            const sessionsToSort = structuredClone(sessions);
+            sessionsToSort.sort((a: any, b: any) => {
+                return a.title.localeCompare(b.title);
+            });
+            return sessionsToSort;
+        }
+        return sessions;
+    }, [sessions, sessionsIsSuccess]);
 
     const handleCreateSession = async () => {
         try {
@@ -76,7 +88,7 @@ const SessionContent = (props: any) => {
         return (
             <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
-                    {sessions.map((session: any, i: number) => (
+                    {sortedSessions.map((session: any, i: number) => (
                         <Link
                             key={i}
                             className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:shadow-lg hover:scale-105"

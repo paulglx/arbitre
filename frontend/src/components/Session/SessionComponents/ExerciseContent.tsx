@@ -6,6 +6,7 @@ import { pushNotification } from '../../../features/notification/notificationSli
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useCreateExerciseMutation } from '../../../features/courses/exerciseApiSlice'
 import { useGetExercisesOfSessionQuery } from '../../../features/courses/exerciseApiSlice'
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom'
 
 const ExerciseContent = (props: any) => {
@@ -24,6 +25,17 @@ const ExerciseContent = (props: any) => {
         isSuccess: exercisesIsSuccess,
         isError: exercisesIsError,
     } = useGetExercisesOfSessionQuery({ session_id: session?.id });
+
+    const sortedExercises = useMemo(() => {
+        if (exercisesIsSuccess) {
+            const exercisesToSort = structuredClone(exercises);
+            exercisesToSort.sort((a: any, b: any) => {
+                return a.title.localeCompare(b.title);
+            });
+            return exercisesToSort;
+        }
+        return exercises;
+    }, [exercises, exercisesIsSuccess]);
 
     const handleCreateExercise = async () => {
         try {
@@ -75,7 +87,7 @@ const ExerciseContent = (props: any) => {
         return (
             <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
-                    {exercises.map((exercise: any, i: number) => (
+                    {sortedExercises.map((exercise: any, i: number) => (
                         <Link
                             key={i}
                             className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"

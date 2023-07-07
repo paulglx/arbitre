@@ -51,16 +51,16 @@ const StudentsInvite = (props: any) => {
   };
 
   return isOwner || isTutor ? (
-    <div className="bg-gray-50 border rounded-lg p-3 md:p-6">
+    <div className="p-2">
       <p className="text-2xl font-bold">Invite students</p>
       <span className="text-gray-600">
-        Students can join your course by entering the join code below.
+        {joinCodeEnabled ? "Students can join your course by entering the join code below." : "Enable the join code below to allow students to join your course."}
       </span>
       <div className="flex justify-center my-5">
         {joinCodeEnabled ? (
           <button
             id="join-code"
-            className="mr-2 text-gray-100 bg-gray-800 border border-gray-900 font-mono text-center px-2 py-1 rounded-xl text-4xl"
+            className="mr-2 text-blue-50 bg-blue-600 border border-blue-100 font-mono text-center px-2 py-1 rounded-xl text-4xl"
             onClick={handleCopyJoinCode}
           >
             {joinCode}
@@ -77,21 +77,21 @@ const StudentsInvite = (props: any) => {
           <>
             <div className="flex items-center justify-center">
               <button
-                className={`${joinCodeEnabled ? " bg-gray-800 text-gray-50" : "bg-gray-600 text-gray-400"} mr-2 rounded-full p-2`}
+                className={`${joinCodeEnabled ? " bg-blue-50 text-blue-600 border-blue-200 cursor-pointer" : "bg-gray-600 text-gray-400 cursor-default"} border mr-2 rounded-full p-2`}
                 onClick={joinCodeEnabled ? handleRefreshJoinCode : undefined}
                 aria-label="Refresh join code"
               >
                 <ArrowPathIcon className="w-5 h-5" />
               </button>
               <button
-                className={`text-blue-500 bg-gray-800 rounded-full p-2`}
+                className={`bg-blue-50 rounded-full border border-blue-200 p-2`}
                 onClick={handleToggleJoinCodeEnabled}
                 aria-label="Toggle join code"
               >
                 {joinCodeEnabled ? (
-                  <IoToggleOutline className="w-5 h-5 text-white" />
+                  <IoToggleOutline className="w-5 h-5 text-blue-600" />
                 ) : (
-                  <IoToggleOutline className="w-5 h-5 text-red-500" />
+                  <IoToggleOutline className="w-5 h-5 text-gray-600" />
                 )}
               </button>
             </div>

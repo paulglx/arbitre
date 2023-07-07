@@ -130,7 +130,7 @@ const ExerciseTestsTab = (props: any) => {
                                     aria-label="Test name"
                                     value={test?.name}
                                     autoComplete="off"
-                                    className={`w-full rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
+                                    className={`w-full md:w-1/2 rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
                                     onChange={(e) => {
                                         isOwner &&
                                             setTests(
@@ -142,10 +142,10 @@ const ExerciseTestsTab = (props: any) => {
                                     {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                 />
 
-                                <div className="flex justify-center md:ml-3 border rounded-lg border-gray-300 bg-gray-200 w-full md:w-auto">
+                                <div className="w-full md:w-1/4 flex justify-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
                                     <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Input</span>
                                     <textarea
-                                        className="form-control border-0 rounded-r-lg focus:outline-none focus:border-blue-500 ml-2 md:ml-4 bg-white h-10 p-2 w-full md:w-auto"
+                                        className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:border-blue-500 ml-2 md:ml-4 bg-white h-10 p-2"
                                         placeholder="Input to test for"
                                         rows={1}
                                         aria-label="Input"
@@ -163,10 +163,10 @@ const ExerciseTestsTab = (props: any) => {
                                     />
                                 </div>
 
-                                <div className="flex items-center md:ml-3 border rounded-lg border-gray-300 bg-gray-200 w-full md:w-auto">
+                                <div className="md:w-1/4 w-full flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
                                     <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Output</span>
                                     <textarea
-                                        className="form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2  w-full md:w-auto"
+                                        className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2"
                                         placeholder="Expected output"
                                         rows={1}
                                         aria-label="Output"
@@ -184,10 +184,11 @@ const ExerciseTestsTab = (props: any) => {
                                 </div>
                                 <div className="inline-flex justify-end">
                                     <button
-                                        className="text-sm font-medium focus:outline-none bg-red-500 hover:bg-red-600 text-white rounded-md px-3 py-2 transition-all duration-300 flex  items-end"
+                                        className="font-medium focus:outline-none bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2 md:py-3 mb-2 md:mb-0 transition-all duration-300 flex items-center"
                                         onClick={() => setShowModal(true)}
                                     >
-                                        <TrashIcon className="w-6 h-6" />
+                                        <TrashIcon className="w-4 h-4" />
+                                        <span className='md:hidden block ml-2'>Delete</span>
                                     </button>
                                 </div>
                             </div>

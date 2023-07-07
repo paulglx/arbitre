@@ -113,9 +113,17 @@ ol.breadcrumb li.active {
   font-weight: 300;
 }
 
+.markdown p, .markdown ul, .markdown ol, .markdown dl, .markdown table, .markdown blockquote, .markdown pre, .markdown hr {
+  margin-bottom:12px;
+}
 
-.markdown>pre {
-  background-color: #eaecf1;
+.mardown p:last-child, .markdown ul:last-child, .markdown ol:last-child, .markdown dl:last-child, .markdown table:last-child, .markdown blockquote:last-child, .markdown pre:last-child, .markdown hr:last-child {
+  margin-bottom: 0;
+}
+
+.markdown pre {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
   color: #607196;
   padding: 10px;
   border-radius: 5px;

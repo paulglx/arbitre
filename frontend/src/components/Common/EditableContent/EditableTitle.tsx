@@ -31,7 +31,7 @@ const EditableTitle = (props: any) => {
         return (
             <h1
                 aria-label="Edit title"
-                className={"text-3xl font-bold hover:bg-gray-200 " + (isOwner ? " teacher editable-title" : "") + (props.title ? "" : " text-gray-400")}
+                className={"text-3xl font-bold bg-white border-0 rounded-lg" + (isOwner ? " border hover:ring hover:bg-gray-100" : "") + (props.title ? "" : " text-gray-400")}
                 id="title-editable"
                 onFocus={() => {
                     if (!isOwner) return;

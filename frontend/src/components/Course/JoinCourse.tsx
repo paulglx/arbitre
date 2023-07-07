@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { ChevronLeftIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import Header from '../Common/Header'
 import { Link } from "react-router-dom";
 import { pushNotification } from '../../features/notification/notificationSlice';
@@ -98,8 +98,8 @@ const JoinCourse = (props: any) => {
             <br />
 
             <div className="container mx-auto">
-                <Link to="/course" className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center my-4 md:my-6">
-                    <ChevronLeftIcon className="h-5 w-5" />
+                <Link to="/course" className="inline-flex bg-gray-50 hover:bg-gray-100 border font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline items-center my-4 md:my-6">
+                    <ArrowLeftIcon className="h-5 w-5" />
                     Back to courses
                 </Link>
 
@@ -132,7 +132,7 @@ const JoinCourse = (props: any) => {
                     <br />
 
                     <button
-                        className={`${codeInput.replace(' ', '').length === 8 ? " text-gray-50 bg-gray-500 hover:bg-gray-700" : "text-gray-100 bg-gray-300"} font-bold py-2 px-4 transition duration-300 rounded-lg justify-center flex items-center`}
+                        className={`${codeInput.replace(' ', '').length === 8 ? " text-blue-50 bg-blue-600 hover:bg-gray-700" : "text-gray-100 bg-gray-300"} font-bold py-2 px-4 transition duration-300 rounded-lg justify-center flex items-center`}
                         disabled={codeInput.replace(' ', '').length < 8}
                         onClick={handleSubmit}
                     >

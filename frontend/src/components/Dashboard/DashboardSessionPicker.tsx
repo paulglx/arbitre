@@ -63,7 +63,7 @@ const DashboardSessionPicker = (props: any) => {
             id="sessions-dropdown-search-button"
             aria-expanded="true"
             aria-haspopup="true"
-            className='text-3xl font-bold px-4 py-2 border-2 border-gray-300 bg-gray-100 rounded-md'
+            className='text-3xl font-bold px-4 py-2 border-2 border-blue-300 bg-blue-50 rounded-md text-blue-700'
             key={currentSession}
             onClick={toggleDropdown}
             ref={dropdownButtonRef}
@@ -84,7 +84,7 @@ const DashboardSessionPicker = (props: any) => {
         <div
             id="sessions-dropdown-menu"
             aria-labelledby="sessions-dropdown-search-button"
-            className={"fixed z-10 w-96 mt-2 bg-white border-4 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
+            className={"fixed z-10 w-96 mt-2 bg-white border-2 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
             ref={dropdownMenuRef}
         >
             <div id="dropdown" className="p-3">
@@ -131,7 +131,7 @@ const DashboardSessionPicker = (props: any) => {
                                     className='my-4'
                                 >
                                     <span
-                                        className={"px-4 py-2 text-sm rounded-md " + (session.id === currentSession ? "cursor-default font-bold bg-gray-700 text-gray-100 " : "cursor-pointer hover:bg-gray-200")}
+                                        className={"px-4 py-2 text-sm rounded-md " + (session.id === currentSession ? "cursor-default font-bold bg-blue-700 text-gray-100 " : "cursor-pointer hover:bg-gray-200")}
                                         key={session.id}
                                     >
                                         {session.title ? session.title : "Untitled session"}
