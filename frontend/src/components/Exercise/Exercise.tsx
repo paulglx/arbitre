@@ -11,6 +11,7 @@ import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
 import Header from "../Common/Header";
+import NotFound from "../Util/NotFound";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
@@ -32,9 +33,7 @@ const Exercise = () => {
 
     const {
         data: exercise,
-        isLoading: exerciseIsLoading,
         isSuccess: exerciseIsSuccess,
-        isError: exerciseIsError,
     } = useGetExerciseQuery({ id: exercise_id });
 
     const session = exercise?.session
@@ -106,14 +105,6 @@ const Exercise = () => {
         ) : null;
     };
 
-    if (exerciseIsError) {
-        return (
-            <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-                <h3>The exercise you are looking for doesn't exist, <br />or you aren't allowed to access it.<br /><a href="/course" className='text-decoration-none'>⬅ Back to courses</a></h3>
-            </div>
-        )
-    }
-
     const tabs = [
         {
             key: "tests",
@@ -132,9 +123,7 @@ const Exercise = () => {
         },
     ];
 
-    return exerciseIsLoading ? (
-        <></>
-    ) : (<>
+    return exerciseIsSuccess ? (<>
 
         <Header />
 
@@ -188,9 +177,10 @@ const Exercise = () => {
                     delete={handleDelete}
                 />
             }
-
         </div>
-    </>)
+    </>) : (
+        <NotFound />
+    )
 }
 
 export default Exercise

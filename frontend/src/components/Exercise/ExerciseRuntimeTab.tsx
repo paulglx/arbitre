@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import Editor from "@monaco-editor/react";
-import { useState } from 'react'
-import { useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
+
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import Editor from "@monaco-editor/react";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useDispatch } from 'react-redux';
-
+import { useState } from 'react'
+import { useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
 
 const ExerciseRuntimeTab = (props: any) => {
 
@@ -43,15 +43,16 @@ const ExerciseRuntimeTab = (props: any) => {
         }
     }
 
+    console.log(course?.language?.toLowerCase())
 
     return (<>
-        <div className="relative border bg-white rounded-2xl shadow-md p-4 mb-8">
-            <h5 className="text-2xl font-bold mb-2">Prefix</h5>
-            <p className="text-gray-600 mb-4">This will be appended before the student's code at runtime.</p>
+        <div className="my-4">
+            <h5 className="text-2xl font-bold">Prefix</h5>
+            <p className="text-gray-600 mb-4 text-sm">This will be appended before the student's code at runtime.</p>
 
             <div className="relative rounded-2xl">
                 <Editor
-                    className="h-48 p-2 border rounded-lg bg-white shadow-md mb-4 focus:ring-blue-500 focus:border-blue-500"
+                    className="h-48 p-2 border rounded-lg bg-white shadow mb-4 focus:ring-blue-500 focus:border-blue-500"
                     value={prefix}
                     onChange={(value, e) => { setPrefix(value as string) }}
                     language={course?.language?.toLowerCase()}
@@ -83,16 +84,15 @@ const ExerciseRuntimeTab = (props: any) => {
                     >
                         <ArrowPathIcon className="w-6 h-6" />
                     </button>
-                ) : null
-                }
+                ) : null}
             </div>
 
-            <h5 className="text-2xl font-bold mt-6">Suffix</h5>
-            <p className="text-gray-600 mb-4">This will be appended after the student's code at runtime.</p>
+            <h5 className="text-2xl font-bold mt-2">Suffix</h5>
+            <p className="text-gray-600 mb-4 text-sm">This will be appended after the student's code at runtime.</p>
 
             <div className="relative rounded-2xl">
                 <Editor
-                    className="h-48 p-2 border rounded-lg bg-white shadow-md mb-4 focus:ring-blue-500 focus:border-blue-500"
+                    className="h-48 p-2 border rounded-lg bg-white shadow mb-4 focus:ring-blue-500 focus:border-blue-500"
                     value={suffix}
                     onChange={(value, e) => { setSuffix(value as string) }}
                     language={course?.language?.toLowerCase()}
@@ -124,12 +124,11 @@ const ExerciseRuntimeTab = (props: any) => {
                     >
                         <ArrowPathIcon className="w-6 h-6" />
                     </button>
-                ) : null
-                }
+                ) : null}
             </div>
         </div>
 
-        <div className="border rounded-lg bg-white shadow-md p-4 mb-4">
+        <div className="border rounded-lg bg-white shadow p-4 mb-4">
             <h5 className="text-2xl font-bold mb-2">Code preview</h5>
             <p className="text-gray-600 mb-4">This is what the tested file will look like.</p>
             <pre className="border rounded-lg bg-gray-100 p-4">
@@ -138,8 +137,7 @@ const ExerciseRuntimeTab = (props: any) => {
                         <span className="font-bold text-sm text-gray-600">{prefix}</span>
                         <br /><br />
                     </>
-                ) : null
-                }
+                ) : null}
                 <div className="rounded-md border-2 border-gray-300 p-4 bg-white">
                     <p className="text-gray-600 mb-0">
                         Student code goes here
@@ -150,8 +148,7 @@ const ExerciseRuntimeTab = (props: any) => {
                         <br />
                         <span className="font-bold text-sm text-gray-600">{suffix}</span>
                     </>
-                ) : null
-                }
+                ) : null}
             </pre>
         </div>
     </>

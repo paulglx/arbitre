@@ -1,14 +1,14 @@
 import { ArrowRightIcon, PlusCircleIcon } from '@heroicons/react/24/solid'
+import { Link, useNavigate } from 'react-router-dom';
 import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlice';
 import { useDispatch, useSelector } from "react-redux";
 
 import Error from '../Util/Error';
 import Header from '../Common/Header'
-import { Link } from "react-router-dom";
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 
 const Courses = () => {
 
@@ -24,6 +24,15 @@ const Courses = () => {
     const isTeacher = useSelector(selectIsTeacher)
     const navigate = useNavigate();
     const user = useSelector(selectCurrentUser)
+
+    const sortedCourses = useMemo(() => {
+        if (coursesIsSuccess) {
+            const coursesToSort = structuredClone(courses);
+            return coursesToSort?.sort((a: any, b: any) => {
+                return a.title?.localeCompare(b.title);
+            });
+        }
+    }, [coursesIsSuccess, courses]);
 
     const handleCreateCourse = async (e: any) => {
         e.preventDefault();
@@ -65,11 +74,11 @@ const Courses = () => {
 
             <div className="container mx-auto">
                 <div className="mt-2 flex justify-center">
-                    <div className="bg-gray-100 rounded-xl shadow-lg shadow-gray-400/50 p-6 md:p-6 md:pb-3 md:h-auto w-full">
+                    <div className="bg-gray-50 rounded-lg shadow border p-6 md:p-6 md:pb-3 md:h-auto w-full">
                         <h1 className="text-3xl font-bold mb-4 text-gray-700 hidden md:block">
                             Welcome back, {user}!
                         </h1>
-                        <hr className="border-gray-400 hidden md:block" />
+                        <hr className="border-gray-300 hidden md:block" />
                         <div className="mt-0 md:mt-4 h-auto">
                             <div className="flex items-center justify-between">
                                 <h2 className="block text-2xl font-medium text-gray-700">
@@ -89,11 +98,11 @@ const Courses = () => {
                             </div>
                             <div className='h-auto overflow-y-auto'>
                                 <ul className="md:overflow-x-auto flex md:flex-row flex-col ">
-                                    {courses.map((course: any, i: number) => (
+                                    {sortedCourses.map((course: any, i: number) => (
                                         <li key={i}>
                                             <Link
                                                 to={`/course/${course.id}`}
-                                                className="block bg-gray-50 border border-gray-300 rounded-2xl shadow-md shadow-gray-400/50 p-4 first:ml-0 md:mr-4 my-2 md:my-4 hover:bg-gray-100 transition duration-300 ease-in-out md:w-80 h-5/6"
+                                                className="block bg-gray-100 border border-gray-300 rounded-2xl shadow-md shadow-gray-400/50 p-4 first:ml-0 md:mr-4 my-2 md:my-4 hover:bg-gray-200 transition duration-300 ease-in-out md:w-80 h-5/6"
                                             >
 
                                                 {/*
@@ -125,7 +134,8 @@ const Courses = () => {
             </div >
         </>
     ) : (
-        <Error isError={coursesIsError} error={JSON.stringify(coursesError)} />);
+        <Error isError={coursesIsError} error={JSON.stringify(coursesError)} />
+    );
 }
 
 export default Courses

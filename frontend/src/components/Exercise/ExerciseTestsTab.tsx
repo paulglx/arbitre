@@ -1,6 +1,7 @@
+import { ExclamationTriangleIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
 import { useEffect, useState } from 'react'
-import { PlusCircleIcon, ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
+
 import { Modal } from "../Common";
 
 const ExerciseTestsTab = (props: any) => {
@@ -72,11 +73,11 @@ const ExerciseTestsTab = (props: any) => {
             {exerciseIsSuccess && tests && (
                 <>
                     {tests.length > 0 ? (
-                        <h6 className="text-muted">
+                        <h6 className="text-sm px-1 mb-1 text-gray-500">
                             {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
                         </h6>
                     ) : (
-                        <div className="bg-gray-100 shadow-lg shadow-gray-400/70 p-6 md:p-2 flex justify-center items-center flex-col rounded-lg">
+                        <div className="bg-gray-50 border shadow p-6 md:p-2 flex justify-center items-center flex-col rounded-lg">
                             <h6 className="text-muted p-2 md:p-4">This session doesn't have any tests</h6>
                             {isOwner && (
                                 <div className="flex justify-center p-2 md:p-2">
@@ -106,7 +107,7 @@ const ExerciseTestsTab = (props: any) => {
                     {tests.map((test) => (
                         <div
                             key={test?.id}
-                            className={` mb-1${isOwner ? " editable-test" : ""}${editTest && editTestId === test?.id ? " editable-test-focused" : ""} w-full`}
+                            className={`mb-2 w-full`}
                             tabIndex={0}
                             onFocus={() => {
                                 isOwner && setEditTestId(test?.id);
@@ -129,8 +130,7 @@ const ExerciseTestsTab = (props: any) => {
                                     aria-label="Test name"
                                     value={test?.name}
                                     autoComplete="off"
-                                    className={`w-full rounded-lg py-2 px-3 text-gray-700 ${editTest && editTestId === test?.id ? "" : "border border-gray-300"
-                                        } focus:outline-none focus:border-blue-500`}
+                                    className={`w-full rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
                                     onChange={(e) => {
                                         isOwner &&
                                             setTests(
@@ -145,7 +145,7 @@ const ExerciseTestsTab = (props: any) => {
                                 <div className="flex justify-center md:ml-3 border rounded-lg border-gray-300 bg-gray-200 w-full md:w-auto">
                                     <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Input</span>
                                     <textarea
-                                        className="form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2 w-full md:w-auto"
+                                        className="form-control border-0 rounded-r-lg focus:outline-none focus:border-blue-500 ml-2 md:ml-4 bg-white h-10 p-2 w-full md:w-auto"
                                         placeholder="Input to test for"
                                         rows={1}
                                         aria-label="Input"

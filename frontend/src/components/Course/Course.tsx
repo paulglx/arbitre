@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
+import NotFound from '../Util/NotFound';
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./CourseComponents/Students/Students";
 import TeacherList from "./CourseComponents/Teachers/TeacherList";
@@ -179,9 +180,7 @@ const Course = () => {
     ];
 
     //Main content
-    return courseIsLoading ? (
-        <></>
-    ) : (
+    return courseIsSuccess ? (
         <>
             <Header />
 
@@ -236,6 +235,8 @@ const Course = () => {
                 }
             </div>
         </>
+    ) : (
+        <NotFound />
     )
 }
 
