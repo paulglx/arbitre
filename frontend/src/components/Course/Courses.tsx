@@ -58,8 +58,8 @@ const Courses = () => {
                 className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline flex items-center"
                 id="create-course"
             >
-                <PlusCircleIcon className="mr-2 w-6 h-6" />
-                New course
+                <PlusCircleIcon className="md:mr-2 w-6 h-6" />
+                <span className="hidden md:block">New course</span>
             </button>
         ) : null;
     };
@@ -72,14 +72,14 @@ const Courses = () => {
             <br />
             <br />
 
-            <div className="container mx-auto">
-                <div className="mt-2 flex justify-center">
-                    <div className="bg-gray-50 rounded-lg shadow border p-6 md:p-6 md:pb-3 md:h-auto w-full">
+            <div className="container mx-auto h-screen">
+                <div className="mt-2 flex justify-center h-full">
+                    <div className="bg-gray-100 rounded-xl shadow-lg shadow-gray-400/50 p-6 md:p-6 md:pb-3 h-4/6 w-full">
                         <h1 className="text-3xl font-bold mb-4 text-gray-700 hidden md:block">
                             Welcome back, {user}!
                         </h1>
-                        <hr className="border-gray-300 hidden md:block" />
-                        <div className="mt-0 md:mt-4 h-auto">
+                        <hr className="border-gray-400 hidden md:block" />
+                        <div className="mt-0 md:mt-4 h-full">
                             <div className="flex items-center justify-between">
                                 <h2 className="block text-2xl font-medium text-gray-700">
                                     Your courses
@@ -91,18 +91,18 @@ const Courses = () => {
                                         to="/course/join"
                                         className="inline-flex bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md items-center"
                                     >
-                                        <ArrowRightIcon className="mr-2 h-5 w-5" />
-                                        Join a course
+                                        <ArrowRightIcon className="md:mr-2 h-5 w-5" />
+                                        <span className="hidden md:block">Join a course</span>
                                     </Link>
                                 </div>
                             </div>
-                            <div className='h-auto overflow-y-auto'>
-                                <ul className="md:overflow-x-auto flex md:flex-row flex-col ">
+                            <div className='h-4/6 overflow-y-auto mt-4'>
+                                <ul className="overflow-y-auto place-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 h-full">
                                     {sortedCourses.map((course: any, i: number) => (
                                         <li key={i}>
                                             <Link
                                                 to={`/course/${course.id}`}
-                                                className="block bg-gray-100 border border-gray-300 rounded-2xl shadow-md shadow-gray-400/50 p-4 first:ml-0 md:mr-4 my-2 md:my-4 hover:bg-gray-200 transition duration-300 ease-in-out md:w-80 h-5/6"
+                                                className="block bg-gray-50 border border-gray-300 rounded-2xl shadow-md shadow-gray-400/50 p-4 first:ml-0 my-2 md:my-4 hover:bg-gray-100 transition duration-300 ease-in-out w-72 md:w-60 h-5/6 md:h-40"
                                             >
 
                                                 {/*
@@ -128,9 +128,9 @@ const Courses = () => {
                                     ))}
                                 </ul>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </div >
+                    </div >
+                </div >
             </div >
         </>
     ) : (

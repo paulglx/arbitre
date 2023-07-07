@@ -54,7 +54,6 @@ const Course = () => {
 
     const {
         data: course,
-        isLoading: courseIsLoading,
         isSuccess: courseIsSuccess,
         //isError: courseIsError, TODO: handle error
     } = useGetCourseQuery({ id });
