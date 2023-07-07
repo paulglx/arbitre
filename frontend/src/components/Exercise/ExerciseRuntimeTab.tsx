@@ -1,7 +1,10 @@
+import React, { useEffect } from 'react'
 import Editor from "@monaco-editor/react";
 import { useState } from 'react'
 import { useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import { pushNotification } from "../../features/notification/notificationSlice";
+import { useDispatch } from 'react-redux';
 
 
 const ExerciseRuntimeTab = (props: any) => {
@@ -11,10 +14,13 @@ const ExerciseRuntimeTab = (props: any) => {
     const [prefix, setPrefix] = useState("");
     const [suffix, setSuffix] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
-    const [notificationMessage, setNotificationMessage] = useState("");
-    const [notificationType, setNotificationType] = useState("");
-    const [isNotificationVisible, setIsNotificationVisible] = useState(false);
+    const dispatch = useDispatch();
 
+
+    useEffect(() => {
+        setPrefix(exercise.prefix);
+        setSuffix(exercise.suffix);
+    }, [exercise])
 
     const handleUpdateExercise = async () => {
         try {
@@ -23,21 +29,20 @@ const ExerciseRuntimeTab = (props: any) => {
                 title: exercise.title,
                 description: exercise.description,
                 session_id: session.id,
-                prefix,
-                suffix,
+                prefix, suffix
             });
-            setNotificationMessage("The exercise has been updated");
-            setNotificationType("success");
+            dispatch(pushNotification({
+                message: "The exercise has been updated",
+                type: "success"
+            }));
         } catch (error) {
-            setNotificationMessage("There was an error updating the exercise.");
-            setNotificationType("error");
+            dispatch(pushNotification({
+                message: "There was an error updating the exercise.",
+                type: "error"
+            }));
         }
-        setIsNotificationVisible(true);
-    };
+    }
 
-    const handleCloseNotification = () => {
-        setIsNotificationVisible(false);
-    };
 
     return (<>
         <div className="relative border bg-white rounded-2xl shadow-md p-4 mb-8">
@@ -71,14 +76,15 @@ const ExerciseRuntimeTab = (props: any) => {
                         renderWhitespace: "none",
                     }}
                 />
-                {isOwner && (
+                {isOwner ? (
                     <button
                         className="absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md py-2 px-4 transition-colors duration-300"
                         onClick={handleUpdateExercise}
                     >
                         <ArrowPathIcon className="w-6 h-6" />
                     </button>
-                )}
+                ) : null
+                }
             </div>
 
             <h5 className="text-2xl font-bold mt-6">Suffix</h5>
@@ -111,47 +117,41 @@ const ExerciseRuntimeTab = (props: any) => {
                         renderWhitespace: "none",
                     }}
                 />
-                {isOwner && (
+                {isOwner ? (
                     <button
                         className="absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md py-2 px-4 transition-colors duration-300"
                         onClick={handleUpdateExercise}
                     >
                         <ArrowPathIcon className="w-6 h-6" />
                     </button>
-                )}
+                ) : null
+                }
             </div>
-            {isNotificationVisible && (
-                <div
-                    className={`flex items-center justify-between px-4 py-2 mb-4 rounded ${notificationType === "error" ? "bg-red-500" : "bg-green-500"
-                        } text-white`}
-                >
-                    <span>{notificationMessage}</span>
-                    <button onClick={handleCloseNotification}>Close</button>
-                </div>
-            )}
         </div>
 
         <div className="border rounded-lg bg-white shadow-md p-4 mb-4">
             <h5 className="text-2xl font-bold mb-2">Code preview</h5>
             <p className="text-gray-600 mb-4">This is what the tested file will look like.</p>
             <pre className="border rounded-lg bg-gray-100 p-4">
-                {prefix && (
+                {prefix ? (
                     <>
                         <span className="font-bold text-sm text-gray-600">{prefix}</span>
                         <br /><br />
                     </>
-                )}
+                ) : null
+                }
                 <div className="rounded-md border-2 border-gray-300 p-4 bg-white">
                     <p className="text-gray-600 mb-0">
                         Student code goes here
                     </p>
                 </div>
-                {suffix && (
+                {suffix ? (
                     <>
                         <br />
                         <span className="font-bold text-sm text-gray-600">{suffix}</span>
                     </>
-                )}
+                ) : null
+                }
             </pre>
         </div>
     </>

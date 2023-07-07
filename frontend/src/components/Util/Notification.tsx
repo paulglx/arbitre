@@ -61,7 +61,7 @@ const Notification = () => {
     }
 
     return notifications.length > 0 ? (
-        <div className='p-3 fixed bottom-5 right-5'>
+        <div className='p-3 fixed bottom-5 right-5 z-10'>
 
             {notifications.map((notification: any, i: number) => (
                 <div
