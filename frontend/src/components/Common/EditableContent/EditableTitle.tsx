@@ -10,6 +10,7 @@ const EditableTitle = (props: any) => {
 
     useEffect(() => {
         window.addEventListener('keyup', (event: any) => {
+            if (!isOwner) return;
             if (event.key === 'Enter' && editTitle) {
                 setEditTitle(false);
             }
@@ -22,11 +23,11 @@ const EditableTitle = (props: any) => {
     });
 
     useEffect(() => {
-        if (!editTitle && oldValue !== undefined && oldValue !== props.title) {
+        if (isOwner && !editTitle && oldValue !== undefined && oldValue !== props.title) {
             props.handleUpdate();
             setOldValue(props.title);
         }
-    }, [editTitle, props, oldValue]);
+    }, [editTitle, props, oldValue, isOwner]);
 
     if (!isOwner || !editTitle) {
         return (

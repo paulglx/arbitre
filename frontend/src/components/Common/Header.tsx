@@ -32,9 +32,11 @@ const Header = () => {
                     <Link to="/course" className="mr-5 text-gray-800 hover:text-gray-800">
                         Courses
                     </Link>
-                    <Link to="/dashboard" className="mr-5 text-gray-800 hover:text-gray-800">
-                        Dashboard
-                    </Link>
+                    {isTeacher ? (
+                        <Link to="/dashboard" className="mr-5 text-gray-800 hover:text-gray-800">
+                            Dashboard
+                        </Link>
+                    ) : null}
                 </nav>
                 <div className="dropdown flex-wrap items-center text-base justify-center relative">
                     <Dropdown

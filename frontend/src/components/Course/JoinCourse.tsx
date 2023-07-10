@@ -62,19 +62,31 @@ const JoinCourse = (props: any) => {
     useEffect(() => {
 
         async function joinCourse(code: string) {
-            try {
-                setCodeInput(code.toUpperCase())
-                const response = await joinCourseWithCode({ join_code: code }).unwrap()
-                navigate(`/course/${response.course_id}`)
-            } catch (err: any) {
-                if (err.data.course_id) {
-                    navigate(`/course/${err.data.course_id}`)
-                    return
-                }
-                setErr(err.data.message)
-            }
+            setCodeInput(code.toUpperCase())
+            await joinCourseWithCode({ join_code: code })
+                .unwrap()
+                .catch((err: any) => {
+                    if (err.data.course_id) {
+                        dispatch(pushNotification({
+                            message: "You are already in this course.",
+                            type: "warning"
+                        }))
+                        navigate(`/course/${err.data.course_id}`)
+                        return
+                    } else if (err.data.message) {
+                        setErr("Invalid join link.")
+                        navigate("/course/join")
+                        return
+                    }
+                }).then((response: any) => {
+                    if (!response || !('course_id' in response)) return;
+                    dispatch(pushNotification({
+                        message: "You have successfully joined the course.",
+                        type: "success"
+                    }))
+                    navigate(`/course/${response.course_id}`)
+                })
         }
-
 
         if (join_code_parameter) {
 
@@ -82,13 +94,14 @@ const JoinCourse = (props: any) => {
                 setErr("Invalid join link.")
                 navigate("/course/join")
                 return
+            } else {
+                setCodeInput(join_code_parameter.toUpperCase())
             }
-            setCodeInput(join_code_parameter)
 
             joinCourse(join_code_parameter)
 
         }
-    }, [join_code_parameter, joinCourseWithCode, navigate])
+    }, [join_code_parameter, joinCourseWithCode, navigate, dispatch])
 
     return (
         <>
