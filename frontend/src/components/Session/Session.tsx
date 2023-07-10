@@ -161,7 +161,7 @@ const Session = () => {
                 {isOwner || isTutor ? (<>
                     <Tabs tabs={tabs} />
                 </>) : (<>
-                    <h2>Exercises</h2>
+                    <div className='text-xl font-semibold mt-2 md:mt-6'>Exercises</div>
                     <ExerciseContent session={session} />
                 </>)}
 

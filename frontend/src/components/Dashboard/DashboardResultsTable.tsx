@@ -16,7 +16,9 @@ const DashboardResultsTable = (props: any) => {
         data: results,
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
-    } = useGetResultsOfSessionQuery({ session_id });
+    } = useGetResultsOfSessionQuery({ session_id }, {
+        pollingInterval: showModal || document.hidden ? 0 : 5000,
+    });
 
     const resultsSortedByUsername = useMemo(() => {
         if (!results) return

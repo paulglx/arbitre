@@ -85,58 +85,79 @@ const Courses = () => {
                 <div className="mt-2 flex justify-center h-full">
                     <div className="md:pb-3 h-2/3 w-full">
                         <h1 className="text-3xl font-bold mb-4 text-gray-950 hidden md:block">
-                            Welcome back, {user}!
+                            Welcome{sortedCourses.length > 0 ? "back" : ""}, {user}!
                         </h1>
                         <hr className="border-gray-400 hidden md:block" />
-                        <div className="mt-0 md:mt-4 h-full">
-                            <div className="flex items-center justify-between">
-                                <h2 className="block text-2xl font-medium text-gray-800">
-                                    Your courses
-                                </h2>
-                                <div className='inline-flex'>
-                                    {teacherContent()}
-                                    &nbsp;
-                                    <Link
-                                        to="/course/join"
-                                        className="inline-flex bg-blue-600 text-blue-50 hover:bg-blue-700 font-bold py-2 px-4 rounded-md items-center transition"
-                                    >
-                                        <ArrowRightIcon className="md:mr-2 h-5 w-5" />
-                                        <span className="hidden md:block">Join a course</span>
-                                    </Link>
+                        {sortedCourses.length > 0 ? (
+                            <div className="mt-0 md:mt-4 h-full">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="block text-2xl font-medium text-gray-800">
+                                        Your courses
+                                    </h2>
+                                    <div className='inline-flex'>
+                                        {teacherContent()}
+                                        &nbsp;
+                                        <Link
+                                            to="/course/join"
+                                            className="inline-flex bg-blue-600 text-blue-50 hover:bg-blue-700 font-bold py-2 px-4 rounded-md items-center transition"
+                                        >
+                                            <ArrowRightIcon className="md:mr-2 h-5 w-5" />
+                                            <span>Join a course</span>
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='overflow-y-auto mt-2'>
-                                <ul className="overflow-y-auto justify-between h-5/6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-1">
-                                    {sortedCourses.map((course: any, i: number) => (
-                                        <li key={i}>
-                                            <Link
-                                                to={`/course/${course.id}`}
-                                                className="flex md:block items-center bg-blue-50 border border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-40"
-                                            >
+                                <div className='overflow-y-auto mt-2'>
+                                    <ul className="overflow-y-auto justify-between h-5/6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-1">
+                                        {sortedCourses.map((course: any, i: number) => (
+                                            <li key={i}>
+                                                <Link
+                                                    to={`/course/${course.id}`}
+                                                    className="flex md:block items-center bg-blue-50 border border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-40"
+                                                >
 
-                                                {/*
+                                                    {/*
                                                  <div className="mb-4">
                                                     <img src="/resource/image_course.png" alt={course.title} className="w-full rounded-md" />
                                                 </div>
                                                 */}
-                                                {/* Progress bar
+                                                    {/* Progress bar
                                                  <div className="w-full bg-blue-200 rounded-full h-2.5 mb-4 dark:bg-blue-600">
                                                     <div className="bg-blue-600 h-2.5 rounded-full dark:bg-blue-300" style={{ width: '45%' }}></div>
                                                 </div>
                                                 */}
-                                                <h3 className={`text-lg font-bold leading-tight md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}>
-                                                    {course.title ? course.title : "Untitled Course"}
-                                                </h3>
-                                                <p className="text-gray-600 hidden md:block">{stripCourseDescription(course.description)}</p>
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
+                                                    <h3 className={`text-lg font-bold leading-tight md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}>
+                                                        {course.title ? course.title : "Untitled Course"}
+                                                    </h3>
+                                                    <div className="text-gray-600 hidden md:block">{stripCourseDescription(course.description)}</div>
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
-                        </div >
-                    </div >
-                </div >
-            </div >
+                        ) : (
+                            <div className="mt-0 md:mt-4 flex flex-col items-center justify-center">
+                                <div className='w-fit border rounded-xl bg-gray-50 px-4 py-2'>
+                                    <div className='m-4 text-xl'>
+                                        {isTeacher ? "You have not created any courses yet." : "You have not joined any courses yet."}
+                                    </div>
+                                    <div className='w-full flex justify-center mb-4'>
+                                        {teacherContent()}
+                                        &nbsp;
+                                        <Link
+                                            to="/course/join"
+                                            className="inline-flex bg-blue-600 text-blue-50 hover:bg-blue-700 font-bold py-2 px-4 rounded-md items-center transition"
+                                        >
+                                            <ArrowRightIcon className="mr-2 h-5 w-5" />
+                                            <span>Join a course</span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </>
     ) : (
         <Error isError={coursesIsError} error={JSON.stringify(coursesError)} />

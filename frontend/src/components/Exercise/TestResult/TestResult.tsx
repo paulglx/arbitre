@@ -9,7 +9,6 @@ import TestResultTimeBadge from './TestResultTimeBadge';
 const TestResult = (props: any) => {
 
     const exercise_id = props.exercise_id;
-    const [pollingInterval, setPollingInterval] = useState(125)
     const user_id = props.user_id || "";
     const [showCodePreview, setShowCodePreview] = useState(false)
     const [skipQueries, setSkipQueries] = useState(false)
@@ -17,13 +16,13 @@ const TestResult = (props: any) => {
     const {
         data: testResults,
     } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id }, {
-        pollingInterval: skipQueries || document.hidden ? 0 : pollingInterval
+        pollingInterval: skipQueries || document.hidden ? 0 : 1000
     });
 
     const {
         data: submissionData,
     } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id }, {
-        pollingInterval: skipQueries || document.hidden ? 0 : pollingInterval,
+        pollingInterval: skipQueries || document.hidden ? 0 : 1000,
     });
 
     useEffect(() => {
@@ -31,7 +30,6 @@ const TestResult = (props: any) => {
 
         if (submissionData[0]?.status === "pending" || submissionData[0]?.status === "running" || testResults?.some((result: any) => result.status === "running" || result.status === "pending")) {
             setSkipQueries(false)
-            setPollingInterval(p => p * 2)
         }
         else {
             setSkipQueries(true)
@@ -65,6 +63,32 @@ const TestResult = (props: any) => {
         </>
     }
 
+    const TimeBadge = (props: any) => {
+
+        const time = props.time
+
+        if (time <= 0) {
+            return <></>
+        }
+        else {
+            return <span className='text-gray-500 text-sm font-normal mr-2'>{time} s</span>
+        }
+    }
+
+    const headerBgColor = (status: string) => {
+        switch (status) {
+            case "success":
+                return "bg-green-50"
+            case "failed":
+                return "bg-gray-50"
+            case "error":
+                return "bg-red-50"
+            default:
+                return "bg-gray-50"
+        }
+    }
+
+
     return (submissionData && submissionData.length > 0) ? (<>
 
         <TestResultCodePreviewModal submission={submissionData[0]} show={showCodePreview} setShow={setShowCodePreview} />
@@ -72,7 +96,7 @@ const TestResult = (props: any) => {
         <ul
             className='text-gray-900 bg-white border-gray-200 rounded-lg'
         >
-            <li className={`w-full flex justify-between items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg`}>
+            <li className={` ${headerBgColor(submissionData[0].status)} w-full flex justify-between items-center px-4 py-2 border rounded-lg`}>
                 <span>
                     <span className='font-bold'>
                         {submissionData[0]?.file?.split("/").pop()}
@@ -90,18 +114,24 @@ const TestResult = (props: any) => {
 
             </li>
 
-            {testResults.map((result: any, i: number) => (
-                <li className={`px-4 py-2 my-2 border border-white bg-gray-50 hover:border-gray-200 rounded-lg`} key={i}>
-                    <div className=''>
-                        <div className="font-bold flex justify-between items-center">
-                            {result.exercise_test.name}
-                            <StatusBadge status={result.status} />
+            {testResults.map((result: any, i: number) => {
+                return (
+                    <li className={`px-4 py-2 my-2 border hover:bg-gray-100 bg-gray-50 rounded-lg`} key={i}>
+                        <div className=''>
+                            <div className="font-bold flex justify-between items-center">
+                                {result.exercise_test.name}
+                                <div>
+                                    <TimeBadge time={result.time} />
+                                    &nbsp;
+                                    <StatusBadge status={result.status} />
+                                </div>
+                            </div>
+                            {testResultContent(result)}
                         </div>
-                        {testResultContent(result)}
-                    </div>
 
-                </li>
-            ))}
+                    </li>
+                )
+            })}
 
         </ul>
     </>) : (<></>)

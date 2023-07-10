@@ -14,13 +14,13 @@ const Modal = (props: any) => {
           <div className="flex justify-center">
             <button
               onClick={props.delete}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded mr-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mr-2"
             >
               Accept
             </button>
             <button
               onClick={props.handleCloseModal}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded"
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 border font-semibold py-2 px-4 rounded-md"
             >
               Cancel
             </button>

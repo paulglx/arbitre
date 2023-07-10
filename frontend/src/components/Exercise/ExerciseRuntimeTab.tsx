@@ -43,8 +43,6 @@ const ExerciseRuntimeTab = (props: any) => {
         }
     }
 
-    console.log(course?.language?.toLowerCase())
-
     return (<>
         <div className="my-4">
             <h5 className="text-2xl font-bold">Prefix</h5>
