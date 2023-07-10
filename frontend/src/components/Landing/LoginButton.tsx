@@ -2,8 +2,7 @@ import '../../login-register.css'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Button } from 'react-bootstrap'
-import React from 'react'
+import { pushNotification } from '../../features/notification/notificationSlice'
 import { setCredentials } from '../../features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { useKeycloak } from '@react-keycloak/web'
@@ -41,16 +40,22 @@ const LoginButton = () => {
                 navigate(from, { replace: true });
             }
         }).catch((error) => {
-            console.log("Failed to load user profile")
+            dispatch(pushNotification({
+                message: "Something went wrong. Please try again.",
+                type: "error"
+            }));
         });
-    } else {
-        console.log("Not authenticated")
     }
 
-    return (<>
-        <Button className='btn-light' href={keycloak.createLoginUrl()}>
-            Login via SSO
-        </Button >
-    </>)
+    return (
+        <>
+            <a
+                href={keycloak.createLoginUrl()}
+                className="inline-flex bg-blue-900 hover:bg-blue-950 transition text-gray-50 font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
+            >
+                Login
+            </a>
+        </>
+    );
 }
 export default LoginButton

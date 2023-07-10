@@ -1,69 +1,24 @@
+@import url("https://rsms.me/inter/inter.css");
+
+/* ./src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --mono-font: "JetBrains Mono", monospace;
+  font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: 'Inter var', sans-serif;
+  }
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bs-gray);
-}
-
-div.vertical-center {
-  min-height: 100%;
-  /* Fallback for browsers that don't support vh unit */
-  min-height: 100vh;
-}
-
-ol.breadcrumb {
-  padding: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: 20px;
-  background-color: var(--bs-light);
-  border-radius: 5px;
-  border: 1px solid var(--bs-border-color);
-}
-
-ol.breadcrumb a {
-  color: var(--bs-gray);
-  text-decoration: none;
-}
-
-ol.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-
-ol.breadcrumb li.active {
-  color: var(--bs-gray-dark);
-}
-
-.arbitre {
-  font-weight: 900 !important;
-}
-
-.arbitre:hover {
-  border-radius: 5px;
-  background-color: var(--bs-gray-200);
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-left: -10px;
-  margin-right: 6px;
-}
-
-.flex-fill {
-  flex: 1 1 auto;
-}
-
-.dashed-border {
-  border-style: dashed !important;
-}
-
-.description {
-  overflow-x: scroll;
 }
 
 /* button, .list-group, ol.breadcrumb, input {
@@ -89,19 +44,6 @@ ol.breadcrumb li.active {
   border: 2px solid var(--bs-primary);
   box-sizing: border-box;
 
-}
-
-code,
-kbd,
-pre,
-samp {
-  font-family: var(--mono-font) !important;
-}
-
-p>code {
-  background-color: var(--bs-light);
-  padding: 5px;
-  border-radius: 5px;
 }
 
 .markdown h1 {
@@ -134,9 +76,17 @@ p>code {
   font-weight: 300;
 }
 
+.markdown p, .markdown ul, .markdown ol, .markdown dl, .markdown table, .markdown blockquote, .markdown pre, .markdown hr {
+  margin-bottom:12px;
+}
 
-.markdown>pre {
-  background-color: #eaecf1;
+.mardown p:last-child, .markdown ul:last-child, .markdown ol:last-child, .markdown dl:last-child, .markdown table:last-child, .markdown blockquote:last-child, .markdown pre:last-child, .markdown hr:last-child {
+  margin-bottom: 0;
+}
+
+.markdown pre {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
   color: #607196;
   padding: 10px;
   border-radius: 5px;
@@ -149,53 +99,7 @@ p>code {
   margin-right: auto;
 }
 
-.fw-extrabold {
-  font-weight: 800 !important;
-}
-
-/* Teacher specific CSS */
-
-.teacher.editable-title {
-  border-radius: 5px;
-}
-
-.teacher.editable-title:hover {
-  background-color: var(--bs-light);
-}
-
-.teacher.editable-title:hover::after {
-  content: " CLICK TO EDIT";
-  font-weight: 200;
-  font-size: small;
-  color: var(--bs-secondary);
-  vertical-align: super;
-}
-
-.teacher.title-input {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  border: 1px dashed var(--bs-gray-400);
-  border-radius: 5px;
-  margin: -1px;
-  margin-bottom: 7px;
-}
-
-.teacher.editable-description:hover {
-  border: 1px dashed var(--bs-gray-400) !important;
-}
-
-.teacher.description-input {
-  background-color: var(--bs-light) !important;
-  font-family: var(--mono-font);
-}
-
-.student-code-preview {
-  border: 1px solid var(--bs-gray-300);
-    background: repeating-linear-gradient(45deg,
-        var(--bs-gray-200),
-        var(--bs-gray-200) 10px,
-        var(--bs-light) 10px,
-        var(--bs-light) 20px);
+/* Remove caret from datalist input */
+[list]::-webkit-calendar-picker-indicator {
+  opacity: 0;
 }

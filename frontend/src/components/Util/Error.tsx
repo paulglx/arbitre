@@ -1,6 +1,4 @@
-import { Container, ListGroup } from "react-bootstrap"
-
-import Header from "../Header/Header"
+import Header from "../Common/Header"
 
 const Error = (props: any) => {
 
@@ -22,21 +20,12 @@ const Error = (props: any) => {
 
         <Header />
 
-        <Container className="d-flex align-items-center min-vh-100">
-            <Container className=" w-75 p-3">
-                <ListGroup>
-                    <ListGroup.Item variant="danger d-flex justify-content-between">
-                        <span className="fw-bold">Error</span>
-                        <span className="text-muted text-end">{error.status}</span>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <span>{errorExplained(error.status)}</span>
-                        <br />
-                        <span className="text-muted">{error.error}</span>
-                    </ListGroup.Item>
-                </ListGroup>
-            </Container>
-        </Container>
+        <div className="container mx-auto items-center p-3 mt-6 w-1/2 bg-red-50 border border-red-200 rounded-lg">
+            <span className="font-bold">Error</span>
+            <div className="text-sm text-gray-500">
+                <span>{errorExplained(error.status)}</span>
+            </div>
+        </div>
     </>) : (<></>)
 }
 

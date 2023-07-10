@@ -27,7 +27,7 @@ class MinimalCourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["id", "title", "owners"]
+        fields = ["id", "title", "owners", "language"]
 
 
 class SessionSerializer(serializers.ModelSerializer):

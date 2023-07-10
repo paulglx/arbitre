@@ -1,192 +1,82 @@
-import { Button, Container, Dropdown, Form, ListGroup } from 'react-bootstrap'
-import { useEffect, useState } from 'react'
-
-import { CaretDownFill } from 'react-bootstrap-icons'
-import Header from '../Header/Header'
+import DashboardResultsTable from './DashboardResultsTable'
+import DashboardSessionPicker from './DashboardSessionPicker'
+import Header from '../Common/Header'
+import NotFound from '../Util/NotFound'
 import React from 'react'
-import ResultsTable from './ResultsTable'
+import { selectIsTeacher } from '../../features/auth/authSlice'
 import { useGetCoursesSessionsExercisesQuery } from '../../features/courses/courseApiSlice'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
 const Dashboard = () => {
 
     const [currentSession, setCurrentSession] = useState(-1)
     const [currentSessionTitle, setCurrentSessionTitle] = useState('')
-    const [sessionSearch, setSessionSearch] = useState('')
-    const [sessionSearchResults, setSessionSearchResults] = useState<any>([])
+    const isTeacher = useSelector(selectIsTeacher)
 
     const {
         data: courses,
         isSuccess: isCoursesSuccess,
     } = useGetCoursesSessionsExercisesQuery({});
 
-    useEffect(() => {
-        if (courses) {
-            if (courses?.every((course: any) => course.sessions.length === 0)) {
-                setCurrentSession(-1)
-                setCurrentSessionTitle('')
-            } else {
-                const firstCourseWithSessions = courses?.find((course: any) => course.sessions.length > 0)
-                setCurrentSession(firstCourseWithSessions.sessions[0].id)
-                setCurrentSessionTitle(firstCourseWithSessions.sessions[0].title)
-            }
+    const PageContent = () => {
+        if (!isCoursesSuccess) {
+            return <span id="loading-text">Loading...</span>
+        } else if (courses?.length === 0) {
+            return <>
+                <span id="error-title" className='font-bold'>No courses</span> <br />
+                <span id="error-message">You don't have a course to display the results of yet.</span>
+                <br />
+                <a id="back-link" className='mt-2 text-blue-700' href="/course">← Back to courses</a>
+            </>
+        } else if (courses?.every((course: any) => course.sessions.length === 0)) {
+            return <>
+                <span id="error-title" className='font-bold'>No sessions</span> <br />
+                <span id="error-message">You don't have a session to display the results of yet.</span>
+                <br />
+                <a id="back-link" className='mt-2 text-blue-700' href="/course">← Back to courses</a>
+            </>
+        } else if (courses?.every((course: any) => course.sessions.every((session: any) => session.exercises.length === 0))) {
+            return <>
+                <span id="error-title" className='font-bold'>No exercises</span> <br />
+                <span id="error-message">You don't have an exercise to display the results of yet.</span>
+                <br />
+                <a id="back-link" className='mt-2 text-blue-700' href="/course">← Back to courses</a>
+            </>
+        } else {
+            return <>
+                <DashboardSessionPicker
+                    courses={courses}
+                    currentSession={currentSession}
+                    setCurrentSession={setCurrentSession}
+                    currentSessionTitle={currentSessionTitle}
+                    setCurrentSessionTitle={setCurrentSessionTitle}
+                />
+                <br />
+                {currentSession !== -1 ?
+                    <DashboardResultsTable session_id={currentSession} />
+                    :
+                    <></>
+                }
+            </>
         }
-    }, [courses])
-
-    useEffect(() => {
-        if (courses) {
-            if (sessionSearch) {
-                const results = courses?.map((course: any) => {
-                    return {
-                        course: course,
-                        sessions: course.sessions.filter((session: any) => session.title.toLowerCase().includes(sessionSearch.toLowerCase()))
-                    }
-                })
-                setSessionSearchResults(results)
-            } else {
-                const results = courses?.map((course: any) => {
-                    return {
-                        course: course,
-                        sessions: course.sessions
-                    }
-                })
-                setSessionSearchResults(results)
-            }
-        }
-    }, [sessionSearch, courses])
-
-    const CustomToggle = React.forwardRef(({ children, onClick }: any, ref) => (
-        <a
-            className='h2 text-dark px-2 py-1 text-decoration-none shadow-sm border bg-light border-4 rounded-4'
-            href="#dropdown"
-            ref={ref as any}
-            key={currentSession}
-            onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
-            }}
-        >
-            {children} <CaretDownFill />
-        </a>
-    ));
-
-    const CustomMenu = React.forwardRef(
-        ({ children, className, 'aria-labelledby': labeledBy }: any, ref) => {
-
-            return (
-                <div
-                    ref={ref as any}
-                    className={className}
-                    aria-labelledby={labeledBy}
-                >
-                    <Form.Control
-                        autoFocus
-                        className="rounded-3 mx-2 w-75"
-                        placeholder="Type to filter"
-                        onChange={(e) => setSessionSearch(e.target.value)}
-                        value={sessionSearch}
-                    />
-                    <ul className="list-unstyled">
-                        {
-                            sessionSearchResults?.map((course: any) => (<>
-                                <Dropdown.Divider />
-                                {course.sessions.length > 0 ?
-                                    <Dropdown.Header key={course.course.id} className="text-wrap">{course.course.title}</Dropdown.Header>
-                                    : null
-                                }
-                                {course.sessions.map((session: any) => (<>
-                                    <Dropdown.Item
-                                        key={session.id}
-                                        eventKey={session.id}
-                                        aria-selected={session.id === currentSession}
-                                        className={"text-wrap" + (session.id === currentSession ? " bg-primary text-white" : "")}
-                                        onClick={(eventKey: any) => {
-                                            setCurrentSession(session.id)
-                                            setCurrentSessionTitle(session.title)
-                                        }}
-                                    >
-                                        {session.title}
-                                    </Dropdown.Item>
-                                </>))}
-                            </>))
-                        }
-                    </ul>
-                </div>
-            );
-        },
-    );
-
-    console.log(courses)
-
-    if (courses?.length === 0) {
-        return <>
-            <Header />
-
-            <br />
-            <br />
-
-            <Container>
-                <ListGroup>
-                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
-                        <span className='fw-bold'>No courses</span> <br />
-                        You don't have a course to display the results of yet.<br />
-                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
-                    </ListGroup.Item>
-                </ListGroup>
-            </Container>
-        </>
     }
 
-    console.log(courses)
-
-    if (courses?.every((course: any) => course.sessions.length === 0)) {
-        return <>
-
-            <Header />
-
-            <br />
-            <br />
-
-            <Container>
-                <ListGroup>
-                    <ListGroup.Item className='p-3 dashed-border rounded-4 text-center text-muted'>
-                        <span className='fw-bold'>No sessions</span> <br />
-                        You don't have a session to display the results of yet.<br />
-                        <Button className='border mt-2' variant='light' href="/course">← Back to courses</Button>
-                    </ListGroup.Item>
-                </ListGroup>
-            </Container>
-        </>
-    }
-
-    return isCoursesSuccess ? (<>
+    return isTeacher ? (<>
 
         <Header />
 
         <br />
         <br />
 
-        <Container>
+        <div className="container mx-auto">
 
-            <Dropdown>
-                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                    {currentSessionTitle}
-                </Dropdown.Toggle>
+            <PageContent />
 
-                <Dropdown.Menu as={CustomMenu} className="border rounded-4 mt-3 shadow-sm w-50">
-
-                </Dropdown.Menu>
-            </Dropdown>
-
-            <br />
-
-            {currentSession !== -1 ?
-                <ResultsTable session_id={currentSession} />
-                :
-                <></>
-            }
-
-        </Container>
-    </>) : (<></>)
+        </div>
+    </>) : (
+        <NotFound />
+    )
 }
 
 export default Dashboard

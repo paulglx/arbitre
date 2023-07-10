@@ -1,9 +1,10 @@
-import '../../join-code.css'
+// import '../../join-code.css'
 
-import { Button, Container, Form } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
 
-import Header from '../Header/Header'
+import { ArrowLeftIcon } from '@heroicons/react/24/solid'
+import Header from '../Common/Header'
+import { Link } from "react-router-dom";
 import { pushNotification } from '../../features/notification/notificationSlice';
 import useDigitInput from 'react-digit-input';
 import { useDispatch } from 'react-redux';
@@ -61,19 +62,31 @@ const JoinCourse = (props: any) => {
     useEffect(() => {
 
         async function joinCourse(code: string) {
-            try {
-                setCodeInput(code.toUpperCase())
-                const response = await joinCourseWithCode({ join_code: code }).unwrap()
-                navigate(`/course/${response.course_id}`)
-            } catch (err: any) {
-                if (err.data.course_id) {
-                    navigate(`/course/${err.data.course_id}`)
-                    return
-                }
-                setErr(err.data.message)
-            }
+            setCodeInput(code.toUpperCase())
+            await joinCourseWithCode({ join_code: code })
+                .unwrap()
+                .catch((err: any) => {
+                    if (err.data.course_id) {
+                        dispatch(pushNotification({
+                            message: "You are already in this course.",
+                            type: "warning"
+                        }))
+                        navigate(`/course/${err.data.course_id}`)
+                        return
+                    } else if (err.data.message) {
+                        setErr("Invalid join link.")
+                        navigate("/course/join")
+                        return
+                    }
+                }).then((response: any) => {
+                    if (!response || !('course_id' in response)) return;
+                    dispatch(pushNotification({
+                        message: "You have successfully joined the course.",
+                        type: "success"
+                    }))
+                    navigate(`/course/${response.course_id}`)
+                })
         }
-
 
         if (join_code_parameter) {
 
@@ -81,60 +94,65 @@ const JoinCourse = (props: any) => {
                 setErr("Invalid join link.")
                 navigate("/course/join")
                 return
+            } else {
+                setCodeInput(join_code_parameter.toUpperCase())
             }
-            setCodeInput(join_code_parameter)
 
             joinCourse(join_code_parameter)
 
         }
-    }, [join_code_parameter, joinCourseWithCode, navigate])
+    }, [join_code_parameter, joinCourseWithCode, navigate, dispatch])
 
     return (
         <>
             <Header />
 
-            <br /><br />
+            <br />
+            <br />
 
-            <Container className='p-3'>
+            <div className="container mx-auto">
+                <Link to="/course" className="inline-flex bg-gray-50 hover:bg-gray-100 border font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline items-center my-4 md:my-6">
+                    <ArrowLeftIcon className="h-5 w-5" />
+                    Back to courses
+                </Link>
 
-                <Button variant="light mb-3" href="/course">
-                    ← Back to courses
-                </Button>
+                <div className="bg-gray-50 rounded-xl md:rounded-3xl border shadow-gray-400/50 p-4 md:p-6 md:h-auto h-5/6 flex flex-col items-center justify-center">
 
-                <br /><br />
+                    <h1 className="text-4xl font-bold mb-4 text-gray-700">Join a course</h1>
+                    <hr />
+                    {err === '' ? (
+                        <p className="text-gray-600 m-2">Enter the 8 character course code to join a course.</p>
+                    ) : (
+                        <p className="text-red-500 m-2">{err}</p>
+                    )}
 
-                <h1 className='fw-bold'>Join a course</h1>
-                <hr />
-                {err === "" ?
-                    <p className='text-muted'>Enter the 8 character course code to join a course.</p>
-                    :
-                    <p className='text-danger'>{err}</p>
-                }
+                    <form className="m-2 md:n-4 bg-gray-100 border rounded-xl md:rounded-3xl shadow-sm shadow-gray-400/50  p-4 md:p-6 overflow-x-auto flex justify-center">
+                        {Array(8)
+                            .fill(0)
+                            .map((_, i) => (
+                                <input
+                                    type="text"
+                                    placeholder="X"
+                                    key={i}
+                                    autoFocus={i === 0}
+                                    className="font-mono w-8 mx-1 text-gray-700 placeholder-gray-300 border border-gray-300 rounded-md text-4xl text-center focus:placeholder:opacity-0 caret-transparent"
+                                    {...digits[i]}
+                                    onChange={(e) => handleCodeInput(e.target.value)}
+                                />
+                            ))}
+                    </form>
 
-                <Form className="jc-input-group">
-                    {Array(8).fill(0).map((_, i: number) => (
-                        <input
-                            type="text"
-                            placeholder='X'
-                            key={i}
-                            autoFocus={i === 0}
-                            className={err === "" ? "" : "jc-input-error"}
-                            {...digits[i]}
-                        />
-                    ))}
-                </Form>
+                    <br />
 
-                <br />
-
-                <Button
-                    variant='primary'
-                    disabled={codeInput.replace(" ", "").length < 8}
-                    onClick={(e: any) => handleSubmit(e)}
-                >
-                    Join
-                </Button>
-
-            </Container>
+                    <button
+                        className={`${codeInput.replace(' ', '').length === 8 ? " text-blue-50 bg-blue-600 hover:bg-gray-700" : "text-gray-100 bg-gray-300"} font-bold py-2 px-4 transition duration-300 rounded-lg justify-center flex items-center`}
+                        disabled={codeInput.replace(' ', '').length < 8}
+                        onClick={handleSubmit}
+                    >
+                        Join
+                    </button>
+                </div>
+            </div>
         </>
     )
 }
