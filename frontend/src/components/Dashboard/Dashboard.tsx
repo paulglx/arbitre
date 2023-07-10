@@ -23,14 +23,12 @@ const Dashboard = () => {
         if (!isCoursesSuccess) {
             return <span id="loading-text">Loading...</span>
         } else if (courses?.length === 0) {
-
             return <>
                 <span id="error-title" className='font-bold'>No courses</span> <br />
                 <span id="error-message">You don't have a course to display the results of yet.</span>
                 <br />
                 <a id="back-link" className='mt-2 text-blue-700' href="/course">← Back to courses</a>
             </>
-
         } else if (courses?.every((course: any) => course.sessions.length === 0)) {
             return <>
                 <span id="error-title" className='font-bold'>No sessions</span> <br />
