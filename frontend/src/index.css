@@ -1,9 +1,9 @@
+@import url("https://rsms.me/inter/inter.css");
+
 /* ./src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url("https://rsms.me/inter/inter.css");
 
 :root {
   font-family: 'Inter', sans-serif;
