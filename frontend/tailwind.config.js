@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: [
@@ -34,7 +35,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      'sans': ['Inter', '"Helvetica Neue"', 'apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'ui-sans-serif'],
+      'sans': ['Inter', ...defaultTheme.fontFamily.sans],
       'mono': ['"JetBrains Mono"', 'ui-monospace'],
     }
   }, 

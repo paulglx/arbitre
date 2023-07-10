@@ -3,59 +3,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://rsms.me/inter/inter.css");
+
+:root {
+  font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: 'Inter var', sans-serif;
+  }
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bs-gray);
-}
-
-div.vertical-center {
-  min-height: 100%;
-  /* Fallback for browsers that don't support vh unit */
-  min-height: 100vh;
-}
-
-ol.breadcrumb {
-  padding: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: 20px;
-  background-color: var(--bs-light);
-  border-radius: 5px;
-  border: 1px solid var(--bs-border-color);
-}
-
-ol.breadcrumb a {
-  color: var(--bs-gray);
-  text-decoration: none;
-}
-
-ol.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-
-ol.breadcrumb li.active {
-  color: var(--bs-gray-dark);
-}
-
-.arbitre {
-  cursor: default;
-  font-weight: 900 !important;
-  user-select: none;
-}
-
-.flex-fill {
-  flex: 1 1 auto;
-}
-
-.dashed-border {
-  border-style: dashed !important;
-}
-
-.description {
-  overflow-x: scroll;
 }
 
 /* button, .list-group, ol.breadcrumb, input {

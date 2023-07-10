@@ -85,7 +85,7 @@ const Courses = () => {
                 <div className="mt-2 flex justify-center h-full">
                     <div className="md:pb-3 h-2/3 w-full">
                         <h1 className="text-3xl font-bold mb-4 text-gray-950 hidden md:block">
-                            Welcome{sortedCourses.length > 0 ? "back" : ""}, {user}!
+                            Welcome{sortedCourses.length > 0 ? " back" : ""}, {user}!
                         </h1>
                         <hr className="border-gray-400 hidden md:block" />
                         {sortedCourses.length > 0 ? (
