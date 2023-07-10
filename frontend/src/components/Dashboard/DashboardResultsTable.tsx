@@ -70,7 +70,9 @@ const DashboardResultsTable = (props: any) => {
             >
                 <tr key={-1} className="">
                     <th key={-1} className="w-24">Student</th>
-                    {results[0]?.exercises?.map(
+                    {results[0]?.exercises?.sort(
+                        (a: any, b: any) => a.exercise_title.localeCompare(b.exercise_title)
+                    ).map(
                         (exercise: any, i: number) => (
                             <th scope="col" className="truncate py-3 px-2 w-32 border-l border-gray-200" key={i}>
                                 {exercise.exercise_title}

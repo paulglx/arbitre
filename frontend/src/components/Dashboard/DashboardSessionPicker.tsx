@@ -111,7 +111,9 @@ const DashboardSessionPicker = (props: any) => {
 
             <ul id="results-list" className='h-48 px-3 overflow-y-auto text-sm text-gray-700'>
                 {
-                    sessionSearchResults?.map((course: any) => (
+                    sessionSearchResults?.sort(
+                        (a: any, b: any) => a.course.title < b.course.title ? -1 : 1
+                    ).map((course: any) => (
                         <div key={course.course.id}>
                             <li key={course.course.id} className="my-2">
                                 <span
@@ -121,23 +123,27 @@ const DashboardSessionPicker = (props: any) => {
                                     {course.course.title ? course.course.title : "Untitled course"}
                                 </span>
                             </li>
-                            {course.sessions.length > 0 ? course.sessions.map((session: any) => (<div key={session.id}>
-                                <li
-                                    key={session.id}
-                                    onClick={() => {
-                                        setCurrentSession(session.id)
-                                        setCurrentSessionTitle(session.title)
-                                    }}
-                                    className='my-4'
-                                >
-                                    <span
-                                        className={"px-4 py-2 text-sm rounded-md " + (session.id === currentSession ? "cursor-default font-bold bg-blue-700 text-gray-100 " : "cursor-pointer hover:bg-gray-200")}
-                                        key={session.id}
-                                    >
-                                        {session.title ? session.title : "Untitled session"}
-                                    </span>
-                                </li>
-                            </div>))
+                            {course.sessions.length > 0 ?
+                                structuredClone(course.sessions).sort(
+                                    (a: any, b: any) => a.title < b.title ? -1 : 1
+                                ).map((session: any) => (
+                                    <div key={session.id}>
+                                        <li
+                                            key={session.id}
+                                            onClick={() => {
+                                                setCurrentSession(session.id)
+                                                setCurrentSessionTitle(session.title)
+                                            }}
+                                            className='my-4'
+                                        >
+                                            <span
+                                                className={"px-4 py-2 text-sm rounded-md " + (session.id === currentSession ? "cursor-default font-bold bg-blue-700 text-gray-100 " : "cursor-pointer hover:bg-gray-200")}
+                                                key={session.id}
+                                            >
+                                                {session.title ? session.title : "Untitled session"}
+                                            </span>
+                                        </li>
+                                    </div>))
                                 :
                                 <li className="my-4">
                                     <span
