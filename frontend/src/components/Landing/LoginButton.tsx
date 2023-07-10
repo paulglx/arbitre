@@ -51,7 +51,7 @@ const LoginButton = () => {
         <>
             <a
                 href={keycloak.createLoginUrl()}
-                className="inline-flex bg-gray-900 hover:bg-blue-900 transition text-gray-50 font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
+                className="inline-flex bg-blue-900 hover:bg-blue-950 transition text-gray-50 font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
             >
                 Login
             </a>

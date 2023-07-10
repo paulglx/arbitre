@@ -9,23 +9,24 @@ const EditableTitle = (props: any) => {
     const [oldValue, setOldValue] = useState(props.title);
 
     useEffect(() => {
-        window.addEventListener('keyup', (event) => {
+        window.addEventListener('keyup', (event: any) => {
             if (event.key === 'Enter' && editTitle) {
-                handleUpdate();
+                setEditTitle(false);
             }
             if (event.key === 'Escape' && editTitle) {
-                setEditTitle(false);
                 props.setTitle(oldValue);
+                setEditTitle(false);
+                event.target.blur();
             }
         });
     });
 
-    const handleUpdate = () => {
-        setEditTitle(false);
-        if (props.title !== oldValue) {
+    useEffect(() => {
+        if (!editTitle && oldValue !== undefined && oldValue !== props.title) {
             props.handleUpdate();
+            setOldValue(props.title);
         }
-    }
+    }, [editTitle, props, oldValue]);
 
     if (!isOwner || !editTitle) {
         return (
@@ -51,7 +52,7 @@ const EditableTitle = (props: any) => {
                 autoFocus
                 className="w-full text-3xl font-bold rounded-md"
                 id="title-input"
-                onBlur={handleUpdate}
+                onBlur={() => { setEditTitle(false); }}
                 onChange={(e: any) => props.setTitle(e.target.value)}
                 onFocus={(e) => autosize(e.target)}
                 placeholder="Enter title"
