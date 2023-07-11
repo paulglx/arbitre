@@ -118,7 +118,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 url: `/api/course_student/${data.course_id}/`,
                 method: 'DELETE',
                 credentials: 'include',
-                body: { user_id: data.user_id } //Must include : course_id, user_id
+                body: { user_id: data.user_id }
             })
         }),
         updateLanguage: builder.mutation({
@@ -126,7 +126,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 url: `/api/course/${data.course_id}/`,
                 method: 'PATCH',
                 credentials: 'include',
-                body: { language: data.language } //Must include : course_id, language
+                body: { language: data.language }
             })
         }),
         joinCourseWithCode: builder.mutation({
@@ -153,6 +153,18 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: data //Must include : course_id, enabled
             })
         }),
+        setAutoGroups: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course/${data.course_id}/`,
+                method: 'PATCH',
+                credentials: 'include',
+                body: {
+                    auto_groups: data.auto_groups,
+                    auto_groups_type: data.auto_groups_type,
+                    auto_groups_number: data.auto_groups_number,
+                }
+            })
+        }),
     })
 })
 
@@ -173,6 +185,7 @@ export const {
     useRemoveOwnerMutation,
     useRemoveStudentMutation,
     useRemoveTutorMutation,
+    useSetAutoGroupsMutation,
     useSetJoinCodeEnabledMutation,
     useUpdateCourseMutation,
     useUpdateLanguageMutation,

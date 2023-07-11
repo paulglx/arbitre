@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 
@@ -66,8 +68,9 @@ class Course(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        super(Course, self).save(*args, **kwargs)
         self.handle_groups_update()
+        super(Course, self).save(*args, **kwargs)
 
     def handle_groups_update(self):
         print("handle_groups_update")

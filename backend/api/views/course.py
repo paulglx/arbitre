@@ -1,4 +1,4 @@
-from api.models import Course
+from api.models import Course, StudentGroup
 from api.serializers import CourseSerializer
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -307,12 +307,31 @@ class CourseStudentViewSet(viewsets.ViewSet):
 
     def list(self, request):
         course = Course.objects.get(pk=request.query_params.get("course_id"))
+
+        students = []
+
+        for user in course.students.all():
+            student_group = StudentGroup.objects.filter(
+                students__in=[user], course=course
+            ).first()
+            if student_group:
+                user.student_group = {
+                    "name": student_group.name,
+                    "id": student_group.id,
+                }
+            else:
+                user.student_group = None
+            students.append(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "student_group": user.student_group,
+                }
+            )
+
         return Response(
             {
-                "students": [
-                    {"id": user.id, "username": user.username}
-                    for user in course.students.all()
-                ]
+                "students": students,
             }
         )
 
@@ -333,7 +352,11 @@ class CourseStudentViewSet(viewsets.ViewSet):
             course.students.add(user)
             course.save()
             return Response(
-                {"message": "Student added to course"}, status=status.HTTP_200_OK
+                {
+                    "message": "Student added to course",
+                    "course": CourseSerializer(course).data,
+                },
+                status=status.HTTP_200_OK,
             )
 
     def destroy(self, request, pk=None):
@@ -348,7 +371,11 @@ class CourseStudentViewSet(viewsets.ViewSet):
             course.students.remove(user)
             course.save()
             return Response(
-                {"message": "Student removed from course"}, status=status.HTTP_200_OK
+                {
+                    "message": "Student removed from course",
+                    "course": CourseSerializer(course).data,
+                },
+                status=status.HTTP_200_OK,
             )
 
         else:

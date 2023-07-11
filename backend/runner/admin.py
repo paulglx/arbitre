@@ -58,6 +58,7 @@ class CourseAdmin(admin.ModelAdmin):
     ]
     readonly_fields = ["id"]
     list_display = ["title", "id", "join_code"]
+    inlines = [StudentGroupInline]
 
 
 class TestResultAdmin(admin.ModelAdmin):
@@ -65,7 +66,6 @@ class TestResultAdmin(admin.ModelAdmin):
     readonly_fields = ["id", "submission", "exercise_test", "stdout"]
     list_display = ["id", "submission", "status", "exercise_test", "stdout"]
     list_filter = ["status"]
-    inlines = [StudentGroupInline]
 
 
 admin.site.register(Submission, SubmissionAdmin)

@@ -27,6 +27,9 @@ class CourseSerializer(serializers.ModelSerializer):
             "students",
             "owners",
             "tutors",
+            "auto_groups",
+            "auto_groups_type",
+            "auto_groups_number",
         ]
 
 

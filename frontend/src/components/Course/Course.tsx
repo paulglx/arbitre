@@ -17,6 +17,7 @@ import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const Course = () => {
 
+    const [course, setCourse] = useState<any>({})
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
     const [language, setLanguage] = useState("");
@@ -53,15 +54,19 @@ const Course = () => {
     ];
 
     const {
-        data: course,
+        data: courseData,
         isSuccess: courseIsSuccess,
         //isError: courseIsError, TODO: handle error
     } = useGetCourseQuery({ id });
 
-    const ownersUsernames = course?.owners.map((owner: any) => owner.username);
+    useEffect(() => {
+        setCourse(courseData);
+    }, [courseData]);
+
+    const ownersUsernames = course?.owners?.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
-    const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
+    const tutorsUsernames = course?.tutors?.map((tutor: any) => tutor.username);
     const isTutor = tutorsUsernames?.includes(username);
 
     // Set title and description when course is loaded
@@ -169,7 +174,7 @@ const Course = () => {
         {
             key: 'students',
             title: 'Students',
-            content: <Students course={course} />,
+            content: <Students course={course} setCourse={setCourse} />,
         },
         {
             key: 'teachers',
