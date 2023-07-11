@@ -37,7 +37,15 @@ module.exports = {
     fontFamily: {
       'sans': ['Inter', ...defaultTheme.fontFamily.sans],
       'mono': ['"JetBrains Mono"', 'ui-monospace'],
-    }
+    },
+    safelist : [
+      {
+        pattern: /bg-+/,
+      },
+      {
+        pattern: /ring-+/,
+      }
+    ]
   }, 
   plugins: [],
 }

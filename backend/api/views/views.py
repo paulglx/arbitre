@@ -123,6 +123,9 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
                     "id": course.id,
                     "title": course.title,
                     "sessions": sessions_data,
+                    "student_groups": StudentGroupSerializer(
+                        StudentGroup.objects.filter(course=course), many=True
+                    ).data,
                 }
             )
 
@@ -189,7 +192,7 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
     def list(self, request):
         session = Session.objects.get(id=self.request.GET.get("session_id"))
 
-        if "groups" in self.request.GET:
+        if "groups" in self.request.GET and self.request.GET.get("groups") != "":
             groups = []
             for group_id in self.request.GET.get("groups").split(","):
                 group = StudentGroup.objects.get(id=group_id)
