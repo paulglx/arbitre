@@ -153,13 +153,21 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: data //Must include : course_id, enabled
             })
         }),
+        setGroupsEnabled: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/course/${data.course_id}/`,
+                method: 'PATCH',
+                credentials: 'include',
+                body: { groups_enabled: data.groups_enabled }
+            })
+        }),
         setAutoGroups: builder.mutation({
             query: (data: any) => ({
                 url: `/api/course/${data.course_id}/`,
                 method: 'PATCH',
                 credentials: 'include',
                 body: {
-                    auto_groups: data.auto_groups,
+                    auto_groups_enabled: data.auto_groups_enabled,
                     auto_groups_type: data.auto_groups_type,
                     auto_groups_number: data.auto_groups_number,
                 }
@@ -186,6 +194,7 @@ export const {
     useRemoveStudentMutation,
     useRemoveTutorMutation,
     useSetAutoGroupsMutation,
+    useSetGroupsEnabledMutation,
     useSetJoinCodeEnabledMutation,
     useUpdateCourseMutation,
     useUpdateLanguageMutation,

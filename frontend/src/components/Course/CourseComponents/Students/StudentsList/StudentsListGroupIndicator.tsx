@@ -6,7 +6,7 @@ const StudentsListGroupIndicator = (props: any) => {
     const student = props.student
 
     return (
-        <GroupBadge group={student.student_group} size={"sm"} selected={true} />
+        <GroupBadge group={student.student_group} size={"sm"} />
     )
 }
 

@@ -53,7 +53,6 @@ class Submission(models.Model):
         submission.update(status=status)
 
     def save(self, *args, **kwargs):
-
         print("Gettin courses and tests")
 
         celery = Celery("arbitre", include=["arbitre.tasks"])
@@ -76,7 +75,6 @@ class Submission(models.Model):
                 file_content = f.read().decode()
                 print("Read file")
                 for test in tests:
-
                     print("Adding one task to queue")
                     # Add camisole task to queue
                     celery.send_task(
@@ -102,7 +100,6 @@ class Submission(models.Model):
 
 # Create your models here
 class Test(models.Model):
-
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default="")
     stdin = models.TextField(default="", blank=True)
@@ -150,7 +147,6 @@ class TestResult(models.Model):
         )
 
     def run_all_pending_testresults():
-
         celery = Celery("arbitre", include=["arbitre.tasks"])
 
         print("Running all pending testresults...")
@@ -172,6 +168,8 @@ class TestResult(models.Model):
                 file_content = f.read()
 
             lang = submission.exercise.session.course.language
+            prefix = submission.exercise.prefix
+            suffix = submission.exercise.suffix
 
             # if submission created more than 5 minutes ago
             if submission.created < timezone.now() - timedelta(minutes=1):
@@ -182,6 +180,8 @@ class TestResult(models.Model):
                         submission.id,
                         exercise_test.id,
                         file_content,
+                        prefix,
+                        suffix,
                         lang,
                     ),
                 )

@@ -21,7 +21,7 @@ const Public = () => {
       <header className="text-gray-600 body-font">
         <div className="flex flex-wrap p-1 md:p-2 flex-row items-center m-2">
           <a className="arbitre flex title-font items-center text-gray-800 mb-0" href="/">
-            <span className="ml-3 text-xl">ARBITRE</span>
+            <span className="ml-3 text-xl font-black">ARBITRE</span>
           </a>
           <nav className="mr-auto ml-4 py-1 pl-4 border-l border-gray-400	flex flex-wrap items-center text-base justify-center">
             <a href="https://silicon-saver-c3d.notion.site/ARBITRE-Docs-0eda4df036504c5f98b1b7b14083f706?pvs=4" className="mr-5 hover:text-gray-800">

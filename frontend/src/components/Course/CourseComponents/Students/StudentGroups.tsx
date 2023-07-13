@@ -1,5 +1,8 @@
+import { useSetAutoGroupsMutation, useSetGroupsEnabledMutation } from '../../../../features/courses/courseApiSlice'
+
 import React from 'react'
-import { useSetAutoGroupsMutation } from '../../../../features/courses/courseApiSlice'
+import { pushNotification } from '../../../../features/notification/notificationSlice'
+import { useDispatch } from 'react-redux'
 import { useState } from 'react'
 
 const StudentGroups = (props: any) => {
@@ -7,28 +10,53 @@ const StudentGroups = (props: any) => {
     const course = props.course
     const setCourse = props.setCourse
 
-    const [autoGroups, setAutoGroups] = useState<any>(course.auto_groups)
+    const [groupsEnabled, setGroupsEnabled] = useState<any>(course.groups_enabled)
+    const [autoGroupsEnabled, setAutoGroupsEnabled] = useState<any>(course.auto_groups_enabled)
     const [autoGroupsNumber, setAutoGroupsNumber] = useState<any>(course.auto_groups_number)
 
+    const [changeGroupsEnabled] = useSetGroupsEnabledMutation()
     const [changeAutoGroups] = useSetAutoGroupsMutation()
 
-    const handleToggleAutoGroups = async () => {
-        await changeAutoGroups({ course_id: course.id, auto_groups: !autoGroups })
+    const dispatch = useDispatch()
+
+    const toggleGroupsEnabled = async () => {
+        const beforeChange = groupsEnabled
+        setGroupsEnabled(!beforeChange)
+
+        await changeGroupsEnabled({ course_id: course.id, groups_enabled: !beforeChange })
             .unwrap()
             .catch((e) => {
-                console.log(e)
+                dispatch(pushNotification({ message: "Unable to toggle groups.", type: "error" }))
             })
             .then((res) => {
-                setAutoGroups(res.auto_groups)
+                setCourse(res)
             })
     }
 
-    const handleAutoGroupsNumberChange = async (i: number) => {
+    const toggleAutoGroups = async () => {
+        const beforeChange = autoGroupsEnabled
+        setAutoGroupsEnabled(!beforeChange)
+
+        await changeAutoGroups({ course_id: course.id, auto_groups_enabled: !beforeChange })
+            .unwrap()
+            .catch((e) => {
+                dispatch(pushNotification({ message: "Unable to toggle auto groups.", type: "error" }))
+            })
+            .then((res) => {
+                setAutoGroupsEnabled(res.auto_groups_enabled)
+            })
+    }
+
+    // Uses optimistic updates :)
+    const autoGroupsNumberChange = async (i: number) => {
+        const beforeChange = autoGroupsNumber
         setAutoGroupsNumber(autoGroupsNumber + i)
+
         await changeAutoGroups({ course_id: course.id, auto_groups_number: autoGroupsNumber + i })
             .unwrap()
             .catch((e) => {
-                console.log(e)
+                dispatch(pushNotification({ message: "Unable to change auto groups number.", type: "error" }))
+                setAutoGroupsNumber(beforeChange)
             })
             .then((res) => {
                 setCourse(res)
@@ -44,35 +72,54 @@ const StudentGroups = (props: any) => {
         )
     }
 
-    const Toggle = (props: any) => {
+    const GroupsToggle = (props: any) => {
         return (
             <div className="flex flex-row items-center">
                 <input
                     type="checkbox"
                     className="mr-2"
-                    checked={autoGroups}
-                    onChange={handleToggleAutoGroups}
+                    checked={groupsEnabled}
+                    onChange={toggleGroupsEnabled}
+                />
+                <label>Groups</label>
+            </div>
+        )
+    }
+
+    const AutoGroupsToggle = (props: any) => {
+        return (
+            <div className="flex flex-row items-center">
+                <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={autoGroupsEnabled}
+                    onChange={toggleAutoGroups}
                 />
                 <label>Auto groups</label>
             </div>
         )
     }
 
-    return autoGroups ? (<Container>
-        <Toggle />
+    if (!groupsEnabled) return (<Container>
+        <GroupsToggle />
+    </Container>)
+
+    return autoGroupsEnabled ? (<Container>
+        <GroupsToggle />
+        <AutoGroupsToggle />
         <div className="flex flex-row items-center">
             <label className="mr-2">Number of groups:</label>
             <button
-                className='font-mono px-2 font-bold border rounded-full mr-2 bg-gray-100 align-middle'
-                onClick={() => handleAutoGroupsNumberChange(-1)}
-                disabled={autoGroupsNumber === 1}
+                className={`font-mono px-2 font-bold align-middle ${autoGroupsNumber <= 2 ? 'opacity-25 cursor-not-allowed' : ''}`}
+                onClick={() => autoGroupsNumberChange(-1)}
+                disabled={autoGroupsNumber <= 2}
             >
                 -
             </button>
-            <span className='font-bold'>{autoGroupsNumber}</span>
+            <span className='font-mono font-bold bg-white border rounded px-1 '>{autoGroupsNumber}</span>
             <button
-                className='font-mono px-2 font-bold border rounded-full ml-2 bg-gray-100 align-middle'
-                onClick={() => handleAutoGroupsNumberChange(1)}
+                className={`font-mono px-2 font-bold align-middle ${autoGroupsNumber === course?.students?.length ? 'opacity-25 cursor-not-allowed' : ''}`}
+                onClick={() => autoGroupsNumberChange(1)}
                 disabled={autoGroupsNumber === course.students.length}
             >
                 +
@@ -80,7 +127,8 @@ const StudentGroups = (props: any) => {
 
         </div>
     </Container>) : (<Container>
-        <Toggle />
+        <GroupsToggle />
+        <AutoGroupsToggle />
     </Container>)
 }
 

@@ -1,3 +1,4 @@
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid"
 import { createRef, useMemo, useState } from "react"
 
 import GroupBadge from "../Util/Auth/GroupBadge"
@@ -21,30 +22,43 @@ const DashboardGroupsPicker = (props: any) => {
         }
     }, [groups])
 
+    console.log(sortedGroups, selectedGroups)
+
     return (<div id="relative inline-block text-left">
 
         <button
-            id="dashboard-groups-picker-button"
-            aria-haspopup="true"
             aria-expanded="true"
+            aria-haspopup="true"
             aria-label="Select groups"
-            ref={dropdownButtonRef}
+            className="px-2 py-1 rounded-lg bg-blue-50 border-2 border-blue-200 text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-semibold"
+            id="dashboard-groups-picker-button"
             onClick={() => { setDropdownOpen(!dropdownOpen) }}
-            className="flex flex-row items-center justify-center w-72 h-12 border rounded-md bg-white text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            ref={dropdownButtonRef}
             type="button"
-
         >
-            Groups
+            Filter by groups
+            {dropdownOpen ?
+                <ChevronUpIcon className="inline-block h-4 w-4 ml-2" />
+                :
+                <ChevronDownIcon className="inline-block h-4 w-4 ml-2" />
+            }
         </button>
 
         <div
-            className={"absolute mt-3 origin-center z-10 border bg-white w-72 p-3 " + (dropdownOpen ? "visible" : "hidden")}
+            aria-labelledby="dashboard-groups-picker-button"
+            id="dashboard-groups-picker-dropdown-menu"
+            role="menu"
+            ref={dropdownMenuRef}
+            className={"absolute mt-2 origin-center z-10 border bg-white rounded-lg " + (dropdownOpen ? "visible" : "hidden")}
         >
-            <div className="" ref={dropdownMenuRef}>
+            <div className="flex-col divide-y" ref={dropdownMenuRef}>
                 {sortedGroups?.map((group: any) => {
                     return (
-                        <button
-                            key={group.id}
+                        <div
+                            className={`
+                                flex justify-between items-center p-2  cursor-pointer
+                                ${selectedGroups.includes(group.id) ? "bg-blue-50 hover:bg-blue-100" : "bg-white hover:bg-gray-50"}
+                            `}
                             onClick={() => {
                                 if (selectedGroups.includes(group.id)) {
                                     props.setSelectedGroups(selectedGroups.filter((id: number) => id !== group.id))
@@ -53,15 +67,18 @@ const DashboardGroupsPicker = (props: any) => {
                                 }
                             }}
                         >
+                            {selectedGroups.includes(group.id) ?
+                                <CheckIcon className="h-6 w-6 text-blue-500 right-2 top-2 mr-2" />
+                                :
+                                <div className="h-6 w-6 right-2 top-2 mr-2" />
+                            }
                             <GroupBadge
                                 group={group}
-                                selected={selectedGroups.includes(group.id)}
                                 size={"lg"}
                             />
-                        </button>
+                        </div>
                     )
-                }
-                )}
+                })}
             </div>
         </div>
     </div>)

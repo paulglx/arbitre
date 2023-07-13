@@ -38,6 +38,7 @@ class Course(models.Model):
         choices=Languages.choices,
         default=Languages.PYTHON,
     )
+
     students = models.ManyToManyField(
         User, related_name="%(class)s_courses_students", blank=True
     )
@@ -53,7 +54,9 @@ class Course(models.Model):
     join_code = models.CharField(max_length=8, blank=False, default="00000000")
     join_code_enabled = models.BooleanField(default=True)
 
-    auto_groups = models.BooleanField(default=False)
+    groups_enabled = models.BooleanField(default=True)
+
+    auto_groups_enabled = models.BooleanField(default=False)
     auto_groups_type = models.CharField(
         max_length=12,
         choices=[
@@ -62,24 +65,19 @@ class Course(models.Model):
         ],
         default="alphabetical",
     )
-    auto_groups_number = models.IntegerField(default=1)
+    auto_groups_number = models.IntegerField(default=2)
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
         super(Course, self).save(*args, **kwargs)
-        self.handle_groups_update()
-        super(Course, self).save(*args, **kwargs)
-
-    def handle_groups_update(self):
-        print("handle_groups_update")
-        if self.auto_groups:
+        if self.auto_groups_enabled:
             self.make_auto_groups()
 
     def make_auto_groups(self):
         """
-        Create groups of students, ordered alphabetically by last name.
+        Create groups of students, ordered alphabetically by  username.
         """
 
         # Delete previous groups

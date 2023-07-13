@@ -58,12 +58,13 @@ const DashboardSessionPicker = (props: any) => {
         }
     }, [sessionSearch, courses])
 
-    return (<>
+    return (<div id="relative inline-block">
         <button
-            id="sessions-dropdown-search-button"
             aria-expanded="true"
             aria-haspopup="true"
-            className='text-3xl font-bold px-4 py-2 border-2 border-blue-300 bg-blue-50 rounded-md text-blue-700'
+            aria-label="Select session"
+            className='text-3xl font-bold px-4 py-2 border-2 border-blue-300 bg-blue-50 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+            id="sessions-dropdown-search-button"
             key={currentSession}
             onClick={toggleDropdown}
             ref={dropdownButtonRef}
@@ -84,7 +85,7 @@ const DashboardSessionPicker = (props: any) => {
         <div
             id="sessions-dropdown-menu"
             aria-labelledby="sessions-dropdown-search-button"
-            className={"fixed z-10 w-96 mt-2 bg-white border-2 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
+            className={"absolute origin-center z-10 mt-2 bg-white border-2 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
             ref={dropdownMenuRef}
         >
             <div id="dropdown" className="p-3">
@@ -158,7 +159,7 @@ const DashboardSessionPicker = (props: any) => {
                 }
             </ul>
         </div >
-    </>)
+    </div>)
 }
 
 export default DashboardSessionPicker
