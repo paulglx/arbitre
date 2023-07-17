@@ -71,8 +71,13 @@ class Course(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        former_auto_groups_number = Course.objects.get(pk=self.pk).auto_groups_number
         super(Course, self).save(*args, **kwargs)
-        if self.auto_groups_enabled:
+        if (
+            self.auto_groups_enabled
+            and former_auto_groups_number
+            != Course.objects.get(pk=self.pk).auto_groups_number
+        ):
             self.make_auto_groups()
 
     def make_auto_groups(self):
@@ -114,7 +119,9 @@ class StudentGroup(models.Model):
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    students = models.ManyToManyField(User, related_name="%(class)s_students")
+    students = models.ManyToManyField(
+        User, related_name="%(class)s_students", blank=True
+    )
 
     def __str__(self):
         return f"{self.name} ({self.course.title})"

@@ -47,7 +47,7 @@ class CourseAdmin(admin.ModelAdmin):
         "owners",
         "tutors",
         "language",
-        "auto_groups",
+        "auto_groups_enabled",
         "auto_groups_type",
         "auto_groups_number",
     ]

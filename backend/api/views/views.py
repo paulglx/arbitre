@@ -1,8 +1,9 @@
 from ..models import Course, Session, Exercise, StudentGroup
 from ..serializers import (
-    SessionSerializer,
+    CourseSerializer,
     ExerciseSerializer,
     MinimalExerciseSerializer,
+    SessionSerializer,
     StudentGroupSerializer,
 )
 from django.contrib.auth.models import User
@@ -77,6 +78,45 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
             return StudentGroup.objects.filter(course=course_id)
         else:
             return StudentGroup.objects.all()
+
+
+class SetStudentGroupViewSet(viewsets.ViewSet):
+    def create(self, request):
+        student = User.objects.get(id=request.data.get("user_id"))
+        student_group = StudentGroup.objects.get(id=request.data.get("group_id"))
+        course = Course.objects.get(student_groups__in=[student_group])
+
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if student not in course.students.all():
+            return Response(
+                {"message": "Forbidden: User is not a student of the course"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Remove student from previous group
+        previous_group = StudentGroup.objects.filter(
+            students__in=[student], course=course
+        ).first()
+        if previous_group:
+            previous_group.students.remove(student)
+            previous_group.save()
+
+        # Add student to new group
+        student_group.students.add(student)
+        student_group.save()
+
+        return Response(
+            {
+                "message": "Student added to group",
+                "course": CourseSerializer(course).data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class CoursesSessionsExercisesViewSet(viewsets.ViewSet):

@@ -1,5 +1,5 @@
 import React from 'react'
-import StudentGroups from './StudentGroups'
+import StudentGroups from './StudentGroups/StudentGroups'
 import StudentsInvite from './StudentsInvite'
 import StudentsList from './StudentsList/StudentsList'
 import { useState } from 'react'

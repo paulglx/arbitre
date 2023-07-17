@@ -173,6 +173,17 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 }
             })
         }),
+        setStudentGroup: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/set_student_group/`,
+                method: 'POST',
+                credentials: 'include',
+                body: {
+                    user_id: data.user_id,
+                    group: data.group,
+                }
+            })
+        }),
     })
 })
 
@@ -196,6 +207,7 @@ export const {
     useSetAutoGroupsMutation,
     useSetGroupsEnabledMutation,
     useSetJoinCodeEnabledMutation,
+    useSetStudentGroupMutation,
     useUpdateCourseMutation,
     useUpdateLanguageMutation,
 } = courseApiSlice;
