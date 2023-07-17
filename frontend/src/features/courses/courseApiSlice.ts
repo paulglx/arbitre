@@ -153,6 +153,12 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: data //Must include : course_id, enabled
             })
         }),
+        getCourseStudentGroups: builder.query({
+            query: params => ({
+                url: `/api/student_group?course_id=${params.course_id}`,
+                method: 'GET',
+            })
+        }),
         setGroupsEnabled: builder.mutation({
             query: (data: any) => ({
                 url: `/api/course/${data.course_id}/`,
@@ -180,7 +186,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 credentials: 'include',
                 body: {
                     user_id: data.user_id,
-                    group: data.group,
+                    student_group: data.student_group,
                 }
             })
         }),
@@ -196,6 +202,7 @@ export const {
     useGetAllCoursesQuery,
     useGetCourseQuery,
     useGetCoursesSessionsExercisesQuery,
+    useGetCourseStudentGroupsQuery,
     useGetOwnersQuery,
     useGetStudentsQuery,
     useGetTutorsQuery,

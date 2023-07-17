@@ -1,9 +1,10 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSetAutoGroupsMutation, useSetGroupsEnabledMutation } from '../../../../../features/courses/courseApiSlice'
 
 import StudentGroupsAutoGroups from './StudentGroupsAutoGroups'
 import { pushNotification } from '../../../../../features/notification/notificationSlice'
-import { useDispatch } from 'react-redux'
+import { selectCurrentUser } from '../../../../../features/auth/authSlice'
 import { useState } from 'react'
 
 const StudentGroups = (props: any) => {
@@ -20,6 +21,9 @@ const StudentGroups = (props: any) => {
     const [changeAutoGroups] = useSetAutoGroupsMutation()
 
     const dispatch = useDispatch()
+
+    const username = useSelector(selectCurrentUser);
+    const isOwner = course?.owners?.map((owner: any) => owner.username).includes(username);
 
     const toggleAutoGroups = async () => {
 
@@ -54,22 +58,20 @@ const StudentGroups = (props: any) => {
 
     const GroupsToggle = (props: any) => {
         return (
-            <div className='flex mb-8'>
-                <div className="flex items-baseline h-5">
-                    <input
-                        aria-describedby='groups-enabled-description'
-                        id="groups-enabled-checkbox"
-                        type="checkbox"
-                        className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        checked={groupsEnabled}
-                        onChange={toggleGroupsEnabled}
-                    />
-                    <div className="ml-2">
-                        <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable Groups</label>
-                        <p id="helper-checkbox-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
-                            Students will be assigned to groups.
-                        </p>
-                    </div>
+            <div className="flex items-baseline mb-2">
+                <input
+                    aria-describedby='groups-enabled-description'
+                    id="groups-enabled-checkbox"
+                    type="checkbox"
+                    className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    checked={groupsEnabled}
+                    onChange={toggleGroupsEnabled}
+                />
+                <div className="ml-2">
+                    <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable Groups</label>
+                    <p id="groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                        Students will be assigned to groups.
+                    </p>
                 </div>
             </div>
         )
@@ -77,19 +79,19 @@ const StudentGroups = (props: any) => {
 
     const AutoGroupsToggle = (props: any) => {
         return (
-            <div className='flex mb-8'>
-                <div className="flex items-baseline h-5">
+            <div>
+                <div className="flex items-baseline">
                     <input
-                        aria-describedby='groups-enabled-description'
-                        id="groups-enabled-checkbox"
+                        aria-describedby='auto-groups-enabled-description'
+                        id="auto-groups-enabled-checkbox"
                         type="checkbox"
                         className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         checked={autoGroupsEnabled}
                         onChange={toggleAutoGroups}
                     />
                     <div className="ml-2">
-                        <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable automatic groups</label>
-                        <p id="helper-checkbox-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                        <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable automatic groups</label>
+                        <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
                             Groups will be automatically generated based on the number of groups you specify, and filled with students in alphabetical order.
                         </p>
                     </div>
@@ -98,7 +100,7 @@ const StudentGroups = (props: any) => {
         )
     }
 
-    return (
+    return isOwner ? (
         <div className='mb-2'>
             <div
                 className={`
@@ -121,7 +123,7 @@ const StudentGroups = (props: any) => {
                     <div className={`${groupsEnabled ? '' : 'opacity-25 disabled'}`}>
                         <AutoGroupsToggle />
                         {autoGroupsEnabled ?
-                            <div className="ml-1.5 pl-4 border-l border-gray-400">
+                            <div className="ml-6 pl-3 border-l border-gray-400">
                                 <StudentGroupsAutoGroups
                                     autoGroupsNumber={autoGroupsNumber}
                                     course={course}
@@ -136,10 +138,8 @@ const StudentGroups = (props: any) => {
                 </div>
                 : <></>
             }
-
-
         </div>
-    )
+    ) : (<></>)
 
 
 }

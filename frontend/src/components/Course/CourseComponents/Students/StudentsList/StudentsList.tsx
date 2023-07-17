@@ -2,7 +2,7 @@ import { UserMinusIcon, UserPlusIcon } from '@heroicons/react/24/solid'
 import { useAddStudentMutation, useGetStudentsQuery, useRemoveStudentMutation } from '../../../../../features/courses/courseApiSlice'
 import { useEffect, useMemo, useState } from 'react'
 
-import StudentsListGroupIndicator from './StudentsListGroupIndicator'
+import StudentsListGroupPicker from './StudentsListGroupPicker'
 import { pushNotification } from '../../../../../features/notification/notificationSlice'
 import { useDispatch } from 'react-redux'
 import { useGetUsersQuery } from '../../../../../features/users/usersApiSlice'
@@ -119,7 +119,7 @@ const StudentsList = (props: any) => {
                                 <td className="px-3 py-3">{student.username}</td>
                                 <td className="flex items-center justify-end pr-3 pt-2">
                                     {course?.groups_enabled ?
-                                        <StudentsListGroupIndicator student={student} course={course} />
+                                        <StudentsListGroupPicker student={student} course={course} setCourse={setCourse} />
                                         : <></>}
                                     <button
                                         className="ml-2 text-red-500 hover:text-red-600 bg-gray-50 hover:bg-gray-100 border hover:border-red-300 transition-colors duration-300 align-middle p-1 rounded-md"

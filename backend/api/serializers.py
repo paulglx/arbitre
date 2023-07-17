@@ -18,19 +18,19 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            "id",
-            "title",
-            "description",
-            "join_code",
-            "join_code_enabled",
-            "language",
-            "students",
-            "owners",
-            "tutors",
-            "groups_enabled",
             "auto_groups_enabled",
-            "auto_groups_type",
             "auto_groups_number",
+            "auto_groups_type",
+            "description",
+            "groups_enabled",
+            "id",
+            "join_code_enabled",
+            "join_code",
+            "language",
+            "owners",
+            "students",
+            "title",
+            "tutors",
         ]
 
 

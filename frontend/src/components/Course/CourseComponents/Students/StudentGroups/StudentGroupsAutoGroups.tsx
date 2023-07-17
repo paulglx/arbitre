@@ -36,7 +36,7 @@ const StudentGroupsAutoGroups = (props: any) => {
     }
 
     return (
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center mt-2">
             <label className="mr-2 font-medium">Number of automatic groups</label>
             <button
                 className={`rounded bg-blue-600 hover:bg-blue-700 text-white font-mono px-2 mr-1 font-bold align-middle ${autoGroupsNumber <= 2 ? 'opacity-25 cursor-not-allowed' : ''}`}

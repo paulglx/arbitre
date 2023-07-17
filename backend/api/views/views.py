@@ -83,8 +83,8 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
 class SetStudentGroupViewSet(viewsets.ViewSet):
     def create(self, request):
         student = User.objects.get(id=request.data.get("user_id"))
-        student_group = StudentGroup.objects.get(id=request.data.get("group_id"))
-        course = Course.objects.get(student_groups__in=[student_group])
+        student_group = StudentGroup.objects.get(id=request.data.get("student_group"))
+        course = student_group.course
 
         if request.user not in course.owners.all():
             return Response(

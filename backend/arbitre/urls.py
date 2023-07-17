@@ -30,6 +30,7 @@ from api.views import (
     ResultsOfSessionViewSet,
     SessionViewSet,
     StudentGroupViewSet,
+    SetStudentGroupViewSet,
 )
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -73,6 +74,9 @@ router.register(r"course", CourseViewSet, basename="course")
 router.register(r"exercise", ExerciseViewSet, basename="exercise")
 router.register(r"session", SessionViewSet, basename="session")
 router.register(r"student_group", StudentGroupViewSet, basename="student_group")
+router.register(
+    r"set_student_group", SetStudentGroupViewSet, basename="set_student_group"
+)
 
 router.register(
     r"courses_sessions_exercises",

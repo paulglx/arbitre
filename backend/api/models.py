@@ -71,12 +71,14 @@ class Course(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        former_auto_groups_number = Course.objects.get(pk=self.pk).auto_groups_number
+        former_course = Course.objects.get(pk=self.pk)
         super(Course, self).save(*args, **kwargs)
-        if (
-            self.auto_groups_enabled
-            and former_auto_groups_number
+        if self.auto_groups_enabled and (
+            former_course.auto_groups_enabled
+            != Course.objects.get(pk=self.pk).auto_groups_enabled
+            or former_course.auto_groups_enabled
             != Course.objects.get(pk=self.pk).auto_groups_number
+            or former_course.students != Course.objects.get(pk=self.pk).students
         ):
             self.make_auto_groups()
 

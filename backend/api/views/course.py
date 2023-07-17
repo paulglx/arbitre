@@ -367,6 +367,15 @@ class CourseStudentViewSet(viewsets.ViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
         user = User.objects.get(id=request.data.get("user_id"))
+
+        # Remove student from student group
+        student_group = StudentGroup.objects.filter(
+            students__in=[user], course=course
+        ).first()
+        if student_group:
+            student_group.students.remove(user)
+            student_group.save()
+
         if user in course.students.all():
             course.students.remove(user)
             course.save()
