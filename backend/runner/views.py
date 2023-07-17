@@ -14,9 +14,6 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     serializer_class = SubmissionSerializer
 
     def perform_create(self, serializer):
-
-        print("Creating submission...")
-
         tests = Test.objects.filter(exercise=self.request.data["exercise"])
         if len(tests) == 0:
             status = "success"
@@ -97,7 +94,6 @@ class SubmissionFileViewSet(viewsets.ViewSet):
 
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
-
         error_response = JsonResponse(
             {"file": "Not Found", "content": "", "language": ""}
         )
@@ -147,7 +143,6 @@ class TestViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-
         # Take all the submissions for this exercise and add a pending test with the new test
         test = serializer.save()
 
@@ -169,7 +164,6 @@ class TestViewSet(viewsets.ModelViewSet):
         return super().perform_create(serializer)
 
     def perform_update(self, serializer):
-
         # Take all test results for this exercise and this test and set their status to "pending"
         TestResult.objects.filter(
             submission__exercise_id=self.request.data["exercise"],
@@ -186,7 +180,6 @@ class TestViewSet(viewsets.ModelViewSet):
         return super().perform_update(serializer)
 
     def perform_destroy(self, instance):
-
         # Take all associated submissions and refresh their statuses
         exercise_id = instance.exercise.id
         for submission in Submission.objects.filter(exercise_id=exercise_id):

@@ -22,8 +22,6 @@ const DashboardGroupsPicker = (props: any) => {
         }
     }, [groups])
 
-    console.log(sortedGroups, selectedGroups)
-
     return (<div id="relative inline-block text-left">
 
         <button
