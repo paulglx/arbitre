@@ -1,8 +1,8 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSetAutoGroupsMutation, useSetGroupsEnabledMutation } from '../../../../../features/courses/courseApiSlice'
+import { useSetAutoGroupsMutation, useSetGroupsEnabledMutation } from '../../../../../features/courses/studentGroupApiSlice'
 
-import StudentGroupsAutoGroups from './StudentGroupsAutoGroups'
+import StudentGroupList from './StudentGroupList'
 import { pushNotification } from '../../../../../features/notification/notificationSlice'
 import { selectCurrentUser } from '../../../../../features/auth/authSlice'
 import { useState } from 'react'
@@ -11,11 +11,11 @@ const StudentGroups = (props: any) => {
 
     const course = props.course
     const setCourse = props.setCourse
+    const groups = props.groups
 
     const [accordionOpened, setAccordionOpened] = useState<any>(false)
     const [groupsEnabled, setGroupsEnabled] = useState<any>(course.groups_enabled)
     const [autoGroupsEnabled, setAutoGroupsEnabled] = useState<any>(course.auto_groups_enabled)
-    const [autoGroupsNumber, setAutoGroupsNumber] = useState<any>(course.auto_groups_number)
 
     const [changeGroupsEnabled] = useSetGroupsEnabledMutation()
     const [changeAutoGroups] = useSetAutoGroupsMutation()
@@ -25,23 +25,6 @@ const StudentGroups = (props: any) => {
     const username = useSelector(selectCurrentUser);
     const isOwner = course?.owners?.map((owner: any) => owner.username).includes(username);
 
-    const toggleAutoGroups = async () => {
-
-        if (!groupsEnabled) return;
-
-        const beforeChange = autoGroupsEnabled
-        setAutoGroupsEnabled(!beforeChange)
-
-        await changeAutoGroups({ course_id: course.id, auto_groups_enabled: !beforeChange })
-            .unwrap()
-            .catch((e) => {
-                dispatch(pushNotification({ message: "Unable to toggle auto groups.", type: "error" }))
-            })
-            .then((res) => {
-                setCourse(res)
-            })
-    }
-
     const toggleGroupsEnabled = async () => {
         const beforeChange = groupsEnabled
         setGroupsEnabled(!beforeChange)
@@ -50,6 +33,21 @@ const StudentGroups = (props: any) => {
             .unwrap()
             .catch((e) => {
                 dispatch(pushNotification({ message: "Unable to toggle groups.", type: "error" }))
+            })
+            .then((res) => {
+                setCourse(res)
+            })
+    }
+
+    const toggleAutoGroups = async () => {
+        if (!groupsEnabled) return;
+        const beforeChange = autoGroupsEnabled
+        setAutoGroupsEnabled(!beforeChange)
+
+        await changeAutoGroups({ course_id: course.id, auto_groups_enabled: !beforeChange })
+            .unwrap()
+            .catch((e) => {
+                dispatch(pushNotification({ message: "Unable to toggle auto groups.", type: "error" }))
             })
             .then((res) => {
                 setCourse(res)
@@ -104,7 +102,7 @@ const StudentGroups = (props: any) => {
         <div className='mb-2'>
             <div
                 className={`
-                    flex flex-row items-center justify-between px-4 py-2 border cursor-pointer
+                    flex flex-row items-center justify-between px-4 py-3 border cursor-pointer
                     ${accordionOpened ?
                         'bg-gray-100 hover:bg-gray-200 rounded-t-lg'
                         :
@@ -118,22 +116,11 @@ const StudentGroups = (props: any) => {
             </div>
 
             {accordionOpened ?
-                <div className="px-4 py-2 border border-t-0 rounded-b-lg">
+                <div className="p-4 border border-t-0 rounded-b-lg">
                     <GroupsToggle />
                     <div className={`${groupsEnabled ? '' : 'opacity-25 disabled'}`}>
                         <AutoGroupsToggle />
-                        {autoGroupsEnabled ?
-                            <div className="ml-6 pl-3 border-l border-gray-400">
-                                <StudentGroupsAutoGroups
-                                    autoGroupsNumber={autoGroupsNumber}
-                                    course={course}
-                                    groupsEnabled={groupsEnabled}
-                                    setAutoGroupsNumber={setAutoGroupsNumber}
-                                    setCourse={setCourse}
-                                />
-                            </div>
-                            : <></>
-                        }
+                        <StudentGroupList course={course} setCourse={setCourse} groups={groups} />
                     </div>
                 </div>
                 : <></>

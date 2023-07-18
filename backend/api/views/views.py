@@ -79,6 +79,46 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
         else:
             return StudentGroup.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        course_id = request.data.get("course")
+        course = Course.objects.get(id=course_id)
+
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        student_group = super().create(request, *args, **kwargs)
+
+        return Response(
+            {
+                "message": "Student group created",
+                "student_group": student_group.data,
+                "course": CourseSerializer(course).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def destroy(self, request, *args, **kwargs):
+        course = self.get_object().course
+
+        if request.user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        super().destroy(request, *args, **kwargs)
+
+        return Response(
+            {
+                "message": "Student group deleted",
+                "course": CourseSerializer(course).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class SetStudentGroupViewSet(viewsets.ViewSet):
     def create(self, request):

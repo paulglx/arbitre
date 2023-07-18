@@ -14,6 +14,7 @@ import Students from "./CourseComponents/Students/Students";
 import TeacherList from "./CourseComponents/Teachers/TeacherList";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
+import { useGetCourseStudentGroupsQuery } from '../../features/courses/studentGroupApiSlice';
 
 const Course = () => {
 
@@ -58,6 +59,13 @@ const Course = () => {
         isSuccess: courseIsSuccess,
         //isError: courseIsError, TODO: handle error
     } = useGetCourseQuery({ id });
+
+    const {
+        data: groups,
+        refetch: refetchGroups,
+    } = useGetCourseStudentGroupsQuery({ course_id: course?.id }, {
+        skip: !course?.id
+    })
 
     useEffect(() => {
         setCourse(courseData);
@@ -174,7 +182,7 @@ const Course = () => {
         {
             key: 'students',
             title: 'Students',
-            content: <Students course={course} setCourse={setCourse} />,
+            content: <Students course={course} setCourse={setCourse} groups={groups} refetchGroups={refetchGroups} />,
         },
         {
             key: 'teachers',

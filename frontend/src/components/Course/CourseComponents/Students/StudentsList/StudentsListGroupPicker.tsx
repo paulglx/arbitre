@@ -5,14 +5,15 @@ import { useDispatch, useSelector } from "react-redux"
 import GroupBadge from '../../../../Util/Auth/GroupBadge'
 import { pushNotification } from "../../../../../features/notification/notificationSlice"
 import { selectCurrentUser } from "../../../../../features/auth/authSlice"
-import { useGetCourseStudentGroupsQuery } from "../../../../../features/courses/courseApiSlice"
-import { useSetStudentGroupMutation } from "../../../../../features/courses/courseApiSlice"
+import { useSetStudentGroupMutation } from "../../../../../features/courses/studentGroupApiSlice"
 
 const StudentsListGroupPicker = (props: any) => {
 
     const course = props.course
     const setCourse = props.setCourse
     const student = props.student
+    const groups = props.groups
+    const refetchGroups = props.refetchGroups
 
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const dropdownButtonRef = createRef<HTMLButtonElement>()
@@ -20,11 +21,6 @@ const StudentsListGroupPicker = (props: any) => {
 
     const dispatch = useDispatch()
     const [setStudentGroup] = useSetStudentGroupMutation()
-
-    const {
-        data: groups,
-        refetch: refetchGroups
-    } = useGetCourseStudentGroupsQuery({ course_id: course?.id })
 
     useEffect(() => {
         refetchGroups()
@@ -70,16 +66,13 @@ const StudentsListGroupPicker = (props: any) => {
         })
             .unwrap()
             .catch((e) => {
-                console.log(e)
                 dispatch(pushNotification({
                     message: "Something went wrong. Failed to set student group",
                     type: "error"
                 }))
             })
             .then((res) => {
-                if (res) {
-                    setCourse(res.course)
-                }
+                if (res) setCourse(res.course)
                 setDropdownOpen(false)
             })
 

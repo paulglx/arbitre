@@ -19,7 +19,6 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             "auto_groups_enabled",
-            "auto_groups_number",
             "auto_groups_type",
             "description",
             "groups_enabled",

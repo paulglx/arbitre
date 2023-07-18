@@ -119,7 +119,7 @@ const StudentsList = (props: any) => {
                                 <td className="px-3 py-3">{student.username}</td>
                                 <td className="flex items-center justify-end pr-3 pt-2">
                                     {course?.groups_enabled ?
-                                        <StudentsListGroupPicker student={student} course={course} setCourse={setCourse} />
+                                        <StudentsListGroupPicker student={student} course={course} setCourse={setCourse} groups={props.groups} refetchGroups={props.refetchGroups} />
                                         : <></>}
                                     <button
                                         className="ml-2 text-red-500 hover:text-red-600 bg-gray-50 hover:bg-gray-100 border hover:border-red-300 transition-colors duration-300 align-middle p-1 rounded-md"

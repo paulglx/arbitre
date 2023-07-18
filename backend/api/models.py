@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 
@@ -65,35 +63,45 @@ class Course(models.Model):
         ],
         default="alphabetical",
     )
-    auto_groups_number = models.IntegerField(default=2)
 
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
+    def handle_student_groups_change(self, *args, **kwargs):
         former_course = Course.objects.get(pk=self.pk)
+        former_student_groups = StudentGroup.objects.filter(course=self)
+
         super(Course, self).save(*args, **kwargs)
+
+        new_course = Course.objects.get(pk=self.pk)
+        new_student_groups = StudentGroup.objects.filter(course=self)
+
         if self.auto_groups_enabled and (
-            former_course.auto_groups_enabled
-            != Course.objects.get(pk=self.pk).auto_groups_enabled
-            or former_course.auto_groups_enabled
-            != Course.objects.get(pk=self.pk).auto_groups_number
-            or former_course.students != Course.objects.get(pk=self.pk).students
+            former_course.auto_groups_enabled != new_course.auto_groups_enabled
+            or former_course.students != new_course.students
+            or former_student_groups != new_student_groups
         ):
             self.make_auto_groups()
 
+    def save(self, *args, **kwargs):
+        self.handle_student_groups_change(*args, **kwargs)
+        super(Course, self).save(*args, **kwargs)
+
     def make_auto_groups(self):
         """
-        Create groups of students, ordered alphabetically by  username.
+        Create groups of students, ordered alphabetically by username.
         """
 
-        # Delete previous groups
-        student_groups = StudentGroup.objects.filter(course=self)
-        for group in student_groups:
-            group.delete()
+        # Get groups
+        student_groups = StudentGroup.objects.filter(course=self).order_by("name")
 
+        # Empty groups
+        for group in student_groups:
+            group.students.clear()
+
+        # Get students
         students = list(self.students.all().order_by("username"))
-        number_of_groups = self.auto_groups_number
+        number_of_groups = StudentGroup.objects.filter(course=self).count()
 
         # Evenly distribute students into groups
         group_repartition = [
@@ -102,15 +110,13 @@ class Course(models.Model):
             for x in range(number_of_groups)
         ]
 
-        # Create groups and add students to them
+        # Put students into groups according to repartition
         for i in range(number_of_groups):
-            group = StudentGroup.objects.create(
-                course=self,
-                name=f"Group {i + 1}",
-            )
-            group.save()
             for j in range(group_repartition[i]):
-                group.students.add(students.pop(0))
+                student_groups[i].students.add(students.pop(0))
+
+        # Save groups
+        for group in student_groups:
             group.save()
 
 
@@ -124,6 +130,18 @@ class StudentGroup(models.Model):
     students = models.ManyToManyField(
         User, related_name="%(class)s_students", blank=True
     )
+
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+
+        super(StudentGroup, self).save(*args, **kwargs)
+
+        if is_new:
+            self.course.handle_student_groups_change()
+
+    def delete(self, *args, **kwargs):
+        super(StudentGroup, self).delete(*args, **kwargs)
+        self.course.handle_student_groups_change()
 
     def __str__(self):
         return f"{self.name} ({self.course.title})"
