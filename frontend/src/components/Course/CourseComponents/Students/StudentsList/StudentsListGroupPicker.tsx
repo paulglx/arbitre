@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import GroupBadge from '../../../../Util/Auth/GroupBadge'
 import { pushNotification } from "../../../../../features/notification/notificationSlice"
 import { selectCurrentUser } from "../../../../../features/auth/authSlice"
-import { useSetStudentGroupMutation } from "../../../../../features/courses/studentGroupApiSlice"
+import { useSetGroupOfStudentMutation } from "../../../../../features/courses/studentGroupApiSlice"
 
 const StudentsListGroupPicker = (props: any) => {
 
@@ -20,7 +20,7 @@ const StudentsListGroupPicker = (props: any) => {
     const dropdownMenuRef = createRef<HTMLDivElement>()
 
     const dispatch = useDispatch()
-    const [setStudentGroup] = useSetStudentGroupMutation()
+    const [setStudentGroup] = useSetGroupOfStudentMutation()
 
     useEffect(() => {
         refetchGroups()
@@ -123,7 +123,7 @@ const StudentsListGroupPicker = (props: any) => {
                 className={"absolute mt-1 origin-center z-10 bg-white rounded-lg " + (dropdownOpen ? "visible" : "hidden")}
             >
                 <div className="border-2 rounded-lg divide-y" ref={dropdownMenuRef}>
-                    {sortedGroups?.map((group: any) => {
+                    {sortedGroups.length > 0 ? (sortedGroups.map((group: any) => {
                         return (
                             <div
                                 className={`flex px-4 py-2 justify-between items-center cursor-pointer hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg`}
@@ -134,7 +134,9 @@ const StudentsListGroupPicker = (props: any) => {
                                 {group.name}
                             </div>
                         )
-                    })}
+                    })) : (
+                        <div className="px-4 py-2 text-gray-400">No groups</div>
+                    )}
                 </div>
             </div>
         </div>

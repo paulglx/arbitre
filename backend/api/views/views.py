@@ -80,8 +80,7 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
             return StudentGroup.objects.all()
 
     def create(self, request, *args, **kwargs):
-        course_id = request.data.get("course")
-        course = Course.objects.get(id=course_id)
+        course = Course.objects.get(id=request.data.get("course"))
 
         if request.user not in course.owners.all():
             return Response(
@@ -94,6 +93,27 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
         return Response(
             {
                 "message": "Student group created",
+                "student_group": student_group.data,
+                "course": CourseSerializer(course).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    def update(self, request, *args, **kwargs):
+        course = self.get_object().course
+        user = request.user
+
+        if user not in course.owners.all():
+            return Response(
+                {"message": "Forbidden: User is not an owner"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        student_group = super().update(request, *args, **kwargs)
+
+        return Response(
+            {
+                "message": "Student group updated",
                 "student_group": student_group.data,
                 "course": CourseSerializer(course).data,
             },

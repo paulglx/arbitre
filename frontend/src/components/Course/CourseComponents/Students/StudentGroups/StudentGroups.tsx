@@ -66,7 +66,7 @@ const StudentGroups = (props: any) => {
                     onChange={toggleGroupsEnabled}
                 />
                 <div className="ml-2">
-                    <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable Groups</label>
+                    <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable groups</label>
                     <p id="groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
                         Students will be assigned to groups.
                     </p>
@@ -98,6 +98,18 @@ const StudentGroups = (props: any) => {
         )
     }
 
+    const GroupsListWrapper = () => {
+        return (<>
+            <div className="">
+                <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Groups</label>
+                <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                    Click on a group to edit its name.
+                </p>
+            </div>
+            <StudentGroupList course={course} setCourse={setCourse} groups={groups} />
+        </>)
+    }
+
     return isOwner ? (
         <div className='mb-2'>
             <div
@@ -120,7 +132,7 @@ const StudentGroups = (props: any) => {
                     <GroupsToggle />
                     <div className={`${groupsEnabled ? '' : 'opacity-25 disabled'}`}>
                         <AutoGroupsToggle />
-                        <StudentGroupList course={course} setCourse={setCourse} groups={groups} />
+                        <GroupsListWrapper />
                     </div>
                 </div>
                 : <></>

@@ -1,5 +1,6 @@
 import { useAddStudentGroupMutation, useRemoveStudentGroupMutation } from '../../../../../features/courses/studentGroupApiSlice'
 
+import EditableName from './EditableName'
 import { pushNotification } from '../../../../../features/notification/notificationSlice'
 import { useDispatch } from 'react-redux'
 import { useMemo } from 'react'
@@ -51,18 +52,21 @@ const StudentGroupList = (props: any) => {
             })
     }
 
-    return (<>
+    return (<div className='flex flex-col w-1/2'>
         {sortedGroups?.map((group: any, i: number) => {
             return (
-                <div key={i}>
-                    {i + 1} {group.name}
-                    <button className='border rounded-lg px-2 py-1' onClick={() => handleRemoveStudentGroup(group)}>Remove</button>
-                </div >
+                <div className='flex flex-row items-center justify-between' key={i}>
+                    <div>
+                        <span className='text-gray-400 text-sm'>{i + 1}</span> &nbsp;
+                        <EditableName group={group} setCourse={setCourse} />
+                    </div>
+                    <button className='border rounded-md bg-gray-50 text-sm px-2 py-1' onClick={() => handleRemoveStudentGroup(group)}>Remove</button>
+                </div>
             )
 
         })}
-        <button className='border rounded-lg px-2 py-1' onClick={handleAddStudentGroup}>Add student group</button>
-    </>)
+        <button className='border rounded-lg bg-gray-50 px-2 py-1' onClick={handleAddStudentGroup}>Add student group</button>
+    </div>)
 }
 
 export default StudentGroupList

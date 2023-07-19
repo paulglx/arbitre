@@ -26,6 +26,16 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                 credentials: 'include',
             })
         }),
+        changeStudentGroup: builder.mutation({
+            query: (data: any) => ({
+                url: `/api/student_group/${data.id}/`,
+                method: 'PATCH',
+                credentials: 'include',
+                body: {
+                    name: data.name,
+                }
+            })
+        }),
         setGroupsEnabled: builder.mutation({
             query: (data: any) => ({
                 url: `/api/course/${data.course_id}/`,
@@ -45,7 +55,7 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                 }
             })
         }),
-        setStudentGroup: builder.mutation({
+        setGroupOfStudent: builder.mutation({
             query: (data: any) => ({
                 url: `/api/set_student_group/`,
                 method: 'POST',
@@ -62,8 +72,9 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
 export const {
     useAddStudentGroupMutation,
     useRemoveStudentGroupMutation,
+    useChangeStudentGroupMutation,
     useGetCourseStudentGroupsQuery,
     useSetAutoGroupsMutation,
     useSetGroupsEnabledMutation,
-    useSetStudentGroupMutation,
+    useSetGroupOfStudentMutation,
 } = studentGroupApiSlice;
