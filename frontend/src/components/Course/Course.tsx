@@ -165,6 +165,7 @@ const Course = () => {
                     <button
                         onClick={() => setModalIsOpen(true)}
                         className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+                        aria-label='Delete course'
                     >
                         <TrashIcon className="w-6 h-6" />
                     </button>
@@ -196,18 +197,12 @@ const Course = () => {
         <>
             <Header />
 
-            <br />
-            <br />
-
             <div className="container mx-auto">
 
                 <Breadcrumb items={[
                     { title: "Courses", link: "/course" },
                     { title: title, link: null }
                 ]} />
-
-                <br />
-                <br />
 
                 <div className="flex items-center justify-between">
                     <EditableTitle

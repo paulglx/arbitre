@@ -64,10 +64,11 @@ const EditableName = (props: any) => {
             :
             <span
                 className='text-gray-600 rounded-md p-1 text-sm cursor-pointer hover:text-gray-800 hover:bg-gray-100'
-                onClick={() => {
+                onFocus={() => {
                     setFormerName(group.name)
                     setEdit(true)
                 }}
+                tabIndex={0}
             >
                 {group.name}
             </span>

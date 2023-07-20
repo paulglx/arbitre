@@ -52,20 +52,20 @@ const StudentGroupList = (props: any) => {
             })
     }
 
-    return (<div className='flex flex-col w-1/2'>
+    return (<div className='flex flex-col w-full lg:w-1/2'>
         {sortedGroups?.map((group: any, i: number) => {
             return (
                 <div className='flex flex-row items-center justify-between' key={i}>
-                    <div>
-                        <span className='text-gray-400 text-sm'>{i + 1}</span> &nbsp;
+                    <div className="flex flex-row items-center justify-start">
+                        <span className='text-gray-400 text-sm w-4'>{i + 1}</span>
                         <EditableName group={group} setCourse={setCourse} />
                     </div>
-                    <button className='border rounded-md bg-gray-50 text-sm px-2 py-1' onClick={() => handleRemoveStudentGroup(group)}>Remove</button>
+                    <button className='border rounded-md bg-gray-50 hover:bg-gray-100 text-sm px-1' onClick={() => handleRemoveStudentGroup(group)}>Remove</button>
                 </div>
             )
 
         })}
-        <button className='border rounded-lg bg-gray-50 px-2 py-1' onClick={handleAddStudentGroup}>Add student group</button>
+        <button className='border rounded-lg text-left bg-gray-50 hover:bg-gray-100 px-2 py-1 text-sm mt-1' onClick={handleAddStudentGroup}>Add group</button>
     </div>)
 }
 

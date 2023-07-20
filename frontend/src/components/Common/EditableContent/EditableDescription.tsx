@@ -21,6 +21,7 @@ const EditableDescription = (props: any) => {
     if ((!isOwner || !editDescription)) {
         return (
             <div
+                aria-label="Description"
                 className={"my-4 px-4 border rounded-lg bg-gray-50 w-full overflow-x-auto " + (isOwner ? " teacher hover:ring" : "") + (props.description ? "" : " text-gray-400")}
                 onFocus={() => {
                     if (!isOwner) return;
@@ -42,7 +43,7 @@ const EditableDescription = (props: any) => {
             <form className="py-4">
                 <textarea
                     autoFocus
-                    aria-label="Course description"
+                    aria-label="Editing description"
                     className="teacher description-input w-full p-4 rounded-lg border border-gray-300"
                     onBlur={() => {
                         setEditDescription(false);

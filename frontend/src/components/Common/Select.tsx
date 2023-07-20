@@ -21,6 +21,7 @@ const Select = (props: any) => {
         aria-expanded="true"
         aria-labelledby="listbox-label"
         onClick={() => setIsOpen(!isOpen)}
+        tabIndex={0}
       >
         <span className="flex items-center">
           <span className="ml-3 block truncate capitalize">{selected.name === null ? props.title : selected.name}</span>
@@ -49,14 +50,16 @@ const Select = (props: any) => {
                 onClick={() => handleSelection(option)}
                 role="option"
                 aria-selected={option === selected}
+                tabIndex={0}
               >
                 {option.name}
               </span >
             ))}
           </li>
         </ul>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 };
 

@@ -68,7 +68,7 @@ const StudentGroups = (props: any) => {
                 <div className="ml-2">
                     <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable groups</label>
                     <p id="groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
-                        Students will be assigned to groups.
+                        {groupsEnabled ? "Groups are enabled." : "Groups are disabled."}
                     </p>
                 </div>
             </div>
@@ -90,7 +90,12 @@ const StudentGroups = (props: any) => {
                     <div className="ml-2">
                         <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable automatic groups</label>
                         <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
-                            Groups will be automatically generated based on the number of groups you specify, and filled with students in alphabetical order.
+                            {autoGroupsEnabled ?
+                                "Groups are filled automatically with students in alphabetical order."
+                                :
+                                "Owners can manually set student groups."
+                            }
+
                         </p>
                     </div>
                 </div>
@@ -100,13 +105,14 @@ const StudentGroups = (props: any) => {
 
     const GroupsListWrapper = () => {
         return (<>
-            <div className="">
+            <div className="p-1 mt-1">
                 <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Groups</label>
                 <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
                     Click on a group to edit its name.
                 </p>
+                <StudentGroupList course={course} setCourse={setCourse} groups={groups} />
             </div>
-            <StudentGroupList course={course} setCourse={setCourse} groups={groups} />
+
         </>)
     }
 
@@ -130,7 +136,7 @@ const StudentGroups = (props: any) => {
             {accordionOpened ?
                 <div className="p-4 border border-t-0 rounded-b-lg">
                     <GroupsToggle />
-                    <div className={`${groupsEnabled ? '' : 'opacity-25 disabled'}`}>
+                    <div className={`${groupsEnabled ? '' : 'opacity-25 disabled pointer-events-none select-none'}`}>
                         <AutoGroupsToggle />
                         <GroupsListWrapper />
                     </div>

@@ -106,6 +106,7 @@ const StudentsListGroupPicker = (props: any) => {
                 onClick={() => { setDropdownOpen(!dropdownOpen) }}
                 ref={dropdownButtonRef}
                 type="button"
+                tabIndex={0}
             >
                 {dropdownOpen ?
                     <ChevronUpIcon className="inline-block h-4 w-4 mr-2" />
@@ -130,6 +131,7 @@ const StudentsListGroupPicker = (props: any) => {
                                 onClick={() => { handleSetStudentGroup(group.id) }}
                                 role="menuitem"
                                 key={group.id}
+                                tabIndex={0}
                             >
                                 {group.name}
                             </div>
