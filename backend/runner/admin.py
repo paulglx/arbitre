@@ -1,9 +1,23 @@
-from django.contrib import admin
 from .models import Submission, Test, TestResult
-from api.models import Exercise, Session, Course
+from api.models import Exercise, Session, Course, StudentGroup
+from django.contrib import admin
 
 
 # Register your models here.
+class StudentGroupInline(admin.StackedInline):
+    model = StudentGroup
+    extra = 0
+    filter_horizontal = ["students"]
+
+
+class StudentGroupAdmin(admin.ModelAdmin):
+    fields = ["name", "course", "students"]
+    filter_horizontal = ["students"]
+    list_display = ["name", "course"]
+    list_filter = ["course"]
+    search_fields = ["name", "course"]
+
+
 class TestInline(admin.StackedInline):
     model = Test
     extra = 1
@@ -33,6 +47,9 @@ class CourseAdmin(admin.ModelAdmin):
         "owners",
         "tutors",
         "language",
+        "auto_groups_enabled",
+        "auto_groups_type",
+        "auto_groups_number",
     ]
     filter_horizontal = [
         "students",
@@ -41,6 +58,7 @@ class CourseAdmin(admin.ModelAdmin):
     ]
     readonly_fields = ["id"]
     list_display = ["title", "id", "join_code"]
+    inlines = [StudentGroupInline]
 
 
 class TestResultAdmin(admin.ModelAdmin):
@@ -56,3 +74,4 @@ admin.site.register(TestResult, TestResultAdmin)
 admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(Session)
 admin.site.register(Course, CourseAdmin)
+admin.site.register(StudentGroup, StudentGroupAdmin)

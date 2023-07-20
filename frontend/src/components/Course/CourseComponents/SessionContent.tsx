@@ -17,7 +17,7 @@ const SessionContent = (props: any) => {
     const dispatch = useDispatch();
 
     const username = useSelector(selectCurrentUser);
-    const ownersUsernames = props.course?.owners.map((owner: any) => owner.username);
+    const ownersUsernames = props.course?.owners?.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
     const {

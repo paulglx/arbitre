@@ -17,7 +17,7 @@ const RequireAuth = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             refreshAuth()
-        }, 30000);
+        }, 1000 * 60);
         return () => clearInterval(interval);
     }, [keycloak, initialized, refreshAuth]);
 

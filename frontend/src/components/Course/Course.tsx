@@ -14,9 +14,11 @@ import Students from "./CourseComponents/Students/Students";
 import TeacherList from "./CourseComponents/Teachers/TeacherList";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
+import { useGetCourseStudentGroupsQuery } from '../../features/courses/studentGroupApiSlice';
 
 const Course = () => {
 
+    const [course, setCourse] = useState<any>({})
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
     const [language, setLanguage] = useState("");
@@ -53,15 +55,34 @@ const Course = () => {
     ];
 
     const {
-        data: course,
+        data: courseData,
         isSuccess: courseIsSuccess,
-        //isError: courseIsError, TODO: handle error
+        isError: courseIsError,
     } = useGetCourseQuery({ id });
 
-    const ownersUsernames = course?.owners.map((owner: any) => owner.username);
+    const {
+        data: groups,
+        refetch: refetchGroups,
+    } = useGetCourseStudentGroupsQuery({ course_id: course?.id }, {
+        skip: !course?.id
+    })
+
+    useEffect(() => {
+        if (courseIsSuccess) setCourse(courseData);
+        if (courseIsError) {
+            setCourse(null);
+            dispatch(pushNotification({
+                message: "The course does not exist",
+                type: "error"
+            }));
+            navigate("/course");
+        }
+    }, [courseData, courseIsError, courseIsSuccess, dispatch, navigate]);
+
+    const ownersUsernames = course?.owners?.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);
 
-    const tutorsUsernames = course?.tutors.map((tutor: any) => tutor.username);
+    const tutorsUsernames = course?.tutors?.map((tutor: any) => tutor.username);
     const isTutor = tutorsUsernames?.includes(username);
 
     // Set title and description when course is loaded
@@ -152,6 +173,7 @@ const Course = () => {
                     <button
                         onClick={() => setModalIsOpen(true)}
                         className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+                        aria-label='Delete course'
                     >
                         <TrashIcon className="w-6 h-6" />
                     </button>
@@ -169,7 +191,7 @@ const Course = () => {
         {
             key: 'students',
             title: 'Students',
-            content: <Students course={course} />,
+            content: <Students course={course} setCourse={setCourse} groups={groups} refetchGroups={refetchGroups} />,
         },
         {
             key: 'teachers',
@@ -183,18 +205,12 @@ const Course = () => {
         <>
             <Header />
 
-            <br />
-            <br />
-
             <div className="container mx-auto">
 
                 <Breadcrumb items={[
                     { title: "Courses", link: "/course" },
                     { title: title, link: null }
                 ]} />
-
-                <br />
-                <br />
 
                 <div className="flex items-center justify-between">
                     <EditableTitle

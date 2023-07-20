@@ -10,13 +10,14 @@ const DashboardResultsTable = (props: any) => {
 
     const [modalContent, setModalContent] = useState(<></>)
     const [showModal, setShowModal] = useState(false)
-    const session_id = props.session_id;
+    const session_id = props.sessionId;
+    const groups = props.selectedGroups;
 
     const {
         data: results,
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
-    } = useGetResultsOfSessionQuery({ session_id }, {
+    } = useGetResultsOfSessionQuery({ session_id, groups }, {
         pollingInterval: showModal || document.hidden ? 0 : 5000,
     });
 

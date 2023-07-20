@@ -1,23 +1,29 @@
+import { useEffect, useState } from 'react'
+
+import DashboardGroupsPicker from './DashboardGroupsPicker'
 import DashboardResultsTable from './DashboardResultsTable'
 import DashboardSessionPicker from './DashboardSessionPicker'
 import Header from '../Common/Header'
 import NotFound from '../Util/NotFound'
-import React from 'react'
 import { selectIsTeacher } from '../../features/auth/authSlice'
 import { useGetCoursesSessionsExercisesQuery } from '../../features/courses/courseApiSlice'
 import { useSelector } from 'react-redux'
-import { useState } from 'react'
 
 const Dashboard = () => {
 
     const [currentSession, setCurrentSession] = useState(-1)
     const [currentSessionTitle, setCurrentSessionTitle] = useState('')
+    const [selectedGroups, setSelectedGroups] = useState([] as number[])
     const isTeacher = useSelector(selectIsTeacher)
 
     const {
         data: courses,
         isSuccess: isCoursesSuccess,
     } = useGetCoursesSessionsExercisesQuery({});
+
+    useEffect(() => {
+        setSelectedGroups([])
+    }, [currentSession])
 
     const PageContent = () => {
         if (!isCoursesSuccess) {
@@ -45,16 +51,23 @@ const Dashboard = () => {
             </>
         } else {
             return <>
-                <DashboardSessionPicker
-                    courses={courses}
-                    currentSession={currentSession}
-                    setCurrentSession={setCurrentSession}
-                    currentSessionTitle={currentSessionTitle}
-                    setCurrentSessionTitle={setCurrentSessionTitle}
-                />
+                <div className="flex justify-between items-center">
+                    <DashboardSessionPicker
+                        courses={courses}
+                        currentSession={currentSession}
+                        setCurrentSession={setCurrentSession}
+                        currentSessionTitle={currentSessionTitle}
+                        setCurrentSessionTitle={setCurrentSessionTitle}
+                    />
+                    <DashboardGroupsPicker
+                        course={courses?.find((course: any) => course.sessions.some((session: any) => session.id === currentSession))}
+                        selectedGroups={selectedGroups}
+                        setSelectedGroups={setSelectedGroups}
+                    />
+                </div>
                 <br />
                 {currentSession !== -1 ?
-                    <DashboardResultsTable session_id={currentSession} />
+                    <DashboardResultsTable sessionId={currentSession} selectedGroups={selectedGroups} />
                     :
                     <></>
                 }

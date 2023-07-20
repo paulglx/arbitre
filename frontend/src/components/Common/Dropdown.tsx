@@ -12,7 +12,7 @@ const Dropdown = (props: any) => {
             <button
                 id="dropdown-basic"
                 onClick={toggleDropdown}
-                className="inline-flex bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition"
+                className="inline-flex bg-blue-950 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition"
                 type="button"
             >
                 {props.icon}

@@ -36,6 +36,7 @@ const Tabs = ({ tabs }: TabsProps) => {
       <div className="flex mb-3">
         {tabs.map((tab: any, i: number) => (
           <button
+            aria-label={`Tab ${i + 1} of ${tabs.length} : ${tab.title}`}
             key={tab.key}
             className={`
               font-medium

@@ -37,7 +37,9 @@ module.exports = {
     fontFamily: {
       'sans': ['Inter', ...defaultTheme.fontFamily.sans],
       'mono': ['"JetBrains Mono"', 'ui-monospace'],
-    }
+    },
   }, 
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

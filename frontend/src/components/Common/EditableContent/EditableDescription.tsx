@@ -20,8 +20,9 @@ const EditableDescription = (props: any) => {
 
     if ((!isOwner || !editDescription)) {
         return (
-            <blockquote
-                className={"my-4 p-4 border rounded-lg bg-gray-50 w-full text-justify overflow-x-auto" + (isOwner ? " teacher hover:ring" : "") + (props.description ? "" : " text-gray-400")}
+            <div
+                aria-label="Description"
+                className={"my-4 px-4 border rounded-lg bg-gray-50 w-full overflow-x-auto " + (isOwner ? " teacher hover:ring" : "") + (props.description ? "" : " text-gray-400")}
                 onFocus={() => {
                     if (!isOwner) return;
                     setEditDescription(true)
@@ -29,17 +30,20 @@ const EditableDescription = (props: any) => {
                 }}
                 tabIndex={0}
             >
-                <Markdown
-                    children={props.description ? props.description : "Enter description"}
-                />
-            </blockquote>
+                <article className="prose prose-sm md:prose-base max-w-none
+                prose-code:before:content-[''] prose-code:after:content-['']">
+                    <Markdown
+                        children={props.description ? props.description : "Enter description"}
+                    />
+                </article>
+            </div>
         )
     } else if (isOwner && editDescription) {
         return (
             <form className="py-4">
                 <textarea
                     autoFocus
-                    aria-label="Course description"
+                    aria-label="Editing description"
                     className="teacher description-input w-full p-4 rounded-lg border border-gray-300"
                     onBlur={() => {
                         setEditDescription(false);

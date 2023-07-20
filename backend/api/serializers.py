@@ -1,6 +1,14 @@
-from .models import Exercise, Session, Course
+from .models import Exercise, Session, Course, StudentGroup
 from rest_framework import serializers
 from api.auth.serializers import MinimalUserSerializer
+
+
+class StudentGroupSerializer(serializers.ModelSerializer):
+    students = MinimalUserSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = StudentGroup
+        fields = ["id", "name", "course", "students"]
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -10,14 +18,17 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            "id",
-            "title",
+            "auto_groups_enabled",
+            "auto_groups_type",
             "description",
-            "join_code",
+            "groups_enabled",
+            "id",
             "join_code_enabled",
+            "join_code",
             "language",
-            "students",
             "owners",
+            "students",
+            "title",
             "tutors",
         ]
 
