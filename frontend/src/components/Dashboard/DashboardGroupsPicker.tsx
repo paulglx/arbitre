@@ -64,6 +64,7 @@ const DashboardGroupsPicker = (props: any) => {
                                     props.setSelectedGroups([...selectedGroups, group.id])
                                 }
                             }}
+                            key={group.id}
                         >
                             {selectedGroups.includes(group.id) ?
                                 <CheckIcon className="h-6 w-6 text-blue-500 right-2 top-2 mr-2" />

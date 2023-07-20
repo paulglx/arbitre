@@ -57,7 +57,7 @@ const Course = () => {
     const {
         data: courseData,
         isSuccess: courseIsSuccess,
-        //isError: courseIsError, TODO: handle error
+        isError: courseIsError,
     } = useGetCourseQuery({ id });
 
     const {
@@ -68,8 +68,16 @@ const Course = () => {
     })
 
     useEffect(() => {
-        setCourse(courseData);
-    }, [courseData]);
+        if (courseIsSuccess) setCourse(courseData);
+        if (courseIsError) {
+            setCourse(null);
+            dispatch(pushNotification({
+                message: "The course does not exist",
+                type: "error"
+            }));
+            navigate("/course");
+        }
+    }, [courseData, courseIsError, courseIsSuccess, dispatch, navigate]);
 
     const ownersUsernames = course?.owners?.map((owner: any) => owner.username);
     const isOwner = ownersUsernames?.includes(username);

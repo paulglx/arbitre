@@ -30,8 +30,10 @@ const DashboardSessionPicker = (props: any) => {
                 setCurrentSessionTitle('')
             } else {
                 const firstCourseWithExercises = courses.find((course: any) => course.sessions.length > 0 && course.sessions[0]?.exercises?.length > 0)
-                setCurrentSession(firstCourseWithExercises.sessions[0].id)
-                setCurrentSessionTitle(firstCourseWithExercises.sessions[0].title)
+                const firstCourseSessions = structuredClone(firstCourseWithExercises?.sessions)
+                const firstSessionByTitle = firstCourseSessions.sort((a: any, b: any) => a.title < b.title ? -1 : 1)[0]
+                setCurrentSession(firstSessionByTitle?.id)
+                setCurrentSessionTitle(firstSessionByTitle?.title)
             }
         }
     }, [courses, currentSession, setCurrentSession, setCurrentSessionTitle])
