@@ -38,14 +38,8 @@ module.exports = {
       'sans': ['Inter', ...defaultTheme.fontFamily.sans],
       'mono': ['"JetBrains Mono"', 'ui-monospace'],
     },
-    safelist : [
-      {
-        pattern: /bg-+/,
-      },
-      {
-        pattern: /ring-+/,
-      }
-    ]
   }, 
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }
