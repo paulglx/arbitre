@@ -52,7 +52,7 @@ class Course(models.Model):
     join_code = models.CharField(max_length=8, blank=False, default="00000000")
     join_code_enabled = models.BooleanField(default=True)
 
-    groups_enabled = models.BooleanField(default=True)
+    groups_enabled = models.BooleanField(default=False)
 
     auto_groups_enabled = models.BooleanField(default=False)
     auto_groups_type = models.CharField(
@@ -84,7 +84,8 @@ class Course(models.Model):
             self.make_auto_groups()
 
     def save(self, *args, **kwargs):
-        self.handle_student_groups_change(*args, **kwargs)
+        if self.pk is not None:
+            self.handle_student_groups_change(*args, **kwargs)
         super(Course, self).save(*args, **kwargs)
 
     def make_auto_groups(self):
