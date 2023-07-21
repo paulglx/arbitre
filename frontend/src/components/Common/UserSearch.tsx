@@ -48,52 +48,74 @@ const UserSearch = (props: any) => {
                     setListIsOpen(false)
                 }}
             />
-            {listIsOpen ? (
-                <div className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg
+            {listIsOpen && addableUsers?.length === 0 ? (
+                <div className="absolute z-40 w-full mt-1 bg-white rounded-md shadow-lg
                 ">
                     <ul
                         tabIndex={-1}
                         role="listbox"
                         aria-labelledby="studentOptions"
                         aria-activedescendant="studentOptions-0"
-                        className="max-h-60 rounded-md text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm divide-y"
+                        className="z-40 max-h-60 rounded-md text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm divide-y"
                     >
-                        {searchResults ? (searchResults.map((u: any, i: number) => (
-                            <li
-                                key={i}
-                                id={`studentOptions-${i}`}
-                                className="text-gray-900 select-none relative py-2 pr-4 hover:bg-gray-50 cursor-pointer"
-                                onMouseDown={(e) => e.preventDefault()} //Prevents onBlur firing before onClick
-                                onClick={() => {
-                                    setUserToAdd(u.username)
-                                    setListIsOpen(false)
-                                }}
-                            >
-                                <div className="flex items-center">
-                                    <span className="ml-3 block font-normal truncate">
-                                        { // Bold the part of the username that matches the search
-                                            u.username.split(new RegExp(`(${userToAdd})`, "gi")).map((part: string, i: number) => (
-                                                <span key={i} className={part.toLowerCase() === userToAdd.toLowerCase() ? "font-semibold" : ""}>
-                                                    {part}
-                                                </span>
-                                            ))
-                                        }
-                                    </span>
-                                </div>
-                            </li>
-                        ))) : (
-                            <li className="text-gray-900 select-none relative py-2 pr-4 hover:bg-gray-50 cursor-pointer">
-                                <div className="flex items-center">
-                                    <span className="ml-3 block font-normal truncate">
-                                        No results
-                                    </span>
-                                </div>
-                            </li>
-                        )}
+                        <li className="bg-gray-50 text-gray-600 select-none relative py-2 pr-4">
+                            <div className="flex items-center">
+                                <span className="ml-3 block font-normal truncate">
+                                    No users to add
+                                </span>
+                            </div>
+                        </li>
                     </ul>
-                </div>
+                </div >
             ) : (<></>)}
-        </div>
+            {
+                listIsOpen && addableUsers?.length > 0 ? (
+                    <div className="absolute z-40 w-full mt-1 bg-white rounded-md shadow-lg
+                ">
+                        <ul
+                            tabIndex={-1}
+                            role="listbox"
+                            aria-labelledby="studentOptions"
+                            aria-activedescendant="studentOptions-0"
+                            className="z-40 max-h-60 rounded-md text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm divide-y"
+                        >
+                            {searchResults ? (searchResults.map((u: any, i: number) => (
+                                <li
+                                    key={i}
+                                    id={`studentOptions-${i}`}
+                                    className="z-40 text-gray-900 select-none relative py-2 pr-4 hover:bg-gray-50 cursor-pointer"
+                                    onMouseDown={(e) => e.preventDefault()} //Prevents onBlur firing before onClick
+                                    onClick={() => {
+                                        setUserToAdd(u.username)
+                                        setListIsOpen(false)
+                                    }}
+                                >
+                                    <div className="z-40 flex items-center">
+                                        <span className="ml-3 block font-normal truncate">
+                                            { // Bold the part of the username that matches the search
+                                                u.username.split(new RegExp(`(${userToAdd})`, "gi")).map((part: string, i: number) => (
+                                                    <span key={i} className={part.toLowerCase() === userToAdd.toLowerCase() ? "font-semibold" : ""}>
+                                                        {part}
+                                                    </span>
+                                                ))
+                                            }
+                                        </span>
+                                    </div>
+                                </li>
+                            ))) : (
+                                <li className="text-gray-900 select-none relative py-2 pr-4 hover:bg-gray-50 cursor-pointer">
+                                    <div className="flex items-center">
+                                        <span className="ml-3 block font-normal truncate">
+                                            No results
+                                        </span>
+                                    </div>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                ) : (<></>)
+            }
+        </div >
     )
 }
 
