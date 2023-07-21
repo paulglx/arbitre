@@ -205,12 +205,16 @@ const Course = () => {
         <>
             <Header />
 
+            <br />
+
             <div className="container mx-auto">
 
                 <Breadcrumb items={[
                     { title: "Courses", link: "/course" },
                     { title: title, link: null }
                 ]} />
+
+                <br />
 
                 <div className="flex items-center justify-between">
                     <EditableTitle

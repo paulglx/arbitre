@@ -1,7 +1,8 @@
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../../features/courses/courseApiSlice"
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import UserSearch from '../../../Common/UserSearch';
 import { selectCurrentUser } from '../../../../features/auth/authSlice';
 import { useGetTeachersQuery } from '../../../../features/users/usersApiSlice';
 import { useSelector } from 'react-redux';
@@ -20,6 +21,18 @@ const TeacherList = (props: any) => {
     const course_id: number = props?.courseId
     const current_username = useSelector(selectCurrentUser)
     const isOwner: boolean = props?.isOwner
+
+    const sortedOwners = useMemo(() => {
+        const ownersToSort = structuredClone(owners)
+        const sortedOwners = ownersToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
+        return sortedOwners
+    }, [owners])
+
+    const sortedTutors = useMemo(() => {
+        const tutorsToSort = structuredClone(tutors)
+        const sortedTutors = tutorsToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
+        return sortedTutors
+    }, [tutors])
 
     const {
         data: ownersData,
@@ -109,7 +122,7 @@ const TeacherList = (props: any) => {
                     <h2 className="text-2xl font-bold">Owners</h2>
                     <p className="text-gray-600">Owners manage the sessions and exercises for this course. They also manage students and view their results.</p>
                     <ul className="mt-4">
-                        {owners.map((owner: any) => (
+                        {sortedOwners.map((owner: any) => (
                             <li key={owner.id} className="flex items-center justify-between font-medium py-2 pl-4 pr-2 mt-2 first:mt-0 bg-gray-50 hover:bg-gray-100 border rounded-md">
                                 {owner.username}
                                 {isOwner ? (
@@ -124,19 +137,7 @@ const TeacherList = (props: any) => {
                         {isOwner && (
                             <li className="flex items-center justify-between mt-2 w-full">
                                 <form onSubmit={handleAddOwner} className="flex items-center w-full">
-                                    <input
-                                        type="text"
-                                        placeholder="Add owner"
-                                        list="teacherOptions"
-                                        value={ownerToAdd}
-                                        onChange={(e: any) => setOwnerToAdd(e.target.value)}
-                                        className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
-                                    />
-                                    <datalist id="teacherOptions">
-                                        {addableUsers && addableUsers.map((user: any) => (
-                                            <option key={user.id} value={user.username} />
-                                        ))}
-                                    </datalist>
+                                    <UserSearch addableUsers={addableUsers} userToAdd={ownerToAdd} setUserToAdd={setOwnerToAdd} placeholder="Search teacher to add" />
                                     <PlusIcon
                                         aria-label='Add owner'
                                         className={`${ownerToAdd ? "text-gray-500 bg-gray-50 hover:bg-gray-100" : "text-gray-300 bg-gray-100"} w-10 h-10 p-1 border rounded-md`}
@@ -155,7 +156,7 @@ const TeacherList = (props: any) => {
                     <h2 className="text-2xl font-bold">Tutors</h2>
                     <p className="text-gray-600">Tutors can manage students and see their results.</p>
                     <ul className="mt-4">
-                        {tutors.map((tutor: any) => (
+                        {sortedTutors.map((tutor: any) => (
                             <li key={tutor.id} className="flex items-center justify-between font-medium py-2 pl-4 pr-2 mt-2 first:mt-0 bg-gray-50 hover:bg-gray-100 border rounded-md">
                                 {tutor.username}
                                 {isOwner ? (
@@ -168,19 +169,7 @@ const TeacherList = (props: any) => {
                         {isOwner && (
                             <li className="flex items-center justify-between mt-2 w-full">
                                 <form onSubmit={handleAddTutor} className="flex items-center w-full">
-                                    <input
-                                        type="text"
-                                        placeholder="Add tutor"
-                                        list="teacherOptions"
-                                        value={tutorToAdd}
-                                        onChange={(e: any) => setTutorToAdd(e.target.value)}
-                                        className="border border-gray-300 rounded-lg py-2 px-4 mr-2 focus:outline-none focus:border-blue-500 w-full"
-                                    />
-                                    <datalist id="teacherOptions">
-                                        {addableUsers && addableUsers.map((user: any) => (
-                                            <option key={user.id} value={user.username} />
-                                        ))}
-                                    </datalist>
+                                    <UserSearch addableUsers={addableUsers} userToAdd={tutorToAdd} setUserToAdd={setTutorToAdd} placeholder="Search teacher to add" />
                                     <PlusIcon
                                         aria-label='Add tutor'
                                         className={`${tutorToAdd ? "text-gray-500 bg-gray-50 hover:bg-gray-100" : "text-gray-300 bg-gray-100"} w-10 h-10 p-1 border rounded-md`}

@@ -133,7 +133,6 @@ const Exercise = () => {
         <Header />
 
         <br />
-        <br />
 
         <div className="container mx-auto">
 
