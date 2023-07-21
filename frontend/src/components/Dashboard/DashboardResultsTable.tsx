@@ -103,7 +103,7 @@ const DashboardResultsTable = (props: any) => {
                         </td>
                         {student.exercises.map((exercise: any, j: number) => (
                             <td
-                                className='text-center cursor-pointer py-4'
+                                className={`text-center py-4 ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
                                 role={exercise.status !== "not submitted" ? "button" : ""}
                                 key={j}
                                 onClick={exercise.status !== "not submitted" ? (() => {
