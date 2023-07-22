@@ -38,6 +38,8 @@ const ExerciseTestsTab = (props: any) => {
                 stdin: test.stdin,
                 stdout: test.stdout,
             })
+            // set test as not new
+            setTests(tests.map((t: any) => t.id === testId ? { ...t, new: false } : t))
         } else {
             await updateTest({
                 id: test.id,
@@ -69,7 +71,7 @@ const ExerciseTestsTab = (props: any) => {
     }
 
     return (
-        <>
+        <div className='pb-3'>
             {exerciseIsSuccess && tests && (
                 <>
                     {tests.length > 0 ? (
@@ -113,15 +115,9 @@ const ExerciseTestsTab = (props: any) => {
                                 isOwner && setEditTestId(test?.id);
                                 setEditTest(true);
                             }}
-                            onBlur={(e) => {
-                                isOwner && handleTestBlur(e);
-                            }}
-                            onMouseEnter={() => {
-                                isOwner && setHoveredTestId(test?.id);
-                            }}
-                            onMouseLeave={() => {
-                                isOwner && setHoveredTestId(-1);
-                            }}
+                            onBlur={(e) => { isOwner && handleTestBlur(e); }}
+                            onMouseEnter={() => { isOwner && setHoveredTestId(test?.id); }}
+                            onMouseLeave={() => { isOwner && setHoveredTestId(-1); }}
                         >
                             <div className="flex items-center w-full gap-2 flex-col md:flex-row">
                                 <input
@@ -132,17 +128,15 @@ const ExerciseTestsTab = (props: any) => {
                                     autoComplete="off"
                                     className={`w-full md:w-1/2 rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
                                     onChange={(e) => {
-                                        isOwner &&
-                                            setTests(
-                                                tests.map((t) =>
-                                                    t.id === test?.id ? { ...t, name: e.target.value } : t
-                                                )
-                                            );
+                                        isOwner && setTests(
+                                            tests.map((t) =>
+                                                t.id === test?.id ? { ...t, name: e.target.value } : t
+                                            ));
                                     }}
                                     {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                 />
 
-                                <div className="w-full md:w-1/4 flex justify-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
+                                <div className="md:w-1/4 w-full flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
                                     <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Input</span>
                                     <textarea
                                         className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:border-blue-500 ml-2 md:ml-4 bg-white h-10 p-2"
@@ -196,7 +190,6 @@ const ExerciseTestsTab = (props: any) => {
                             <div className="md:col-auto">
                                 {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
                                     <>
-
                                         {showModal && (
                                             <Modal
                                                 title={<h2 className="text-xl font-semibold">Confirmation</h2>}
@@ -231,12 +224,10 @@ const ExerciseTestsTab = (props: any) => {
                                 Add test
                             </button>
                         </div>
-
                     )}
-
                 </>
             )}
-        </>
+        </div>
     );
 
 }
