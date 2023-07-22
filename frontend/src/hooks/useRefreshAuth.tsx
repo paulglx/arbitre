@@ -24,8 +24,8 @@ export const useRefreshAuth = () => {
                 }));
             }).catch((error) => console.log("Failed to load user profile"));
         }).catch(() => {
+            dispatch(logOut())
             keycloak.logout()
-            dispatch(logOut({}))
         });
 
     }
