@@ -23,9 +23,7 @@ const EditableTitle = (props: any) => {
     });
 
     useEffect(() => {
-        console.log("useEffect. editTitle,", editTitle, "props.title,", props.title, "oldValue,", oldValue, "isOwner,", isOwner)
         if (isOwner && !editTitle && props.title && oldValue && oldValue !== props.title) {
-            console.log("updating title")
             props.handleUpdate();
             setOldValue(props.title);
         }

@@ -145,7 +145,7 @@ const DashboardResultsTable = (props: any) => {
 
         <br />
 
-        <div className='mx-auto overflow-x-auto rounded-md'>
+        <div className='mx-auto overflow-x-auto rounded-md mb-4'>
             <table className="w-full text-sm rounded border">
                 {tableHeadContent(resultsSortedByUsername)}
                 {tableBodyContent(resultsSortedByUsername)}

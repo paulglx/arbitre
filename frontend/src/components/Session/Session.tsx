@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
+import DashboardResultsTable from "../Dashboard/DashboardResultsTable";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import ExerciseContent from "./SessionComponents/ExerciseContent";
-import ResultsTable from "../Dashboard/DashboardResultsTable";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 
@@ -22,6 +22,8 @@ const Session = () => {
     const [updateSession] = useUpdateSessionMutation();
     const { session_id }: any = useParams();
     const dispatch = useDispatch();
+
+    console.log(session_id)
 
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
@@ -115,7 +117,7 @@ const Session = () => {
         {
             key: "results",
             title: "Results",
-            content: <ResultsTable session_id={session_id} />,
+            content: <DashboardResultsTable sessionId={session_id} />,
         },
     ];
 
