@@ -31,6 +31,8 @@ const UserSearch = (props: any) => {
                 <MagnifyingGlassIcon className="w-4 h-4 ml-1 text-gray-500" />
             </div>
             <input
+                aria-label="Search users"
+                autoComplete="off"
                 type="text"
                 className="w-full border border-gray-300 rounded-md shadow-sm pl-8 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder={placeholder}
@@ -49,8 +51,7 @@ const UserSearch = (props: any) => {
                 }}
             />
             {listIsOpen && addableUsers?.length === 0 ? (
-                <div className="absolute z-40 w-full mt-1 bg-white rounded-md shadow-lg
-                ">
+                <div className="absolute z-40 w-full mt-1 bg-white rounded-md shadow-lg">
                     <ul
                         tabIndex={-1}
                         role="listbox"
@@ -58,7 +59,11 @@ const UserSearch = (props: any) => {
                         aria-activedescendant="studentOptions-0"
                         className="z-40 max-h-60 rounded-md text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm divide-y"
                     >
-                        <li className="bg-gray-50 text-gray-600 select-none relative py-2 pr-4">
+                        <li
+                            key="noUsers"
+                            id="studentOptions-0"
+                            className="bg-gray-50 text-gray-600 select-none relative py-2 pr-4"
+                        >
                             <div className="flex items-center">
                                 <span className="ml-3 block font-normal truncate">
                                     No users to add
