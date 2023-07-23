@@ -12,9 +12,7 @@ export const useRefreshAuth = () => {
 
     return () => {
 
-        console.log("Trying to refresh auth")
         initialized && keycloak.updateToken(60).then((refreshed) => {
-            console.log("Refreshed auth? :", refreshed)
             refreshed && keycloak.loadUserProfile().then((profile) => {
                 dispatch(setCredentials({
                     user: profile.username,
@@ -27,7 +25,5 @@ export const useRefreshAuth = () => {
             dispatch(logOut())
             keycloak.logout()
         });
-
     }
-
 }
