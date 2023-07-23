@@ -16,6 +16,7 @@ import { pushNotification } from "../../features/notification/notificationSlice"
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { useTitle } from "../../hooks/useTitle";
 
 const Exercise = () => {
 
@@ -40,6 +41,8 @@ const Exercise = () => {
     const course = session?.course
     const isOwner = course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = course?.tutors?.map((t: any) => t.username).includes(username);
+
+    useTitle(exercise?.title);
 
     useEffect(() => {
         setTitle(exercise?.title);

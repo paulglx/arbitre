@@ -12,6 +12,7 @@ import EditableTitle from '../Common/EditableContent/EditableTitle';
 import ExerciseContent from "./SessionComponents/ExerciseContent";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
+import { useTitle } from '../../hooks/useTitle';
 
 const Session = () => {
 
@@ -34,6 +35,8 @@ const Session = () => {
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
     } = useGetSessionQuery({ id: session_id });
+
+    useTitle(session?.title);
 
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);

@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { useJoinCourseWithCodeMutation } from '../../features/courses/courseApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
+import { useTitle } from '../../hooks/useTitle';
 
 const JoinCourse = (props: any) => {
 
@@ -20,6 +21,8 @@ const JoinCourse = (props: any) => {
     const [joinCourseWithCode] = useJoinCourseWithCodeMutation()
     const [err, setErr] = useState<any>("")
     const [codeInput, setCodeInput] = useState<any>('')
+
+    useTitle("Join a course")
 
     const handleCodeInput = (value: any) => {
         setErr("")

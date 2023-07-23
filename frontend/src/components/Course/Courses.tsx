@@ -10,8 +10,11 @@ import { pushNotification } from '../../features/notification/notificationSlice'
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
 import { useMemo } from 'react';
+import { useTitle } from '../../hooks/useTitle';
 
 const Courses = () => {
+
+    useTitle("Courses")
 
     const {
         data: courses,

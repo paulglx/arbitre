@@ -22,6 +22,19 @@ const DashboardSessionPicker = (props: any) => {
         setDropdownOpen(!dropdownOpen)
     }
 
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (dropdownButtonRef.current && !dropdownButtonRef.current.contains(event.target) && dropdownMenuRef.current && !dropdownMenuRef.current.contains(event.target)) {
+                setDropdownOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [dropdownButtonRef, dropdownMenuRef])
+
     // Set current session at first render
     useEffect(() => {
         if (courses && currentSession === -1) {

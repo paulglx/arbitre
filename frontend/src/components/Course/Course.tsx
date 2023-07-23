@@ -15,6 +15,7 @@ import TeacherList from "./CourseComponents/Teachers/TeacherList";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useGetCourseStudentGroupsQuery } from '../../features/courses/studentGroupApiSlice';
+import { useTitle } from '../../hooks/useTitle';
 
 const Course = () => {
 
@@ -66,6 +67,8 @@ const Course = () => {
     } = useGetCourseStudentGroupsQuery({ course_id: course?.id }, {
         skip: !course?.id
     })
+
+    useTitle(course?.title);
 
     useEffect(() => {
         if (courseIsSuccess) setCourse(courseData);
