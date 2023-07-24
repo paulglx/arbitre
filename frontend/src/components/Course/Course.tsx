@@ -15,6 +15,8 @@ import TeacherList from "./CourseComponents/Teachers/TeacherList";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useGetCourseStudentGroupsQuery } from '../../features/courses/studentGroupApiSlice';
+import Grading from './Grading/Grading';
+
 
 const Course = () => {
 
@@ -197,6 +199,11 @@ const Course = () => {
             key: 'teachers',
             title: 'Teachers',
             content: <TeacherList courseId={id} isOwner={isOwner} />,
+        },
+        {
+            key: 'grading',
+            title: 'Grading',
+            content: <Grading courseId={id} />,
         },
     ];
 

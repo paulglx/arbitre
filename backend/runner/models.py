@@ -94,6 +94,7 @@ class Test(models.Model):
     name = models.CharField(max_length=255, default="")
     stdin = models.TextField(default="", blank=True)
     stdout = models.TextField(default="", blank=True)
+    coefficient = models.IntegerField(blank=True, null=True)
     # TODO add all test criterias
 
     def __str__(self):
