@@ -2,10 +2,13 @@ from celery import shared_task
 import json
 import requests
 import environ
+import os
 
 # Reading .env file
 env = environ.Env()
-environ.Env.read_env()
+environ.Env.read_env(
+    env_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+)
 
 
 @shared_task
@@ -93,7 +96,6 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
 
 @shared_task(ignore_result=True)
 def run_all_pending_testresults() -> None:
-
     from runner.models import TestResult
 
     """
