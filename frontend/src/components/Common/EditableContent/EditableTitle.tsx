@@ -47,19 +47,21 @@ const EditableTitle = (props: any) => {
         );
     } else if (isOwner && editTitle) {
         return (
-            <input
-                aria-label="Edit title"
-                autoComplete="false"
-                autoFocus
-                className="w-full text-3xl font-bold rounded-md"
-                id="title-input"
-                onBlur={() => { setEditTitle(false); }}
-                onChange={(e: any) => props.setTitle(e.target.value)}
-                onFocus={(e) => autosize(e.target)}
-                placeholder="Enter title"
-                type="text"
-                value={props.title}
-            />
+            <form>
+                <input
+                    aria-label="Edit title"
+                    autoComplete="off"
+                    autoFocus
+                    className="w-full text-3xl font-bold rounded-md"
+                    id="title-input"
+                    onBlur={() => { setEditTitle(false); }}
+                    onChange={(e: any) => props.setTitle(e.target.value)}
+                    onFocus={(e) => autosize(e.target)}
+                    placeholder="Enter title"
+                    type="text"
+                    value={props.title}
+                />
+            </form>
         )
     }
 

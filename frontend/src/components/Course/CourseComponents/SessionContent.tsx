@@ -94,9 +94,9 @@ const SessionContent = (props: any) => {
                             className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:shadow-lg hover:scale-105"
                             to={"/session/" + session.id}
                         >
-                            <span className={`text-xl font-medium ${session.title ? "text-gray-700" : "text-gray-500"}`}>
+                            <p className={`text-xl line-clamp-3 font-medium ${session.title ? "text-gray-700" : "text-gray-500"}`}>
                                 {session.title ? session.title : "Untitled Session"}
-                            </span>
+                            </p>
                             {/*
                             <div className="flex items-center">
                                 <ClockIcon className="w-6 h-6 mr-1 text-gray-500" />
