@@ -35,10 +35,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class MinimalCourseSerializer(serializers.ModelSerializer):
     owners = MinimalUserSerializer(many=True, read_only=True)
+    tutors = MinimalUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = ["id", "title", "owners", "language"]
+        fields = ["id", "title", "owners", "tutors", "language"]
 
 
 class SessionSerializer(serializers.ModelSerializer):

@@ -24,8 +24,6 @@ const Session = () => {
     const { session_id }: any = useParams();
     const dispatch = useDispatch();
 
-    console.log(session_id)
-
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
 
@@ -40,6 +38,8 @@ const Session = () => {
 
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
+
+    console.log(session?.course)
 
     useEffect(() => {
         setTitle(session?.title);
