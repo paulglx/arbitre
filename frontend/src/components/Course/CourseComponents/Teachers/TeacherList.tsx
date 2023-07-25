@@ -3,7 +3,9 @@ import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTuto
 import { useEffect, useMemo, useState } from "react";
 
 import UserSearch from '../../../Common/UserSearch';
+import { pushNotification } from '../../../../features/notification/notificationSlice';
 import { selectCurrentUser } from '../../../../features/auth/authSlice';
+import { useDispatch } from 'react-redux';
 import { useGetTeachersQuery } from '../../../../features/users/usersApiSlice';
 import { useSelector } from 'react-redux';
 
@@ -20,6 +22,7 @@ const TeacherList = (props: any) => {
     const [tutorToAdd, setTutorToAdd] = useState<any>("")
     const course_id: number = props?.courseId
     const current_username = useSelector(selectCurrentUser)
+    const dispatch = useDispatch()
     const isOwner: boolean = props?.isOwner
 
     const sortedOwners = useMemo(() => {
@@ -77,14 +80,15 @@ const TeacherList = (props: any) => {
         const user_id = teachersData.find((t: any) => t.username === ownerToAdd)?.id
         if (user_id) {
             await addOwner({ course_id, user_id })
-            setOwnerToAdd("")
-            setOwners([...owners, teachersData.find((t: any) => t.username === ownerToAdd)])
-        }
-        else if (owners.map((o: any) => o.id).includes(user_id)) {
-            alert("User is already an owner")
-        }
-        else {
-            alert("User not found")
+                .unwrap()
+                .then((res) => {
+                    setOwnerToAdd("")
+                    setOwners([...owners, teachersData.find((t: any) => t.username === ownerToAdd)])
+                })
+                .catch((err) => {
+                    console.log(err)
+                    dispatch(pushNotification({ message: err.data.message, type: "error" }))
+                })
         }
     }
 
@@ -94,25 +98,38 @@ const TeacherList = (props: any) => {
         const user_id = teachersData.find((t: any) => t.username === tutorToAdd)?.id
         if (user_id) {
             await addTutor({ course_id, user_id })
-            setTutorToAdd("")
-            setTutors([...tutors, teachersData.find((t: any) => t.username === tutorToAdd)])
-        }
-        else if (tutors.map((t: any) => t.id).includes(user_id)) {
-            alert("User is already a tutor")
-        }
-        else {
-            alert("User not found")
+                .unwrap()
+                .then((res) => {
+                    setTutorToAdd("")
+                    setTutors([...tutors, teachersData.find((t: any) => t.username === tutorToAdd)])
+                })
+                .catch((err) => {
+                    dispatch(pushNotification({ message: err.data.message, type: "error" }))
+                })
         }
     }
 
     const handleDeleteOwner = (user_id: number) => {
         removeOwner({ course_id: course_id, user_id: user_id })
-        setOwners(owners.filter((o: any) => o.id !== user_id))
+            .unwrap()
+            .then((res) => {
+                setOwners(owners.filter((o: any) => o.id !== user_id))
+            })
+            .catch((err) => {
+                dispatch(pushNotification({ message: "Something went wrong. Failed to remove owner", type: "error" }))
+            })
+
     }
 
     const handleDeleteTutor = (user_id: number) => {
         removeTutor({ course_id: course_id, user_id: user_id })
-        setTutors(tutors.filter((t: any) => t.id !== user_id))
+            .unwrap()
+            .then((res) => {
+                setTutors(tutors.filter((t: any) => t.id !== user_id))
+            })
+            .catch((err) => {
+                dispatch(pushNotification({ message: "Something went wrong. Failed to remove tutor", type: "error" }))
+            })
     }
 
     return isOwnersSuccess && isTeachersSuccess ? (
