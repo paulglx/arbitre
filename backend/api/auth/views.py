@@ -36,19 +36,6 @@ except keycloak.exceptions.KeycloakGetError:
     KEYCLOAK_ADMIN.create_realm_role({"name": "teacher"})
 
 
-class UserGroup(APIView):
-    """
-    Get the group(s) that an user belongs to.
-    """
-
-    http_method_names = ["post"]
-
-    def post(self, request, *args, **kwargs):
-        user = User.objects.get(username=request.data.get("username"))
-        groups = user.groups.all().values()
-        return JsonResponse({"groups": list(groups)})
-
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     GET and POST users.
