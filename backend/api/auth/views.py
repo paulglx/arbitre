@@ -20,17 +20,27 @@ REALM_NAME = env("KEYCLOAK_REALM_NAME", default="master")
 ADMIN_USERNAME = env("KEYCLOAK_ADMIN_USERNAME", default="admin")
 ADMIN_PASSWORD = env("KEYCLOAK_ADMIN_PASSOWRD", default="admin")
 
-KEYCLOAK_ADMIN = keycloak.KeycloakAdmin(
-    server_url=SERVER_URL,
-    username=ADMIN_USERNAME,
-    password=ADMIN_PASSWORD,
-    realm_name=REALM_NAME,
-    verify=True,
-)
+
+def admin_login():
+    return keycloak.KeycloakAdmin(
+        server_url=SERVER_URL,
+        username=ADMIN_USERNAME,
+        password=ADMIN_PASSWORD,
+        realm_name=REALM_NAME,
+        verify=True,
+    )
+
+
+KEYCLOAK_ADMIN = admin_login()
 
 # Check if teacher roles exists
 try:
     KEYCLOAK_ADMIN.get_realm_role(role_name="teacher")
+except keycloak.exceptions.KeycloakAuthenticationError:
+    print("ERROR: Keycloak authentication failed")
+    KEYCLOAK_ADMIN.logout()
+    KEYCLOAK_ADMIN = admin_login()
+
 except keycloak.exceptions.KeycloakGetError:
     print("WARNING: teacher role does not exist. Creating it")
     KEYCLOAK_ADMIN.create_realm_role({"name": "teacher"})
