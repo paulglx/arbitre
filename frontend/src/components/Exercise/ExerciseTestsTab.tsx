@@ -80,7 +80,7 @@ const ExerciseTestsTab = (props: any) => {
                         </h6>
                     ) : (
                         <div className="bg-gray-50 border shadow p-6 md:p-2 flex justify-center items-center flex-col rounded-lg">
-                            <h6 className="text-muted p-2 md:p-4">This session doesn't have any tests</h6>
+                            <h6 className="text-muted p-2 md:p-4">This exercise doesn't have any tests</h6>
                             {isOwner && (
                                 <div className="flex justify-center p-2 md:p-2">
                                     <button

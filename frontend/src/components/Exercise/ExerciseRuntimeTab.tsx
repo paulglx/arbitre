@@ -126,7 +126,7 @@ const ExerciseRuntimeTab = (props: any) => {
             </div>
         </div>
 
-        <div className="border rounded-lg bg-white shadow p-4 mb-4">
+        <div className="p-1 mb-4">
             <h5 className="text-2xl font-bold mb-2">Code preview</h5>
             <p className="text-gray-600 mb-4">This is what the tested file will look like.</p>
             <pre className="border rounded-lg bg-gray-100 p-4">

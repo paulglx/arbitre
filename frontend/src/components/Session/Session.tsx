@@ -39,8 +39,6 @@ const Session = () => {
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
 
-    console.log(session?.course)
-
     useEffect(() => {
         setTitle(session?.title);
         setDescription(session?.description);
