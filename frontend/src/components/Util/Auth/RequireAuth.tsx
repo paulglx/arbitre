@@ -21,11 +21,11 @@ const RequireAuth = () => {
         return () => clearInterval(interval);
     }, [keycloak, initialized, refreshAuth]);
 
-    return (
+    return initialized ? (
         keycloakToken
             ? <Outlet />
             : <Navigate to="/" state={{ from: location }} replace />
-    )
+    ) : (<></>)
 }
 
 export default RequireAuth

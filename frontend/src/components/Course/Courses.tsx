@@ -128,7 +128,7 @@ const Courses = () => {
                                                         {course.title ? course.title : "Untitled Course"}
                                                     </h3>
                                                     <div className='hidden md:block'>
-                                                        <p className="text-gray-600 line-clamp-4">{stripCourseDescription(course.description)}</p>
+                                                        <span className="text-gray-600 line-clamp-4">{stripCourseDescription(course.description)}</span>
                                                     </div>
                                                 </Link>
                                             </li>
