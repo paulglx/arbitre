@@ -42,18 +42,31 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
         prefix += "\n"
     source = prefix + "\n" + file_content + "\n" + suffix
 
-    print("SOURCE: ", source)
-
-    response_object = requests.post(
-        camisole_server_url,
-        json={
-            "lang": lang,
-            "source": source,
-            "tests": [{"name": test["name"], "stdin": test["stdin"]}],
-        },
-    )
+    try:
+        response_object = requests.post(
+            camisole_server_url,
+            json={
+                "lang": lang,
+                "source": source,
+                "tests": [{"name": test["name"], "stdin": test["stdin"]}],
+            },
+        )
+    except requests.exceptions.ConnectionError:
+        after_data = {
+            "submission_pk": submission_id,
+            "exercise_test_pk": test_id,
+            "stdout": "Error: the code runner seems to be offline",
+            "status": "error",
+            "time": 0,
+            "memory": 0,
+        }
+        print("data to send:" + str(after_data))
+        finalpost = requests.post(testresult_post_url, data=after_data)
+        return
 
     response_text = json.loads(response_object.text)
+
+    print("response_text:", response_text)
 
     if "tests" in response_text:
         response = response_text["tests"][0]
