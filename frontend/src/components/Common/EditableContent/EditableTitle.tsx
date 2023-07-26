@@ -6,28 +6,35 @@ const EditableTitle = (props: any) => {
 
     const isOwner = props.isOwner;
     const [editTitle, setEditTitle] = useState(false);
-    const [oldValue, setOldValue] = useState(props.title);
+    const [oldValue, setOldValue] = useState(props.title || "");
+
+    const handleKeyDown = (event: any) => {
+        if (!isOwner) return;
+        if (editTitle && event.key === 'Escape') {
+            props.setTitle(oldValue);
+            setEditTitle(false);
+            event.target.blur();
+        }
+    }
 
     useEffect(() => {
-        window.addEventListener('keyup', (event: any) => {
-            if (!isOwner) return;
-            if (event.key === 'Enter' && editTitle) {
-                setEditTitle(false);
-            }
-            if (event.key === 'Escape' && editTitle) {
-                props.setTitle(oldValue);
-                setEditTitle(false);
-                event.target.blur();
-            }
+        window.addEventListener('keydown', (event: any) => {
+            handleKeyDown(event);
         });
+
+        return () => {
+            window.removeEventListener('keydown', (event: any) => {
+                handleKeyDown(event);
+            });
+        }
     });
 
-    useEffect(() => {
-        if (isOwner && !editTitle && props.title && oldValue && oldValue !== props.title) {
+    const updateIfNeeded = () => {
+        if (props.title !== oldValue) {
             props.handleUpdate();
             setOldValue(props.title);
         }
-    }, [editTitle, props, oldValue, isOwner]);
+    }
 
     if (!isOwner || !editTitle) {
         return (
@@ -47,16 +54,25 @@ const EditableTitle = (props: any) => {
         );
     } else if (isOwner && editTitle) {
         return (
-            <form>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    updateIfNeeded()
+                    setEditTitle(false)
+                }}
+            >
                 <input
                     aria-label="Edit title"
                     autoComplete="off"
                     autoFocus
                     className="w-full text-3xl font-bold rounded-md"
                     id="title-input"
-                    onBlur={() => { setEditTitle(false); }}
                     onChange={(e: any) => props.setTitle(e.target.value)}
                     onFocus={(e) => autosize(e.target)}
+                    onBlur={(e) => {
+                        updateIfNeeded()
+                        setEditTitle(false)
+                    }}
                     placeholder="Enter title"
                     type="text"
                     value={props.title}
