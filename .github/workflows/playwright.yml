@@ -11,7 +11,7 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: arbitre-test        
+          POSTGRES_DB: arbitre-test
           POSTGRES_PASSWORD: test
           POSTGRES_USER: test
         ports:
