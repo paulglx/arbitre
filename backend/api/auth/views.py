@@ -18,7 +18,7 @@ SERVER_URL = env("KEYCLOAK_URL", default="http://localhost:8080")
 CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="arbitre")
 REALM_NAME = env("KEYCLOAK_REALM_NAME", default="master")
 ADMIN_USERNAME = env("KEYCLOAK_ADMIN_USERNAME", default="admin")
-ADMIN_PASSWORD = env("KEYCLOAK_ADMIN_PASSOWRD", default="admin")
+ADMIN_PASSWORD = env("KEYCLOAK_ADMIN_PASSWORD", default="admin")
 
 
 def admin_login():
