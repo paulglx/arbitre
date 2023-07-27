@@ -101,7 +101,7 @@ const StudentsInvite = (props: any) => {
 
 
       {
-        isOwner ? (
+        isOwner || isTutor ? (
           <>
             {joinCodeEnabled ? (
               <>

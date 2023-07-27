@@ -100,6 +100,9 @@ class Test(models.Model):
     def __str__(self):
         return self.name + " (" + str(self.exercise) + ")"
 
+    class Meta:
+        unique_together = ("exercise", "name")
+
 
 class TestResult(models.Model):
     """

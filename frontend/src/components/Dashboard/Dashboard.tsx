@@ -8,6 +8,7 @@ import NotFound from '../Util/NotFound'
 import { selectIsTeacher } from '../../features/auth/authSlice'
 import { useGetCoursesSessionsExercisesQuery } from '../../features/courses/courseApiSlice'
 import { useSelector } from 'react-redux'
+import { useTitle } from '../../hooks/useTitle'
 
 const Dashboard = () => {
 
@@ -20,6 +21,8 @@ const Dashboard = () => {
         data: courses,
         isSuccess: isCoursesSuccess,
     } = useGetCoursesSessionsExercisesQuery({});
+
+    useTitle("Dashboard")
 
     useEffect(() => {
         setSelectedGroups([])

@@ -17,6 +17,7 @@ import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useGetCourseStudentGroupsQuery } from '../../features/courses/studentGroupApiSlice';
 import Grading from './Grading/Grading';
 
+import { useTitle } from '../../hooks/useTitle';
 
 const Course = () => {
 
@@ -68,6 +69,8 @@ const Course = () => {
     } = useGetCourseStudentGroupsQuery({ course_id: course?.id }, {
         skip: !course?.id
     })
+
+    useTitle(course?.title);
 
     useEffect(() => {
         if (courseIsSuccess) setCourse(courseData);
@@ -212,12 +215,16 @@ const Course = () => {
         <>
             <Header />
 
+            <br />
+
             <div className="container mx-auto">
 
                 <Breadcrumb items={[
                     { title: "Courses", link: "/course" },
                     { title: title, link: null }
                 ]} />
+
+                <br />
 
                 <div className="flex items-center justify-between">
                     <EditableTitle

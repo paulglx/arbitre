@@ -42,7 +42,6 @@ class CourseViewSet(viewsets.ModelViewSet):
             Q(students__in=[user]) | Q(tutors__in=[user]) | Q(owners__in=[user])
         ).distinct()
 
-    # Add current user to owners
     def perform_create(self, serializer):
         serializer.save(owners=[self.request.user], join_code=self.generate_join_code())
 

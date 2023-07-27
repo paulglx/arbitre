@@ -140,10 +140,14 @@ const DashboardResultsTable = (props: any) => {
                             finalSessionGrade += finalExerciseGrade;
 
                             return (
-                                <td className="text-center cursor-pointer py-4" role={exercise.status !== "not submitted" ? "button" : ""} key={j} onClick={exercise.status !== "not submitted" ? () => {
-                                    setModalContent(modal(exercise, student));
-                                    setShowModal(true);
-                                } : undefined}>
+                                <td
+                                    className={`text-center py-4 ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
+                                    role={exercise.status !== "not submitted" ? "button" : ""}
+                                    key={j}
+                                    onClick={exercise.status !== "not submitted" ? () => {
+                                        setModalContent(modal(exercise, student));
+                                        setShowModal(true);
+                                    } : undefined}>
                                     <StatusBadge status={exercise.status} />
                                     <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
                                 </td>
@@ -179,7 +183,7 @@ const DashboardResultsTable = (props: any) => {
 
         <br />
 
-        <div className='mx-auto overflow-x-auto rounded-md'>
+        <div className='mx-auto overflow-x-auto rounded-md mb-4'>
             <table className="w-full text-sm rounded border">
                 {tableHeadContent(resultsSortedByUsername)}
                 {tableBodyContent(resultsSortedByUsername)}
