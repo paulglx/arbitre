@@ -188,7 +188,7 @@ REST_FRAMEWORK = {
 # Celery Settings
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_BROKER_URL = "amqp://guest:guest@localhost//"
+CELERY_BROKER_URL = "amqp://guest:guest@192.168.95.54//"
 CELERY_RESULT_BACKEND = "rpc://"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"

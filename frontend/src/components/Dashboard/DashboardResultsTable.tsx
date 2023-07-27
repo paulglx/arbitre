@@ -5,6 +5,8 @@ import StatusBadge from "../Util/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
+import { useGetExercisesOfSessionQuery } from "../../features/courses/exerciseApiSlice";
+import GradeBadge from "../Util/GradeBadge";
 
 const DashboardResultsTable = (props: any) => {
 
@@ -27,6 +29,22 @@ const DashboardResultsTable = (props: any) => {
         const sortedResults = resultsToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
         return sortedResults
     }, [results])
+
+    const {
+        data: exercises,
+        isSuccess: exercisesIsSuccess,
+    } = useGetExercisesOfSessionQuery({ session_id });
+
+    const sortedExercises = useMemo(() => {
+        if (exercisesIsSuccess) {
+            const exercisesToSort = structuredClone(exercises);
+            exercisesToSort.sort((a: any, b: any) => {
+                return a.title.localeCompare(b.title);
+            });
+            return exercisesToSort;
+        }
+        return exercises;
+    }, [exercises, exercisesIsSuccess]);
 
     const modal = (exercise: any, student: any) => {
         return (
@@ -67,10 +85,10 @@ const DashboardResultsTable = (props: any) => {
     const tableHeadContent = (results: any) => {
         return results[0]?.exercises.length > 0 ? (
             <thead
-                className="text-gray-800 bg-gray-100 rounded-lg"
+                className="w-full text-gray-800 bg-gray-100 rounded-lg" style={{ tableLayout: "auto" }}
             >
                 <tr key={-1} className="">
-                    <th key={-1} className="w-24">Student</th>
+                    <th key={-1}>Student</th>
                     {results[0]?.exercises?.sort(
                         (a: any, b: any) => a.exercise_title.localeCompare(b.exercise_title)
                     ).map(
@@ -80,46 +98,62 @@ const DashboardResultsTable = (props: any) => {
                             </th>
                         )
                     )}
+                    <th className="border-2 border-blue-800 bg-blue-800 text-white" style={{ minWidth: "10rem" }}> Grading of session </th>
                 </tr>
             </thead>
+
         ) : (
             <></>
         );
     };
 
     const tableBodyContent = (results: any) => {
+        var finalSessionGrade = 0;
+        var sessionGrade = 0;
         return results[0]?.exercises.length > 0 ? (
-            <tbody>
+            <tbody className="w-full">
                 {results.map((student: any, i: number) => (
-                    <tr
-                        key={i}
-                        className="border-t hover:bg-gray-50"
-                    >
-                        <td
-                            key={-1}
-                            className="px-2 py-4 bg-gray-50 border-r border-gray-200"
-                        >
+                    <tr key={i} className="border-t hover:bg-gray-50">
+                        <td key={-1} className="px-2 py-4 bg-gray-50 border-r border-gray-200">
                             {student.username}
                         </td>
-                        {student.exercises.map((exercise: any, j: number) => (
-                            <td
-                                className='text-center cursor-pointer py-4'
-                                role={exercise.status !== "not submitted" ? "button" : ""}
-                                key={j}
-                                onClick={exercise.status !== "not submitted" ? (() => {
-                                    setModalContent(modal(exercise, student))
-                                    setShowModal(true)
-                                }) : (
-                                    undefined
-                                )}
-                            >
-                                <StatusBadge status={exercise.status} />
-                            </td>
-                        ))
-                        }
-                    </tr >
-                ))
-                }
+                        {student.exercises.map((exercise: any, j: number) => {
+                            const exerciseGrade = sortedExercises ? sortedExercises[j].grade : 0;
+                            let sumOfCoefficient = 0;
+                            let dividendTestGrade = 0;
+
+                            sessionGrade += exerciseGrade;
+
+                            console.log(student.exercises[j].exercise_title, student.exercises[j].testResults)
+                            student.exercises[j].testResults.forEach((testResult: any) => {
+                                sumOfCoefficient += testResult.exercise_test.coefficient || 0;
+                                if (testResult?.status === "success") {
+                                    dividendTestGrade += exerciseGrade * (testResult.exercise_test.coefficient || 0);
+                                }
+                            });
+
+                            let finalExerciseGrade = 0;
+                            if (sumOfCoefficient !== 0) {
+                                finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
+                            }
+
+                            finalSessionGrade += finalExerciseGrade;
+
+                            return (
+                                <td className="text-center cursor-pointer py-4" role={exercise.status !== "not submitted" ? "button" : ""} key={j} onClick={exercise.status !== "not submitted" ? () => {
+                                    setModalContent(modal(exercise, student));
+                                    setShowModal(true);
+                                } : undefined}>
+                                    <StatusBadge status={exercise.status} />
+                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                </td>
+                            );
+                        })}
+                        <td className="text-center border-2 border-gray-200">
+                            <GradeBadge grade={finalSessionGrade} total={sessionGrade} />
+                        </td>
+                    </tr>
+                ))}
             </tbody >
         ) : (
             <tbody>

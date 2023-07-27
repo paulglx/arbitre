@@ -1,25 +1,62 @@
-
+import GradingTest from "./GradingTest"
+import { useEffect, useMemo } from 'react';
+import { useGetTestsOfExerciseQuery } from "../../../features/courses/testApiSlice";
+import { useState } from "react";
 
 const GradingExercise = (props: any) => {
+    const [inputGradeValue, setInputGradeValue] = useState('');
 
+    const {
+        data: testsResponse,
+        isSuccess: testsIsSuccess,
+    } = useGetTestsOfExerciseQuery({ exercise_id: props.exercise.id });
+
+    const sortedTests = useMemo(() => {
+        if (testsIsSuccess) {
+            const testsToSort = structuredClone(testsResponse);
+            testsToSort.sort((a: any, b: any) => {
+                return a.name.localeCompare(b.name);
+            });
+            return testsToSort;
+        }
+        return testsResponse;
+    }, [testsResponse, testsIsSuccess]);
+
+    useEffect(() => {
+        if (props.exercise)
+            setInputGradeValue(props.exercise.grade || "")
+    }, [props.exercise]);
+
+    const handleGradeValueChange = (e: any) => {
+        setInputGradeValue(e.target.value);
+        props.handleExerciseGradeChangeValue(e.target.value, props.exercise.id);
+    }
 
 
     return (
         <>
-            <div className="flex flex-row items-center w-full">
-                <div className="flex-1 mx-2 p-2 bg-blue-50 border-2 border-blue-100 rounded-lg">
-                    <h1 className="text-gray-700 font-semibold">{props.exercise.title}</h1>
+            <div className="flex flex-wrap gap-4  bg-gray-50 rounded-md border border-gray-300 py-4 px-2 w-full">
+                <div className="flex flex-row items-center w-full space-x-4">
+                    <div className="flex-1 flex items-center bg-blue-50 border border-blue-100 rounded-lg h-10 px-4">
+                        <h1 className="text-gray-700 font-semibold">{props.exercise.title}</h1>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="bg-blue-50 border border-blue-100 rounded-l-lg text-gray-700 px-4 py-2 flex items-center h-10">Grade</span>
+                        <input
+                            type="text"
+                            className="w-32 px-4 py-2 text-gray-700 bg-white rounded-r-lg border border-blue-100 focus:outline-none focus:border-blue-600 h-10"
+                            placeholder=""
+                            value={inputGradeValue}
+                            onChange={handleGradeValueChange}
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center">
-                    <span className="px-3 py-2  bg-blue-50 border-2 border-blue-100 rounded-l-lg font-semibold text-gray-700">Grading</span>
-                    <input
-                        type="text"
-                        className="w-32 px-4 py-2 text-gray-700 bg-white border-2 border-blue-100 rounded-r-lg shadow-sm focus:outline-none focus:border-indigo-500"
-                        placeholder=""
-                    />
-                </div>
+                {sortedTests ? sortedTests.map((test: any) => (
+                    <GradingTest test={test} key={test.id} handleTestCoefficientChangeValue={props.handleTestCoefficientChangeValue} />
+                )) : null}
             </div>
         </>
+
     )
 }
 

@@ -87,7 +87,7 @@ const TestResult = (props: any) => {
                 return "bg-gray-50"
         }
     }
-
+    console.log(testResults)
 
     return (submissionData && submissionData.length > 0) ? (<>
 

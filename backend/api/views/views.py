@@ -12,7 +12,9 @@ from django.http import HttpRequest
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from runner.models import Submission
+from runner.models import TestResult
 from runner.serializers import SubmissionSerializer
+from runner.serializers import TestResultSerializer
 import json
 
 
@@ -261,14 +263,22 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         results = []
         for exercise in exercises_to_do_dict:
             status = "not submitted"
+
             for submission in submissions_serializer.data:
                 if submission["exercise"] == exercise["id"]:
                     status = submission["status"]
+            
+
+            # Get status for exercise tests 
+            testResults = TestResult.objects.filter(submission__owner=user, submission__exercise_id=exercise["id"])
+            testResults_serializer = TestResultSerializer(testResults, many=True)
+
             results.append(
                 {
                     "exercise_id": exercise["id"],
                     "exercise_title": exercise["title"],
                     "status": status,
+                    "testResults": testResults_serializer.data,
                 }
             )
 
