@@ -40,13 +40,13 @@ const Public = () => {
           <div className="flex items-center mt-4">
             <h1 className="text-3xl text-white font-bold text-center">Welcome to Arbitre</h1>
           </div>
-          <p className="text-gray-100 mt-4 text-center">
+          <div className="text-gray-100 my-4 text-center w-full md:w-3/4 lg:w-1/2">
             Arbitre is a platform that automatically corrects code. Teachers can create exercises and specify unit tests for students' code to be assessed against.
-          </p>
+          </div>
         </div>
       </div>
       <div className="mx-auto">
-        <img src="/resource/cropped-logo.png" alt="logo Télécom Sud Paris" className="w-1/4 mx-auto" />
+        <img src="/resource/x-tsp.png" alt="logo Télécom Sud Paris" className="w-[300px] mx-auto" />
       </div>
     </div>
   );

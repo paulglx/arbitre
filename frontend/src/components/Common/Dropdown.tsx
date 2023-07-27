@@ -10,7 +10,11 @@ const Dropdown = (props: any) => {
     return (
         <div className="dropdown flex flex-wrap items-center text-base justify-center relative">
             <button
-                id="dropdown-basic"
+                aria-label={props.title}
+                aria-haspopup="true"
+                aria-controls="dropdown-menu"
+                aria-expanded={showDropdown}
+                id="dropdown"
                 onClick={toggleDropdown}
                 className="inline-flex bg-blue-950 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition"
                 type="button"
@@ -20,8 +24,12 @@ const Dropdown = (props: any) => {
             </button>
 
             {showDropdown && (
-                <div className="absolute inline-block border border-gray-200 z-10 top-12 right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700">
-                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-basic">
+                <div
+                    id="dropdown-menu"
+                    className="absolute inline-block border border-gray-200 z-10 top-12 right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700"
+                    aria-labelledby="dropdown"
+                >
+                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                         {props.elements.map((e: any) => {
                             return <li key={e.name}>
                                 <button

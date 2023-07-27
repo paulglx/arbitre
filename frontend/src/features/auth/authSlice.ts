@@ -11,12 +11,7 @@ const authSlice = createSlice({
             state.keycloakRefreshToken = keycloakRefreshToken;
             state.isTeacher = isTeacher;
         },
-        logOut: (state, action) => {
-            state.user = null;
-            state.keycloakToken = null;
-            state.keycloakRefreshToken = null;
-            state.isTeacher = [];
-        }
+        logOut() { }
     },
 })
 

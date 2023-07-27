@@ -9,15 +9,24 @@ import storage from "redux-persist/lib/storage";
 const persistConfig = {
     key: 'main-root',
     storage,
+    whitelist: ['auth'],
 }
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer)
+
+const rootAuthReducer = (state: any, action: any) => {
+    if (action.type === 'auth/logOut') {
+        storage.removeItem('persist:main-root')
+        state = {} as any
+    }
+    return persistedAuthReducer(state, action)
+}
 
 export const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
         notification: notificationSlice,
-        auth: persistedAuthReducer,
+        auth: rootAuthReducer,
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware({

@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
+import DashboardResultsTable from "../Dashboard/DashboardResultsTable";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import ExerciseContent from "./SessionComponents/ExerciseContent";
-import ResultsTable from "../Dashboard/DashboardResultsTable";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
+import { useTitle } from '../../hooks/useTitle';
 
 const Session = () => {
 
@@ -32,6 +33,8 @@ const Session = () => {
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
     } = useGetSessionQuery({ id: session_id });
+
+    useTitle(session?.title);
 
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
@@ -115,7 +118,7 @@ const Session = () => {
         {
             key: "results",
             title: "Results",
-            content: <ResultsTable session_id={session_id} />,
+            content: <DashboardResultsTable sessionId={session_id} />,
         },
     ];
 
@@ -125,7 +128,6 @@ const Session = () => {
         <>
             <Header />
 
-            <br />
             <br />
 
             <div className="container mx-auto">

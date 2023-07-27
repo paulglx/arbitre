@@ -3,6 +3,7 @@ import { useAddStudentMutation, useGetStudentsQuery, useRemoveStudentMutation } 
 import { useEffect, useMemo, useState } from 'react'
 
 import StudentsListGroupPicker from './StudentsListGroupPicker'
+import UserSearch from '../../../../Common/UserSearch'
 import { pushNotification } from '../../../../../features/notification/notificationSlice'
 import { useDispatch } from 'react-redux'
 import { useGetUsersQuery } from '../../../../../features/users/usersApiSlice'
@@ -112,7 +113,29 @@ const StudentsList = (props: any) => {
     return studentsSuccess ? (
         <div className='mx-auto border overflow-x-auto rounded-lg mb-3'>
             <table className="w-full text-sm rounded-lg">
-                <tbody className="">
+                <tbody>
+                    <tr className=' bg-gray-50'>
+                        <td className="py-2">
+                            <div className="flex rounded-md pl-2 w-full">
+                                <UserSearch
+                                    addableUsers={addableStudents}
+                                    userToAdd={studentToAdd}
+                                    setUserToAdd={setStudentToAdd}
+                                    placeholder="Search for a student to add"
+                                />
+                            </div>
+                        </td>
+                        <td className='flex justify-end pr-3 pt-3'>
+                            <button
+                                className={`${studentToAdd ? "bg-blue-50 hover:bg-blue-100 border-blue-300" : "bg-gray-200 border-gray-300"} align-middle border p-1 rounded-md flex items-center text-gray-60 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                disabled={!studentToAdd}
+                                onClick={handleAddStudent}
+                                aria-label="Add student"
+                            >
+                                <UserPlusIcon className={`w-5 h-5 ${studentToAdd ? "text-blue-700" : "text-gray-400"}`} />
+                            </button>
+                        </td>
+                    </tr>
                     {sortedStudents.length > 0 ? (
                         sortedStudents.map((student: any, i: number) => (
                             <tr key={i} className="border-t first:border-t-0 hover:bg-gray-50">
@@ -141,37 +164,6 @@ const StudentsList = (props: any) => {
                             </td>
                         </tr>
                     )}
-                    <tr className='border-t bg-gray-50'>
-                        <td className="py-3">
-                            <div className="flex rounded-md">
-                                <input
-                                    aria-label="Add student"
-                                    className="w-full ml-2 px-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-400"
-                                    list="studentOptions"
-                                    onChange={(e) => setStudentToAdd(e.target.value)}
-                                    placeholder="Enter student username"
-                                    type="text"
-                                    value={studentToAdd}
-                                />
-                                <datalist id="studentOptions">
-                                    {addableStudents &&
-                                        addableStudents.map((u: any, i: number) => (
-                                            <option key={i} value={u.username} />
-                                        ))}
-                                </datalist>
-                            </div>
-                        </td>
-                        <td className='flex justify-end pt-3 pr-3'>
-                            <button
-                                className={`${studentToAdd ? "bg-gray-50" : "bg-gray-200"} align-middle border p-1 rounded-md flex items-center text-gray-60 border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                disabled={!studentToAdd}
-                                onClick={handleAddStudent}
-                                aria-label="Add student"
-                            >
-                                <UserPlusIcon className={`w-5 h-5 ${studentToAdd ? "text-gray-900" : "text-gray-400"}`} />
-                            </button>
-                        </td>
-                    </tr>
                 </tbody>
             </table >
         </div >

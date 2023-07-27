@@ -31,6 +31,7 @@ const DashboardGroupsPicker = (props: any) => {
             className="px-2 py-1 rounded-lg bg-blue-50 border-2 border-blue-200 text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-semibold"
             id="dashboard-groups-picker-button"
             onClick={() => { setDropdownOpen(!dropdownOpen) }}
+            onBlur={() => { setDropdownOpen(false) }}
             ref={dropdownButtonRef}
             type="button"
         >
@@ -49,12 +50,12 @@ const DashboardGroupsPicker = (props: any) => {
             ref={dropdownMenuRef}
             className={"absolute mt-2 origin-center z-10 border bg-white rounded-lg " + (dropdownOpen ? "visible" : "hidden")}
         >
-            <div className="flex-col divide-y" ref={dropdownMenuRef}>
-                {sortedGroups?.map((group: any) => {
+            <div className="flex-col divide-y rounded-lg" ref={dropdownMenuRef}>
+                {sortedGroups?.length > 0 ? (sortedGroups.map((group: any) => {
                     return (
                         <div
                             className={`
-                                flex justify-between items-center p-2  cursor-pointer
+                                flex justify-between items-center p-2 cursor-pointer first:rounded-t-lg last:rounded-b-lg
                                 ${selectedGroups.includes(group.id) ? "bg-blue-50 hover:bg-blue-100" : "bg-white hover:bg-gray-50"}
                             `}
                             onClick={() => {
@@ -64,6 +65,7 @@ const DashboardGroupsPicker = (props: any) => {
                                     props.setSelectedGroups([...selectedGroups, group.id])
                                 }
                             }}
+                            onMouseDown={(e) => e.preventDefault()}
                             key={group.id}
                         >
                             {selectedGroups.includes(group.id) ?
@@ -77,7 +79,11 @@ const DashboardGroupsPicker = (props: any) => {
                             />
                         </div>
                     )
-                })}
+                })) : (<>
+                    <div className="p-2 bg-gray-50 rounded-lg text-gray-600">
+                        No groups
+                    </div>
+                </>)}
             </div>
         </div>
     </div>)

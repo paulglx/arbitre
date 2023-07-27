@@ -103,7 +103,7 @@ const DashboardResultsTable = (props: any) => {
                         </td>
                         {student.exercises.map((exercise: any, j: number) => (
                             <td
-                                className='text-center cursor-pointer py-4'
+                                className={`text-center py-4 ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
                                 role={exercise.status !== "not submitted" ? "button" : ""}
                                 key={j}
                                 onClick={exercise.status !== "not submitted" ? (() => {
@@ -145,7 +145,7 @@ const DashboardResultsTable = (props: any) => {
 
         <br />
 
-        <div className='mx-auto overflow-x-auto rounded-md'>
+        <div className='mx-auto overflow-x-auto rounded-md mb-4'>
             <table className="w-full text-sm rounded border">
                 {tableHeadContent(resultsSortedByUsername)}
                 {tableBodyContent(resultsSortedByUsername)}

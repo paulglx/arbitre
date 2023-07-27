@@ -22,6 +22,19 @@ const DashboardSessionPicker = (props: any) => {
         setDropdownOpen(!dropdownOpen)
     }
 
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (dropdownButtonRef.current && !dropdownButtonRef.current.contains(event.target) && dropdownMenuRef.current && !dropdownMenuRef.current.contains(event.target)) {
+                setDropdownOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [dropdownButtonRef, dropdownMenuRef])
+
     // Set current session at first render
     useEffect(() => {
         if (courses && currentSession === -1) {
@@ -90,7 +103,7 @@ const DashboardSessionPicker = (props: any) => {
             className={"absolute origin-center z-10 mt-2 bg-white border-2 border-gray-300 rounded-md shadow-md " + (dropdownOpen ? "visible" : "hidden")}
             ref={dropdownMenuRef}
         >
-            <div id="dropdown" className="p-3">
+            <div id="dropdown-wrapper" className="p-3">
                 <label htmlFor="input-group-search" className="sr-only">
                     Search
                 </label>
