@@ -61,8 +61,6 @@ const GradingSession = (props: any) => {
     const handleSaveGrade = () => {
         let gradeSession: number = 0
         sortedExercises.forEach((exercise: any) => {
-            const exerciseTitle = exercise.title
-            console.log(exerciseTitle, ":", exerciseGradeValues[exercise.id])
             const gradeExercise = Number(exerciseGradeValues[exercise.id])
             gradeSession += gradeExercise
             handleSaveExerciseGrade({

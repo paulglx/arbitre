@@ -48,6 +48,7 @@ const GradingExercise = (props: any) => {
                             placeholder=""
                             value={inputGradeValue}
                             onChange={handleGradeValueChange}
+                            name={props.exercise.title}
                         />
                     </div>
                 </div>

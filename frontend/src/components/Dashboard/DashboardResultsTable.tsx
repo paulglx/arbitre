@@ -85,7 +85,7 @@ const DashboardResultsTable = (props: any) => {
     const tableHeadContent = (results: any) => {
         return results[0]?.exercises.length > 0 ? (
             <thead
-                className="w-full text-gray-800 bg-gray-100 rounded-lg" style={{ tableLayout: "auto" }}
+                className="w-full text-gray-800 bg-gray-100 rounded-lg table-auto"
             >
                 <tr key={-1} className="">
                     <th key={-1}>Student</th>
@@ -98,7 +98,7 @@ const DashboardResultsTable = (props: any) => {
                             </th>
                         )
                     )}
-                    <th className="border-2 border-blue-800 bg-blue-800 text-white" style={{ minWidth: "10rem" }}> Grading of session </th>
+                    <th className="border-2 border-blue-800 bg-blue-800 text-white min-w-[10rem]"> Grading of session </th>
                 </tr>
             </thead>
 
@@ -149,7 +149,10 @@ const DashboardResultsTable = (props: any) => {
                                         setShowModal(true);
                                     } : undefined}>
                                     <StatusBadge status={exercise.status} />
-                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                    {exercise.status !== "not submitted"
+                                        ? <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                        : null
+                                    }
                                 </td>
                             );
                         })}

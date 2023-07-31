@@ -1,9 +1,9 @@
 const NeedHelp = () => {
     return (
         <div className="bg-gradient-to-r from-blue-300 to-blue-500 text-white p-8 rounded-lg my-4 w-full text-justify">
-            <h2 className="text-3xl font-bold mb-6">Welcome to the Arbitre Grading System!</h2>
+            <h2 className="text-3xl font-bold mb-6">How to grade courses?</h2>
             <p className="text-lg mb-6">
-                With our incredible application, you can quickly and easily obtain the grade for each session and exercise.
+                With our application, you can quickly and easily obtain the grade for each session and exercise.
                 Follow these simple steps to get started:
             </p>
             <div className="mb-6">
@@ -29,9 +29,6 @@ const NeedHelp = () => {
                     There, you can access the grades of all students and see a detailed summary of the results.
                 </p>
             </div>
-            <p className="font-semibold">
-                We hope you enjoy using our application and find it very helpful in your evaluations!
-            </p>
         </div>
     );
 };
