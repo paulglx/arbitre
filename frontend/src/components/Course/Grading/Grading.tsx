@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from "react";
-import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
-import { InformationCircleIcon } from "@heroicons/react/24/solid";
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from "react";
+
 import GradingSession from "./GradingSession";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import NeedHelp from "./NeedHelp";
+import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
 
 const Grading = (props: any) => {
     const [showHelp, setShowHelp] = useState(false);

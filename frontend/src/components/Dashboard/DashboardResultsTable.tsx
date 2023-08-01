@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 
 import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
+import GradeBadge from "../Util/GradeBadge";
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
-import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 import { useGetExercisesOfSessionQuery } from "../../features/courses/exerciseApiSlice";
-import GradeBadge from "../Util/GradeBadge";
+import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 
 const DashboardResultsTable = (props: any) => {
 
@@ -124,7 +124,6 @@ const DashboardResultsTable = (props: any) => {
 
                             sessionGrade += exerciseGrade;
 
-                            console.log(student.exercises[j].exercise_title, student.exercises[j].testResults)
                             student.exercises[j].testResults.forEach((testResult: any) => {
                                 sumOfCoefficient += testResult.exercise_test.coefficient || 0;
                                 if (testResult?.status === "success") {
