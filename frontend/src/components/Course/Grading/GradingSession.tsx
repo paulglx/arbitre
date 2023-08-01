@@ -1,8 +1,9 @@
 import { useGetExercisesOfSessionQuery, useUpdateExerciseMutation } from "../../../features/courses/exerciseApiSlice";
 import { useMemo, useState } from 'react';
+
 import GradingExercise from "./GradingExercise";
-import { useDispatch } from "react-redux";
 import { pushNotification } from "../../../features/notification/notificationSlice";
+import { useDispatch } from "react-redux";
 import { useUpdateSessionMutation } from "../../../features/courses/sessionApiSlice";
 import { useUpdateTestMutation } from "../../../features/courses/testApiSlice";
 
@@ -34,6 +35,19 @@ const GradingSession = (props: any) => {
     const handleSaveExerciseGrade = async (exercise: any) => {
         if (exercise.grade)
             await updateExercise(exercise)
+                .unwrap()
+                .then(() => {
+                    dispatch(pushNotification({
+                        message: "The exercise grading grid has been updated",
+                        type: "success"
+                    }));
+                })
+                .catch((e) => {
+                    dispatch(pushNotification({
+                        message: "Something went wrong. The exercise grading grid has not been updated",
+                        type: "error"
+                    }));
+                })
     }
 
     const handleSaveSessionGrade = async (session: any) => {
@@ -55,6 +69,19 @@ const GradingSession = (props: any) => {
 
     const handleTestCoefficient = async (testCoefficientValues: any) => {
         await updateTest(testCoefficientValues)
+            .unwrap()
+            .then(() => {
+                dispatch(pushNotification({
+                    message: "The test coefficient has been updated",
+                    type: "success"
+                }));
+            })
+            .catch((e) => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. The test coefficient has not been updated",
+                    type: "error"
+                }));
+            })
     }
 
 
@@ -86,7 +113,6 @@ const GradingSession = (props: any) => {
             grade: gradeSession,
             course_id: props.session.course.id,
         })
-        console.log("Nota session: ", gradeSession)
 
     }
     const handleExerciseGradeChangeValue = (value: any, id: number) => {
@@ -102,7 +128,6 @@ const GradingSession = (props: any) => {
             exercise_id,
         };
         setTestCoefficientValues(_testCoefficientValues)
-        console.log(_testCoefficientValues)
     }
 
     return (
