@@ -98,7 +98,7 @@ const DashboardResultsTable = (props: any) => {
                             </th>
                         )
                     )}
-                    <th className="border-2 border-blue-800 bg-blue-800 text-white min-w-[10rem]"> Grading of session </th>
+                    <th className="border border-blue-700 bg-blue-800 text-white min-w-[10rem]"> Grading of session </th>
                 </tr>
             </thead>
 
@@ -155,7 +155,7 @@ const DashboardResultsTable = (props: any) => {
                                 </td>
                             );
                         })}
-                        <td className="text-center border-2 border-gray-200">
+                        <td className="text-center border-l border-gray-200">
                             <GradeBadge grade={finalSessionGrade} total={sessionGrade} />
                         </td>
                     </tr>
