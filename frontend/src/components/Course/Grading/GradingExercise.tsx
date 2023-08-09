@@ -42,7 +42,7 @@ const GradingExercise = (props: any) => {
                         <h1 className="text-gray-700 font-semibold">{props.exercise.title}</h1>
                     </div>
                     <div className="flex items-center">
-                        <span className="bg-blue-50 border border-blue-100 rounded-l-lg text-gray-700 px-4 py-2 flex items-center h-10">Grade</span>
+                        <label className="bg-blue-50 border border-blue-100 rounded-l-lg text-gray-700 px-4 py-2 flex items-center h-10">Grade</label>
                         <input
                             type="text"
                             className="w-32 px-4 py-2 text-gray-700 bg-white rounded-r-lg border border-blue-100 focus:outline-none focus:border-blue-600 h-10"

@@ -5,6 +5,7 @@ import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuer
 import StatusBadge from '../../Util/StatusBadge';
 import TestResultCodePreviewModal from './TestResultCodePreviewModal';
 import TestResultTimeBadge from './TestResultTimeBadge';
+import GradeBadge from '../../Util/GradeBadge';
 
 const TestResult = (props: any) => {
 
@@ -12,6 +13,7 @@ const TestResult = (props: any) => {
     const user_id = props.user_id || "";
     const [showCodePreview, setShowCodePreview] = useState(false)
     const [skipQueries, setSkipQueries] = useState(false)
+    const [finalExerciseGrade, setFinalExerciseGrade] = useState(0)
 
     const {
         data: testResults,
@@ -35,6 +37,27 @@ const TestResult = (props: any) => {
             setSkipQueries(true)
         }
     }, [submissionData, testResults])
+
+    useEffect(() => {
+        if (!testResults) return;
+
+        let sumOfCoefficient = 0;
+        let dividendTestGrade = 0;
+
+        testResults.forEach((testResult: any) => {
+            sumOfCoefficient += testResult.exercise_test.coefficient || 0;
+            if (testResult?.status === "success") {
+                dividendTestGrade += props.exercise_grade * (testResult.exercise_test.coefficient || 0);
+            }
+        });
+
+        let _finalExerciseGrade = 0;
+        if (sumOfCoefficient !== 0) {
+            _finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
+        }
+
+        setFinalExerciseGrade(_finalExerciseGrade);
+    }, [testResults, props.exercise_grade])
 
     const testResultContent = (result: any) => {
         if (result.running) {
@@ -109,8 +132,10 @@ const TestResult = (props: any) => {
                     &nbsp;
                     <TestResultTimeBadge time={submissionData[0].created} />
                 </span>
-                <StatusBadge status={submissionData[0].status} className="inline text-right" />
-
+                <div>
+                    <StatusBadge status={submissionData[0].status} className="inline text-right" />
+                    <GradeBadge grade={finalExerciseGrade} total={props.exercise_grade} />
+                </div>
             </li>
 
             {testResults.map((result: any, i: number) => {

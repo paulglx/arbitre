@@ -4,8 +4,12 @@ const GradingTest = (props: any) => {
     const [inputCoefficientValue, setInputCoefficientValue] = useState('1');
 
     const handleCoefficientValueChange = (e: any) => {
-        setInputCoefficientValue(e.target.value);
-        props.handleTestCoefficientChangeValue(e.target.value, props.test.id, props.test.exercise);
+        let value = e.target.value;
+        value = value > 100 ? 100 : value;
+        value = value < 0 ? 0 : value;
+
+        setInputCoefficientValue(value);
+        props.handleTestCoefficientChangeValue(value, props.test.id, props.test.exercise);
     }
 
     useEffect(() => {
@@ -15,9 +19,9 @@ const GradingTest = (props: any) => {
 
     return (
         <div className="flex items-center h-10">
-            <span className="bg-blue-50 border border-blue-100 rounded-l-lg text-gray-700 h-10 flex items-center px-3">
+            <label className="bg-blue-50 border border-blue-100 rounded-l-lg text-gray-700 h-10 flex items-center px-3">
                 {props.test.name}
-            </span>
+            </label>
             <input
                 type="number"
                 id="notation"
