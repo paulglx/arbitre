@@ -153,7 +153,7 @@ const DashboardResultsTable = (props: any) => {
                                             setShowModal(true);
                                         } : undefined}>
                                         <StatusBadge status={exercise.status} />
-                                        {exercise.status !== "not submitted"
+                                        {["success", "failed"].includes(exercise.status)
                                             ? <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
                                             : null
                                         }

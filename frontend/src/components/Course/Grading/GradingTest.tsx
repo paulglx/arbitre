@@ -9,12 +9,12 @@ const GradingTest = (props: any) => {
         value = value < 0 ? 0 : value;
 
         setInputCoefficientValue(value);
-        props.handleTestCoefficientChangeValue(value, props.test.id, props.test.exercise);
+        props.handleTestCoefficientChangeValue(value, props.test.name, props.test.id, props.test.exercise);
     }
 
     useEffect(() => {
         if (props.test)
-            setInputCoefficientValue(props.test.coefficient || "1")
+            setInputCoefficientValue(props.test.coefficient || "0")
     }, [props.test])
 
     return (

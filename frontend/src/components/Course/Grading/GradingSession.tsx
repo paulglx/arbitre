@@ -36,17 +36,8 @@ const GradingSession = (props: any) => {
         if (exercise.grade)
             await updateExercise(exercise)
                 .unwrap()
-                .then(() => {
-                    dispatch(pushNotification({
-                        message: "The exercise grading grid has been updated",
-                        type: "success"
-                    }));
-                })
                 .catch((e) => {
-                    dispatch(pushNotification({
-                        message: "Something went wrong. The exercise grading grid has not been updated",
-                        type: "error"
-                    }));
+                    console.log(e);
                 })
     }
 
@@ -70,17 +61,8 @@ const GradingSession = (props: any) => {
     const handleTestCoefficient = async (testCoefficientValues: any) => {
         await updateTest(testCoefficientValues)
             .unwrap()
-            .then(() => {
-                dispatch(pushNotification({
-                    message: "The test coefficient has been updated",
-                    type: "success"
-                }));
-            })
             .catch((e) => {
-                dispatch(pushNotification({
-                    message: "Something went wrong. The test coefficient has not been updated",
-                    type: "error"
-                }));
+                console.log(e)
             })
     }
 
@@ -100,10 +82,12 @@ const GradingSession = (props: any) => {
         for (const id in testCoefficientValues) {
             const coefficientTest = testCoefficientValues[id].value;
             const exercise_id = testCoefficientValues[id].exercise_id;
+            const test_name = testCoefficientValues[id].name;
             handleTestCoefficient({
                 id,
                 coefficient: coefficientTest,
                 exercise: exercise_id,
+                name: test_name,
             })
         }
 
@@ -121,11 +105,12 @@ const GradingSession = (props: any) => {
         setExerciseGradeValues(_exerciseGradeValues)
     }
 
-    const handleTestCoefficientChangeValue = (value: any, id: number, exercise_id: number) => {
+    const handleTestCoefficientChangeValue = (value: any, name: string, id: number, exercise_id: number) => {
         let _testCoefficientValues = testCoefficientValues;
         _testCoefficientValues[id] = {
             value,
             exercise_id,
+            name,
         };
         setTestCoefficientValues(_testCoefficientValues)
     }

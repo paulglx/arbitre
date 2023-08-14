@@ -134,7 +134,8 @@ const TestResult = (props: any) => {
                 </span>
                 <div>
                     <StatusBadge status={submissionData[0].status} className="inline text-right" />
-                    <GradeBadge grade={finalExerciseGrade} total={props.exercise_grade} />
+                    {!!props.exercise_grade
+                        ? <GradeBadge grade={finalExerciseGrade} total={props.exercise_grade} /> : null}
                 </div>
             </li>
 
