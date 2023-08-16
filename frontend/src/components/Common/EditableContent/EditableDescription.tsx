@@ -29,6 +29,7 @@ const EditableDescription = (props: any) => {
                     setOldValue(props.description)
                 }}
                 tabIndex={0}
+                id="description-editable"
             >
                 <article className="prose prose-sm md:prose-base max-w-none
                 prose-code:before:content-[''] prose-code:after:content-['']">
@@ -55,6 +56,7 @@ const EditableDescription = (props: any) => {
                     onChange={(e) => props.setDescription(e.target.value)}
                     placeholder="Enter description"
                     value={props.description}
+                    id="description-input"
                 />
                 <p className="text-sm bg-blue-50 text-blue-700 py-2 px-4 rounded-md">
                     <InformationCircleIcon className="inline-block w-4 h-4 mr-1" />

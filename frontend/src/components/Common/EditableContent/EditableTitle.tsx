@@ -67,6 +67,7 @@ const EditableTitle = (props: any) => {
                     autoFocus
                     className="w-full text-3xl font-bold rounded-md"
                     id="title-input"
+                    data-testid={props.dataTestId}
                     onChange={(e: any) => props.setTitle(e.target.value)}
                     onFocus={(e) => autosize(e.target)}
                     onBlur={(e) => {

@@ -86,7 +86,7 @@ const ExerciseContent = (props: any) => {
     else if (exercisesIsSuccess) {
         return (
             <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
+                <div id="exercises-wrapper" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mt-2 md:mt-6">
                     {sortedExercises.map((exercise: any, i: number) => (
                         <Link
                             key={i}

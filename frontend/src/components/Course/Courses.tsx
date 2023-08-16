@@ -124,7 +124,7 @@ const Courses = () => {
                                                     <div className="bg-blue-600 h-2.5 rounded-full dark:bg-blue-300" style={{ width: '45%' }}></div>
                                                 </div>
                                                 */}
-                                                    <h3 className={`text-lg font-bold leading-tight line-clamp-2 md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}>
+                                                    <h3 className={`course-title text-lg font-bold leading-tight line-clamp-2 md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}>
                                                         {course.title ? course.title : "Untitled Course"}
                                                     </h3>
                                                     <div className='hidden md:block'>
