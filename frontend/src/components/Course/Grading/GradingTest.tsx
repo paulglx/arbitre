@@ -25,16 +25,17 @@ const GradingTest = (props: any) => {
                 {props.test.name || "Untitled test"}
             </label>
             <input
-                type="number"
-                id="coefficient"
+                aria-label='coefficient'
                 className="w-20 pl-4 py-2 text-gray-700 rounded-r-lg border border-blue-100 h-10 focus:outline-none focus:border-blue-600 text-right"
-                placeholder=""
-                min="0"
+                id="coefficient"
                 max="100"
-                step="1"
-                value={inputCoefficientValue}
-                onChange={handleCoefficientValueChange}
+                min="0"
                 name={props.test.name}
+                onChange={handleCoefficientValueChange}
+                placeholder=""
+                step="1"
+                type="number"
+                value={inputCoefficientValue}
             />
         </div>
     );

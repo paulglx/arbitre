@@ -49,6 +49,7 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ExerciseSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):
@@ -70,9 +71,8 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
     - course_id : id of the course (number)
     """
 
-    permission_classes = (permissions.IsAuthenticated,)
-
     serializer_class = StudentGroupSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         course_id = self.request.query_params.get("course_id", None)
@@ -143,6 +143,8 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
 
 
 class SetStudentGroupViewSet(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def create(self, request):
         student = User.objects.get(id=request.data.get("user_id"))
         student_group = StudentGroup.objects.get(id=request.data.get("student_group"))
@@ -267,10 +269,11 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
             for submission in submissions_serializer.data:
                 if submission["exercise"] == exercise["id"]:
                     status = submission["status"]
-            
 
-            # Get status for exercise tests 
-            testResults = TestResult.objects.filter(submission__owner=user, submission__exercise_id=exercise["id"])
+            # Get status for exercise tests
+            testResults = TestResult.objects.filter(
+                submission__owner=user, submission__exercise_id=exercise["id"]
+            )
             testResults_serializer = TestResultSerializer(testResults, many=True)
 
             results.append(

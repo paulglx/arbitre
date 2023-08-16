@@ -10,12 +10,12 @@ const GradeBadge = (props: { grade: number, total: number }) => {
         <span
             className=" text-blue-800"
         >
-            {round(props.grade, 1)}
+            {round(props.grade, 2)}
         </span>
         &nbsp;
         <span className="text-blue-800 opacity-50">
             /&nbsp;
-            {round(props.total, 1) || "-"}
+            {round(props.total, 2) || "-"}
         </span>
 
     </span>)
