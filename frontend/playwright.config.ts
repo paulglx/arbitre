@@ -24,11 +24,12 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'https://arbitre.tech//',
-    launchOptions : {
+    //baseURL: 'https://arbitre.tech//',
+    baseURL: 'http://localhost:3000//',
+    launchOptions: {
       slowMo: 1500
     },
-    
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },

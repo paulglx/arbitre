@@ -15,6 +15,7 @@ const Modal = (props: any) => {
             <button
               onClick={props.delete}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mr-2"
+              id="accept-button"
             >
               Accept
             </button>

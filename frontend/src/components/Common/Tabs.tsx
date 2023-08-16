@@ -47,6 +47,7 @@ const Tabs = ({ tabs }: TabsProps) => {
                 :
                 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-100'
               }`}
+            id={`exercise-tab-${tab.key}`}
             onClick={() => handleTabClick(tab.key)}
           >
             {tab.title}
