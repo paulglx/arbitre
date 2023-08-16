@@ -2,12 +2,18 @@ const GradeBadge = (props: { grade: number, total: number }) => {
     if (props.total === null)
         return null;
 
-    return (
+    return (<span className="text-xs font-medium px-2">
         <span
-            className="bg-blue-50 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-600 ml-4"
+            className=" text-blue-800"
         >
-            {props.grade} / {props.total || "-"}
+            {props.grade}
         </span>
-    )
+        &nbsp;
+        <span className="text-blue-800 opacity-50">
+            /&nbsp;
+            {props.total || "-"}
+        </span>
+
+    </span>)
 }
 export default GradeBadge

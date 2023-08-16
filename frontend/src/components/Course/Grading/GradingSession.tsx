@@ -66,7 +66,6 @@ const GradingSession = (props: any) => {
             })
     }
 
-
     const handleSaveGrade = () => {
         let gradeSession: number = 0
         sortedExercises.forEach((exercise: any) => {
@@ -90,7 +89,6 @@ const GradingSession = (props: any) => {
                 name: test_name,
             })
         }
-
 
         handleSaveSessionGrade({
             ...props.session,
@@ -117,13 +115,15 @@ const GradingSession = (props: any) => {
 
     return (
         <>
-            <div className="border border-gray-300 rounded-xl p-4 flex flex-col bg-white w-full">
-                <h1 className="text-3xl text-gray-700 mb-4">
-                    <span>Session :</span> <span className="font-bold">{props.session.title}</span>
-                </h1>                <hr className="border-t-2 border-gray-500 mb-4" />
+            <div className="flex flex-col w-full">
+                <h1 className="text-2xl text-gray-700 mb-2">
+                    <span>Session :&nbsp;</span>
+                    <span className="font-bold">{props.session.title}</span>
+                </h1>
+
+                <hr className="border-t-2 mb-4" />
 
                 <div className="flex flex-wrap gap-4 w-full">
-
                     {sortedExercises ? sortedExercises.map((exercise: any) => (
                         <GradingExercise
                             exercise={exercise}
@@ -136,8 +136,9 @@ const GradingSession = (props: any) => {
                 <div className="flex justify-center items-center w-full">
                     <button
                         className="inline-block w-40 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 my-4 rounded-md shadow-lg transition-colors duration-300"
-                        onClick={() => handleSaveGrade()}                    >
-                        <span>Save</span>
+                        onClick={() => handleSaveGrade()}
+                    >
+                        Save
                     </button>
                 </div>
             </div>

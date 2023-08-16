@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
 import GradeBadge from "../Util/GradeBadge";
@@ -12,15 +12,26 @@ const DashboardResultsTable = (props: any) => {
 
     const [modalContent, setModalContent] = useState(<></>)
     const [showModal, setShowModal] = useState(false)
+    const [isVisible, setIsVisible] = useState(document.visibilityState === "visible")
     const session_id = props.sessionId;
     const groups = props.selectedGroups;
+
+    const onVisibilityChange = () => {
+        setIsVisible(document.visibilityState === "visible")
+    };
+
+    useEffect(() => {
+        document.addEventListener("visibilitychange", onVisibilityChange);
+
+        return () => document.removeEventListener("visibilitychange", onVisibilityChange);
+    }, []);
 
     const {
         data: results,
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
     } = useGetResultsOfSessionQuery({ session_id, groups }, {
-        pollingInterval: showModal || document.hidden ? 0 : 5000,
+        pollingInterval: showModal || !isVisible ? 0 : 1000,
     });
 
     const resultsSortedByUsername = useMemo(() => {
@@ -50,6 +61,13 @@ const DashboardResultsTable = (props: any) => {
         }
         return exercises;
     }, [exercises, exercisesIsSuccess]);
+
+    const truncateTitle = (title: string) => {
+        if (title.length > 15) {
+            return title.substring(0, 15) + "...";
+        }
+        return title;
+    }
 
     const modal = (exercise: any, student: any) => {
         return (
@@ -96,12 +114,12 @@ const DashboardResultsTable = (props: any) => {
                     <th key={-1}>Student</th>
                     {results[0]?.exercises?.map(
                         (exercise: any, i: number) => (
-                            <th scope="col" className="truncate py-3 px-2 w-32 border-l border-gray-200" key={i}>
-                                {exercise.exercise_title}
+                            <th scope="col" className="py-3 px-2 w-48 border-l border-gray-200" key={i}>
+                                {truncateTitle(exercise.exercise_title)}
                             </th>
                         )
                     )}
-                    <th className="border border-blue-700 bg-blue-800 text-white min-w-[10rem]"> Grading of session </th>
+                    <th className="border bg-blue-100 text-blue-700 min-w-[10rem]">Student grade</th>
                 </tr>
             </thead>
 
@@ -119,7 +137,7 @@ const DashboardResultsTable = (props: any) => {
 
                     return (
                         <tr key={i} className="border-t hover:bg-gray-50">
-                            <td key={-1} className="px-2 py-4 bg-gray-50 border-r border-gray-200">
+                            <td key={-1} className="px-2 py-3 bg-gray-50 border-r border-gray-200">
                                 {student.username}
                             </td>
                             {student.exercises.map((exercise: any, j: number) => {
@@ -145,22 +163,24 @@ const DashboardResultsTable = (props: any) => {
 
                                 return (
                                     <td
-                                        className={`text-center py-4 ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
+                                        className={`text-center py-3 border-l ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
                                         role={exercise.status !== "not submitted" ? "button" : ""}
                                         key={j}
                                         onClick={exercise.status !== "not submitted" ? () => {
                                             setModalContent(modal(exercise, student));
                                             setShowModal(true);
                                         } : undefined}>
-                                        <StatusBadge status={exercise.status} />
-                                        {["success", "failed"].includes(exercise.status)
-                                            ? <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
-                                            : null
+                                        {["success", "failed", "error"].includes(exercise.status)
+                                            ? <div className="flex flex-row items-center justify-between px-2">
+                                                <StatusBadge status={exercise.status} />
+                                                <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                            </div>
+                                            : <StatusBadge status={exercise.status} />
                                         }
                                     </td>
                                 );
                             })}
-                            <td className="text-center border-l border-gray-200">
+                            <td className="text-center border-l border-gray-200 bg-blue-50">
                                 <GradeBadge grade={finalSessionGrade} total={sessionGrade} />
                             </td>
                         </tr>)

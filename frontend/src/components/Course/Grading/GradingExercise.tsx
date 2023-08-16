@@ -40,16 +40,17 @@ const GradingExercise = (props: any) => {
 
     return (
         <>
-            <div className="flex flex-wrap gap-4  bg-gray-50 rounded-md border border-gray-300 py-4 px-2 w-full">
-                <div className="flex flex-row items-center w-full space-x-4">
-                    <div className="flex-1 flex items-center bg-blue-50 border border-blue-100 rounded-lg h-10 px-4">
+            <div className="flex flex-wrap gap-3 bg-gray-50 rounded-md border border-gray-200 p-4 w-full">
+                <div className="flex flex-row items-center w-full space-x-2">
+                    <div className="flex-1 flex items-center bg-blue-100 border border-blue-200 rounded-lg px-4 h-10">
                         <h1 className="text-gray-700 font-semibold">{props.exercise.title}</h1>
                     </div>
                     <div className="flex items-center">
                         <label className="bg-blue-50 border border-blue-100 rounded-l-lg text-gray-700 px-4 py-2 flex items-center h-10">Grade</label>
                         <input
+                            aria-label="grade"
                             type="number"
-                            className="w-32 px-4 py-2 text-gray-700 bg-white rounded-r-lg border border-blue-100 focus:outline-none focus:border-blue-600 h-10"
+                            className="text-right w-32 pl-4 py-2 text-gray-700 bg-white rounded-r-lg border border-blue-100 focus:outline-none focus:border-blue-600 h-10"
                             placeholder=""
                             min="0"
                             value={inputGradeValue}
@@ -58,9 +59,11 @@ const GradingExercise = (props: any) => {
                         />
                     </div>
                 </div>
-                {sortedTests ? sortedTests.map((test: any) => (
+                {sortedTests?.length > 0 ? sortedTests.map((test: any) => (
                     <GradingTest test={test} key={test.id} handleTestCoefficientChangeValue={props.handleTestCoefficientChangeValue} />
-                )) : null}
+                )) : <div className='text-gray-500'>
+                    This exercise doesn't have any test. It can't be graded yet.
+                </div>}
             </div>
         </>
 
