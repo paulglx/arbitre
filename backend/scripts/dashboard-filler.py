@@ -2,14 +2,27 @@ from api.models import Course, Session, Exercise
 from runner.models import Submission, TestResult, Test
 import random
 
-# ID of the course you want to fill
-COURSE_ID = 86
+"""
+Fill a course with dummy submissions and test results.
 
-# Get the course
-course = Course.objects.get(id=COURSE_ID)
+> python manage.py runscript dashboard-filler [--script-args course_id=1 nocheck]
 
-# Get all course students
-students = course.students.all()
+Arguments:
+- course_id: ID of the course to fill (optional)
+- nocheck: skip the confirmation step (optional)
+"""
+
+
+class bcolors:
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
 
 
 def generate_result():
@@ -27,7 +40,34 @@ def generate_result():
         return status
 
 
-def run():
+def confirmation_step(course):
+    print(
+        f"""{bcolors.OKBLUE}{course.title}{bcolors.ENDC} will be filled with dummy submissions.
+Present submissions will be {bcolors.WARNING}deleted{bcolors.ENDC}."""
+    )
+    confirmation = input("Are you sure ? [y/N] ")
+    if confirmation != "y":
+        print("Aborting.")
+        exit()
+
+
+def run(*args):
+    # ID of the course you want to fill
+    if "course_id" in args[0]:
+        COURSE_ID = int(args[0].split("=")[1])
+    else:
+        COURSE_ID = input("Course ID: ")
+
+    # Get the course
+    course = Course.objects.get(id=COURSE_ID)
+
+    # Confirmation step
+    if "nocheck" not in args:
+        confirmation_step(course)
+
+    # Get all course students
+    students = course.students.all()
+
     for student in students:
         sessions = Session.objects.filter(course=course)
         for session in sessions:
@@ -71,3 +111,4 @@ def run():
 
                 # Update submission status
                 submission.refresh_status()
+    print("Done.")
