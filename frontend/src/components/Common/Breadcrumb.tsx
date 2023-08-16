@@ -19,7 +19,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
 
     return (<>
         <nav className="hidden md:flex py-3 mt-2 md:mt-6 w-full text-gray-700 rounded-lg" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-1">
+            <ol className="flex items-center space-x-1" id="breadcrumb">
                 {items.map((item, i) => (
                     <li key={i} className="flex items-center">
                         {item.link ? (

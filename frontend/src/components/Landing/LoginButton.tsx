@@ -51,6 +51,7 @@ const LoginButton = () => {
         <>
             <a
                 href={keycloak.createLoginUrl()}
+                data-testid="login-button"
                 className="inline-flex bg-blue-900 hover:bg-blue-950 transition text-gray-50 font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
             >
                 Login

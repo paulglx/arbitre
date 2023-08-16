@@ -42,7 +42,7 @@ const ExerciseSubmissionTab = (props: any) => {
         <form className="flex items-center justify-between space-x-3 rounded-lg pt-2 pb-4" onSubmit={handleSubmit} encType="multipart/form-data">
             <label className="block bg-white rounded-lg border p-2 w-full">
                 <span className="sr-only">Send your file</span>
-                <input type="file" className="block w-full text-sm text-slate-500
+                <input id="exercise-submission-input" type="file" className="block w-full text-sm text-slate-500
                     file:mr-2 file:py-2 file:px-4
                     file:rounded-lg file:border-0
                     file:text-sm file:font-semibold
@@ -52,7 +52,7 @@ const ExerciseSubmissionTab = (props: any) => {
                 "/>
             </label>
 
-            <button type="submit" className='rounded-lg bg-blue-50 px-6 py-3 text-blue-700 font-semibold border border-blue-200 hover:bg-blue-100 transition-colors'>
+            <button id="exercise-submission-button" type="submit" className='rounded-lg bg-blue-50 px-6 py-3 text-blue-700 font-semibold border border-blue-200 hover:bg-blue-100 transition-colors'>
                 Submit
             </button>
         </form >

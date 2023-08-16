@@ -85,6 +85,7 @@ const ExerciseTestsTab = (props: any) => {
                                 <div className="flex justify-center p-2 md:p-2">
                                     <button
                                         className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                        id="create-test-button"
                                         onClick={(e) => {
                                             const randomId = Array(16)
                                                 .join()
@@ -109,7 +110,7 @@ const ExerciseTestsTab = (props: any) => {
                     {tests.map((test) => (
                         <div
                             key={test?.id}
-                            className={`mb-2 w-full`}
+                            className={`test-name-input-wrapper mb-2 w-full`}
                             tabIndex={0}
                             onFocus={() => {
                                 isOwner && setEditTestId(test?.id);

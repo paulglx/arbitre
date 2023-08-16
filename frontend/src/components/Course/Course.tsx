@@ -176,6 +176,7 @@ const Course = () => {
                     <button
                         onClick={() => setModalIsOpen(true)}
                         className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+                        id="delete-course-button"
                         aria-label='Delete course'
                     >
                         <TrashIcon className="w-6 h-6" />
@@ -225,6 +226,7 @@ const Course = () => {
                         isOwner={isOwner}
                         setTitle={setTitle}
                         title={title}
+                        dataTestId="course-title-input"
                     />
                     <div className="flex gap-2">
                         <OwnerButtons />
