@@ -1,3 +1,7 @@
+const round = (value: number, decimals: number) => {
+    return Number(Math.round(Number(value + "e" + decimals)) + "e-" + decimals);
+}
+
 const GradeBadge = (props: { grade: number, total: number }) => {
     if (props.total === null)
         return null;
@@ -6,12 +10,12 @@ const GradeBadge = (props: { grade: number, total: number }) => {
         <span
             className=" text-blue-800"
         >
-            {props.grade}
+            {round(props.grade, 1)}
         </span>
         &nbsp;
         <span className="text-blue-800 opacity-50">
             /&nbsp;
-            {props.total || "-"}
+            {round(props.total, 1) || "-"}
         </span>
 
     </span>)
