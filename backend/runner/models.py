@@ -28,6 +28,7 @@ class Submission(models.Model):
         default=SubmissionStatus.PENDING,
     )
     created = models.DateTimeField(auto_now=True)
+    ignore = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.file.name
@@ -53,6 +54,10 @@ class Submission(models.Model):
         submission.update(status=status)
 
     def save(self, *args, **kwargs):
+        if self.ignore:
+            super(Submission, self).save(*args, **kwargs)
+            return
+
         celery = Celery("arbitre", include=["arbitre.tasks"])
 
         exercise = self.exercise
@@ -155,6 +160,8 @@ class TestResult(models.Model):
 
         for testresult in pending_testresults:
             submission = testresult.submission
+            if submission.ignore:
+                continue
             exercise_test = testresult.exercise_test
 
             # read file content
