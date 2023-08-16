@@ -41,10 +41,7 @@ def generate_result():
 
 
 def confirmation_step(course):
-    print(
-        f"""{bcolors.OKBLUE}{course.title}{bcolors.ENDC} will be filled with dummy submissions.
-Present submissions will be {bcolors.WARNING}deleted{bcolors.ENDC}."""
-    )
+    print("Present submissions will be {bcolors.WARNING}deleted{bcolors.ENDC}.")
     confirmation = input("Are you sure ? [y/N] ")
     if confirmation != "y":
         print("Aborting.")
@@ -62,6 +59,9 @@ def run(*args):
     course = Course.objects.get(id=COURSE_ID)
 
     # Confirmation step
+    print(
+        f"{bcolors.OKBLUE}{course.title}{bcolors.ENDC} will be filled with dummy submissions."
+    )
     if "nocheck" not in args:
         confirmation_step(course)
 
