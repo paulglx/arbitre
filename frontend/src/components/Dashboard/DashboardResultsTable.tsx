@@ -1,32 +1,74 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
+import GradeBadge from "../Util/GradeBadge";
+import { Link } from "react-router-dom";
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
+import { useGetExercisesOfSessionQuery } from "../../features/courses/exerciseApiSlice";
 import { useGetResultsOfSessionQuery } from "../../features/results/resultsApiSlice";
 
 const DashboardResultsTable = (props: any) => {
 
     const [modalContent, setModalContent] = useState(<></>)
     const [showModal, setShowModal] = useState(false)
+    const [isVisible, setIsVisible] = useState(document.visibilityState === "visible")
     const session_id = props.sessionId;
     const groups = props.selectedGroups;
+
+    const onVisibilityChange = () => {
+        setIsVisible(document.visibilityState === "visible")
+    };
+
+    useEffect(() => {
+        document.addEventListener("visibilitychange", onVisibilityChange);
+
+        return () => document.removeEventListener("visibilitychange", onVisibilityChange);
+    }, []);
 
     const {
         data: results,
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
     } = useGetResultsOfSessionQuery({ session_id, groups }, {
-        pollingInterval: showModal || document.hidden ? 0 : 5000,
+        pollingInterval: showModal || !isVisible ? 0 : 1000,
     });
 
     const resultsSortedByUsername = useMemo(() => {
         if (!results) return
         const resultsToSort = structuredClone(results)
         const sortedResults = resultsToSort.sort((a: any, b: any) => { return a.username.localeCompare(b.username) })
+
+        for (let idx = 0; idx < sortedResults.length; idx++) {
+            sortedResults[idx]?.exercises?.sort((a: any, b: any) => a.exercise_title.localeCompare(b.exercise_title))
+        }
+
         return sortedResults
     }, [results])
+
+    const {
+        data: exercises,
+        isSuccess: exercisesIsSuccess,
+    } = useGetExercisesOfSessionQuery({ session_id });
+
+    const sortedExercises = useMemo(() => {
+        if (exercisesIsSuccess) {
+            const exercisesToSort = structuredClone(exercises);
+            exercisesToSort.sort((a: any, b: any) => {
+                return a.title.localeCompare(b.title);
+            });
+            return exercisesToSort;
+        }
+        return exercises;
+    }, [exercises, exercisesIsSuccess]);
+
+    const truncateTitle = (title: string) => {
+        if (title.length > 20) {
+            return title.substring(0, 20) + "...";
+        }
+        return title;
+    }
 
     const modal = (exercise: any, student: any) => {
         return (
@@ -67,21 +109,26 @@ const DashboardResultsTable = (props: any) => {
     const tableHeadContent = (results: any) => {
         return results[0]?.exercises.length > 0 ? (
             <thead
-                className="text-gray-800 bg-gray-100 rounded-lg"
+                className="w-full text-gray-800 bg-gray-100 rounded-lg table-auto"
             >
                 <tr key={-1} className="">
-                    <th key={-1} className="w-24">Student</th>
-                    {results[0]?.exercises?.sort(
-                        (a: any, b: any) => a.exercise_title.localeCompare(b.exercise_title)
-                    ).map(
+                    <th key={-1}>Student</th>
+                    {results[0]?.exercises?.map(
                         (exercise: any, i: number) => (
-                            <th scope="col" className="truncate py-3 px-2 w-32 border-l border-gray-200" key={i}>
-                                {exercise.exercise_title}
+                            <th scope="col" className="truncate py-3 px-2 w-48 border-l border-gray-200" key={i} >
+                                <Link
+                                    to={`/exercise/${exercise.exercise_id}`}
+                                    className="no-underline hover:underline"
+                                >
+                                    {truncateTitle(exercise.exercise_title)}
+                                </Link>
                             </th>
                         )
                     )}
+                    <th className="border bg-blue-100 text-blue-700 w-48 min-w-48">Student&nbsp;grade</th>
                 </tr>
-            </thead>
+            </thead >
+
         ) : (
             <></>
         );
@@ -89,37 +136,62 @@ const DashboardResultsTable = (props: any) => {
 
     const tableBodyContent = (results: any) => {
         return results[0]?.exercises.length > 0 ? (
-            <tbody>
-                {results.map((student: any, i: number) => (
-                    <tr
-                        key={i}
-                        className="border-t hover:bg-gray-50"
-                    >
-                        <td
-                            key={-1}
-                            className="px-2 py-4 bg-gray-50 border-r border-gray-200"
-                        >
-                            {student.username}
-                        </td>
-                        {student.exercises.map((exercise: any, j: number) => (
-                            <td
-                                className={`text-center py-4 ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
-                                role={exercise.status !== "not submitted" ? "button" : ""}
-                                key={j}
-                                onClick={exercise.status !== "not submitted" ? (() => {
-                                    setModalContent(modal(exercise, student))
-                                    setShowModal(true)
-                                }) : (
-                                    undefined
-                                )}
-                            >
-                                <StatusBadge status={exercise.status} />
+            <tbody className="w-full">
+                {results.map((student: any, i: number) => {
+                    var finalSessionGrade = 0;
+                    var sessionGrade = 0;
+
+                    return (
+                        <tr key={i} className="border-t hover:bg-gray-50">
+                            <td key={-1} className="px-2 py-3 bg-gray-50 border-r border-gray-200">
+                                {student.username}
                             </td>
-                        ))
-                        }
-                    </tr >
-                ))
+                            {student.exercises.map((exercise: any, j: number) => {
+                                const exerciseGrade = sortedExercises ? sortedExercises[j].grade : 0;
+                                let sumOfCoefficient = 0;
+                                let dividendTestGrade = 0;
+
+                                sessionGrade += exerciseGrade;
+
+                                student.exercises[j].testResults.forEach((testResult: any) => {
+                                    sumOfCoefficient += testResult.exercise_test.coefficient || 0;
+                                    if (testResult?.status === "success") {
+                                        dividendTestGrade += exerciseGrade * (testResult.exercise_test.coefficient || 0);
+                                    }
+                                });
+
+                                let finalExerciseGrade = 0;
+                                if (sumOfCoefficient !== 0) {
+                                    finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
+                                }
+
+                                finalSessionGrade += finalExerciseGrade;
+
+                                return (
+                                    <td
+                                        className={`text-center py-3 border-l ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer hover:bg-gray-100"} `}
+                                        role={exercise.status !== "not submitted" ? "button" : ""}
+                                        key={j}
+                                        onClick={exercise.status !== "not submitted" ? () => {
+                                            setModalContent(modal(exercise, student));
+                                            setShowModal(true);
+                                        } : undefined}>
+                                        {["success", "failed", "error"].includes(exercise.status)
+                                            ? <div className="flex flex-row items-center justify-between px-2">
+                                                <StatusBadge status={exercise.status} />
+                                                <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                            </div>
+                                            : <StatusBadge status={exercise.status} />
+                                        }
+                                    </td>
+                                );
+                            })}
+                            <td className="text-center border-l border-gray-200 bg-blue-50">
+                                <GradeBadge grade={finalSessionGrade} total={sessionGrade} />
+                            </td>
+                        </tr>)
                 }
+                )}
             </tbody >
         ) : (
             <tbody>

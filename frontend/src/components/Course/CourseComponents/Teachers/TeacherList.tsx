@@ -86,7 +86,6 @@ const TeacherList = (props: any) => {
                     setOwners([...owners, teachersData.find((t: any) => t.username === ownerToAdd)])
                 })
                 .catch((err) => {
-                    console.log(err)
                     dispatch(pushNotification({ message: err.data.message, type: "error" }))
                 })
         }

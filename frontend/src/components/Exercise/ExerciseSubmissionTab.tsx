@@ -56,7 +56,7 @@ const ExerciseSubmissionTab = (props: any) => {
                 Submit
             </button>
         </form >
-        <TestResult exercise_id={exercise.id} />
+        <TestResult exercise_id={exercise.id} exercise_grade={exercise.grade} />
     </>)
 }
 

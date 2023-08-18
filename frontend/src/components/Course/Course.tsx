@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
+import Grading from './Grading/Grading';
 import NotFound from '../Util/NotFound';
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./CourseComponents/Students/Students";
@@ -200,6 +201,11 @@ const Course = () => {
             key: 'teachers',
             title: 'Teachers',
             content: <TeacherList courseId={id} isOwner={isOwner} />,
+        },
+        {
+            key: 'grading',
+            title: 'Grading',
+            content: <Grading course={course} />,
         },
     ];
 

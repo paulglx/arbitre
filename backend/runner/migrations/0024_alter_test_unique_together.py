@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("api", "0017_alter_course_groups_enabled"),
         ("runner", "0023_alter_test_stdin_alter_test_stdout"),

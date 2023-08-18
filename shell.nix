@@ -9,6 +9,7 @@ pkgs.mkShell {
       django-celery-beat
       django-cors-headers
       django-environ
+      django-extensions
       djangorestframework
       djangorestframework-simplejwt
       drf-yasg
