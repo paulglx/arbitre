@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
+import Grading from './Grading/Grading';
 import NotFound from '../Util/NotFound';
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./CourseComponents/Students/Students";
@@ -15,8 +16,6 @@ import TeacherList from "./CourseComponents/Teachers/TeacherList";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useGetCourseStudentGroupsQuery } from '../../features/courses/studentGroupApiSlice';
-import Grading from './Grading/Grading';
-
 import { useTitle } from '../../hooks/useTitle';
 
 const Course = () => {
@@ -206,7 +205,7 @@ const Course = () => {
         {
             key: 'grading',
             title: 'Grading',
-            content: <Grading courseId={id} />,
+            content: <Grading course={course} />,
         },
     ];
 

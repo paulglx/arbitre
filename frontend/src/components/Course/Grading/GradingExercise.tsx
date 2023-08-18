@@ -62,7 +62,7 @@ const GradingExercise = (props: any) => {
                 {sortedTests?.length > 0 ? sortedTests.map((test: any) => (
                     <GradingTest test={test} key={test.id} handleTestCoefficientChangeValue={props.handleTestCoefficientChangeValue} />
                 )) : <div className='text-gray-500'>
-                    This exercise doesn't have any test. It can't be graded yet.
+                    There are no tests for this exercise.
                 </div>}
             </div>
         </>

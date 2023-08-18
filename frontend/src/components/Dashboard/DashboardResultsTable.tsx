@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
 import GradeBadge from "../Util/GradeBadge";
+import { Link } from "react-router-dom";
 import StatusBadge from "../Util/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
@@ -63,8 +64,8 @@ const DashboardResultsTable = (props: any) => {
     }, [exercises, exercisesIsSuccess]);
 
     const truncateTitle = (title: string) => {
-        if (title.length > 15) {
-            return title.substring(0, 15) + "...";
+        if (title.length > 20) {
+            return title.substring(0, 20) + "...";
         }
         return title;
     }
@@ -114,14 +115,19 @@ const DashboardResultsTable = (props: any) => {
                     <th key={-1}>Student</th>
                     {results[0]?.exercises?.map(
                         (exercise: any, i: number) => (
-                            <th scope="col" className="py-3 px-2 w-48 border-l border-gray-200" key={i}>
-                                {truncateTitle(exercise.exercise_title)}
+                            <th scope="col" className="truncate py-3 px-2 w-48 border-l border-gray-200" key={i} >
+                                <Link
+                                    to={`/exercise/${exercise.exercise_id}`}
+                                    className="no-underline hover:underline"
+                                >
+                                    {truncateTitle(exercise.exercise_title)}
+                                </Link>
                             </th>
                         )
                     )}
-                    <th className="border bg-blue-100 text-blue-700 min-w-[10rem]">Student grade</th>
+                    <th className="border bg-blue-100 text-blue-700 w-48 min-w-48">Student&nbsp;grade</th>
                 </tr>
-            </thead>
+            </thead >
 
         ) : (
             <></>
@@ -163,7 +169,7 @@ const DashboardResultsTable = (props: any) => {
 
                                 return (
                                     <td
-                                        className={`text-center py-3 border-l ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer"} `}
+                                        className={`text-center py-3 border-l ${exercise.status === "not submitted" ? "cursor-default" : "cursor-pointer hover:bg-gray-100"} `}
                                         role={exercise.status !== "not submitted" ? "button" : ""}
                                         key={j}
                                         onClick={exercise.status !== "not submitted" ? () => {

@@ -124,14 +124,16 @@ const GradingSession = (props: any) => {
                 <hr className="border-t-2 mb-4" />
 
                 <div className="flex flex-wrap gap-4 w-full">
-                    {sortedExercises ? sortedExercises.map((exercise: any) => (
+                    {sortedExercises?.length > 0 ? sortedExercises.map((exercise: any) => (
                         <GradingExercise
                             exercise={exercise}
                             key={exercise.id}
                             handleExerciseGradeChangeValue={handleExerciseGradeChangeValue}
                             handleTestCoefficientChangeValue={handleTestCoefficientChangeValue}
                         />
-                    )) : null}
+                    )) : <div className="text-gray-500">
+                        There are no exercises in this session.
+                    </div>}
                 </div>
                 <div className="flex justify-center items-center w-full">
                     <button
