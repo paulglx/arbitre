@@ -55,7 +55,7 @@ jobs:
         with:
           env-prefix: "envkey_" # Optional (default: '')
           file-name: ".env" # Optional (default : '.env')
-          directory: "backend/arbitre/" # Optional (default: '.')
+          directory: "backend/" # Optional (default: '.')
         env: # env available for only this steps
           IS_SERVER: true
           envkey_USE_HTTPS: false
