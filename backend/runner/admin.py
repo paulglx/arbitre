@@ -49,7 +49,6 @@ class CourseAdmin(admin.ModelAdmin):
         "language",
         "auto_groups_enabled",
         "auto_groups_type",
-        "auto_groups_number",
     ]
     filter_horizontal = [
         "students",
@@ -57,7 +56,11 @@ class CourseAdmin(admin.ModelAdmin):
         "tutors",
     ]
     readonly_fields = ["id"]
-    list_display = ["title", "id", "join_code"]
+    list_display = [
+        "title",
+        "join_code",
+        "id",
+    ]
     inlines = [StudentGroupInline]
 
 
