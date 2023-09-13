@@ -1,6 +1,6 @@
+import { ArrowsPointingInIcon, ArrowsPointingOutIcon, DocumentCheckIcon } from '@heroicons/react/24/solid';
 import React, { useEffect } from 'react'
 
-import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Editor from "@monaco-editor/react";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useDispatch } from 'react-redux';
@@ -16,6 +16,8 @@ const ExerciseRuntimeTab = (props: any) => {
     const [updateExercise] = useUpdateExerciseMutation();
     const dispatch = useDispatch();
 
+    const [prefixTall, setPrefixTall] = useState(false);
+    const [suffixTall, setSuffixTall] = useState(false);
 
     useEffect(() => {
         setPrefix(exercise.prefix);
@@ -50,24 +52,15 @@ const ExerciseRuntimeTab = (props: any) => {
 
             <div className="relative rounded-2xl">
                 <Editor
-                    className="h-48 p-2 border rounded-lg bg-white shadow mb-4 focus:ring-blue-500 focus:border-blue-500"
+                    className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
                     value={prefix}
+                    height={prefixTall ? "840px" : "254px"}
                     onChange={(value, e) => { setPrefix(value as string) }}
                     language={course?.language?.toLowerCase()}
                     options={{
                         minimap: { enabled: false },
                         lineNumbers: "on",
                         readOnly: !isOwner,
-                        roundedSelection: false,
-                        scrollbar: {
-                            verticalScrollbarSize: 8,
-                            horizontalScrollbarSize: 8,
-                            useShadows: true,
-                            vertical: "visible",
-                            horizontal: "visible",
-                        },
-                        lineDecorationsWidth: 4,
-                        glyphMargin: true,
                         renderLineHighlight: "none",
                         renderFinalNewline: false,
                         renderLineHighlightOnlyWhenFocus: false,
@@ -76,12 +69,26 @@ const ExerciseRuntimeTab = (props: any) => {
                     }}
                 />
                 {isOwner ? (
-                    <button
-                        className="absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md py-2 px-4 transition-colors duration-300"
-                        onClick={handleUpdateExercise}
-                    >
-                        <ArrowPathIcon className="w-6 h-6" />
-                    </button>
+                    <div className='absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity duration-200'>
+                        <div className='flex flex-row'>
+                            <button
+                                className="bg-gray-500 hover:bg-gray-600 text-white rounded-md p-2 mr-2"
+                                onClick={() => { setPrefixTall(!prefixTall); }}
+                            >
+                                {prefixTall ?
+                                    <ArrowsPointingInIcon className="h-5 w-5" />
+                                    :
+                                    <ArrowsPointingOutIcon className="h-5 w-5" />
+                                }
+                            </button>
+                            <button
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md p-2"
+                                onClick={handleUpdateExercise}
+                            >
+                                <DocumentCheckIcon className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
                 ) : null}
             </div>
 
@@ -90,24 +97,15 @@ const ExerciseRuntimeTab = (props: any) => {
 
             <div className="relative rounded-2xl">
                 <Editor
-                    className="h-48 p-2 border rounded-lg bg-white shadow mb-4 focus:ring-blue-500 focus:border-blue-500"
+                    className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
                     value={suffix}
+                    height={suffixTall ? "840px" : "254px"}
                     onChange={(value, e) => { setSuffix(value as string) }}
                     language={course?.language?.toLowerCase()}
                     options={{
                         minimap: { enabled: false },
                         lineNumbers: "on",
                         readOnly: !isOwner,
-                        roundedSelection: false,
-                        scrollbar: {
-                            verticalScrollbarSize: 8,
-                            horizontalScrollbarSize: 8,
-                            useShadows: true,
-                            vertical: "visible",
-                            horizontal: "visible",
-                        },
-                        lineDecorationsWidth: 4,
-                        glyphMargin: true,
                         renderLineHighlight: "none",
                         renderFinalNewline: false,
                         renderLineHighlightOnlyWhenFocus: false,
@@ -116,15 +114,29 @@ const ExerciseRuntimeTab = (props: any) => {
                     }}
                 />
                 {isOwner ? (
-                    <button
-                        className="absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md py-2 px-4 transition-colors duration-300"
-                        onClick={handleUpdateExercise}
-                    >
-                        <ArrowPathIcon className="w-6 h-6" />
-                    </button>
+                    <div className='absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity duration-200'>
+                        <div className='flex flex-row'>
+                            <button
+                                className="bg-gray-500 hover:bg-gray-600 text-white rounded-md p-2 mr-2"
+                                onClick={() => { setSuffixTall(!suffixTall); }}
+                            >
+                                {suffixTall ?
+                                    <ArrowsPointingInIcon className="h-5 w-5" />
+                                    :
+                                    <ArrowsPointingOutIcon className="h-5 w-5" />
+                                }
+                            </button>
+                            <button
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md p-2"
+                                onClick={handleUpdateExercise}
+                            >
+                                <DocumentCheckIcon className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
                 ) : null}
             </div>
-        </div>
+        </div >
 
         <div className="p-1 mb-4">
             <h5 className="text-2xl font-bold mb-2">Code preview</h5>
