@@ -1,12 +1,12 @@
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useAddOwnerMutation, useAddTutorMutation, useGetOwnersQuery, useGetTutorsQuery, useRemoveOwnerMutation, useRemoveTutorMutation } from "../../../../features/courses/courseApiSlice"
 import { useEffect, useMemo, useState } from "react";
+import { useGetTeachersQuery, useGetUsersQuery } from '../../../../features/users/usersApiSlice';
 
 import UserSearch from '../../../Common/UserSearch';
 import { pushNotification } from '../../../../features/notification/notificationSlice';
 import { selectCurrentUser } from '../../../../features/auth/authSlice';
 import { useDispatch } from 'react-redux';
-import { useGetTeachersQuery } from '../../../../features/users/usersApiSlice';
 import { useSelector } from 'react-redux';
 
 const TeacherList = (props: any) => {
@@ -48,7 +48,12 @@ const TeacherList = (props: any) => {
     } = useGetTutorsQuery({ course_id })
 
     const {
+        data: allUsers,
+    } = useGetUsersQuery({})
+
+    const {
         data: teachersData,
+        isLoading: isTeachersLoading,
         isSuccess: isTeachersSuccess,
     } = useGetTeachersQuery({})
 
@@ -77,13 +82,21 @@ const TeacherList = (props: any) => {
     const handleAddOwner = async (e: any) => {
         e.preventDefault()
 
-        const user_id = teachersData.find((t: any) => t.username === ownerToAdd)?.id
+        const user = allUsers.find((t: any) => t.username === ownerToAdd)
+
+        if (!user) {
+            dispatch(pushNotification({ message: "User not found", type: "error" }))
+            return
+        }
+
+        const user_id = user?.id
+
         if (user_id) {
             await addOwner({ course_id, user_id })
                 .unwrap()
                 .then((res) => {
                     setOwnerToAdd("")
-                    setOwners([...owners, teachersData.find((t: any) => t.username === ownerToAdd)])
+                    setOwners([...owners, user])
                 })
                 .catch((err) => {
                     dispatch(pushNotification({ message: err.data.message, type: "error" }))
@@ -94,13 +107,21 @@ const TeacherList = (props: any) => {
     const handleAddTutor = async (e: any) => {
         e.preventDefault()
 
-        const user_id = teachersData.find((t: any) => t.username === tutorToAdd)?.id
+        const user = allUsers.find((t: any) => t.username === tutorToAdd)
+
+        if (!user) {
+            dispatch(pushNotification({ message: "User not found", type: "error" }))
+            return
+        }
+
+        const user_id = user?.id
+
         if (user_id) {
             await addTutor({ course_id, user_id })
                 .unwrap()
                 .then((res) => {
                     setTutorToAdd("")
-                    setTutors([...tutors, teachersData.find((t: any) => t.username === tutorToAdd)])
+                    setTutors([...tutors, user])
                 })
                 .catch((err) => {
                     dispatch(pushNotification({ message: err.data.message, type: "error" }))
@@ -131,8 +152,14 @@ const TeacherList = (props: any) => {
             })
     }
 
-    return isOwnersSuccess && isTeachersSuccess ? (
+    return isOwnersSuccess ? (
         <div className="flex flex-wrap mt-6">
+            {!isTeachersLoading && !isTeachersSuccess ?
+                <p className='text-sm px-2 py-1 border rounded-lg mb-4 bg-red-50 border-red-100 text-red-500'>
+                    There was an error while trying to get teachers. You can enter teacher usernames manually. Please make sure the users you add are actually teachers.
+                </p>
+                : null
+            }
             <div className="w-full md:w-1/2 p-0 md:pr-6 md:border-r">
                 <div className="p-1">
                     <h2 className="text-2xl font-bold">Owners</h2>
