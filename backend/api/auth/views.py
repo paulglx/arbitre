@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
-from django.http import JsonResponse
 from rest_framework import viewsets
-from rest_framework.decorators import APIView
 from rest_framework.response import Response
 from .serializers import MinimalUserSerializer, UserSerializer
 import keycloak
@@ -31,16 +29,19 @@ def admin_login():
     )
 
 
-KEYCLOAK_ADMIN = admin_login()
+def get_teachers():
+    KEYCLOAK_ADMIN = admin_login()
+    keycloak_teachers = KEYCLOAK_ADMIN.get_realm_role_members(role_name="teacher")
+    emails = [teacher["email"] for teacher in keycloak_teachers]
+    return User.objects.filter(email__in=emails)
+
 
 # Check if teacher roles exists
 try:
+    KEYCLOAK_ADMIN = admin_login()
     KEYCLOAK_ADMIN.get_realm_role(role_name="teacher")
 except keycloak.exceptions.KeycloakAuthenticationError:
     print("ERROR: Keycloak authentication failed")
-    KEYCLOAK_ADMIN.logout()
-    KEYCLOAK_ADMIN = admin_login()
-
 except keycloak.exceptions.KeycloakGetError:
     print("WARNING: teacher role does not exist. Creating it")
     KEYCLOAK_ADMIN.create_realm_role({"name": "teacher"})
@@ -63,9 +64,7 @@ class TeachersViewSet(viewsets.ViewSet):
         GET all users with the teacher role.
         """
 
-        keycloak_teachers = KEYCLOAK_ADMIN.get_realm_role_members(role_name="teacher")
-        emails = [teacher["email"] for teacher in keycloak_teachers]
-        teachers = User.objects.filter(email__in=emails)
+        teachers = get_teachers()
 
         serializer = MinimalUserSerializer(teachers, many=True)
         return Response(serializer.data)
