@@ -21,23 +21,28 @@ from api.views import (
     CourseJoinViewSet,
     CourseOwnerViewSet,
     CourseRefreshCodeViewSet,
+    CoursesSessionsExercisesViewSet,
     CourseStudentViewSet,
     CourseTutorViewSet,
     CourseViewSet,
-    CoursesSessionsExercisesViewSet,
     ExerciseViewSet,
+    RefreshSubmissionViewSet,
     ResultsOfSessionViewSet,
     SessionViewSet,
     SetStudentGroupViewSet,
     StudentGroupViewSet,
+    SubmissionFileViewSet,
+    SubmissionViewSet,
     TeachersViewSet,
+    TestResultViewSet,
+    TestViewSet,
     UserViewSet,
 )
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import routers, permissions
+from rest_framework import permissions, routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 # Swagger
@@ -91,13 +96,28 @@ router.register(
 )
 router.register(r"all_results", AllResultsViewSet, basename="all_results")
 
+# Runner API router - kept legacy separated url for backward compatibility
+runner_router = routers.DefaultRouter()
+runner_router.register(r"submission", SubmissionViewSet)
+runner_router.register(r"test", TestViewSet)
+runner_router.register(r"testresult", TestResultViewSet, basename="testresult")
+runner_router.register(
+    r"refresh-submission", RefreshSubmissionViewSet, basename="refresh"
+)
+runner_router.register(
+    r"submission-file",
+    SubmissionFileViewSet,
+    basename="submission-file",
+)
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),  # Contains : /exercise, /session, /course
     path("api/auth/", include(auth_router.urls)),  # Contains : /users
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("runner/", include("runner.urls")),
+    path("runner/api/", include(runner_router.urls)),
     # Swagger
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
