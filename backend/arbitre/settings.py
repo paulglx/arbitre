@@ -39,21 +39,21 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", env("HOSTNAME", default="")]
 # Application definition
 INSTALLED_APPS = [
     "api.apps.ApiConfig",
+    "arbitre.apps.ArbitreConfig",
     "corsheaders",
     "django_celery_beat",
+    "django_extensions",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "django_extensions",
     "drf_yasg",
     "mozilla_django_oidc",
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework_simplejwt",
     "rest_framework",
-    "runner.apps.RunnerConfig",
 ]
 
 # Add 'mozilla_django_oidc' authentication backend

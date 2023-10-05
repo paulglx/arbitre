@@ -1,7 +1,5 @@
-# Arbitre Runner
+# Runner (obsolete)
 
-`runner` is the django app that runs tests on a given code file, using camisole.
+This Django app is obsolete and will be removed in the future. Some models used to be separated into this app, but are now part of the `api` app.
 
-When a *Submission* is saved, it is judged by Camisole using the tests defined by the teacher.
-
-The test results are then stored under a TestResult object, and displayed at /runner/\[submission_id\]/results.
+This directory is kept for migrations and other files that are still needed.
