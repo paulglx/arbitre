@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):

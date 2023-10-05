@@ -1,5 +1,5 @@
 from api.models import Course, StudentGroup
-from api.serializers import CourseSerializer
+from ..serializers import CourseSerializer
 from django.contrib.auth.models import User
 from django.db.models import Q
 from rest_framework import viewsets, permissions, status

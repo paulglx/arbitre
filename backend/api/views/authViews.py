@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .serializers import MinimalUserSerializer, UserSerializer
+from ..serializers.authSerializers import MinimalUserSerializer, UserSerializer
 import keycloak
 import environ
 import os
