@@ -6,10 +6,10 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Exercise from "./components/Exercise/Exercise";
 import JoinCourse from "./components/Course/JoinCourse";
 import Layout from "./components/Common/Layout";
-import NotFound from "./components/Util/NotFound";
-import Notification from "./components/Util/Notification";
+import NotFound from "./components/Common/NotFound";
+import Notification from "./components/Common/Notification";
 import Public from "./components/Landing/Public";
-import RequireAuth from "./components/Util/Auth/RequireAuth";
+import RequireAuth from "./components/Common/Auth/RequireAuth";
 import Session from "./components/Session/Session";
 
 function App() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import Markdown from "../../Util/Markdown";
+import Markdown from "../Markdown";
 import autosize from "autosize";
 
 const EditableDescription = (props: any) => {

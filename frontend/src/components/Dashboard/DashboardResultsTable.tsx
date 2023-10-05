@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
 import DashboardResultsTableLoading from "./DashboardResultsTableLoading";
-import GradeBadge from "../Util/GradeBadge";
+import GradeBadge from "../Common/GradeBadge";
 import { Link } from "react-router-dom";
-import StatusBadge from "../Util/StatusBadge";
+import StatusBadge from "../Common/StatusBadge";
 import TestResult from "../Exercise/TestResult/TestResult";
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { useGetExercisesOfSessionQuery } from "../../features/courses/exerciseApiSlice";

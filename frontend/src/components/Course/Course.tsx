@@ -9,7 +9,7 @@ import Breadcrumb from '../Common/Breadcrumb';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import Grading from './Grading/Grading';
-import NotFound from '../Util/NotFound';
+import NotFound from '../Common/NotFound';
 import SessionContent from "./CourseComponents/SessionContent";
 import Students from "./CourseComponents/Students/Students";
 import TeacherList from "./CourseComponents/Teachers/TeacherList";

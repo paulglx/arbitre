@@ -2,10 +2,10 @@ import { CommandLineIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/2
 import { useEffect, useState } from 'react';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../../features/submission/submissionApiSlice'
 
-import StatusBadge from '../../Util/StatusBadge';
+import GradeBadge from '../../Common/GradeBadge';
+import StatusBadge from '../../Common/StatusBadge';
 import TestResultCodePreviewModal from './TestResultCodePreviewModal';
 import TestResultTimeBadge from './TestResultTimeBadge';
-import GradeBadge from '../../Util/GradeBadge';
 
 const TestResult = (props: any) => {
 

@@ -1,4 +1,4 @@
-import CodePreview from '../../Util/CodePreview'
+import CodePreview from '../../Common/CodePreview'
 import React from 'react'
 import { XMarkIcon } from "@heroicons/react/24/solid"
 

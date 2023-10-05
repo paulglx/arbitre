@@ -1,7 +1,7 @@
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid"
 import { createRef, useMemo, useState } from "react"
 
-import GroupBadge from "../Util/Auth/GroupBadge"
+import GroupBadge from "../Common/Auth/GroupBadge"
 
 const DashboardGroupsPicker = (props: any) => {
 

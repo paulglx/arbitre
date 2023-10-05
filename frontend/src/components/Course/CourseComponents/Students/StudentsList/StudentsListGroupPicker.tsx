@@ -2,7 +2,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid"
 import { createRef, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 
-import GroupBadge from '../../../../Util/Auth/GroupBadge'
+import GroupBadge from '../../../../Common/Auth/GroupBadge'
 import { pushNotification } from "../../../../../features/notification/notificationSlice"
 import { selectCurrentUser } from "../../../../../features/auth/authSlice"
 import { useSetGroupOfStudentMutation } from "../../../../../features/courses/studentGroupApiSlice"

@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlice';
 import { useDispatch, useSelector } from "react-redux";
 
-import Error from '../Util/Error';
+import Error from '../Common/Error';
 import Header from '../Common/Header'
-import Markdown from '../Util/Markdown';
+import Markdown from '../Common/Markdown';
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
 import { useGetAllCoursesQuery } from '../../features/courses/courseApiSlice'
