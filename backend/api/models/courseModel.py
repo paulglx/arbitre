@@ -146,33 +146,3 @@ class StudentGroup(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.course.title})"
-
-
-class Session(models.Model):
-    """
-    A part of a course, that includes exercises
-    """
-
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, blank=True)
-    description = models.TextField(blank=True)
-    grade = models.FloatField(blank=True, null=True)
-
-    def __str__(self):
-        return self.course.title + " : " + self.title
-
-
-class Exercise(models.Model):
-    """
-    The exercise given to the student
-    """
-
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, blank=True)
-    description = models.TextField(blank=True)
-    prefix = models.TextField(blank=True)
-    suffix = models.TextField(blank=True)
-    grade = models.FloatField(blank=True, null=True)
-
-    def __str__(self):
-        return self.title
