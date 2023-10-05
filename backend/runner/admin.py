@@ -1,5 +1,12 @@
-from .models import Submission, Test, TestResult
-from api.models import Exercise, Session, Course, StudentGroup
+from api.models import (
+    Course,
+    Exercise,
+    Session,
+    StudentGroup,
+    Submission,
+    Test,
+    TestResult,
+)
 from django.contrib import admin
 
 

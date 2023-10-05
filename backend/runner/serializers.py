@@ -1,7 +1,6 @@
-from .models import Submission, Test, TestResult
+from api.models import Submission, Test, TestResult
 from rest_framework import serializers, validators
 import copy
-import requests
 
 
 class TestSerializer(serializers.ModelSerializer):

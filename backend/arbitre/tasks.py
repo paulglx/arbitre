@@ -109,7 +109,7 @@ def run_camisole(submission_id, test_id, file_content, prefix, suffix, lang) -> 
 
 @shared_task(ignore_result=True)
 def run_all_pending_testresults() -> None:
-    from runner.models import TestResult
+    from api.models import TestResult
 
     """
     Runs all pending submissions in the database

@@ -1,5 +1,4 @@
-from api.models import Course, Session, Exercise
-from runner.models import Submission, TestResult, Test
+from api.models import Course, Session, Exercise, Submission, TestResult, Test
 import random
 
 """

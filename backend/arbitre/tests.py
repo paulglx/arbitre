@@ -2,7 +2,7 @@ from api.models import Course, Session, Exercise
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, Group
 from django.test import TestCase, Client
-from runner.models import Submission, Test
+from api.models import Submission, Test
 from runner.serializers import SubmissionSerializer
 import keycloak
 import requests
@@ -47,7 +47,6 @@ class UserTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-
         KEYCLOAK_ADMIN.create_user(
             {
                 "email": "testinguser@test.com",
@@ -85,7 +84,6 @@ class UserGroupTest(TestCase):
     """
 
     def setUp(self):
-
         g1 = Group.objects.create(name="testgroup1")
         g2 = Group.objects.create(name="testgroup2")
 
@@ -97,7 +95,6 @@ class UserGroupTest(TestCase):
         user.save()
 
     def test_get_groups_via_api(self):
-
         endpoint = "/api/auth/users/groups/"
         body = {
             "username": get_testing_user_username(),

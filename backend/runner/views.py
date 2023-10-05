@@ -1,5 +1,5 @@
-from rest_framework import viewsets, permissions
-from .models import Submission, Test, TestResult
+from rest_framework import viewsets
+from api.models import Submission, Test, TestResult
 from runner.serializers import (
     SubmissionSerializer,
     TestResultSerializer,

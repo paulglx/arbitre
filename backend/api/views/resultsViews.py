@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.http import HttpRequest
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
-from runner.models import Exercise, Submission, TestResult
+from api.models import Exercise, Submission, TestResult
 from runner.serializers import SubmissionSerializer, TestResultSerializer
 
 from ..models import Course, Session, StudentGroup
