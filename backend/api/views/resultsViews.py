@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from api.models import Exercise, Submission, TestResult
-from runner.serializers import SubmissionSerializer, TestResultSerializer
+from api.serializers import SubmissionSerializer, TestResultSerializer
 
 from ..models import Course, Session, StudentGroup
 from ..serializers import MinimalExerciseSerializer

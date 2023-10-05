@@ -4,3 +4,4 @@ from .sessionModel import *  # noqa: W0611
 from .submissionModel import *  # noqa: W0611
 from .testModel import *  # noqa: W0611
 from .testResultModel import *  # noqa: W0611
+from .studentGroupModel import *  # noqa: W0611

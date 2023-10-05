@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, Group
 from django.test import TestCase, Client
 from api.models import Submission, Test
-from runner.serializers import SubmissionSerializer
+from api.serializers import SubmissionSerializer
 import keycloak
 import requests
 

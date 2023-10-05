@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from api.models import Submission, Test, TestResult
-from runner.serializers import (
+from api.serializers import (
     SubmissionSerializer,
     TestResultSerializer,
     TestSerializer,

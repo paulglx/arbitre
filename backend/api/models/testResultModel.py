@@ -4,7 +4,6 @@ from celery import Celery
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from .submissionModel import Submission
 from .testModel import Test
 
 
@@ -20,7 +19,7 @@ class TestResult(models.Model):
         FAILED = "failed", _("Failed")
         ERROR = "error", _("Error")
 
-    submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
+    submission = models.ForeignKey("api.Submission", on_delete=models.CASCADE)
     exercise_test = models.ForeignKey(Test, on_delete=models.CASCADE)
     stdout = models.TextField(default="")
     time = models.FloatField(default=-1)
