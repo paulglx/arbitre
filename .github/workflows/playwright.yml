@@ -22,6 +22,14 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      keycloak:
+        image: quay.io/keycloak/keycloak
+        ports:
+           - 8080:8080
+        env:
+          KEYCLOAK_ADMIN: admin
+          KEYCLOAK_ADMIN_PASSWORD: admin
+
 
     steps:
       - uses: actions/checkout@v3
@@ -58,8 +66,8 @@ jobs:
           directory: "backend/" # Optional (default: '.')
         env: # env available for only this steps
           IS_SERVER: true
-          envkey_USE_HTTPS: false
           envkey_DEBUG: false
+          envkey_USE_HTTPS: false
           envkey_HOSTNAME: "localhost"
           envkey_SECRET_KEY: "django-insecure-9p0it%1(1)sv%+s&bv0n@8330j*_)qm76ejwrzg(nea-m=v278"
           envkey_DB_NAME: arbitre-test
@@ -67,6 +75,11 @@ jobs:
           envkey_DB_PASSWORD: test
           envkey_DB_HOST: localhost
           envkey_DB_PORT: ""
+          envkey_KEYCLOAK_URL: "http://localhost:8080"
+          envkey_KEYCLOAK_REALM_NAME: "master"
+          envkey_KEYCLOAK_ADMIN_USERNAME: "admin"
+          envkey_KEYCLOAK_ADMIN_PASSWORD: "admin"
+          envkey_OIDC_RP_CLIENT_ID: "arbitre"
 
       - name: Run Django and Run Playwright tests
         run: |
