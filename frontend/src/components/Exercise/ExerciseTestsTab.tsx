@@ -126,7 +126,7 @@ const ExerciseTestsTab = (props: any) => {
                                     aria-label="Test name"
                                     value={test?.name}
                                     autoComplete="off"
-                                    className={`w-full md:w-1/2 rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
+                                    className={`w-full md:w-[150px] lg:w-[200px] rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
                                     onChange={(e) => {
                                         isOwner && setTests(
                                             tests.map((t) =>
@@ -136,7 +136,7 @@ const ExerciseTestsTab = (props: any) => {
                                     {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                 />
 
-                                <div className="md:w-1/4 w-full flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
+                                <div className="w-full md:w-2/5 flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
                                     <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Input</span>
                                     <textarea
                                         className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:border-blue-500 ml-2 md:ml-4 bg-white h-10 p-2"
@@ -157,7 +157,7 @@ const ExerciseTestsTab = (props: any) => {
                                     />
                                 </div>
 
-                                <div className="md:w-1/4 w-full flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
+                                <div className="w-full md:w-2/5 flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
                                     <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Output</span>
                                     <textarea
                                         className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2"
