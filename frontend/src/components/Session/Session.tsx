@@ -123,7 +123,9 @@ const Session = () => {
     ];
 
     return sessionIsLoading ? (
-        <></>
+        <>
+            <Header />
+        </>
     ) : (
         <>
             <Header />
