@@ -19,6 +19,7 @@ const Courses = () => {
     const {
         data: courses,
         isSuccess: coursesIsSuccess,
+        isLoading: coursesIsLoading,
         isError: coursesIsError,
         error: coursesError
     } = useGetAllCoursesQuery({});
@@ -72,6 +73,11 @@ const Courses = () => {
         ) : null;
     };
 
+    if (coursesIsLoading) {
+        return (<>
+            <Header />
+        </>)
+    }
 
     return coursesIsSuccess ? (
         <>
