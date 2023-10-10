@@ -59,6 +59,7 @@ const Course = () => {
     const {
         data: courseData,
         isSuccess: courseIsSuccess,
+        isLoading: courseIsLoading,
         isError: courseIsError,
     } = useGetCourseQuery({ id });
 
@@ -208,6 +209,12 @@ const Course = () => {
             content: <Grading course={course} />,
         },
     ];
+
+    if (courseIsLoading) return (<>
+        <Header />
+
+        <br />
+    </>);
 
     //Main content
     return courseIsSuccess ? (
