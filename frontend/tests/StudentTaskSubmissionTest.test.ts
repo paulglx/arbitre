@@ -13,7 +13,7 @@ test('Student task Submission Test', async ({ page }) => {
         // open the browser on the site
         await page.goto('/');
         // verify button is visible
-        await expect(page.getByTestId('login-button')).toBeVisible();
+        await expect(page.getByTestId('login-button'), 'Keycloak should be available').toBeVisible();
         // click in button
         await page.getByTestId('login-button').click();
         // login

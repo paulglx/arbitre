@@ -2,17 +2,16 @@
 import { expect, test } from '@playwright/test';
 
 test('Create Course and add Exercises', async ({ page }) => {
-    const teacher_username = 'lilibeth';
-    const teacher_password = 'lilibeth';
-    const student_username = 'lilibeth_eleve';
-
+    const teacher_username = 'testteacher';
+    const teacher_password = 'testteacher';
+    const student_username = 'teststudent';
 
     await test.step('login', async () => {
 
         // open the browser on the site
         await page.goto('/');
         // verify button is visible
-        await expect(page.getByTestId('login-button')).toBeVisible();
+        await expect(page.getByTestId('login-button'), 'Keycloak should be available').toBeVisible();
         // click in button
         await page.getByTestId('login-button').click();
         // login

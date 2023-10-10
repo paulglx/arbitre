@@ -53,12 +53,6 @@ jobs:
         run: npx playwright install --with-deps
         working-directory: frontend
 
-      # - name: Run Django server in background
-      #   env:
-      #     DJANGO_ALLOW_ASYNC_UNSAFE: 1
-      #   run: python manage.py runserver &
-      #   working-directory: backend
-
       - uses: iamsauravsharma/create-dotenv@v1.2.2
         with:
           env-prefix: "envkey_" # Optional (default: '')
@@ -86,7 +80,7 @@ jobs:
           cd backend
           python manage.py makemigrations >/dev/null
           python manage.py migrate >/dev/null
-          python manage.py runserver &
+          python manage.py runserver & >/dev/null
           cd ../frontend
           npx playwright test
 
