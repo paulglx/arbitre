@@ -39,16 +39,19 @@ const TeacherList = (props: any) => {
 
     const {
         data: ownersData,
+        isLoading: isOwnersLoading,
         isSuccess: isOwnersSuccess,
     } = useGetOwnersQuery({ course_id })
 
     const {
         data: tutorsData,
+        isLoading: isTutorsLoading,
         isSuccess: isTutorsSuccess,
     } = useGetTutorsQuery({ course_id })
 
     const {
         data: allUsers,
+        isLoading: isUsersLoading,
     } = useGetUsersQuery({})
 
     const {
@@ -152,6 +155,10 @@ const TeacherList = (props: any) => {
             })
     }
 
+    if (isUsersLoading || isTeachersLoading || isOwnersLoading || isTutorsLoading) {
+        return <></>
+    }
+
     return isOwnersSuccess ? (
         <div className="flex flex-wrap mt-6">
             {!isTeachersLoading && !isTeachersSuccess ?
@@ -227,7 +234,10 @@ const TeacherList = (props: any) => {
                 </div>
             </div>
         </div>
-    ) : null;
+    ) : (<>
+        <p className='text-danger'>There was an error while trying to display the teachers.</p>
+        <p>Try refreshing the page.</p>
+    </>);
 }
 
 export default TeacherList
