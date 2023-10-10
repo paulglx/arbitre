@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   pull_request:
-    branches: [ none ] #main, master
+    branches: [ main ] #main, master
 jobs:
   test:
     timeout-minutes: 60
@@ -22,64 +22,71 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        
+      keycloak:
+        image: quay.io/keycloak/keycloak
+        ports:
+           - 8080:8080
+        env:
+          KEYCLOAK_ADMIN: admin
+          KEYCLOAK_ADMIN_PASSWORD: admin
+
+
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-    - name: Install Django dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-      working-directory: backend
+      - name: Install Django dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        working-directory: backend
 
-    - name: Install Node dependencies
-      run: | 
-        npm install
-      working-directory: frontend
+      - name: Install Node dependencies
+        run: |
+          npm install
+        working-directory: frontend
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-      working-directory: frontend
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        working-directory: frontend
 
-    # - name: Run Django server in background
-    #   env:
-    #     DJANGO_ALLOW_ASYNC_UNSAFE: 1
-    #   run: python manage.py runserver &
-    #   working-directory: backend
+      - uses: iamsauravsharma/create-dotenv@v1.2.2
+        with:
+          env-prefix: "envkey_" # Optional (default: '')
+          file-name: ".env" # Optional (default : '.env')
+          directory: "backend/" # Optional (default: '.')
+        env: # env available for only this steps
+          IS_SERVER: true
+          envkey_DEBUG: false
+          envkey_USE_HTTPS: false
+          envkey_HOSTNAME: "localhost"
+          envkey_SECRET_KEY: "django-insecure-9p0it%1(1)sv%+s&bv0n@8330j*_)qm76ejwrzg(nea-m=v278"
+          envkey_DB_NAME: arbitre-test
+          envkey_DB_USER: test
+          envkey_DB_PASSWORD: test
+          envkey_DB_HOST: localhost
+          envkey_DB_PORT: ""
+          envkey_KEYCLOAK_URL: "http://localhost:8080"
+          envkey_KEYCLOAK_REALM_NAME: "master"
+          envkey_KEYCLOAK_ADMIN_USERNAME: "admin"
+          envkey_KEYCLOAK_ADMIN_PASSWORD: "admin"
+          envkey_OIDC_RP_CLIENT_ID: "arbitre"
 
-    - uses: iamsauravsharma/create-dotenv@v1.2.2
-      with:
-        env-prefix: 'envkey_' # Optional (default: '')
-        file-name: '.env' # Optional (default : '.env')
-        directory: 'backend/arbitre/' # Optional (default: '.')
-      env: # env available for only this steps
-        IS_SERVER: true
-        envkey_USE_HTTPS: false
-        envkey_DEBUG: false
-        envkey_HOSTNAME: "localhost"
-        envkey_SECRET_KEY: "django-insecure-9p0it%1(1)sv%+s&bv0n@8330j*_)qm76ejwrzg(nea-m=v278"
-        envkey_DB_NAME: arbitre-test
-        envkey_DB_USER: test
-        envkey_DB_PASSWORD: test
-        envkey_DB_HOST: localhost
-        envkey_DB_PORT: ''
+      - name: Run Django and Run Playwright tests
+        run: |
+          cd backend
+          python manage.py makemigrations >/dev/null
+          python manage.py migrate >/dev/null
+          python manage.py runserver & >/dev/null
+          cd ../frontend
+          npx playwright test
 
-    - name: Run Django and Run Playwright tests
-      run: |
-        cd backend
-        python manage.py makemigrations >/dev/null
-        python manage.py migrate >/dev/null
-        python manage.py runserver &
-        cd ../frontend
-        npx playwright test
-
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

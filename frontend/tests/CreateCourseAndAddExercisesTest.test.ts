@@ -1,18 +1,22 @@
+/* eslint-disable testing-library/prefer-screen-queries */
 import { expect, test } from '@playwright/test';
 
 test('Create Course and add Exercises', async ({ page }) => {
+    const teacher_username = 'testteacher';
+    const teacher_password = 'testteacher';
+    const student_username = 'teststudent';
 
     await test.step('login', async () => {
 
         // open the browser on the site
         await page.goto('/');
         // verify button is visible
-        await expect(page.locator('a.btn-light.btn.btn-primary')).toBeVisible();
+        await expect(page.getByTestId('login-button'), 'Keycloak should be available').toBeVisible();
         // click in button
-        await page.locator('a.btn-light.btn.btn-primary').click();
+        await page.getByTestId('login-button').click();
         // login
-        await page.locator('#username').fill('lilibeth');
-        await page.locator('#password').fill('Cesar//1973');
+        await page.locator('#username').fill(teacher_username);
+        await page.locator('#password').fill(teacher_password);
         await page.locator('#kc-login').click();
 
     });
@@ -22,49 +26,64 @@ test('Create Course and add Exercises', async ({ page }) => {
         // create a course
         await expect(page.locator('#create-course')).toBeVisible();
         await page.locator('#create-course').click();
-        await page.locator('input.form-control').fill('Introduction to python');
-        await page.locator('textarea.form-control').fill('This comprehensive Python programming course is designed to provide a solid foundation in Python programming concepts and techniques.');
-        await page.locator('button.btn.btn-primary').click();
+        await page.locator('#root').click();
+        await page.locator('#title-editable').click();
+        await page.locator('#title-input').fill('Introduction to python');
+        await page.locator('#description-editable').click();
+        await page.locator('#description-input').fill('This comprehensive Python programming course is designed to provide a solid foundation in Python programming concepts and techniques.');
+        await page.locator('#create-session-button').click();
 
+    });
+
+    await test.step('invite student', async () => {
+
+        // invite student
+        await expect(page.locator('#exercise-tab-students')).toBeVisible();
+        await page.locator('#exercise-tab-students').click();
+
+        await page.getByLabel('Search users').fill(student_username);
+        await page.getByLabel('Add student').click();
     });
 
     await test.step('create a session', async () => {
 
         // create a session
-        await expect(page.locator('ul li button:has-text("Sessions")')).toBeVisible();
-        await page.locator('ul li button:has-text("Sessions")').click();
-        await expect(page.locator('a#create-session-no-sessions.btn.btn-light.mb-3.border')).toBeVisible();
-        await page.locator('a#create-session-no-sessions.btn.btn-light.mb-3.border').click();
-        await page.locator('input.form-control').fill('Algorithm: Binary Search');
-        await page.locator('textarea.form-control').fill('Binary search is a commonly used searching algorithm that efficiently finds the position of a target element in a sorted array.');
-        await page.locator('button.btn.btn-primary').click();
+        await expect(page.locator('#exercise-tab-sessions')).toBeVisible();
+        await page.locator('#exercise-tab-sessions').click();
+
+        await expect(page.locator('#create-session-button')).toBeVisible();
+        await page.locator('#create-session-button').click();
+        await expect(page.locator('#title-editable')).toBeVisible();
+        await page.locator('#title-editable').click();
+        await page.locator('#title-input').fill('Algorithm: Binary Search');
+        await page.locator('#description-editable').click();
+        await page.locator('#description-input').fill('Binary search is a commonly used searching algorithm that efficiently finds the position of a target element in a sorted array.');
+        await page.locator('#create-exercise-button').click();
 
     });
 
     await test.step('create a exercises', async () => {
 
         // create a exercises
-        await expect(page.locator('ul li button:has-text("Exercises")')).toBeVisible();
-        await page.locator('ul li button#session-tabs-tab-exercises').click();
-        await expect(page.locator('a.btn.btn-light.mb-3.border')).toBeVisible();
-        await page.locator('a.btn.btn-light.mb-3.border').click();
-        await page.locator('input.form-control').fill('Linear Search');
-        await page.locator('textarea.form-control').fill('In this exercise, you are given a list of numbers and a target number. Your task is to implement a linear search algorithm to find if the target number exists in the list. The linear search algorithm sequentially checks each element in the list until the target number is found or the end of the list is reached.');
-        await page.locator('button.btn.btn-primary').click();
-
+        await expect(page.locator('#create-exercise-button')).toBeVisible();
+        await page.locator('#create-exercise-button').click();
+        await expect(page.locator('#title-editable')).toBeVisible();
+        await page.locator('#title-editable').click();
+        await page.locator('#title-input').fill('Linear Search');
+        await page.locator('#description-editable').click();
+        await page.locator('#description-input').fill('In this exercise, you are given a list of numbers and a target number. Your task is to implement a linear search algorithm to find if the target number exists in the list. The linear search algorithm sequentially checks each element in the list until the target number is found or the end of the list is reached.');
+        await page.locator('#create-test-button').click();
     });
 
     await test.step('create a test', async () => {
 
         // create a test
-        await expect(page.locator('ul li button:has-text("Test")')).toBeVisible();
-        await page.locator('ul li button#exercise-tabs-tab-tests').click();
-        await expect(page.locator('div#exercise-tabs-tabpane-tests button')).toBeVisible();
-        await page.locator('div#exercise-tabs-tabpane-tests button').click();
-        await expect(page.locator('div.col-md-3')).toBeVisible();
-        await page.locator('div.col-md-3').click();
-        await expect(page.locator('input.form-control').nth(0)).toBeVisible();
-        await page.locator('input.form-control').nth(0).fill('Test 1');
+        await expect(page.locator('#create-test-button')).toBeVisible();
+        await page.locator('#create-test-button').click();
+
+        await expect(page.getByLabel('Test name').nth(0)).toBeVisible();
+        await page.locator('.test-name-input-wrapper').nth(0).click();
+        await page.getByLabel('Test name').nth(0).fill('Test 1');
         await expect(page.locator('textarea.form-control').nth(0)).toBeVisible();
 
         await page.locator('textarea.form-control').nth(0).type('5,2,8,10,3');
@@ -73,47 +92,31 @@ test('Create Course and add Exercises', async ({ page }) => {
 
         await expect(page.locator('textarea.form-control').nth(1)).toBeVisible();
         await page.locator('textarea.form-control').nth(1).fill('True');
-        await expect(page.locator('div.fade.tab-pane.active.show')).toBeVisible();
-        await page.locator('div.fade.tab-pane.active.show').click();
+        await page.locator('.test-name-input-wrapper').nth(0).click();
 
     });
 
     await test.step('create runtime', async () => {
 
         // create runtime
-        await expect(page.locator('button#exercise-tabs-tab-runtime')).toBeVisible();
-        await page.locator('button#exercise-tabs-tab-runtime').click();
+        await expect(page.locator('#exercise-tab-runtime')).toBeVisible();
+        await page.locator('#exercise-tab-runtime').click();
         await expect(page.locator('div.view-lines.monaco-mouse-cursor-text').nth(1)).toBeVisible();
         await page.locator('div.view-lines.monaco-mouse-cursor-text').nth(1).click();
         await page.type('div.view-lines.monaco-mouse-cursor-text', 'list_str = input().split(",")\nlist_int = [int(num) for num in list_str]\ntarget_number = int(input())\nprint(search_number(list_int, target_number),end="")');
-        await expect(page.locator('button.btn.btn-primary.btn-sm').nth(0)).toBeVisible();
-        await page.locator('button.btn.btn-primary.btn-sm').nth(0).click();
+        await page.locator('#exercise-tab-runtime').click();
 
     });
 
     await test.step('create submission', async () => {
 
         // create submission
-        await expect(page.locator('button#exercise-tabs-tab-submission')).toBeVisible();
-        await page.locator('button#exercise-tabs-tab-submission').click();
-        await expect(page.locator('input#formFile')).toBeVisible();
-        await page.setInputFiles('input#formFile', './tests/test-files/sol_search_number.py');
-        await expect(page.locator('button.btn.btn-primary:has-text("Submit")')).toBeVisible();
-        await page.locator('button.btn.btn-primary:has-text("Submit")').click();
+        await expect(page.locator('#exercise-tab-submission')).toBeVisible();
+        await page.locator('#exercise-tab-submission').click();
+        await expect(page.locator('#exercise-submission-input')).toBeVisible();
+        await page.setInputFiles('#exercise-submission-input', './tests/test-files/sol_search_number.py');
+        await expect(page.locator('#exercise-submission-button')).toBeVisible();
+        await page.locator('#exercise-submission-button').click();
 
     });
-    /*await test.step('delete course', async () => {
-
-                // go back to course
-                await expect(page.locator('ol.breadcrumb li a').nth(1)).toBeVisible();
-                await page.locator('ol.breadcrumb li a').nth(1).click();
-        
-                // delete course
-                await expect(page.locator('button#delete-button')).toBeVisible();
-                await page.locator('button#delete-button').click();
-                await expect(page.locator('button#confirm-delete')).toBeVisible();
-                await page.locator('button#confirm-delete').click();
-
-    }); 
-    */
 });
