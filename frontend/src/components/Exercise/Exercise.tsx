@@ -34,6 +34,7 @@ const Exercise = () => {
 
     const {
         data: exercise,
+        isLoading: exerciseIsLoading,
         isSuccess: exerciseIsSuccess,
     } = useGetExerciseQuery({ id: exercise_id });
 
@@ -130,6 +131,12 @@ const Exercise = () => {
             content: <ExerciseSubmissionTab exercise={exercise} />,
         },
     ];
+
+    if (exerciseIsLoading) {
+        return (<>
+            <Header />
+        </>)
+    }
 
     return exerciseIsSuccess ? (<>
 
