@@ -1,5 +1,3 @@
-import '../../login-register.css'
-
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { pushNotification } from '../../features/notification/notificationSlice'
