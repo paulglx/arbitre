@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
+import CSELoading from '../Common/CSELoading';
 import DashboardResultsTable from "../Dashboard/DashboardResultsTable";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
@@ -123,9 +124,7 @@ const Session = () => {
     ];
 
     return sessionIsLoading ? (
-        <>
-            <Header />
-        </>
+        <CSELoading />
     ) : (
         <>
             <Header />

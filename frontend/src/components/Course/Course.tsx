@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
+import CSELoading from '../Common/CSELoading';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import Grading from './Grading/Grading';
@@ -210,11 +211,7 @@ const Course = () => {
         },
     ];
 
-    if (courseIsLoading) return (<>
-        <Header />
-
-        <br />
-    </>);
+    if (courseIsLoading) return (<CSELoading />);
 
     //Main content
     return courseIsSuccess ? (
