@@ -74,11 +74,12 @@ const ExerciseContent = (props: any) => {
     }
     else if (exercisesIsSuccess && exercises.length === 0) {
         return (
-            <ul className="border border-gray-300 rounded-md flex justify-center">
+            <ul className="border bg-gray-50 rounded-lg flex justify-center">
                 <li id="no-sessions-warning" className="text-muted text-center border-dashed flex flex-col items-center">
                     <br />
-                    <p>This course doesn't have any sessions.</p>
+                    <p>This session doesn't have any exercises yet.</p>
                     <CreateExerciseButton />
+                    <br />
                 </li>
             </ul>
         )
