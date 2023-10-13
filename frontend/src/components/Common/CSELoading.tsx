@@ -40,9 +40,6 @@ const DummyDescription = () => {
 const CSELoading = (props: any) => {
 
     return (<>
-        <Header />
-
-        <br />
 
         <div className="container mx-auto animate-pulse select-none">
 

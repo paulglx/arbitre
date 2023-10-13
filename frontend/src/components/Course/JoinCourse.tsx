@@ -108,9 +108,6 @@ const JoinCourse = (props: any) => {
 
     return (
         <>
-            <Header />
-
-            <br />
             <br />
 
             <div className="container mx-auto">

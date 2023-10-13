@@ -74,16 +74,11 @@ const Courses = () => {
     };
 
     if (coursesIsLoading) {
-        return (<>
-            <Header />
-        </>)
+        return (<></>)
     }
 
     return coursesIsSuccess ? (
         <>
-            <Header />
-
-            <br />
             <br />
 
             <div className="container mx-auto h-screen">

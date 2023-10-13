@@ -216,9 +216,6 @@ const Course = () => {
     //Main content
     return courseIsSuccess ? (
         <>
-            <Header />
-
-            <br />
 
             <div className="container mx-auto">
 

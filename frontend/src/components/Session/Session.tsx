@@ -127,9 +127,6 @@ const Session = () => {
         <CSELoading />
     ) : (
         <>
-            <Header />
-
-            <br />
 
             <div className="container mx-auto">
 

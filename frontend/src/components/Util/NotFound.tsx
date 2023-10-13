@@ -7,9 +7,6 @@ const NotFound = () => {
 	const navigate = useNavigate();
 
 	return (<>
-
-		<Header />
-
 		<div className="bg-white flex items-center justify-center h-screen w-screen">
 			<div>
 				<span className="text-sm font-medium text-blue-600 border border-blue-200 p-1 py-0.5 rounded-md bg-blue-50">404 error</span>

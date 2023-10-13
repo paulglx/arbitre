@@ -139,10 +139,6 @@ const Exercise = () => {
 
     return exerciseIsSuccess ? (<>
 
-        <Header />
-
-        <br />
-
         <div className="container mx-auto">
 
             <Breadcrumb items={[

@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
+import { Header } from "../../Common";
 import { selectCurrentKeycloakToken } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
@@ -23,7 +24,11 @@ const RequireAuth = () => {
 
     return initialized ? (
         keycloakToken
-            ? <Outlet />
+            ? <>
+                <Header />
+                <br />
+                <Outlet />
+            </>
             : <Navigate to="/" state={{ from: location }} replace />
     ) : (<></>)
 }
