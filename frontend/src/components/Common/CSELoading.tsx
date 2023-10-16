@@ -1,5 +1,3 @@
-import Header from './Header'
-
 const DummyBreadcrumb = () => {
     return (<>
         <div className="hidden md:flex py-3 mt-2 md:mt-6 w-full text-gray-700 rounded-lg" aria-label="Breadcrumb">
@@ -37,7 +35,7 @@ const DummyDescription = () => {
     </>)
 }
 
-const CSELoading = (props: any) => {
+const CSELoading = () => {
 
     return (<>
 

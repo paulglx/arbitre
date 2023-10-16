@@ -11,7 +11,6 @@ import EditableTitle from "../Common/EditableContent/EditableTitle";
 import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
-import Header from "../Common/Header";
 import NotFound from "../Util/NotFound";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";

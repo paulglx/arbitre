@@ -4,7 +4,6 @@ import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlic
 import { useDispatch, useSelector } from "react-redux";
 
 import Error from '../Util/Error';
-import Header from '../Common/Header'
 import Markdown from '../Util/Markdown';
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'

@@ -1,5 +1,5 @@
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
-import { Header, Modal, Tabs } from "../Common/";
+import { Modal, Tabs } from "../Common/";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
