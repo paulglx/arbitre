@@ -1,0 +1,57 @@
+# Arbitre deployment with Ansible
+# Create a file named `inventory.yaml` with the following content:
+#
+# ---
+# prod:
+#  hosts:
+#    nixos:
+#      ansible_host: [ARBITRE SERVER IP]
+#      ansible_user: [SUDOER USERNAME]
+#      ansible_ssh_pass: [PASSWORD]
+
+---
+- name: Deploy Arbitre to production server
+  hosts: prod
+  become: true
+  become_user: paul
+  tasks:
+    - name: Execute git pull in /srv/arbitre directory
+      ansible.builtin.git:
+        repo: https://github.com/paulglx/arbitre.git
+        dest: /srv/arbitre
+        version: main
+      register: git_pull
+
+    - name: Install npm packages
+      community.general.npm:
+        path: /srv/arbitre/frontend
+        state: present
+      when: git_pull.changed # noqa: no-handler
+
+    - name: Build frontend
+      ansible.builtin.command: npm run build
+      args:
+        chdir: /srv/arbitre/frontend
+      when: git_pull.changed # noqa: no-handler
+
+    - name: Make migrations and migrate database
+      ansible.builtin.shell: |
+        cd /srv/arbitre
+        export NIXPKGS_ALLOW_BROKEN=1
+        nix develop --impure --command bash -c "cd backend 11 python manage.py migrate"
+        nix develop --impure --command bash -c "cd backend && python manage.py collectstatic --noinput"
+      when: git_pull.changed # noqa: no-handler
+
+    - name: Restart services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      become: true
+      with_items:
+        - daphne
+        - celery
+        - celerybeat
+        - nginx
+        - keycloak
+      when: git_pull.changed # noqa: no-handler
