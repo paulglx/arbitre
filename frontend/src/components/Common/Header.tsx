@@ -23,9 +23,9 @@ const Header = () => {
     return (
         <header className="bg-gray-50 border-b border-gray-200">
             <div className="container mx-auto flex py-2 flex-wrap md:p-2 md:px-6 lg:px-14 xl:px-20 2xl:px-28 flex-row items-center">
-                <a className="font-black items-center text-gray-800 mb-0" href="/course">
+                <Link className="font-black items-center text-gray-800 mb-0" to="/course">
                     <span className="ml-3 text-xl">ARBITRE</span>
-                </a>
+                </Link>
                 <nav className="mr-auto ml-0 md:ml-4 py-1 pl-4 md:border-l md:border-gray-800 flex flex-wrap items-center text-base justify-center">
                     <Link to="/course" className="mr-5 text-gray-800 hover:text-gray-800">
                         Courses
