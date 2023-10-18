@@ -1,5 +1,3 @@
-import Header from "../Common/Header"
-
 const Error = (props: any) => {
 
     const isError = props.isError
