@@ -8,6 +8,8 @@ import { useDispatch } from 'react-redux';
 
 const ExerciseTestsTab = (props: any) => {
 
+    const NEW_TEST_NAME = "New Test";
+
     const { exerciseIsSuccess, isOwner, exercise_id } = props
 
     const [createTest] = useCreateTestMutation();
@@ -84,28 +86,24 @@ const ExerciseTestsTab = (props: any) => {
     const handleDeleteConfirmation = async () => {
         const test = tests.filter((t: any) => t.id === editTestId)[0];
         if (!test?.new) {
-            try {
-                await deleteTest({ id: editTestId })
-                    .unwrap()
-                    .then(() => {
-                        dispatch(pushNotification({
-                            message: "Test deleted successfully",
-                            type: "success",
-                        }));
-                    })
-                    .catch((error) => {
-                        dispatch(pushNotification({
-                            message: "There was an error deleting the test",
-                            type: "error",
-                        }));
-                    });
-                setTests(tests.filter((t: any) => t.id !== editTestId));
-            } catch (error) {
-                console.log(error);
-            }
+            await deleteTest({ id: editTestId })
+                .unwrap()
+                .then(() => {
+                    dispatch(pushNotification({
+                        message: "Test deleted successfully",
+                        type: "success",
+                    }));
+                })
+                .catch((error) => {
+                    dispatch(pushNotification({
+                        message: "There was an error deleting the test",
+                        type: "error",
+                    }));
+                });
         }
         setShowModal(false);
-    };
+        setTests(tests.filter((t: any) => t.id !== editTestId));
+    }
 
     return (
         <div className='pb-3'>
@@ -130,7 +128,7 @@ const ExerciseTestsTab = (props: any) => {
                                                     return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
                                                 })
                                                 .join("");
-                                            setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                            setTests([...tests, { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true }]);
                                         }}
                                     >
                                         <PlusIcon className="mr-2 w-6 h-6" />
@@ -228,7 +226,7 @@ const ExerciseTestsTab = (props: any) => {
                                     </button>
                                     <button
                                         className="font-medium focus:outline-none text-red-500 border border-red-500 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-all duration-300 flex items-center"
-                                        onClick={() => setShowModal(true)}
+                                        onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation()}
                                     >
                                         <TrashIcon className="w-4 h-4" />
                                         <span className='ml-2'>Delete</span>
