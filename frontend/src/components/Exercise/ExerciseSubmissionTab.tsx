@@ -34,8 +34,7 @@ const ExerciseSubmissionTab = (props: any) => {
 
         await createSubmission(formData).unwrap()
 
-        // refresh page
-        window.location.reload(); //TODO update state instead
+        window.location.reload();
     }
 
     return (<>

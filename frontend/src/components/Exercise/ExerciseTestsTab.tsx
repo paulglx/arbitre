@@ -16,7 +16,6 @@ const ExerciseTestsTab = (props: any) => {
     const [deleteTest] = useDeleteTestMutation();
     const [editTest, setEditTest] = useState(false);
     const [editTestId, setEditTestId] = useState(null);
-    const [hoveredTestId, setHoveredTestId] = useState(-1);
     const [showModal, setShowModal] = useState(false);
     const [tests, setTests] = useState([] as any[]);
     const [updateTest] = useUpdateTestMutation();
@@ -150,8 +149,12 @@ const ExerciseTestsTab = (props: any) => {
                                 isOwner && setEditTestId(test?.id);
                                 setEditTest(true);
                             }}
-                            onMouseEnter={() => { isOwner && setHoveredTestId(test?.id); }}
-                            onMouseLeave={() => { isOwner && setHoveredTestId(-1); }}
+                            onBlur={(e: any) => {
+                                if (!e.currentTarget.contains(e.relatedTarget)) {
+                                    isOwner && setEditTestId(null);
+                                    setEditTest(false);
+                                }
+                            }}
                         >
                             <div className={`flex flex-col w-full gap-2 ${editTest && editTestId === test.id ? "border-blue-600" : "border-gray-200"} border-l-2 border-gray-200 pl-4`}>
                                 <div className='w-full flex items-center'>
@@ -162,7 +165,7 @@ const ExerciseTestsTab = (props: any) => {
                                         aria-label="Test name"
                                         value={test?.name}
                                         autoComplete="off"
-                                        className={`w-full rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
+                                        className={`w-full rounded-lg p-2 text-gray-700 border focus:outline-none focus:border-blue-500`}
                                         onChange={(e) => {
                                             isOwner && setTests(
                                                 tests.map((t) =>
@@ -197,7 +200,7 @@ const ExerciseTestsTab = (props: any) => {
                                 <div className="w-full flex items-center">
                                     <span className="pr-3 py-2 rounded-l-lg">Output</span>
                                     <textarea
-                                        className="w-full border rounded-lg form-control focus:outline-none focus:ring-0 h-10 p-2 font-mono"
+                                        className="border rounded-lg w-full form-control focus:outline-none focus:border-blue-500 h-10 p-2 font-mono"
                                         placeholder="Expected output"
                                         rows={1}
                                         aria-label="Output"
@@ -235,7 +238,7 @@ const ExerciseTestsTab = (props: any) => {
                             </div>
 
                             <div className="md:col-auto">
-                                {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
+                                {editTest && editTestId === test?.id ? (
                                     <>
                                         {showModal && (
                                             <Modal
