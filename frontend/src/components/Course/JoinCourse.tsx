@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
-import Header from '../Common/Header'
 import { Link } from "react-router-dom";
 import { pushNotification } from '../../features/notification/notificationSlice';
 import useDigitInput from 'react-digit-input';
@@ -108,9 +107,6 @@ const JoinCourse = (props: any) => {
 
     return (
         <>
-            <Header />
-
-            <br />
             <br />
 
             <div className="container mx-auto">

@@ -2,10 +2,10 @@ import { CommandLineIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/2
 import { useEffect, useState } from 'react';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../../features/submission/submissionApiSlice'
 
+import GradeBadge from '../../Util/GradeBadge';
 import StatusBadge from '../../Util/StatusBadge';
 import TestResultCodePreviewModal from './TestResultCodePreviewModal';
 import TestResultTimeBadge from './TestResultTimeBadge';
-import GradeBadge from '../../Util/GradeBadge';
 
 const TestResult = (props: any) => {
 
@@ -17,12 +17,14 @@ const TestResult = (props: any) => {
 
     const {
         data: testResults,
+        isLoading: testResultsIsLoading,
     } = useGetSubmissionTestResultsQuery({ exercise_id: exercise_id, user_id: user_id }, {
         pollingInterval: skipQueries || document.hidden ? 0 : 1000
     });
 
     const {
         data: submissionData,
+        isLoading: submissionIsLoading,
     } = useGetSubmissionByExerciseAndUserQuery({ exercise_id: exercise_id, user_id: user_id }, {
         pollingInterval: skipQueries || document.hidden ? 0 : 1000,
     });
@@ -79,13 +81,6 @@ const TestResult = (props: any) => {
         }
     }
 
-    if (!submissionData || !testResults) {
-        return <>
-            <p className='text-danger'>There was an error while trying to display the test results.</p>
-            <p>Try submitting the file again.</p>
-        </>
-    }
-
     const TimeBadge = (props: any) => {
 
         const time = props.time
@@ -109,6 +104,17 @@ const TestResult = (props: any) => {
             default:
                 return "bg-gray-50"
         }
+    }
+
+    if (submissionIsLoading || testResultsIsLoading) {
+        return (<></>)
+    }
+
+    if (!submissionData || !testResults) {
+        return <>
+            <p className='text-danger'>There was an error while trying to display the test results.</p>
+            <p>Try submitting the file again.</p>
+        </>
     }
 
     return (submissionData && submissionData.length > 0) ? (<>

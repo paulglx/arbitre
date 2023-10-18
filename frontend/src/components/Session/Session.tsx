@@ -1,11 +1,12 @@
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
-import { Header, Modal, Tabs } from "../Common/";
+import { Modal, Tabs } from "../Common/";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
+import CSELoading from '../Common/CSELoading';
 import DashboardResultsTable from "../Dashboard/DashboardResultsTable";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
@@ -123,12 +124,9 @@ const Session = () => {
     ];
 
     return sessionIsLoading ? (
-        <></>
+        <CSELoading />
     ) : (
         <>
-            <Header />
-
-            <br />
 
             <div className="container mx-auto">
 

@@ -16,12 +16,12 @@ const Grading = (props: any) => {
     const tutorsUsernames = course?.tutors?.map((tutor: any) => tutor.username);
     const isTutor = tutorsUsernames?.includes(username);
 
-
     const [showHelp, setShowHelp] = useState(false);
 
     const {
         data: sessions,
         isSuccess: sessionsIsSuccess,
+        isLoading: sessionsIsLoading,
     } = useGetSessionsOfCourseQuery({ course_id: course?.id })
 
     const sortedSessions = useMemo(() => {
@@ -38,6 +38,10 @@ const Grading = (props: any) => {
     const toggleHelp = () => {
         setShowHelp(!showHelp);
     };
+
+    if (sessionsIsLoading) {
+        return null;
+    }
 
     return (<>
         {isTutor ? (

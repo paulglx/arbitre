@@ -1,30 +1,24 @@
-# Installing Arbitre
+# Arbitre Configuration Tools
 
-_Arbitre has been tested on Ubuntu Server 22.04.1_
+## Deploying Arbitre
 
-## Ansible Playbook
+Add your prod server to the inventory file
 
-### Setup your host servers
-
-In the config directory, create an `inventory.yaml` file containing the host servers
-
-Example :
 ```yaml
-group:
+prod:
   hosts:
-    server01:
-      ansible_host: 192.0.2.50
-    server02:
-      ansible_host: 192.0.2.51
-      #...
+    nixos:
+      ansible_host: [ARBITRE SERVER IP]
+      ansible_user: [SUDOER USERNAME]
+      ansible_ssh_pass: [PASSWORD]
 ```
 
-### Run Playbook
+Run the playbook
 
 ```bash
-ansible-playbook playbook.yaml -i inventory.yaml -u <username> -K
+ansible-playbook deploy.yaml -i inventory.yaml 
 ```
 
-This command will run the playbook on the servers, logging in as \<username\> and prompting for the corresponding password.
+## Installing Camisole
 
-All of the requirements will be installed on the servers.
+There is a playbook, `install-camisole.yaml`,  that was used to install camisole on a Ubuntu 22.02 server. It is **deprecated** and kept for reference only.

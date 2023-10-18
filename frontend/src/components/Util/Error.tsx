@@ -1,5 +1,3 @@
-import Header from "../Common/Header"
-
 const Error = (props: any) => {
 
     const isError = props.isError
@@ -17,8 +15,6 @@ const Error = (props: any) => {
     }
 
     return isError && error ? (<>
-
-        <Header />
 
         <div className="container mx-auto items-center p-3 mt-6 w-1/2 bg-red-50 border border-red-200 rounded-lg">
             <span className="font-bold">Error</span>

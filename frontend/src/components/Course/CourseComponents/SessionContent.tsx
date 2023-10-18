@@ -80,6 +80,7 @@ const SessionContent = (props: any) => {
                     <br />
                     <p>This course doesn't have any sessions yet.</p>
                     <CreateSessionButton />
+                    <br />
                 </li>
             </ul>
         )

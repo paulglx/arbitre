@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import DashboardGroupsPicker from './DashboardGroupsPicker'
 import DashboardResultsTable from './DashboardResultsTable'
 import DashboardSessionPicker from './DashboardSessionPicker'
-import Header from '../Common/Header'
 import NotFound from '../Util/NotFound'
 import { selectIsTeacher } from '../../features/auth/authSlice'
 import { useGetCoursesSessionsExercisesQuery } from '../../features/courses/courseApiSlice'
@@ -80,9 +79,6 @@ const Dashboard = () => {
 
     return isTeacher ? (<>
 
-        <Header />
-
-        <br />
         <br />
 
         <div className="container mx-auto">

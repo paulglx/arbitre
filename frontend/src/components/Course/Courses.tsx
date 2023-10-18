@@ -4,7 +4,6 @@ import { selectCurrentUser, selectIsTeacher } from '../../features/auth/authSlic
 import { useDispatch, useSelector } from "react-redux";
 
 import Error from '../Util/Error';
-import Header from '../Common/Header'
 import Markdown from '../Util/Markdown';
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useCreateCourseMutation } from '../../features/courses/courseApiSlice'
@@ -19,6 +18,7 @@ const Courses = () => {
     const {
         data: courses,
         isSuccess: coursesIsSuccess,
+        isLoading: coursesIsLoading,
         isError: coursesIsError,
         error: coursesError
     } = useGetAllCoursesQuery({});
@@ -72,12 +72,12 @@ const Courses = () => {
         ) : null;
     };
 
+    if (coursesIsLoading) {
+        return (<></>)
+    }
 
     return coursesIsSuccess ? (
         <>
-            <Header />
-
-            <br />
             <br />
 
             <div className="container mx-auto h-screen">

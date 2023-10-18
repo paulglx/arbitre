@@ -1,22 +1,26 @@
-import { ExclamationTriangleIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { ExclamationTriangleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid'
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
 import { useEffect, useState } from 'react'
 
 import { Modal } from "../Common";
+import { pushNotification } from '../../features/notification/notificationSlice';
+import { useDispatch } from 'react-redux';
 
 const ExerciseTestsTab = (props: any) => {
 
+    const NEW_TEST_NAME = "New Test";
+
     const { exerciseIsSuccess, isOwner, exercise_id } = props
 
-    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
-    const [tests, setTests] = useState([] as any[]);
+    const [createTest] = useCreateTestMutation();
+    const [deleteTest] = useDeleteTestMutation();
     const [editTest, setEditTest] = useState(false);
     const [editTestId, setEditTestId] = useState(null);
-    const [hoveredTestId, setHoveredTestId] = useState(-1);
-    const [createTest] = useCreateTestMutation();
-    const [updateTest] = useUpdateTestMutation();
-    const [deleteTest] = useDeleteTestMutation();
     const [showModal, setShowModal] = useState(false);
+    const [tests, setTests] = useState([] as any[]);
+    const [updateTest] = useUpdateTestMutation();
+    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
+    const dispatch = useDispatch();
 
     const {
         data: testsResponse,
@@ -38,6 +42,19 @@ const ExerciseTestsTab = (props: any) => {
                 stdin: test.stdin,
                 stdout: test.stdout,
             })
+                .unwrap()
+                .then(() => {
+                    dispatch(pushNotification({
+                        message: "Test created successfully",
+                        type: "success",
+                    }));
+                })
+                .catch((error) => {
+                    dispatch(pushNotification({
+                        message: "There was an error creating the test",
+                        type: "error",
+                    }));
+                });
             // set test as not new
             setTests(tests.map((t: any) => t.id === testId ? { ...t, new: false } : t))
         } else {
@@ -48,26 +65,43 @@ const ExerciseTestsTab = (props: any) => {
                 stdin: test.stdin,
                 stdout: test.stdout
             })
+                .unwrap()
+                .then(() => {
+                    dispatch(pushNotification({
+                        title: "Success",
+                        message: "Test updated successfully",
+                        type: "success",
+                    }));
+                })
+                .catch((error) => {
+                    dispatch(pushNotification({
+                        message: "There was an error updating the test",
+                        type: "error",
+                    }));
+                });
         }
     }
 
     const handleDeleteConfirmation = async () => {
-        try {
-            await deleteTest({ id: editTestId });
-            setTests(tests.filter((t: any) => t.id !== editTestId));
-        } catch (error) {
-            console.log(error);
+        const test = tests.filter((t: any) => t.id === editTestId)[0];
+        if (!test?.new) {
+            await deleteTest({ id: editTestId })
+                .unwrap()
+                .then(() => {
+                    dispatch(pushNotification({
+                        message: "Test deleted successfully",
+                        type: "success",
+                    }));
+                })
+                .catch((error) => {
+                    dispatch(pushNotification({
+                        message: "There was an error deleting the test",
+                        type: "error",
+                    }));
+                });
         }
         setShowModal(false);
-    };
-
-
-    //Prevent blurring test div when focusing one of its inputs
-    const handleTestBlur = (e: any) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-            setEditTest(false);
-            handleCreateOrUpdateTest(editTestId);
-        }
+        setTests(tests.filter((t: any) => t.id !== editTestId));
     }
 
     return (
@@ -76,7 +110,7 @@ const ExerciseTestsTab = (props: any) => {
                 <>
                     {tests.length > 0 ? (
                         <h6 className="text-sm px-1 mb-1 text-gray-500">
-                            {isOwner ? "Click test to edit" : "Tests can be edited by owners"}
+                            {isOwner ? "" : "Tests can only be edited by owners"}
                         </h6>
                     ) : (
                         <div className="bg-gray-50 border shadow p-6 md:p-2 flex justify-center items-center flex-col rounded-lg">
@@ -93,10 +127,10 @@ const ExerciseTestsTab = (props: any) => {
                                                     return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
                                                 })
                                                 .join("");
-                                            setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                            setTests([...tests, { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true }]);
                                         }}
                                     >
-                                        <PlusCircleIcon className="mr-2 w-6 h-6" />
+                                        <PlusIcon className="mr-2 w-6 h-6" />
                                         Create test
                                     </button>
                                 </div>
@@ -109,37 +143,43 @@ const ExerciseTestsTab = (props: any) => {
                     {tests.map((test) => (
                         <div
                             key={test?.id}
-                            className={`mb-2 w-full`}
+                            className={`mb-6 w-full`}
                             tabIndex={0}
                             onFocus={() => {
                                 isOwner && setEditTestId(test?.id);
                                 setEditTest(true);
                             }}
-                            onBlur={(e) => { isOwner && handleTestBlur(e); }}
-                            onMouseEnter={() => { isOwner && setHoveredTestId(test?.id); }}
-                            onMouseLeave={() => { isOwner && setHoveredTestId(-1); }}
+                            onBlur={(e: any) => {
+                                if (!e.currentTarget.contains(e.relatedTarget)) {
+                                    isOwner && setEditTestId(null);
+                                    setEditTest(false);
+                                }
+                            }}
                         >
-                            <div className="flex items-center w-full gap-2 flex-col md:flex-row">
-                                <input
-                                    type="text"
-                                    placeholder="Test name"
-                                    aria-label="Test name"
-                                    value={test?.name}
-                                    autoComplete="off"
-                                    className={`w-full md:w-1/2 rounded-lg py-2 px-3 text-gray-700 border focus:outline-none focus:border-blue-500`}
-                                    onChange={(e) => {
-                                        isOwner && setTests(
-                                            tests.map((t) =>
-                                                t.id === test?.id ? { ...t, name: e.target.value } : t
-                                            ));
-                                    }}
-                                    {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                />
+                            <div className={`flex flex-col w-full gap-2 ${editTest && editTestId === test.id ? "border-blue-600" : "border-gray-200"} border-l-2 border-gray-200 pl-4`}>
+                                <div className='w-full flex items-center'>
+                                    <span className='pr-3 py-2'>Title</span>
+                                    <input
+                                        type="text"
+                                        placeholder="Test name"
+                                        aria-label="Test name"
+                                        value={test?.name}
+                                        autoComplete="off"
+                                        className={`w-full rounded-lg p-2 text-gray-700 border focus:outline-none focus:border-blue-500`}
+                                        onChange={(e) => {
+                                            isOwner && setTests(
+                                                tests.map((t) =>
+                                                    t.id === test?.id ? { ...t, name: e.target.value } : t
+                                                ));
+                                        }}
+                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                                    />
+                                </div>
 
-                                <div className="md:w-1/4 w-full flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
-                                    <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Input</span>
+                                <div className="w-full flex items-center">
+                                    <span className="pr-3 py-2 rounded-l-lg">Input</span>
                                     <textarea
-                                        className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:border-blue-500 ml-2 md:ml-4 bg-white h-10 p-2"
+                                        className="border rounded-lg w-full form-control focus:outline-none focus:border-blue-500 h-10 p-2 font-mono"
                                         placeholder="Input to test for"
                                         rows={1}
                                         aria-label="Input"
@@ -157,10 +197,10 @@ const ExerciseTestsTab = (props: any) => {
                                     />
                                 </div>
 
-                                <div className="md:w-1/4 w-full flex items-center md:ml-1 border rounded-lg border-gray-300 bg-gray-200">
-                                    <span className="bg-gray-200 px-3 py-2 rounded-l-lg">Output</span>
+                                <div className="w-full flex items-center">
+                                    <span className="pr-3 py-2 rounded-l-lg">Output</span>
                                     <textarea
-                                        className="w-full form-control border-0 rounded-r-lg focus:outline-none focus:ring-0 ml-2 md:ml-4 bg-white h-10 p-2"
+                                        className="border rounded-lg w-full form-control focus:outline-none focus:border-blue-500 h-10 p-2 font-mono"
                                         placeholder="Expected output"
                                         rows={1}
                                         aria-label="Output"
@@ -176,19 +216,29 @@ const ExerciseTestsTab = (props: any) => {
                                         {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
                                     />
                                 </div>
-                                <div className="inline-flex justify-end">
+                                <div className="inline-flex justify-start gap-2">
                                     <button
-                                        className="font-medium focus:outline-none bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2 md:py-3 mb-2 md:mb-0 transition-all duration-300 flex items-center"
-                                        onClick={() => setShowModal(true)}
+                                        className="font-medium focus:outline-none text-blue-500 border border-blue-500 hover:bg-blue-50 rounded-lg px-3 py-1.5 transition-all duration-300 flex items-center"
+                                        onClick={() => {
+                                            handleCreateOrUpdateTest(test?.id);
+                                            setEditTest(false);
+                                        }}
                                     >
                                         <TrashIcon className="w-4 h-4" />
-                                        <span className='md:hidden block ml-2'>Delete</span>
+                                        <span className='ml-2'>Save</span>
+                                    </button>
+                                    <button
+                                        className="font-medium focus:outline-none text-red-500 border border-red-500 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-all duration-300 flex items-center"
+                                        onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation()}
+                                    >
+                                        <TrashIcon className="w-4 h-4" />
+                                        <span className='ml-2'>Delete</span>
                                     </button>
                                 </div>
                             </div>
 
                             <div className="md:col-auto">
-                                {(editTest && editTestId === test?.id) || hoveredTestId === test?.id ? (
+                                {editTest && editTestId === test?.id ? (
                                     <>
                                         {showModal && (
                                             <Modal
@@ -206,9 +256,9 @@ const ExerciseTestsTab = (props: any) => {
                         </div>
                     ))}
                     {isOwner && tests.length > 0 && (
-                        <div className="flex justify-center mt-6 md:mt-2">
+                        <div className="flex justify-center mt-6">
                             <button
-                                className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                className="w-full inline-flex items-center text-primary text-sm border bg-gray-50 hover:bg-gray-100 font-semibold py-2 px-2 rounded-lg focus:outline-none focus:shadow-outline"
                                 onClick={(e) => {
                                     const randomId = Array(16)
                                         .join()
@@ -218,9 +268,11 @@ const ExerciseTestsTab = (props: any) => {
                                         })
                                         .join("");
                                     setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                    setEditTestId(randomId as any);
+                                    setEditTest(true);
                                 }}
                             >
-                                <PlusCircleIcon className="mr-2 w-6 h-6" />
+                                <PlusIcon className="mr-2 w-4 h-4" />
                                 Add test
                             </button>
                         </div>

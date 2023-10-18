@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from "../Common/Breadcrumb";
+import CSELoading from "../Common/CSELoading";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from "../Common/EditableContent/EditableTitle";
 import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
-import Header from "../Common/Header";
 import NotFound from "../Util/NotFound";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
@@ -34,6 +34,7 @@ const Exercise = () => {
 
     const {
         data: exercise,
+        isLoading: exerciseIsLoading,
         isSuccess: exerciseIsSuccess,
     } = useGetExerciseQuery({ id: exercise_id });
 
@@ -131,11 +132,11 @@ const Exercise = () => {
         },
     ];
 
+    if (exerciseIsLoading) {
+        return (<CSELoading />)
+    }
+
     return exerciseIsSuccess ? (<>
-
-        <Header />
-
-        <br />
 
         <div className="container mx-auto">
 

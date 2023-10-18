@@ -1,11 +1,12 @@
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
-import { Header, Modal, Select, Tabs } from "../Common";
+import { Modal, Select, Tabs } from "../Common";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../../features/courses/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
+import CSELoading from '../Common/CSELoading';
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import Grading from './Grading/Grading';
@@ -59,6 +60,7 @@ const Course = () => {
     const {
         data: courseData,
         isSuccess: courseIsSuccess,
+        isLoading: courseIsLoading,
         isError: courseIsError,
     } = useGetCourseQuery({ id });
 
@@ -209,12 +211,11 @@ const Course = () => {
         },
     ];
 
+    if (courseIsLoading) return (<CSELoading />);
+
     //Main content
     return courseIsSuccess ? (
         <>
-            <Header />
-
-            <br />
 
             <div className="container mx-auto">
 
