@@ -1,4 +1,5 @@
 from .models import Exercise, Session, Course, StudentGroup
+from runner.models import Submission
 from rest_framework import serializers
 from api.auth.serializers import MinimalUserSerializer
 
@@ -67,6 +68,21 @@ class ExerciseSerializer(serializers.ModelSerializer):
         queryset=Session.objects.all(), source="session", write_only=True
     )
 
+    # get submission status for current user (if any)
+    submission_status = serializers.SerializerMethodField()
+
+    def get_submission_status(self, obj):
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+            if user.is_authenticated:
+                try:
+                    submission = Submission.objects.get(exercise=obj, owner=user)
+                    return submission.status
+                except Submission.DoesNotExist:
+                    return None
+        return None
+
     class Meta:
         model = Exercise
         fields = [
@@ -78,6 +94,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
             "prefix",
             "suffix",
             "grade",
+            "submission_status",
         ]
 
 

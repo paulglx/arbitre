@@ -91,10 +91,14 @@ const ExerciseContent = (props: any) => {
                     {sortedExercises.map((exercise: any, i: number) => (
                         <Link
                             key={i}
-                            className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+                            className={`border
+                            ${exercise.submission_status === "success" ?
+                                    "border-green-300 bg-green-50 text-green-600" :
+                                    "border-gray-300 bg-gray-50 text-gray-600"}
+                            rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg`}
                             to={"/exercise/" + exercise.id}
                         >
-                            <p className={`text-xl line-clamp-3 font-medium ${exercise.title ? "text-gray-700" : "text-gray-500"}`}>
+                            <p className={`text-xl line-clamp-3 font-medium `}>
                                 {exercise.title ? exercise.title : "Untitled Exercise"}
                             </p>
                         </Link>
