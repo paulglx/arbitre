@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from celery import Celery
 from django.utils import timezone
 from datetime import timedelta
+from environ import Env
 
 
 class Submission(models.Model):
@@ -67,6 +68,18 @@ class Submission(models.Model):
         prefix = exercise.prefix
         suffix = exercise.suffix
 
+        # Read env
+        env = Env()
+        env.read_env()
+
+        # decide camisole host to use
+        HOSTS = env.list("CAMISOLE_HOSTNAMES", default=["localhost"])
+        host = HOSTS[self.id % len(HOSTS)]
+        print()
+        print("Submission", self.id, "for exercise", exercise.id)
+        print("Using camisole host:", host, "(number", [self.id % len(HOSTS)], ")")
+        print()
+
         if tests:
             super(Submission, self).save(*args, **kwargs)
 
@@ -77,6 +90,7 @@ class Submission(models.Model):
                     celery.send_task(
                         "arbitre.tasks.run_camisole",
                         (
+                            host,
                             self.id,
                             test.id,
                             file_content,
