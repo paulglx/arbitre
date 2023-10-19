@@ -73,7 +73,7 @@ const TestResult = (props: any) => {
             </>
         } else if (result.status === "failed") {
 
-            const diffEditorHeight = result.stdout.split("\n").length * 20 - 4
+            const diffEditorHeight = result.stdout.split("\n").length * 20 + 20
 
             return <div className='border my-2'>
                 <DiffEditor
