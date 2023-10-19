@@ -2,6 +2,7 @@ import { CommandLineIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/2
 import { useEffect, useState } from 'react';
 import { useGetSubmissionByExerciseAndUserQuery, useGetSubmissionTestResultsQuery } from '../../../features/submission/submissionApiSlice'
 
+import { DiffEditor } from '@monaco-editor/react';
 import GradeBadge from '../../Util/GradeBadge';
 import StatusBadge from '../../Util/StatusBadge';
 import TestResultCodePreviewModal from './TestResultCodePreviewModal';
@@ -70,6 +71,29 @@ const TestResult = (props: any) => {
                 </svg>
                 <span className="sr-only">Running...</span>
             </>
+        } else if (result.status === "failed") {
+
+            const diffEditorHeight = result.stdout.split("\n").length * 20 - 4
+
+            return <div className='border my-2'>
+                <DiffEditor
+                    original={result.stdout}
+                    modified={result.exercise_test.stdout}
+                    language="plaintext"
+                    theme='light'
+                    height={diffEditorHeight}
+                    options={{
+                        "automaticLayout": true,
+                        "enableSplitViewResizing": false,
+                        "renderSideBySide": false,
+                        "readOnly": true,
+                        "minimap": {
+                            "enabled": false
+                        },
+                        "scrollBeyondLastLine": false,
+                    }}
+                />
+            </div>
         } else {
             return <span className="font-monospace">
                 <CommandLineIcon className="inline w-5 h-5 text-gray-600" />
