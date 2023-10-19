@@ -29,5 +29,10 @@ echo -e "${BLUE} Automated code correction platform ${NC}"
 
     trap _catch ERR
     trap _finally EXIT
-    (trap 'kill 0' SIGINT; cd backend && python manage.py runserver & cd backend && celery -A arbitre worker -l info -B -E & cd frontend && npm start)
+    (trap 'kill 0' SIGINT;
+        cd backend && python manage.py runserver &
+        cd backend && celery -A arbitre worker -l info -B -E &
+        #cd backend && celery -A arbitre multi start w1 w2 w3 w4 -l info -B -E &
+        cd frontend && npm start
+    )
 )
