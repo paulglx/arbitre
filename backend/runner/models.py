@@ -1,3 +1,4 @@
+import random
 from api.models import Exercise
 from django.contrib.auth.models import User
 from django.db import models
@@ -73,12 +74,8 @@ class Submission(models.Model):
         env.read_env()
 
         # decide camisole host to use
-        HOSTS = env.list("CAMISOLE_HOSTNAMES", default=["localhost"])
-        host = HOSTS[self.id % len(HOSTS)]
-        print()
-        print("Submission", self.id, "for exercise", exercise.id)
-        print("Using camisole host:", host, "(number", [self.id % len(HOSTS)], ")")
-        print()
+        hosts = env.list("CAMISOLE_HOSTNAMES", default=["localhost"])
+        host = random.choice(hosts)
 
         if tests:
             super(Submission, self).save(*args, **kwargs)
