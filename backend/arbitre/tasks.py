@@ -115,5 +115,4 @@ def run_all_pending_testresults() -> None:
     Runs all pending submissions in the database
     """
 
-    print("[PERIODIC] Running all pending tests")
     TestResult.run_all_pending_testresults()

@@ -1,12 +1,12 @@
-import random
 from api.models import Exercise
+from celery import Celery
+from datetime import timedelta
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from celery import Celery
 from django.utils import timezone
-from datetime import timedelta
+from django.utils.translation import gettext_lazy as _
 from environ import Env
+import random
 
 
 class Submission(models.Model):
@@ -159,15 +159,14 @@ class TestResult(models.Model):
     def run_all_pending_testresults():
         celery = Celery("arbitre", include=["arbitre.tasks"])
 
-        print("Running all pending testresults...")
-
         pending_testresults = TestResult.objects.filter(
             status=TestResult.TestResultStatus.PENDING
         )
 
         if len(pending_testresults) == 0:
-            print("No pending testresults to run")
             return
+
+        print("Running all pending testresults...")
 
         # Read env
         env = Env()
