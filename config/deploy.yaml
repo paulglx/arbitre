@@ -9,6 +9,9 @@
 #      ansible_user: [SUDOER USERNAME]
 #      ansible_ssh_pass: [PASSWORD]
 
+# Run with :
+# ansible-playbook -i inventory.yaml deploy.yaml -K
+
 ---
 - name: Deploy Arbitre to production server
   hosts: prod
@@ -45,9 +48,10 @@
     - name: Restart services
       ansible.builtin.systemd:
         name: "{{ item }}"
-        state: started
+        state: restarted
         enabled: true
       become: true
+      become_user: root
       with_items:
         - daphne
         - celery
