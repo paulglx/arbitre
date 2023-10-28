@@ -13,10 +13,10 @@ const Select = (props: any) => {
   const onChange = props.onChange;
 
   return (
-    <div className="relative w-32 h-10">
+    <div className="w-32 h-full">
       <button
         type="button"
-        className="relative w-full h-full cursor-default rounded-md bg-white hover:bg-gray-50 py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6"
+        className="w-full h-full cursor-click rounded bg-white hover:bg-gray-50 py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6"
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
@@ -24,7 +24,7 @@ const Select = (props: any) => {
         tabIndex={0}
       >
         <span className="flex items-center">
-          <span className="ml-3 block truncate capitalize">{selected.name === null ? props.title : selected.name}</span>
+          <span className="ml-1 block truncate capitalize">{selected.name === null ? props.title : selected.name}</span>
         </span>
         <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
           <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

@@ -23,21 +23,21 @@ const CSEOwnerActions = (props: any) => {
                         setEdit(false);
                         handleUpdate();
                     }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white border font-semibold py-2 px-4 rounded"
-                    aria-label='Cancel edit'
+                    className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-500 font-semibold py-2 px-4 rounded shadow-sm sm:leading-6"
+                    aria-label='Save exercise'
                 >
                     Save
                 </button>) : (
                 <button
                     onClick={() => setEdit(true)}
-                    className="border font-semibold py-2 px-4 rounded hover:bg-gray-50"
+                    className="border font-semibold py-2 px-4 rounded hover:bg-gray-50 border-gray-300 shadow-sm sm:leading-6"
                     aria-label='Edit exercise'
                 >
                     Edit
                 </button>)}
             <button
                 onClick={() => setModalIsOpen(true)}
-                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+                className="bg-red-500 hover:bg-red-600 border border-red-600 text-white font-semibold py-2 px-4 rounded"
                 aria-label='Delete exercise'
                 aria-haspopup="true"
 
