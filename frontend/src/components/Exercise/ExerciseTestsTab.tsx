@@ -3,6 +3,7 @@ import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuer
 import { useEffect, useState } from 'react'
 
 import { Modal } from "../Common";
+import autosize from 'autosize';
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 
@@ -30,6 +31,10 @@ const ExerciseTestsTab = (props: any) => {
     useEffect(() => {
         setTests(testsResponse);
     }, [testsResponse]);
+
+    useEffect(() => {
+        autosize(document.querySelectorAll('textarea'));
+    }, [tests]);
 
 
     const handleCreateOrUpdateTest = async (testId: any) => {
