@@ -22,6 +22,7 @@ const Exercise = () => {
 
     const [deleteExercise] = useDeleteExerciseMutation();
     const [description, setDescription] = useState("");
+    const [edit, setEdit] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [prefix, setPrefix] = useState("");
     const [suffix, setSuffix] = useState("");
@@ -95,10 +96,28 @@ const Exercise = () => {
             })
     }
 
-    // Delete button (teacher only)
+    // Edit and Delete buttons (only visible to owners)
     const OwnerButtons = () => {
         return isOwner ? (
-            <div className="">
+            <div className="flex flex-row gap-2">
+                {edit ? (
+                    <button
+                        onClick={() => {
+                            setEdit(false);
+                            handleUpdate();
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white border font-semibold py-2 px-4 rounded"
+                        aria-label='Cancel edit'
+                    >
+                        Save
+                    </button>) : (
+                    <button
+                        onClick={() => setEdit(true)}
+                        className="border font-semibold py-2 px-4 rounded hover:bg-gray-50"
+                        aria-label='Edit exercise'
+                    >
+                        Edit
+                    </button>)}
                 <button
                     onClick={() => setModalIsOpen(true)}
                     className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
@@ -123,7 +142,7 @@ const Exercise = () => {
         {
             key: "runtime",
             title: "Runtime",
-            content: <ExerciseRuntimeTab course={course} session={session} exercise={exercise} isOwner={isOwner} />,
+            content: <ExerciseRuntimeTab edit={edit} course={course} exercise={exercise} isOwner={isOwner} />,
         },
         {
             key: "submission",
@@ -152,7 +171,7 @@ const Exercise = () => {
             <div className="flex items-center justify-between">
                 <div className="w-full">
                     <EditableTitle
-                        handleUpdate={handleUpdate}
+                        edit={edit}
                         isOwner={isOwner}
                         setTitle={setTitle}
                         title={title}
@@ -164,8 +183,8 @@ const Exercise = () => {
             </div>
 
             <EditableDescription
+                edit={edit}
                 description={description}
-                handleUpdate={handleUpdate}
                 isOwner={isOwner}
                 setDescription={setDescription}
             />
