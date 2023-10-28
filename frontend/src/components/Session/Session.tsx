@@ -1,16 +1,16 @@
-import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
-import { Modal, Tabs } from "../Common/";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
-import CSELoading from '../Common/CSELoading';
+import CSELoading from '../Common/CSE/CSELoading';
+import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
 import DashboardResultsTable from "../Dashboard/DashboardResultsTable";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import ExerciseContent from "./SessionComponents/ExerciseContent";
+import { Tabs } from "../Common/";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useTitle } from '../../hooks/useTitle';
@@ -19,12 +19,11 @@ const Session = () => {
 
     const [deleteSession] = useDeleteSessionMutation();
     const [description, setDescription] = useState("");
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
     const [title, setTitle] = useState("");
     const [updateSession] = useUpdateSessionMutation();
     const { session_id }: any = useParams();
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
 
@@ -35,17 +34,22 @@ const Session = () => {
         isError: sessionIsError,
     } = useGetSessionQuery({ id: session_id });
 
-    useTitle(session?.title);
-
+    const course = session?.course;
     const isOwner = session?.course?.owners?.map((o: any) => o.username).includes(username);
     const isTutor = session?.course?.tutors?.map((t: any) => t.username).includes(username);
 
-    useEffect(() => {
-        setTitle(session?.title);
-        setDescription(session?.description);
-    }, [session, sessionIsSuccess]);
+    useTitle(session?.title);
 
-    const course = session?.course
+    useEffect(() => {
+        if (sessionIsSuccess) {
+            if (session?.title === "" && session?.description === "") {
+                setEdit(true);
+            }
+
+            setTitle(session?.title);
+            setDescription(session?.description);
+        }
+    }, [session, sessionIsSuccess]);
 
     const handleUpdate = async () => {
         await updateSession({
@@ -88,20 +92,6 @@ const Session = () => {
             })
     }
 
-    const OwnerButtons = () => {
-        return isOwner ? (
-            <div className="">
-                <button
-                    onClick={() => setModalIsOpen(true)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
-                    aria-label='Delete session'
-                >
-                    <TrashIcon className="w-6 h-6" />
-                </button>
-            </div>
-        ) : null;
-    };
-
     if (sessionIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
@@ -127,7 +117,6 @@ const Session = () => {
         <CSELoading />
     ) : (
         <>
-
             <div className="container mx-auto">
 
                 <Breadcrumb items={[
@@ -141,20 +130,26 @@ const Session = () => {
                 <div className="flex items-center justify-between">
                     <div className="w-full">
                         <EditableTitle
-                            handleUpdate={handleUpdate}
+                            edit={edit}
                             isOwner={isOwner}
                             setTitle={setTitle}
                             title={title}
                         />
                     </div>
                     <div className="flex gap-2">
-                        <OwnerButtons />
+                        <CSEOwnerActions
+                            isOwner={isOwner}
+                            edit={edit}
+                            setEdit={setEdit}
+                            handleUpdate={handleUpdate}
+                            handleDelete={handleDelete}
+                        />
                     </div>
                 </div>
 
                 <EditableDescription
+                    edit={edit}
                     description={description}
-                    handleUpdate={handleUpdate}
                     isOwner={isOwner}
                     setDescription={setDescription}
                 />
@@ -165,16 +160,6 @@ const Session = () => {
                     <div className='text-xl font-semibold mt-2 md:mt-6'>Exercises</div>
                     <ExerciseContent session={session} />
                 </>)}
-
-                {modalIsOpen &&
-                    <Modal
-                        title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
-                        icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                        decription={<p className="mb-4">This will permanently remove this session and all of its exercises.</p>}
-                        handleCloseModal={() => setModalIsOpen(false)}
-                        delete={handleDelete}
-                    />
-                }
 
 
             </div>

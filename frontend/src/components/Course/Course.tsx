@@ -1,12 +1,12 @@
-import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/solid'
-import { Modal, Select, Tabs } from "../Common";
+import { Select, Tabs } from "../Common";
 import { useDeleteCourseMutation, useGetCourseQuery, useUpdateCourseMutation, useUpdateLanguageMutation } from "../../features/courses/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
-import CSELoading from '../Common/CSELoading';
+import CSELoading from '../Common/CSE/CSELoading';
+import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import Grading from './Grading/Grading';
@@ -24,8 +24,8 @@ const Course = () => {
     const [course, setCourse] = useState<any>({})
     const [deleteCourse] = useDeleteCourseMutation();
     const [description, setDescription] = useState("");
+    const [edit, setEdit] = useState(false);
     const [language, setLanguage] = useState("");
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
     const [updateLanguage] = useUpdateLanguageMutation();
@@ -74,7 +74,12 @@ const Course = () => {
     useTitle(course?.title);
 
     useEffect(() => {
-        if (courseIsSuccess) setCourse(courseData);
+        if (courseIsSuccess) {
+            setCourse(courseData);
+            if (courseData.title === "" && courseData.description === "") {
+                setEdit(true);
+            }
+        }
         if (courseIsError) {
             setCourse(null);
             dispatch(pushNotification({
@@ -162,31 +167,17 @@ const Course = () => {
             })
     }
 
-    const OwnerButtons = () => {
-        return isOwner ? (
-            <div className="flex justify-end items-center space-x-2">
-                <div className="relative inline-block text-left">
-                    <Select
-                        options={languageChoices}
-                        title={language}
-                        onChange={(e: any) => {
-                            handleLanguageChange(e)
-                        }}
-                    />
-
-                </div>
-                <div className="ml-2">
-                    <button
-                        onClick={() => setModalIsOpen(true)}
-                        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
-                        aria-label='Delete course'
-                    >
-                        <TrashIcon className="w-6 h-6" />
-                    </button>
-                </div>
-            </div>
-        ) : null;
-    };
+    const LanguageChoice = () => {
+        return (<div className="relative inline-block text-left ml-2">
+            <Select
+                options={languageChoices}
+                title={language}
+                onChange={(e: any) => {
+                    handleLanguageChange(e)
+                }}
+            />
+        </div>)
+    }
 
     const tabs = [
         {
@@ -228,18 +219,25 @@ const Course = () => {
 
                 <div className="flex items-center justify-between">
                     <EditableTitle
-                        handleUpdate={handleUpdate}
+                        edit={edit}
                         isOwner={isOwner}
                         setTitle={setTitle}
                         title={title}
                     />
-                    <div className="flex gap-2">
-                        <OwnerButtons />
+                    <div className="flex flex-row gap-1">
+                        <LanguageChoice />
+                        <CSEOwnerActions
+                            edit={edit}
+                            setEdit={setEdit}
+                            isOwner={isOwner}
+                            handleUpdate={handleUpdate}
+                            handleDelete={handleDelete}
+                        />
                     </div>
                 </div>
                 <EditableDescription
+                    edit={edit}
                     description={description}
-                    handleUpdate={handleUpdate}
                     isOwner={isOwner}
                     setDescription={setDescription}
                 />
@@ -252,16 +250,6 @@ const Course = () => {
                         id={id}
                     />
                 </>)}
-
-                {modalIsOpen &&
-                    <Modal
-                        title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
-                        icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                        decription={<p className="mb-4">This will permanently remove this course, all of its sessions and all of the session's exercises.</p>}
-                        handleCloseModal={() => setModalIsOpen(false)}
-                        delete={handleDelete}
-                    />
-                }
             </div>
         </>
     ) : (
