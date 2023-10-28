@@ -1,19 +1,8 @@
-import React, { useEffect } from 'react'
-
 import Editor from "@monaco-editor/react";
-import { useState } from 'react'
 
 const ExerciseRuntimeTab = (props: any) => {
 
-    const { edit, course, exercise, isOwner } = props
-
-    const [prefix, setPrefix] = useState("");
-    const [suffix, setSuffix] = useState("");
-
-    useEffect(() => {
-        setPrefix(exercise.prefix);
-        setSuffix(exercise.suffix);
-    }, [exercise])
+    const { edit, course, isOwner, prefix, setPrefix, suffix, setSuffix } = props
 
     const getContentHeight = (content: string) => {
         return (content.split("\n").length + 1) * 20 + 20;
@@ -41,6 +30,10 @@ const ExerciseRuntimeTab = (props: any) => {
                         renderValidationDecorations: "on",
                         renderWhitespace: "none",
                         scrollBeyondLastLine: false,
+                        scrollbar: {
+                            vertical: "hidden",
+                            alwaysConsumeMouseWheel: false,
+                        },
                     }}
                 />
             </div>
@@ -66,6 +59,10 @@ const ExerciseRuntimeTab = (props: any) => {
                         renderWhitespace: "none",
                         scrollBeyondLastLine: false,
                         scrollBeyondLastColumn: 0,
+                        scrollbar: {
+                            vertical: "hidden",
+                            alwaysConsumeMouseWheel: false,
+                        },
                     }}
                 />
             </div>

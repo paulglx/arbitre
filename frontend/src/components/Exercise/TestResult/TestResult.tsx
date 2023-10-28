@@ -83,14 +83,19 @@ const TestResult = (props: any) => {
                     theme='light'
                     height={diffEditorHeight}
                     options={{
-                        "automaticLayout": true,
-                        "enableSplitViewResizing": false,
-                        "renderSideBySide": false,
-                        "readOnly": true,
-                        "minimap": {
-                            "enabled": false
+                        automaticLayout: true,
+                        enableSplitViewResizing: false,
+                        renderSideBySide: false,
+                        readOnly: true,
+                        minimap: {
+                            enabled: false
                         },
-                        "scrollBeyondLastLine": false,
+                        scrollBeyondLastLine: false,
+                        scrollbar: {
+                            vertical: "hidden",
+                            alwaysConsumeMouseWheel: false,
+                        },
+
                     }}
                 />
             </div>
