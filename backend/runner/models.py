@@ -169,6 +169,14 @@ class TestResult(models.Model):
             print("No pending testresults to run")
             return
 
+        # Read env
+        env = Env()
+        env.read_env()
+
+        # decide camisole host to use
+        hosts = env.list("CAMISOLE_HOSTNAMES", default=["localhost"])
+        host = random.choice(hosts)
+
         for testresult in pending_testresults:
             submission = testresult.submission
             if submission.ignore:
@@ -183,12 +191,13 @@ class TestResult(models.Model):
             prefix = submission.exercise.prefix
             suffix = submission.exercise.suffix
 
-            # if submission created more than 5 minutes ago
+            # if submission created more than 1 minute ago
             if submission.created < timezone.now() - timedelta(minutes=1):
                 # Add camisole task to queue
                 celery.send_task(
                     "arbitre.tasks.run_camisole",
                     (
+                        host,
                         submission.id,
                         exercise_test.id,
                         file_content,
