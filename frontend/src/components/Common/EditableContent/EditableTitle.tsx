@@ -1,29 +1,9 @@
 import autosize from "autosize";
-import { useEffect } from "react";
 
 const EditableTitle = (props: any) => {
 
     const isOwner = props.isOwner;
     const editTitle = props.edit;
-
-    const handleKeyDown = (event: any) => {
-        if (!isOwner) return;
-        if (editTitle && event.key === 'Escape') {
-            event.target.blur();
-        }
-    }
-
-    useEffect(() => {
-        window.addEventListener('keydown', (event: any) => {
-            handleKeyDown(event);
-        });
-
-        return () => {
-            window.removeEventListener('keydown', (event: any) => {
-                handleKeyDown(event);
-            });
-        }
-    });
 
     if (!isOwner || !editTitle) {
         return (
@@ -40,7 +20,7 @@ const EditableTitle = (props: any) => {
             <input
                 aria-label="Edit title"
                 autoComplete="off"
-                className="w-full text-3xl border font-bold rounded-md"
+                className="p-1 w-full text-3xl border border-gray-300 font-bold rounded-md"
                 id="title-input"
                 onChange={(e: any) => props.setTitle(e.target.value)}
                 onFocus={(e) => autosize(e.target)}
