@@ -99,7 +99,7 @@ const Exercise = () => {
     // Edit and Delete buttons (only visible to owners)
     const OwnerButtons = () => {
         return isOwner ? (
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 ml-1">
                 {edit ? (
                     <button
                         onClick={() => {
@@ -142,7 +142,7 @@ const Exercise = () => {
         {
             key: "runtime",
             title: "Runtime",
-            content: <ExerciseRuntimeTab edit={edit} course={course} exercise={exercise} isOwner={isOwner} />,
+            content: <ExerciseRuntimeTab edit={edit} course={course} exercise={exercise} isOwner={isOwner} prefix={prefix} suffix={suffix} setPrefix={setPrefix} setSuffix={setSuffix} />,
         },
         {
             key: "submission",
