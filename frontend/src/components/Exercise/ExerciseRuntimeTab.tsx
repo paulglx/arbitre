@@ -5,7 +5,7 @@ const ExerciseRuntimeTab = (props: any) => {
     const { edit, course, isOwner, prefix, setPrefix, suffix, setSuffix } = props
 
     const getContentHeight = (content: string) => {
-        return (content.split("\n").length + 1) * 20 + 20;
+        return (content.split("\n").length + 2) * 18;
     }
 
     return (<>
