@@ -1,48 +1,11 @@
-import { ArrowsPointingInIcon, ArrowsPointingOutIcon, DocumentCheckIcon } from '@heroicons/react/24/solid';
-import React, { useEffect } from 'react'
-
 import Editor from "@monaco-editor/react";
-import { pushNotification } from "../../features/notification/notificationSlice";
-import { useDispatch } from 'react-redux';
-import { useState } from 'react'
-import { useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
 
 const ExerciseRuntimeTab = (props: any) => {
 
-    const { course, session, exercise, isOwner } = props
+    const { edit, course, isOwner, prefix, setPrefix, suffix, setSuffix } = props
 
-    const [prefix, setPrefix] = useState("");
-    const [suffix, setSuffix] = useState("");
-    const [updateExercise] = useUpdateExerciseMutation();
-    const dispatch = useDispatch();
-
-    const [prefixTall, setPrefixTall] = useState(false);
-    const [suffixTall, setSuffixTall] = useState(false);
-
-    useEffect(() => {
-        setPrefix(exercise.prefix);
-        setSuffix(exercise.suffix);
-    }, [exercise])
-
-    const handleUpdateExercise = async () => {
-        try {
-            await updateExercise({
-                id: exercise.id,
-                title: exercise.title,
-                description: exercise.description,
-                session_id: session.id,
-                prefix, suffix
-            });
-            dispatch(pushNotification({
-                message: "The exercise has been updated",
-                type: "success"
-            }));
-        } catch (error) {
-            dispatch(pushNotification({
-                message: "There was an error updating the exercise.",
-                type: "error"
-            }));
-        }
+    const getContentHeight = (content: string) => {
+        return (content.split("\n").length + 2) * 18;
     }
 
     return (<>
@@ -54,42 +17,25 @@ const ExerciseRuntimeTab = (props: any) => {
                 <Editor
                     className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
                     value={prefix}
-                    height={prefixTall ? "840px" : "254px"}
+                    height={getContentHeight(prefix) + "px"}
                     onChange={(value, e) => { setPrefix(value as string) }}
                     language={course?.language?.toLowerCase()}
                     options={{
                         minimap: { enabled: false },
                         lineNumbers: "on",
-                        readOnly: !isOwner,
+                        readOnly: !isOwner || !edit,
                         renderLineHighlight: "none",
                         renderFinalNewline: false,
                         renderLineHighlightOnlyWhenFocus: false,
                         renderValidationDecorations: "on",
                         renderWhitespace: "none",
+                        scrollBeyondLastLine: false,
+                        scrollbar: {
+                            vertical: "hidden",
+                            alwaysConsumeMouseWheel: false,
+                        },
                     }}
                 />
-                {isOwner ? (
-                    <div className='absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity duration-200'>
-                        <div className='flex flex-row'>
-                            <button
-                                className="bg-gray-500 hover:bg-gray-600 text-white rounded-md p-2 mr-2"
-                                onClick={() => { setPrefixTall(!prefixTall); }}
-                            >
-                                {prefixTall ?
-                                    <ArrowsPointingInIcon className="h-5 w-5" />
-                                    :
-                                    <ArrowsPointingOutIcon className="h-5 w-5" />
-                                }
-                            </button>
-                            <button
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md p-2"
-                                onClick={handleUpdateExercise}
-                            >
-                                <DocumentCheckIcon className="h-5 w-5" />
-                            </button>
-                        </div>
-                    </div>
-                ) : null}
             </div>
 
             <h5 className="text-2xl font-bold mt-2">Suffix</h5>
@@ -99,42 +45,26 @@ const ExerciseRuntimeTab = (props: any) => {
                 <Editor
                     className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
                     value={suffix}
-                    height={suffixTall ? "840px" : "254px"}
+                    height={getContentHeight(suffix) + "px"}
                     onChange={(value, e) => { setSuffix(value as string) }}
                     language={course?.language?.toLowerCase()}
                     options={{
                         minimap: { enabled: false },
                         lineNumbers: "on",
-                        readOnly: !isOwner,
+                        readOnly: !isOwner || !edit,
                         renderLineHighlight: "none",
                         renderFinalNewline: false,
                         renderLineHighlightOnlyWhenFocus: false,
                         renderValidationDecorations: "on",
                         renderWhitespace: "none",
+                        scrollBeyondLastLine: false,
+                        scrollBeyondLastColumn: 0,
+                        scrollbar: {
+                            vertical: "hidden",
+                            alwaysConsumeMouseWheel: false,
+                        },
                     }}
                 />
-                {isOwner ? (
-                    <div className='absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity duration-200'>
-                        <div className='flex flex-row'>
-                            <button
-                                className="bg-gray-500 hover:bg-gray-600 text-white rounded-md p-2 mr-2"
-                                onClick={() => { setSuffixTall(!suffixTall); }}
-                            >
-                                {suffixTall ?
-                                    <ArrowsPointingInIcon className="h-5 w-5" />
-                                    :
-                                    <ArrowsPointingOutIcon className="h-5 w-5" />
-                                }
-                            </button>
-                            <button
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md p-2"
-                                onClick={handleUpdateExercise}
-                            >
-                                <DocumentCheckIcon className="h-5 w-5" />
-                            </button>
-                        </div>
-                    </div>
-                ) : null}
             </div>
         </div >
 

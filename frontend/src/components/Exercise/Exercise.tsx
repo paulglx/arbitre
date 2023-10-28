@@ -1,17 +1,17 @@
-import { ExclamationTriangleIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { Modal, Tabs } from "../Common";
 import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from "../Common/Breadcrumb";
-import CSELoading from "../Common/CSELoading";
+import CSELoading from "../Common/CSE/CSELoading";
+import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from "../Common/EditableContent/EditableTitle";
 import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
 import NotFound from "../Util/NotFound";
+import { Tabs } from "../Common";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
@@ -22,7 +22,7 @@ const Exercise = () => {
 
     const [deleteExercise] = useDeleteExerciseMutation();
     const [description, setDescription] = useState("");
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
     const [prefix, setPrefix] = useState("");
     const [suffix, setSuffix] = useState("");
     const [title, setTitle] = useState("");
@@ -46,11 +46,18 @@ const Exercise = () => {
     useTitle(exercise?.title);
 
     useEffect(() => {
-        setTitle(exercise?.title);
-        setDescription(exercise?.description);
-        setPrefix(exercise?.prefix);
-        setSuffix(exercise?.suffix);
-    }, [exercise]);
+
+        if (exerciseIsSuccess) {
+            if (exercise?.title === "" && exercise?.description === "") {
+                setEdit(true);
+            }
+
+            setTitle(exercise?.title);
+            setDescription(exercise?.description);
+            setPrefix(exercise?.prefix);
+            setSuffix(exercise?.suffix);
+        }
+    }, [exercise, exerciseIsSuccess]);
 
     const handleUpdate = async () => {
         await updateExercise({
@@ -95,25 +102,6 @@ const Exercise = () => {
             })
     }
 
-    // Delete button (teacher only)
-    const OwnerButtons = () => {
-        return isOwner ? (
-            <div className="">
-                <button
-                    onClick={() => setModalIsOpen(true)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
-                    aria-label='Delete exercise'
-                    aria-haspopup="true"
-
-                >
-                    <TrashIcon className="w-6 h-6" />
-
-                </button>
-            </div>
-
-        ) : null;
-    };
-
     const tabs = [
         {
             key: "tests",
@@ -123,7 +111,7 @@ const Exercise = () => {
         {
             key: "runtime",
             title: "Runtime",
-            content: <ExerciseRuntimeTab course={course} session={session} exercise={exercise} isOwner={isOwner} />,
+            content: <ExerciseRuntimeTab edit={edit} course={course} exercise={exercise} isOwner={isOwner} prefix={prefix} suffix={suffix} setPrefix={setPrefix} setSuffix={setSuffix} />,
         },
         {
             key: "submission",
@@ -152,20 +140,26 @@ const Exercise = () => {
             <div className="flex items-center justify-between">
                 <div className="w-full">
                     <EditableTitle
-                        handleUpdate={handleUpdate}
+                        edit={edit}
                         isOwner={isOwner}
                         setTitle={setTitle}
                         title={title}
                     />
                 </div>
                 <div className="flex gap-2">
-                    <OwnerButtons />
+                    <CSEOwnerActions
+                        edit={edit}
+                        isOwner={isOwner}
+                        setEdit={setEdit}
+                        handleUpdate={handleUpdate}
+                        handleDelete={handleDelete}
+                    />
                 </div>
             </div>
 
             <EditableDescription
+                edit={edit}
                 description={description}
-                handleUpdate={handleUpdate}
                 isOwner={isOwner}
                 setDescription={setDescription}
             />
@@ -175,16 +169,6 @@ const Exercise = () => {
             </>) : (<>
                 <ExerciseSubmissionTab exercise={exercise} username={username} />
             </>)}
-
-            {modalIsOpen &&
-                <Modal
-                    title={<h2 className="text-xl font-semibold">Are you sure?</h2>}
-                    icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                    decription={<p className="mb-4">This will permanently remove this exercise.</p>}
-                    handleCloseModal={() => setModalIsOpen(false)}
-                    delete={handleDelete}
-                />
-            }
         </div>
     </>) : (
         <NotFound />
