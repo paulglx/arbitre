@@ -34,7 +34,14 @@ const EditableDescription = (props: any) => {
                 />
                 <p className="text-sm bg-blue-50 text-blue-700 py-2 px-4 rounded-md">
                     <InformationCircleIcon className="inline-block w-4 h-4 mr-1" />
-                    You are editing the description - Markdown and LaTeX supported!
+                    <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank" rel="noreferrer" className="underline">
+                        Markdown
+                    </a>
+                    &nbsp;and&nbsp;
+                    <a href="https://katex.org/docs/supported.html" target="_blank" rel="noreferrer" className="underline">
+                        KaTeX
+                    </a>
+                    &nbsp;supported
                 </p>
             </form>
         )
