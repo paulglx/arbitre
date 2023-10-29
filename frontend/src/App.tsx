@@ -41,6 +41,7 @@ function App() {
 					<Route path="exercise/:exercise_id/:tab" element={<Exercise />} />
 
 					<Route path="dashboard" element={<Dashboard />} />
+					<Route path="dashboard/:session" element={<Dashboard />} />
 				</Route>
 
 				{/* 404 page when no routes match*/}

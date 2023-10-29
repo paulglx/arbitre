@@ -2,6 +2,8 @@ import { ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from "@heroicons/
 import { useEffect, useState } from 'react'
 
 import React from 'react'
+import { useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 const DashboardSessionPicker = (props: any) => {
 
@@ -17,6 +19,9 @@ const DashboardSessionPicker = (props: any) => {
     const [sessionSearchResults, setSessionSearchResults] = useState<any>([])
     const dropdownButtonRef = React.createRef<HTMLButtonElement>()
     const dropdownMenuRef = React.createRef<HTMLDivElement>()
+    const navigate = useNavigate()
+
+    const urlSession = useParams()?.session
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen)
@@ -37,6 +42,21 @@ const DashboardSessionPicker = (props: any) => {
 
     // Set current session at first render
     useEffect(() => {
+
+        if (courses && urlSession) {
+            const session = courses?.find((course: any) => course.sessions.some((session: any) => session.id === parseInt(urlSession)))?.sessions?.find((session: any) => session.id === parseInt(urlSession))
+            if (session) {
+                setCurrentSession(session.id)
+                setCurrentSessionTitle(session.title)
+                return
+            } else {
+                setCurrentSession(-1)
+                setCurrentSessionTitle('')
+                navigate(`./../`, { replace: true })
+                return
+            }
+        }
+
         if (courses && currentSession === -1) {
             if (courses?.every((course: any) => course.sessions.length === 0)) {
                 setCurrentSession(-1)
@@ -47,9 +67,10 @@ const DashboardSessionPicker = (props: any) => {
                 const firstSessionByTitle = firstCourseSessions.sort((a: any, b: any) => a.title < b.title ? -1 : 1)[0]
                 setCurrentSession(firstSessionByTitle?.id)
                 setCurrentSessionTitle(firstSessionByTitle?.title)
+                navigate(`./${firstSessionByTitle?.id}`, { replace: true })
             }
         }
-    }, [courses, currentSession, setCurrentSession, setCurrentSessionTitle])
+    }, [courses, currentSession, setCurrentSession, setCurrentSessionTitle, urlSession, navigate])
 
     useEffect(() => {
         if (courses) {
@@ -149,6 +170,8 @@ const DashboardSessionPicker = (props: any) => {
                                             onClick={() => {
                                                 setCurrentSession(session.id)
                                                 setCurrentSessionTitle(session.title)
+                                                setDropdownOpen(false)
+                                                navigate(`./../${session.id}`, { replace: true })
                                             }}
                                             className='my-4'
                                         >
