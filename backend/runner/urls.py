@@ -13,5 +13,10 @@ router.register(
 router.register(
     r"submission-file", views.SubmissionFileViewSet, basename="submission-file"
 )
+router.register(
+    r"requeue-submissions",
+    views.RequeueSubmissionsViewSet,
+    basename="requeue-submissions",
+)
 
 urlpatterns = [re_path("api/", include(router.urls))]
