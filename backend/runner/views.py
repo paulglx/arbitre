@@ -153,7 +153,7 @@ class RequeueSubmissionsViewSet(viewsets.ViewSet):
             # Get all test results for the submissions and set their status to "pending"
             TestResult.objects.filter(
                 submission__exercise_id=request.query_params["exercise_id"]
-            ).update(status="pending")
+            ).update(status="pending", stdout="")
 
             # Set all submissions to pending
             for submission in submissions:
@@ -203,7 +203,7 @@ class TestViewSet(viewsets.ModelViewSet):
         TestResult.objects.filter(
             submission__exercise_id=self.request.data["exercise"],
             exercise_test=self.request.data["id"],
-        ).update(status="pending")
+        ).update(status="pending", stdout="")
 
         # Take all associated submissions and refresh their statuses
         for submission in Submission.objects.filter(
