@@ -217,7 +217,7 @@ const DashboardResultsTable = (props: any) => {
     };
 
     const LiveBadge = () => {
-        return isResultsSuccess ? (<div className="mb-4">
+        return isResultsSuccess ? (<div className="mb-4 mt-1">
             <span className="inline-flex items-center border-green-400 text-green-700 text-sm font-medium mr-2 px-1.5 rounded-lg">
                 <span className="relative inline-flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>

@@ -22,15 +22,15 @@ import { useTitle } from "../../hooks/useTitle";
 
 const Exercise = () => {
 
+    const [actionsDropdown, setActionsDropdown] = useState(false);
     const [deleteExercise] = useDeleteExerciseMutation();
     const [description, setDescription] = useState("");
     const [edit, setEdit] = useState(false);
     const [prefix, setPrefix] = useState("");
+    const [requeueSubmissions] = useRequeueSubmissionsMutation();
     const [suffix, setSuffix] = useState("");
     const [title, setTitle] = useState("");
-    const [actionsDropdown, setActionsDropdown] = useState(false);
     const [updateExercise] = useUpdateExerciseMutation();
-    const [requeueSubmissions] = useRequeueSubmissionsMutation();
     const { exercise_id }: any = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
