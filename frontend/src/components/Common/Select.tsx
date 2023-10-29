@@ -16,7 +16,7 @@ const Select = (props: any) => {
     <div className="w-32 h-full">
       <button
         type="button"
-        className="w-full h-full cursor-click rounded bg-white hover:bg-gray-50 py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6"
+        className="w-full h-full cursor-click rounded-lg bg-white hover:bg-gray-50 py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm border focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6"
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
