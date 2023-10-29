@@ -176,13 +176,18 @@ const DashboardResultsTable = (props: any) => {
                                             setModalContent(modal(exercise, student));
                                             setShowModal(true);
                                         } : undefined}>
-                                        {["success", "failed", "error"].includes(exercise.status)
-                                            ? <div className="flex flex-row items-center justify-between px-2">
-                                                <StatusBadge status={exercise.status} />
-                                                <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
-                                            </div>
-                                            : <StatusBadge status={exercise.status} />
-                                        }
+                                        <div className="flex justify-between px-2 items-center">
+                                            {["success", "failed", "error"].includes(exercise.status) && exerciseGrade
+                                                ? <>
+                                                    <StatusBadge status={exercise.status} />
+                                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                                </>
+
+                                                : <div className="mx-auto">
+                                                    <StatusBadge status={exercise.status} />
+                                                </div>
+                                            }
+                                        </div>
                                     </td>
                                 );
                             })}
@@ -211,18 +216,33 @@ const DashboardResultsTable = (props: any) => {
         );
     };
 
+    const LiveBadge = () => {
+        return isResultsSuccess ? (<div className="mb-4 mt-1">
+            <span className="inline-flex items-center border-green-400 text-green-700 text-sm font-medium mr-2 px-1.5 rounded-lg">
+                <span className="relative inline-flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                &nbsp;Live results
+            </span>
+        </div>) : (<></>);
+    }
+
     return isResultsSuccess ? (<>
 
         {showModal ? modalContent : null}
 
         <br />
 
-        <div className='mx-auto overflow-x-auto rounded-md mb-4'>
+        <div className='mx-auto overflow-x-auto rounded-md'>
+
             <table className="w-full text-sm rounded border">
                 {tableHeadContent(resultsSortedByUsername)}
                 {tableBodyContent(resultsSortedByUsername)}
             </table>
         </div>
+
+        <LiveBadge />
     </>) : isResultsLoading ? (<>
 
         <br />

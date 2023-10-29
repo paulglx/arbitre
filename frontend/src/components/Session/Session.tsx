@@ -1,3 +1,4 @@
+import { ChevronDownIcon, ChevronUpIcon, TableCellsIcon } from "@heroicons/react/24/solid";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ import { useTitle } from '../../hooks/useTitle';
 
 const Session = () => {
 
+    const [actionsDropdown, setActionsDropdown] = useState(false);
     const [deleteSession] = useDeleteSessionMutation();
     const [description, setDescription] = useState("");
     const [edit, setEdit] = useState(false);
@@ -92,6 +94,42 @@ const Session = () => {
             })
     }
 
+    const ActionsDropdown = () => {
+        return (<>
+            <button
+                id="dropdownDefaultButton"
+                className="rounded-lg border shadow-sm text-semibold px-5 py-2.5 text-center inline-flex items-center"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={actionsDropdown}
+                onClick={() => setActionsDropdown(!actionsDropdown)}
+            >
+                Actions&nbsp;
+                {actionsDropdown ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
+            </button>
+
+            {actionsDropdown && (
+
+                <div id="dropdown" className="absolute mt-14 ml-14 border z-10 bg-white divide-y divide-gray-100 rounded-lg shadow">
+                    <ul className="py-2 text-gray-700" aria-labelledby="dropdownDefaultButton">
+                        <li>
+
+                            <button
+                                className="block px-4 py-2 text-left hover:bg-gray-100 w-full"
+                                onClick={() => navigate(`/dashboard/${session?.id}`)}
+                            >
+                                <TableCellsIcon className="h-5 w-5 inline-block mr-2" />
+                                View in Dashboard
+                            </button>
+
+                        </li>
+                    </ul>
+                </div>
+
+            )}
+        </>)
+    }
+
     if (sessionIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
@@ -144,6 +182,7 @@ const Session = () => {
                             handleUpdate={handleUpdate}
                             handleDelete={handleDelete}
                         />
+                        <ActionsDropdown />
                     </div>
                 </div>
 

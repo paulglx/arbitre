@@ -42,6 +42,12 @@ export const submissionApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        requeueSubmissions: builder.mutation({
+            query: params => ({
+                url: `/runner/api/requeue-submissions?exercise_id=${params.exercise_id}`,
+                method: 'GET',
+            })
+        }),
     })
 })
 
@@ -52,4 +58,5 @@ export const {
     useGetSubmissionQuery,
     useGetSubmissionTestResultsQuery,
     useGetSubmissionFileContentQuery,
+    useRequeueSubmissionsMutation,
 } = submissionApiSlice;

@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
 
@@ -53,6 +55,8 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
     Refreshes submission status based on all test results statuses for that submission
     """
 
+    permission_classes = [permissions.IsAuthenticated]
+
     # GET runner/api/refresh-submission?submission_id=...
     def list(self, request):
         try:
@@ -92,6 +96,8 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     Returns submission file with content
     """
 
+    permission_classes = [permissions.IsAuthenticated]
+
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
         error_response = JsonResponse(
@@ -128,6 +134,35 @@ class SubmissionFileViewSet(viewsets.ViewSet):
 
         except Submission.DoesNotExist:
             return error_response
+
+
+class RequeueSubmissionsViewSet(viewsets.ViewSet):
+    """
+    Requeues all submissions for a given exercise
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    # GET runner/api/requeue-submissions?exercise_id=...
+    def list(self, request):
+        try:
+            submissions = Submission.objects.filter(
+                exercise_id=request.query_params["exercise_id"]
+            )
+
+            # Get all test results for the submissions and set their status to "pending"
+            TestResult.objects.filter(
+                submission__exercise_id=request.query_params["exercise_id"]
+            ).update(status="pending", stdout="")
+
+            # Set all submissions to pending
+            for submission in submissions:
+                Submission.objects.filter(pk=submission.id).update(status="pending")
+
+            return JsonResponse({"detail": "Submissions requeued"})
+
+        except Submission.DoesNotExist:
+            return JsonResponse({"status": "Not Found"})
 
 
 class TestViewSet(viewsets.ModelViewSet):
@@ -168,7 +203,7 @@ class TestViewSet(viewsets.ModelViewSet):
         TestResult.objects.filter(
             submission__exercise_id=self.request.data["exercise"],
             exercise_test=self.request.data["id"],
-        ).update(status="pending")
+        ).update(status="pending", stdout="")
 
         # Take all associated submissions and refresh their statuses
         for submission in Submission.objects.filter(
