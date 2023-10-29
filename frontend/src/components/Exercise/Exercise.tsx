@@ -1,3 +1,4 @@
+import { ArrowPathIcon, ChevronDownIcon, ChevronUpIcon, TableCellsIcon } from "@heroicons/react/24/solid";
 import { useDeleteExerciseMutation, useGetExerciseQuery, useUpdateExerciseMutation } from "../../features/courses/exerciseApiSlice";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,6 +28,7 @@ const Exercise = () => {
     const [prefix, setPrefix] = useState("");
     const [suffix, setSuffix] = useState("");
     const [title, setTitle] = useState("");
+    const [actionsDropdown, setActionsDropdown] = useState(false);
     const [updateExercise] = useUpdateExerciseMutation();
     const [requeueSubmissions] = useRequeueSubmissionsMutation();
     const { exercise_id }: any = useParams();
@@ -104,31 +106,66 @@ const Exercise = () => {
             })
     }
 
-    const RequeueButton = () => {
-        return (
+    const handleRequeue = async (e: any) => {
+        e.preventDefault();
+        await requeueSubmissions({ exercise_id: exercise?.id })
+            .unwrap()
+            .then(() => {
+                dispatch(pushNotification({
+                    message: "Submissions will be re-run in less than a minute.",
+                    type: "success"
+                }));
+            })
+            .catch(() => {
+                dispatch(pushNotification({
+                    message: "Something went wrong. Submissions have not been requeued",
+                    type: "error"
+                }));
+            })
+    }
+
+    const ActionsDropdown = () => {
+        return (<>
             <button
-                onClick={
-                    () => {
-                        requeueSubmissions({ exercise_id: exercise?.id })
-                            .unwrap()
-                            .then(() => {
-                                dispatch(pushNotification({
-                                    message: "Submissions have been requeued",
-                                    type: "success"
-                                }));
-                            })
-                            .catch(() => {
-                                dispatch(pushNotification({
-                                    message: "Something went wrong. Submissions have not been requeued",
-                                    type: "error"
-                                }));
-                            })
-                    }
-                }
+                id="dropdownDefaultButton"
+                className="rounded-lg border shadow-sm text-semibold px-5 py-2.5 text-center inline-flex items-center"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={actionsDropdown}
+                onClick={() => setActionsDropdown(!actionsDropdown)}
             >
-                Requeue submissions
+                Actions&nbsp;
+                {actionsDropdown ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
             </button>
-        )
+
+            {actionsDropdown && (
+
+                <div id="dropdown" className="absolute mt-14 border z-10 bg-white divide-y divide-gray-100 rounded-lg shadow">
+                    <ul className="py-2 text-gray-700" aria-labelledby="dropdownDefaultButton">
+                        <li>
+
+                            <button
+                                className="block px-4 py-2 text-left hover:bg-gray-100 w-full"
+                                onClick={() => navigate(`/dashboard/${session?.id}`)}
+                            >
+                                <TableCellsIcon className="h-5 w-5 inline-block mr-2" />
+                                View in Dashboard
+                            </button>
+
+                            <button
+                                className="block px-4 py-2 text-left hover:bg-gray-100 w-full"
+                                onClick={handleRequeue}
+                            >
+                                <ArrowPathIcon className="h-5 w-5 inline-block mr-2" />
+                                Re-run tests on all submissions
+                            </button>
+
+                        </li>
+                    </ul>
+                </div>
+
+            )}
+        </>)
     }
 
 
@@ -184,7 +221,7 @@ const Exercise = () => {
                         handleUpdate={handleUpdate}
                         handleDelete={handleDelete}
                     />
-                    <RequeueButton />
+                    <ActionsDropdown />
                 </div>
             </div>
 
