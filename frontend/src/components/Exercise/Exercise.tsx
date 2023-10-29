@@ -15,6 +15,7 @@ import { Tabs } from "../Common";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { useRequeueSubmissionsMutation } from "../../features/submission/submissionApiSlice";
 import { useSelector } from "react-redux";
 import { useTitle } from "../../hooks/useTitle";
 
@@ -27,6 +28,7 @@ const Exercise = () => {
     const [suffix, setSuffix] = useState("");
     const [title, setTitle] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
+    const [requeueSubmissions] = useRequeueSubmissionsMutation();
     const { exercise_id }: any = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -102,6 +104,34 @@ const Exercise = () => {
             })
     }
 
+    const RequeueButton = () => {
+        return (
+            <button
+                onClick={
+                    () => {
+                        requeueSubmissions({ exercise_id: exercise?.id })
+                            .unwrap()
+                            .then(() => {
+                                dispatch(pushNotification({
+                                    message: "Submissions have been requeued",
+                                    type: "success"
+                                }));
+                            })
+                            .catch(() => {
+                                dispatch(pushNotification({
+                                    message: "Something went wrong. Submissions have not been requeued",
+                                    type: "error"
+                                }));
+                            })
+                    }
+                }
+            >
+                Requeue submissions
+            </button>
+        )
+    }
+
+
     const tabs = [
         {
             key: "tests",
@@ -154,6 +184,7 @@ const Exercise = () => {
                         handleUpdate={handleUpdate}
                         handleDelete={handleDelete}
                     />
+                    <RequeueButton />
                 </div>
             </div>
 
