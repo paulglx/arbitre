@@ -2,6 +2,10 @@ import { ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from "@heroicons/
 import { useEffect, useState } from 'react'
 
 import React from 'react'
+import { selectLastDashboardSession } from "../../features/lastVisited/lastVisitedSlice"
+import { setLastDashboardSession } from "../../features/lastVisited/lastVisitedSlice"
+import { useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 
 const DashboardSessionPicker = (props: any) => {
 
@@ -17,6 +21,9 @@ const DashboardSessionPicker = (props: any) => {
     const [sessionSearchResults, setSessionSearchResults] = useState<any>([])
     const dropdownButtonRef = React.createRef<HTMLButtonElement>()
     const dropdownMenuRef = React.createRef<HTMLDivElement>()
+
+    const dispatch = useDispatch()
+    const lastDashboardSession = useSelector(selectLastDashboardSession)
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen)
@@ -37,6 +44,27 @@ const DashboardSessionPicker = (props: any) => {
 
     // Set current session at first render
     useEffect(() => {
+
+        // If there is a last session, set it
+        if (courses && lastDashboardSession) {
+
+            // Check if the last session exists
+            const sessionExists = courses?.some((course: any) => course.sessions.some((session: any) => session.id === lastDashboardSession))
+            if (sessionExists) {
+                setCurrentSession(lastDashboardSession)
+
+                // Get the title of the session
+                const course = courses?.find((course: any) => course.sessions.some((session: any) => session.id === lastDashboardSession))
+                const session = course?.sessions.find((session: any) => session.id === lastDashboardSession)
+                setCurrentSessionTitle(session?.title)
+
+                return
+            } else {
+                dispatch(setLastDashboardSession(-1))
+            }
+        }
+
+        // If there is no last session, set the first session of the first course with exercises
         if (courses && currentSession === -1) {
             if (courses?.every((course: any) => course.sessions.length === 0)) {
                 setCurrentSession(-1)
@@ -49,7 +77,7 @@ const DashboardSessionPicker = (props: any) => {
                 setCurrentSessionTitle(firstSessionByTitle?.title)
             }
         }
-    }, [courses, currentSession, setCurrentSession, setCurrentSessionTitle])
+    }, [courses, currentSession, setCurrentSession, setCurrentSessionTitle, lastDashboardSession, dispatch])
 
     useEffect(() => {
         if (courses) {
@@ -149,6 +177,9 @@ const DashboardSessionPicker = (props: any) => {
                                             onClick={() => {
                                                 setCurrentSession(session.id)
                                                 setCurrentSessionTitle(session.title)
+                                                dispatch(setLastDashboardSession({
+                                                    dashboardSession: session.id
+                                                }))
                                             }}
                                             className='my-4'
                                         >
