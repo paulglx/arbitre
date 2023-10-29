@@ -176,13 +176,18 @@ const DashboardResultsTable = (props: any) => {
                                             setModalContent(modal(exercise, student));
                                             setShowModal(true);
                                         } : undefined}>
-                                        {["success", "failed", "error"].includes(exercise.status)
-                                            ? <div className="flex flex-row items-center justify-between px-2">
-                                                <StatusBadge status={exercise.status} />
-                                                <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
-                                            </div>
-                                            : <StatusBadge status={exercise.status} />
-                                        }
+                                        <div className="flex justify-between px-2 items-center">
+                                            {["success", "failed", "error"].includes(exercise.status) && exerciseGrade
+                                                ? <>
+                                                    <StatusBadge status={exercise.status} />
+                                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                                </>
+
+                                                : <div className="mx-auto">
+                                                    <StatusBadge status={exercise.status} />
+                                                </div>
+                                            }
+                                        </div>
                                     </td>
                                 );
                             })}
