@@ -15,7 +15,6 @@ const CodePreview = (props: any) => {
             defaultLanguage={fileContent.language}
             height={500}
             value={fileContent.content}
-            theme="vs-dark"
             options={
                 {
                     readOnly: true,

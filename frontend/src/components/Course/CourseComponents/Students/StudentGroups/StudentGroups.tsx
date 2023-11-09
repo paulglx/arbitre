@@ -61,13 +61,13 @@ const StudentGroups = (props: any) => {
                     aria-describedby='groups-enabled-description'
                     id="groups-enabled-checkbox"
                     type="checkbox"
-                    className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     checked={groupsEnabled}
                     onChange={toggleGroupsEnabled}
                 />
                 <div className="ml-2">
-                    <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable groups</label>
-                    <p id="groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                    <label htmlFor="groups-enabled-checkbox" className="font-medium text-gray-900">Enable groups</label>
+                    <p id="groups-info-text" className="text-sm font-normal text-gray-500">
                         {groupsEnabled ? "Groups are enabled." : "Groups are disabled."}
                     </p>
                 </div>
@@ -83,13 +83,13 @@ const StudentGroups = (props: any) => {
                         aria-describedby='auto-groups-enabled-description'
                         id="auto-groups-enabled-checkbox"
                         type="checkbox"
-                        className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        className="text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                         checked={autoGroupsEnabled}
                         onChange={toggleAutoGroups}
                     />
                     <div className="ml-2">
-                        <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Enable automatic groups</label>
-                        <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                        <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900">Enable automatic groups</label>
+                        <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500">
                             {autoGroupsEnabled ?
                                 "Groups are filled automatically with students in alphabetical order."
                                 :
@@ -106,8 +106,8 @@ const StudentGroups = (props: any) => {
     const GroupsListWrapper = () => {
         return (<>
             <div className="p-1 mt-1">
-                <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900 dark:text-gray-300">Groups</label>
-                <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500 dark:text-gray-300">
+                <label htmlFor="auto-groups-enabled-checkbox" className="font-medium text-gray-900">Groups</label>
+                <p id="auto-groups-info-text" className="text-sm font-normal text-gray-500">
                     Click on a group to edit its name.
                 </p>
                 <StudentGroupList course={course} setCourse={setCourse} groups={groups} />

@@ -113,17 +113,6 @@ const Courses = () => {
                                                     to={`/course/${course.id}`}
                                                     className="flex md:block items-center bg-blue-50 border border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-44"
                                                 >
-
-                                                    {/*
-                                                 <div className="mb-4">
-                                                    <img src="/resource/image_course.png" alt={course.title} className="w-full rounded-md" />
-                                                </div>
-                                                */}
-                                                    {/* Progress bar
-                                                 <div className="w-full bg-blue-200 rounded-full h-2.5 mb-4 dark:bg-blue-600">
-                                                    <div className="bg-blue-600 h-2.5 rounded-full dark:bg-blue-300" style={{ width: '45%' }}></div>
-                                                </div>
-                                                */}
                                                     <h3 className={`text-lg font-bold leading-tight line-clamp-2 md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}>
                                                         {course.title ? course.title : "Untitled Course"}
                                                     </h3>
