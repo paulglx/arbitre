@@ -1,8 +1,8 @@
 import { ChevronDownIcon, ChevronUpIcon, TableCellsIcon } from "@heroicons/react/24/solid";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDeleteSessionMutation, useGetSessionQuery, useUpdateSessionMutation } from "../../features/courses/sessionApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import Breadcrumb from '../Common/Breadcrumb';
 import CSELoading from '../Common/CSE/CSELoading';
@@ -114,13 +114,13 @@ const Session = () => {
                     <ul className="py-2 text-gray-700" aria-labelledby="dropdownDefaultButton">
                         <li>
 
-                            <button
+                            <Link
                                 className="block px-4 py-2 text-left hover:bg-gray-100 w-full"
-                                onClick={() => navigate(`/dashboard/${session?.id}`)}
+                                to={`/dashboard/${session?.id}`}
                             >
                                 <TableCellsIcon className="h-5 w-5 inline-block mr-2" />
                                 View in Dashboard
-                            </button>
+                            </Link>
 
                         </li>
                     </ul>
