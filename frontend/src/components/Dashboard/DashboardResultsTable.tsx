@@ -228,11 +228,25 @@ const DashboardResultsTable = (props: any) => {
         </div>) : (<></>);
     }
 
+    const StudentCount = () => {
+
+        const studentCount = results?.length || 0;
+
+        return isResultsSuccess ? (
+            <div className="text-xs text-gray-500 px-1 pb-2">
+                Showing {studentCount} student{studentCount !== 1 ? "s" : ""}
+            </div>
+        )
+            : (<></>);
+    }
+
     return isResultsSuccess ? (<>
 
         {showModal ? modalContent : null}
 
         <br />
+
+        <StudentCount />
 
         <div className='mx-auto overflow-x-auto rounded-md'>
 
