@@ -112,7 +112,7 @@ const Exercise = () => {
             .unwrap()
             .then(() => {
                 dispatch(pushNotification({
-                    message: "Submissions will be re-run in less than a minute.",
+                    message: "Submissions will be re-run in less than 10 seconds.",
                     type: "success"
                 }));
             })

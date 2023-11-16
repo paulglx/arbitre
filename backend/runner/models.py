@@ -191,7 +191,7 @@ class TestResult(models.Model):
             suffix = submission.exercise.suffix
 
             # if submission created more than 1 minute ago
-            if submission.created < timezone.now() - timedelta(minutes=1):
+            if submission.created < timezone.now() - timedelta(seconds=10):
                 # Add camisole task to queue
                 celery.send_task(
                     "arbitre.tasks.run_camisole",
