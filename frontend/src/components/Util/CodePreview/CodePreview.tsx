@@ -1,5 +1,6 @@
+import CodePreviewDownloadButton from "./CodePreviewDownloadButton";
 import Editor from "@monaco-editor/react";
-import { useGetSubmissionFileContentQuery } from '../../features/submission/submissionApiSlice';
+import { useGetSubmissionFileContentQuery } from '../../../features/submission/submissionApiSlice';
 
 const CodePreview = (props: any) => {
 
@@ -10,7 +11,7 @@ const CodePreview = (props: any) => {
         isSuccess,
     } = useGetSubmissionFileContentQuery({ submission_id: submission_id });
 
-    return isSuccess ? (
+    return isSuccess ? (<>
         <Editor
             defaultLanguage={fileContent.language}
             height={500}
@@ -19,9 +20,13 @@ const CodePreview = (props: any) => {
                 {
                     readOnly: true,
                     theme: "vs",
+                    scrollBeyondLastLine: false,
                 }
             }
         />
+        <CodePreviewDownloadButton fileContent={fileContent} />
+    </>
+
     ) : (<></>)
 }
 
