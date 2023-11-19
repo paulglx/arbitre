@@ -32,9 +32,17 @@ const ExerciseSubmissionTab = (props: any) => {
         formData.append("exercise", exercise.id)
         formData.append("file", form.files[0])
 
-        await createSubmission(formData).unwrap()
-
-        window.location.reload();
+        await createSubmission(formData)
+            .unwrap()
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(() => {
+                dispatch(pushNotification({
+                    message: "There was an error while creating the submission. Your file was not submitted.",
+                    type: "error"
+                }));
+            })
     }
 
     return (<>
