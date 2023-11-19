@@ -1,4 +1,4 @@
-import CodePreview from '../../Util/CodePreview'
+import CodePreview from '../../Util/CodePreview/CodePreview'
 import React from 'react'
 import { XMarkIcon } from "@heroicons/react/24/solid"
 
@@ -8,9 +8,9 @@ const TestResultCodePreviewModal = (props: any) => {
         <div
             id="codePreviewModal"
             aria-hidden={!show}
-            className={"fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50 " + (show ? "visible" : "hidden")}
+            className={"fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50 " + (show ? "visible" : "hidden")}
         >
-            <div className="relative w-full max-w-4xl max-h-full">
+            <div className="relative w-full max-w-lg md:max-w-2xl lg:max-w-4xl max-h-full">
                 <div className="relative bg-white rounded-lg shadow border">
 
                     <div className="flex items-start justify-between px-4 py-3 border-b rounded-t bg-gray-50">

@@ -6,6 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from environ import Env
+import os
 import random
 
 
@@ -21,8 +22,30 @@ class Submission(models.Model):
         FAILED = "failed", _("Failed")
         ERROR = "error", _("Error")
 
+    def get_file_name(instance, filename):
+        path = "uploads"
+        extension = instance.file.name.split(".")[-1]
+
+        exercise = instance.exercise
+        created_with_correct_timezone = timezone.localtime(instance.created)
+        created_month_day_hour_minutes_seconds = created_with_correct_timezone.strftime(
+            "%m-%d_%H-%M-%S"
+        )
+
+        format = (
+            exercise.title[0:10]
+            + "_"
+            + instance.owner.username[0:10]
+            + "_"
+            + created_month_day_hour_minutes_seconds
+            + "."
+            + extension
+        )
+
+        return os.path.join(path, format)
+
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    file = models.FileField(upload_to="uploads")
+    file = models.FileField(upload_to=get_file_name)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(
         max_length=10,
