@@ -96,8 +96,8 @@ class Submission(models.Model):
         env = Env()
         env.read_env()
 
-        # decide camisole host to use
-        hosts = env.list("CAMISOLE_HOSTNAMES", default=["localhost"])
+        # decide Judge0 host to use
+        hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])
         host = random.choice(hosts)
 
         if tests:
@@ -106,9 +106,9 @@ class Submission(models.Model):
             with self.file.open(mode="rb") as f:
                 file_content = f.read().decode()
                 for test in tests:
-                    # Add camisole task to queue
+                    # Add Judge0 task to queue
                     celery.send_task(
-                        "arbitre.tasks.run_camisole",
+                        "arbitre.tasks.run_test",
                         (
                             host,
                             self.id,
@@ -195,8 +195,8 @@ class TestResult(models.Model):
         env = Env()
         env.read_env()
 
-        # decide camisole host to use
-        hosts = env.list("CAMISOLE_HOSTNAMES", default=["localhost"])
+        # decide judge0 host to use
+        hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])
         host = random.choice(hosts)
 
         for testresult in pending_testresults:
@@ -215,9 +215,9 @@ class TestResult(models.Model):
 
             # if submission created more than 1 minute ago
             if submission.created < timezone.now() - timedelta(seconds=10):
-                # Add camisole task to queue
+                # Add Judge0 task to queue
                 celery.send_task(
-                    "arbitre.tasks.run_camisole",
+                    "arbitre.tasks.run_test",
                     (
                         host,
                         submission.id,
