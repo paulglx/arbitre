@@ -87,6 +87,13 @@ class Course(models.Model):
         return self.title
 
     def handle_student_groups_change(self, *args, **kwargs):
+        """
+        Handle changes in student groups, and update them if necessary.
+
+        This method is called when a course is saved, and when a student group is saved or deleted.
+        Former course and student groups are compared to new ones, and if they are different, the groups are updated.
+        """
+
         former_course = Course.objects.get(pk=self.pk)
         former_student_groups = StudentGroup.objects.filter(course=self)
 
