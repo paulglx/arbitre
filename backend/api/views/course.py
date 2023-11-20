@@ -8,6 +8,15 @@ import secrets
 import string
 
 
+class IsCourseOwner(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return request.user in obj.owners.all()
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     """
     Manage courses.
@@ -21,6 +30,13 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = CourseSerializer
+
+    def get_permissions(self):
+        if self.action in ["update", "partial_update", "destroy"]:
+            permission_classes = [IsCourseOwner]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     def generate_join_code(self):
         alphabet = string.ascii_uppercase + string.digits
