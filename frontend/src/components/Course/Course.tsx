@@ -244,14 +244,16 @@ const Course = () => {
                         title={title}
                     />
                     <div className="flex flex-row gap-1">
-                        <LanguageChoice />
-                        <CSEOwnerActions
-                            edit={edit}
-                            setEdit={setEdit}
-                            isOwner={isOwner}
-                            handleUpdate={handleUpdate}
-                            handleDelete={handleDelete}
-                        />
+                        {isOwner || isTutor ? (<>
+                            <LanguageChoice />
+                            <CSEOwnerActions
+                                edit={edit}
+                                setEdit={setEdit}
+                                isOwner={isOwner}
+                                handleUpdate={handleUpdate}
+                                handleDelete={handleDelete}
+                            />
+                        </>) : (<></>)}
                     </div>
                 </div>
                 <EditableDescription
