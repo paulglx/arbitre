@@ -184,6 +184,8 @@ class Session(models.Model):
     description = models.TextField(blank=True)
     grade = models.FloatField(blank=True, null=True)
 
+    start_date = models.DateTimeField(blank=True, null=True)
+
     def __str__(self):
         return self.course.title + " : " + self.title
 
