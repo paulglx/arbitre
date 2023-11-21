@@ -6,10 +6,14 @@ const SessionSchedule = (props: any) => {
 
     return (<>
         <div id="start_date_picker" className="p-2">
-            <label htmlFor="start_date" className="text-sm font-medium text-gray-700">
+            <label
+                htmlFor="start_date"
+                className="text-sm font-medium text-gray-700"
+            >
                 Start Date
             </label>
             <input
+                aria-label="Start Date Picker"
                 type="datetime-local"
                 name="start_date"
                 id="start_date"
