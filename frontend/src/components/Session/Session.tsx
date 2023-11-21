@@ -55,9 +55,11 @@ const Session = () => {
 
             setTitle(session?.title);
             setDescription(session?.description);
-            // The date comes from Django in this format: 2021-08-31T12:00:00Z
-            // We need to convert it to this format: 2021-08-31T12:00
-            setStartDate(moment(session?.start_date).format("YYYY-MM-DDTHH:mm"));
+            if (session?.start_date) {
+                setStartDate(moment(session?.start_date).format("YYYY-MM-DDTHH:mm"));
+            } else {
+                setStartDate("");
+            }
 
         }
     }, [session, sessionIsSuccess]);
