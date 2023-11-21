@@ -128,11 +128,19 @@ def run_test(
         print("stdout", response["stdout"])
         print("stderr", response["stderr"])
 
+        stdout = ""
+        if response["message"] is not None:
+            stdout += response["message"]
+        if response["stdout"] is not None:
+            stdout += response["stdout"]
+        if response["stderr"] is not None:
+            stdout += response["stderr"]
+
         # Save results to database using REST API
         after_data = {
             "submission_pk": submission_id,
             "exercise_test_pk": test_id,
-            "stdout": response["stdout"] or response["stderr"] or "",
+            "stdout": stdout,
             "status": status,
             "time": response["time"],
             "memory": response["memory"],
