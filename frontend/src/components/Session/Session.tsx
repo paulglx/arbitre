@@ -7,11 +7,14 @@ import { useEffect, useState } from "react";
 import Breadcrumb from '../Common/Breadcrumb';
 import CSELoading from '../Common/CSE/CSELoading';
 import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
+import { ClockIcon } from "@heroicons/react/24/outline";
 import DashboardResultsTable from "../Dashboard/DashboardResultsTable";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from '../Common/EditableContent/EditableTitle';
 import ExerciseContent from "./SessionComponents/ExerciseContent";
+import SessionSchedule from "./SessionComponents/SessionSchedule";
 import { Tabs } from "../Common/";
+import moment from "moment";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useTitle } from '../../hooks/useTitle';
@@ -25,6 +28,7 @@ const Session = () => {
     const [title, setTitle] = useState("");
     const [updateSession] = useUpdateSessionMutation();
     const { session_id }: any = useParams();
+    const [startDate, setStartDate] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
@@ -34,6 +38,7 @@ const Session = () => {
         isLoading: sessionIsLoading,
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
+        refetch: refetchSession,
     } = useGetSessionQuery({ id: session_id });
 
     const course = session?.course;
@@ -50,15 +55,26 @@ const Session = () => {
 
             setTitle(session?.title);
             setDescription(session?.description);
+            // The date comes from Django in this format: 2021-08-31T12:00:00Z
+            // We need to convert it to this format: 2021-08-31T12:00
+            setStartDate(moment(session?.start_date).format("YYYY-MM-DDTHH:mm"));
+
         }
     }, [session, sessionIsSuccess]);
 
     const handleUpdate = async () => {
+
+        // Correct start_date format for Django
+        const startDateFormatted = startDate === "" ? null : moment(startDate).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
+
+        console.log(startDateFormatted)
+
         await updateSession({
             course_id: course?.id,
             id: session?.id,
             title,
             description,
+            start_date: startDateFormatted,
         })
             .unwrap()
             .then(() => {
@@ -66,6 +82,7 @@ const Session = () => {
                     message: "The session has been updated",
                     type: "success"
                 }));
+                refetchSession();
             })
             .catch((e) => {
                 dispatch(pushNotification({
@@ -130,6 +147,21 @@ const Session = () => {
         </>) : null;
     }
 
+    const NotStartedBanner = () => {
+        return session.has_started ? null : (
+            <div className="flex flex-row items-center px-3 py-2 mt-2 bg-blue-50 rounded-lg border border-blue-200">
+                <ClockIcon className="h-5 w-5 inline-block mr-2 text-blue-700" />
+                <span className="text-sm leading-5 font-medium text-blue-800">
+                    This session is invisible to students.&nbsp;
+                </span>
+                <span className="text-sm leading-5 text-blue-700">
+                    It will start in {moment(session.start_date).toNow(true)}.
+                </span>
+            </div>
+        )
+    }
+
+
     if (sessionIsError) {
         return (
             <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
@@ -148,6 +180,11 @@ const Session = () => {
             key: "results",
             title: "Results",
             content: <DashboardResultsTable sessionId={session_id} />,
+        },
+        {
+            key: "schedule",
+            title: "Schedule",
+            content: <SessionSchedule edit={edit} startDate={startDate} setStartDate={setStartDate} />,
         },
     ];
 
@@ -185,6 +222,8 @@ const Session = () => {
                         <ActionsDropdown />
                     </div>
                 </div>
+
+                <NotStartedBanner />
 
                 <EditableDescription
                     edit={edit}
