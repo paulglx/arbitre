@@ -98,21 +98,11 @@ const SessionContent = (props: any) => {
                             <p className={`text-xl line-clamp-3 font-medium ${session.title ? "text-gray-700" : "text-gray-500"}`}>
                                 {session.title ? session.title : "Untitled Session"}
                             </p>
-                            {/*
-                            <div className="flex items-center">
-                                <ClockIcon className="w-6 h-6 mr-1 text-gray-500" />
-
-
-                                <span className="text-gray-500 text-sm">{session.duration}</span>
-                                {session.openingTime && (
-                                    <div className="flex items-center ml-2">
-                                        <LockOpenIcon className="w-5 h-5 mr-1 text-gray-500" />
-                                        <span className="text-gray-500 text-sm">{session.openingTime}</span>
-                                    </div>
-                                )}
-
-                            </div>
-                            */}
+                            {session.has_started ? (<></>) : (
+                                <p className="text-xs text-gray-500">
+                                    Invisible to students
+                                </p>
+                            )}
                         </Link>
                     ))}
                 </div >

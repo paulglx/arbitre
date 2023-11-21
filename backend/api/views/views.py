@@ -15,7 +15,31 @@ from runner.models import Submission
 from runner.models import TestResult
 from runner.serializers import SubmissionSerializer
 from runner.serializers import TestResultSerializer
+from django.utils import timezone
 import json
+
+
+class IsCourseOwner(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.user in obj.course.owners.all()
+            or request.user in obj.course.tutors.all()
+        )
+
+
+class HasSessionStarted(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if obj.start_date is None:
+            return True
+        return obj.start_date < timezone.now()
 
 
 class SessionViewSet(viewsets.ModelViewSet):
@@ -32,13 +56,36 @@ class SessionViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = SessionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            permission_classes = [permissions.IsAuthenticated, IsCourseOwner]
+        elif self.action in ["list", "retrieve"]:
+            permission_classes = [
+                permissions.IsAuthenticated,
+                HasSessionStarted | IsCourseOwner,
+            ]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     # Return sessions of course if course_id param passed. Else, return all sessions
     def get_queryset(self):
         course_id = self.request.query_params.get("course_id")
+
         if course_id:
-            return Session.objects.filter(course_id=course_id)
+            # If owner, return all sessions
+            if (
+                self.request.user in Course.objects.get(id=course_id).owners.all()
+                or self.request.user in Course.objects.get(id=course_id).tutors.all()
+            ):
+                return Session.objects.filter(course_id=course_id)
+            # Else, return all sessions. If a session does have a start date, return only sessions that have started
+            else:
+                return Session.objects.filter(
+                    Q(course_id=course_id)
+                    & (Q(start_date__isnull=True) | Q(start_date__lt=timezone.now()))
+                )
         else:
             return Session.objects.all()
 
@@ -54,10 +101,29 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):
         session_id = self.request.query_params.get("session_id")
+
+        response = []
+
         if session_id:
-            return Exercise.objects.filter(session_id=session_id)
+            response = Exercise.objects.filter(session_id=session_id)
         else:
-            return Exercise.objects.all()
+            response = Exercise.objects.all()
+
+        # If not owner/tutor, only return exercises that have started
+
+        if response:
+            course = Course.objects.filter(session__exercise__in=response)[0]
+
+            if (
+                self.request.user not in course.owners.all()
+                and self.request.user not in course.tutors.all()
+            ):
+                response = response.filter(
+                    Q(session__start_date__isnull=True)
+                    | Q(session__start_date__lt=timezone.now())
+                )
+
+        return response
 
 
 class StudentGroupViewSet(viewsets.ModelViewSet):
