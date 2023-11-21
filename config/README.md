@@ -19,6 +19,9 @@ Run the playbook
 ansible-playbook deploy.yaml -i inventory.yaml 
 ```
 
-## Installing Camisole
+## Installing Judge0
 
-There is a playbook, `install-camisole.yaml`,  that was used to install camisole on a Ubuntu 22.02 server. It is **deprecated** and kept for reference only.
+You need to run a [Judge0](https://judge0.com/) instance to use Arbitre.
+
+See <https://github.com/judge0/judge0/blob/master/CHANGELOG.md#deployment-procedure>
+

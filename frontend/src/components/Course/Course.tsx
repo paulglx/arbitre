@@ -36,25 +36,44 @@ const Course = () => {
     const username = useSelector(selectCurrentUser);
 
     const languageChoices = [
-        { code: "ada", name: "Ada" },
+        { code: "asm", name: "Assembly" },
+        { code: "bash", name: "Bash" },
+        { code: "basic", name: "Basic" },
         { code: "c", name: "C" },
-        { code: "c#", name: "C#" },
-        { code: "c++", name: "C++" },
+        { code: "cpp", name: "C++" },
+        { code: "csharp", name: "C#" },
+        { code: "clojure", name: "Clojure" },
+        { code: "cobol", name: "Cobol" },
+        { code: "commonlisp", name: "Common Lisp" },
         { code: "d", name: "D" },
+        { code: "elixir", name: "Elixir" },
+        { code: "erlang", name: "Erlang" },
+        { code: "executable", name: "Executable" },
+        { code: "fortran", name: "Fortran" },
+        { code: "fsharp", name: "F#" },
         { code: "go", name: "Go" },
+        { code: "groovy", name: "Groovy" },
         { code: "haskell", name: "Haskell" },
         { code: "java", name: "Java" },
         { code: "javascript", name: "JavaScript" },
+        { code: "kotlin", name: "Kotlin" },
         { code: "lua", name: "Lua" },
+        { code: "objectivec", name: "Objective-C" },
         { code: "ocaml", name: "OCaml" },
+        { code: "octave", name: "Octave" },
         { code: "pascal", name: "Pascal" },
         { code: "perl", name: "Perl" },
         { code: "php", name: "PHP" },
         { code: "prolog", name: "Prolog" },
         { code: "python", name: "Python" },
+        { code: "r", name: "R" },
         { code: "ruby", name: "Ruby" },
         { code: "rust", name: "Rust" },
-        { code: "scheme", name: "Scheme" },
+        { code: "scala", name: "Scala" },
+        { code: "sql", name: "SQL" },
+        { code: "swift", name: "Swift" },
+        { code: "typescript", name: "TypeScript" },
+        { code: "vbnet", name: "VB.NET" },
     ];
 
     const {
@@ -225,14 +244,16 @@ const Course = () => {
                         title={title}
                     />
                     <div className="flex flex-row gap-1">
-                        <LanguageChoice />
-                        <CSEOwnerActions
-                            edit={edit}
-                            setEdit={setEdit}
-                            isOwner={isOwner}
-                            handleUpdate={handleUpdate}
-                            handleDelete={handleDelete}
-                        />
+                        {isOwner || isTutor ? (<>
+                            <LanguageChoice />
+                            <CSEOwnerActions
+                                edit={edit}
+                                setEdit={setEdit}
+                                isOwner={isOwner}
+                                handleUpdate={handleUpdate}
+                                handleDelete={handleDelete}
+                            />
+                        </>) : (<></>)}
                     </div>
                 </div>
                 <EditableDescription

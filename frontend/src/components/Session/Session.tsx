@@ -95,7 +95,7 @@ const Session = () => {
     }
 
     const ActionsDropdown = () => {
-        return (<>
+        return isOwner || isTutor ? (<>
             <button
                 id="dropdownDefaultButton"
                 className="rounded-lg border shadow-sm text-semibold px-5 py-2.5 text-center inline-flex items-center"
@@ -127,7 +127,7 @@ const Session = () => {
                 </div>
 
             )}
-        </>)
+        </>) : null;
     }
 
     if (sessionIsError) {

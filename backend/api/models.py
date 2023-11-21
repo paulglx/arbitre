@@ -9,25 +9,44 @@ class Course(models.Model):
     """
 
     class Languages(models.TextChoices):
-        ADA = "ada", _("Ada")
+        ASM = "asm", _("Assembly")
+        BASH = "bash", _("Bash")
+        BASIC = "basic", _("Basic")
         C = "c", _("C")
-        CPP = "c++", _("C++")
-        CSHARP = "c#", _("C#")
+        CPP = "cpp", _("C++")
+        CSHARP = "csharp", _("C#")
+        CLOJURE = "clojure", _("Clojure")
+        COBOL = "cobol", _("Cobol")
+        COMMON_LISP = "commonlisp", _("Common Lisp")
         D = "d", _("D")
+        ELIXIR = "elixir", _("Elixir")
+        ERLANG = "erlang", _("Erlang")
+        EXECUTABLE = "executable", _("Executable")
+        FORTRAN = "fortran", _("Fortran")
+        FSHARP = "fsharp", _("F#")
         GO = "go", _("Go")
+        GROOVY = "groovy", _("Groovy")
         HASKELL = "haskell", _("Haskell")
         JAVA = "java", _("Java")
         JAVASCRIPT = "javascript", _("JavaScript")
+        KOTLIN = "kotlin", _("Kotlin")
         LUA = "lua", _("Lua")
+        OBJECTIVE_C = "objectivec", _("Objective-C")
         OCAML = "ocaml", _("OCaml")
+        OCTAVE = "octave", _("Octave")
         PASCAL = "pascal", _("Pascal")
         PERL = "perl", _("Perl")
         PHP = "php", _("PHP")
         PROLOG = "prolog", _("Prolog")
         PYTHON = "python", _("Python")
+        R = "r", _("R")
         RUBY = "ruby", _("Ruby")
         RUST = "rust", _("Rust")
-        SCHEME = "scheme", _("Scheme")
+        SCALA = "scala", _("Scala")
+        SQL = "sql", _("SQL")
+        SWIFT = "swift", _("Swift")
+        TYPESCRIPT = "typescript", _("TypeScript")
+        VBNET = "vbnet", _("VB.NET")
 
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
@@ -68,6 +87,13 @@ class Course(models.Model):
         return self.title
 
     def handle_student_groups_change(self, *args, **kwargs):
+        """
+        Handle changes in student groups, and update them if necessary.
+
+        This method is called when a course is saved, and when a student group is saved or deleted.
+        Former course and student groups are compared to new ones, and if they are different, the groups are updated.
+        """
+
         former_course = Course.objects.get(pk=self.pk)
         former_student_groups = StudentGroup.objects.filter(course=self)
 
