@@ -2,6 +2,7 @@ from .models import Exercise, Session, Course, StudentGroup
 from runner.models import Submission
 from rest_framework import serializers
 from api.auth.serializers import MinimalUserSerializer
+from django.utils import timezone
 
 
 class StudentGroupSerializer(serializers.ModelSerializer):
@@ -49,9 +50,23 @@ class SessionSerializer(serializers.ModelSerializer):
         queryset=Course.objects.all(), source="course", write_only=True
     )
 
+    has_started = serializers.SerializerMethodField()
+
+    def get_has_started(self, obj):
+        return obj.start_date is None or obj.start_date < timezone.now()
+
     class Meta:
         model = Session
-        fields = ["id", "title", "description", "course", "course_id", "grade"]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "course",
+            "course_id",
+            "grade",
+            "start_date",
+            "has_started",
+        ]
 
 
 class MinimalSessionSerializer(serializers.ModelSerializer):
