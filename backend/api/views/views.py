@@ -25,7 +25,10 @@ class IsCourseOwner(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        return request.user in obj.course.owners.all()
+        return (
+            request.user in obj.course.owners.all()
+            or request.user in obj.course.tutors.all()
+        )
 
 
 class HasSessionStarted(permissions.BasePermission):
@@ -72,7 +75,10 @@ class SessionViewSet(viewsets.ModelViewSet):
 
         if course_id:
             # If owner, return all sessions
-            if self.request.user in Course.objects.get(id=course_id).owners.all():
+            if (
+                self.request.user in Course.objects.get(id=course_id).owners.all()
+                or self.request.user in Course.objects.get(id=course_id).tutors.all()
+            ):
                 return Session.objects.filter(course_id=course_id)
             # Else, return all sessions. If a session does have a start date, return only sessions that have started
             else:
@@ -90,18 +96,34 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ExerciseSerializer
-
-    # use same permissions as session
-    def get_permissions(self):
-        return SessionViewSet.get_permissions(self)
+    permission_classes = (permissions.IsAuthenticated,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
     def get_queryset(self):
         session_id = self.request.query_params.get("session_id")
+
+        response = []
+
         if session_id:
-            return Exercise.objects.filter(session_id=session_id)
+            response = Exercise.objects.filter(session_id=session_id)
         else:
-            return Exercise.objects.all()
+            response = Exercise.objects.all()
+
+        # If not owner/tutor, only return exercises that have started
+
+        if response:
+            course = Course.objects.filter(session__exercise__in=response)[0]
+
+            if (
+                self.request.user not in course.owners.all()
+                and self.request.user not in course.tutors.all()
+            ):
+                response = response.filter(
+                    Q(session__start_date__isnull=True)
+                    | Q(session__start_date__lt=timezone.now())
+                )
+
+        return response
 
 
 class StudentGroupViewSet(viewsets.ModelViewSet):
