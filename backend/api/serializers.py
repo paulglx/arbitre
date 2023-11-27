@@ -94,7 +94,7 @@ class MinimalSessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Session
-        fields = ["id", "title", "course", "can_submit", "has_ended"]
+        fields = ["id", "title", "course", "can_submit", "has_ended", "deadline"]
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
