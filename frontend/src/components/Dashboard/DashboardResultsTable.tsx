@@ -75,7 +75,7 @@ const DashboardResultsTable = (props: any) => {
             <div
                 id="detailsModal"
                 aria-hidden={!showModal}
-                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50"
+                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50"
             >
                 <div className="relative w-full max-w-4xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow border">
