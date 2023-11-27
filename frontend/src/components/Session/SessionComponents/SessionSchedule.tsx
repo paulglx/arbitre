@@ -9,14 +9,15 @@ const SessionSchedule = (props: any) => {
     return (<>
         <div id="start_date_picker" className="p-2">
             <label
+                id="start_date_label"
                 htmlFor="start_date"
-                className="font-medium text-gray-900"
+                className="font-semibold text-gray-900"
             >
                 Start Date
             </label>
-            <p className="text-sm text-gray-600 mb-2">
+            <label htmlFor="start_date_label" className="block text-sm text-gray-600 mb-2">
                 The date and time that the session will start. Before this time, the session will be hidden from students.
-            </p>
+            </label>
             <input
                 aria-label="Start Date Picker"
                 type="datetime-local"
