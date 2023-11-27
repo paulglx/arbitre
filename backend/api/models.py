@@ -179,12 +179,23 @@ class Session(models.Model):
     A part of a course, that includes exercises
     """
 
+    class DeadlineTypes(models.TextChoices):
+        SOFT = "soft", _("Soft")
+        HARD = "hard", _("Hard")
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     grade = models.FloatField(blank=True, null=True)
 
     start_date = models.DateTimeField(blank=True, null=True)
+
+    deadline_type = models.CharField(
+        max_length=4,
+        choices=DeadlineTypes.choices,
+        default=DeadlineTypes.SOFT,
+    )
+    deadline = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.course.title + " : " + self.title
