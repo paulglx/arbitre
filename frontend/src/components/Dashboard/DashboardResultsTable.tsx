@@ -179,12 +179,12 @@ const DashboardResultsTable = (props: any) => {
                                         <div className="flex justify-between px-2 items-center">
                                             {["success", "failed", "error"].includes(exercise.status) && exerciseGrade
                                                 ? <>
-                                                    <StatusBadge status={exercise.status} />
+                                                    <StatusBadge status={exercise.status} late={exercise.late} />
                                                     <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
                                                 </>
 
                                                 : <div className="mx-auto">
-                                                    <StatusBadge status={exercise.status} />
+                                                    <StatusBadge status={exercise.status} late={exercise.late} />
                                                 </div>
                                             }
                                         </div>
