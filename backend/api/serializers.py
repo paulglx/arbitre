@@ -51,21 +51,28 @@ class SessionSerializer(serializers.ModelSerializer):
     )
 
     has_started = serializers.SerializerMethodField()
+    has_ended = serializers.SerializerMethodField()
 
     def get_has_started(self, obj):
         return obj.start_date is None or obj.start_date < timezone.now()
+
+    def get_has_ended(self, obj):
+        return obj.deadline is not None and obj.deadline < timezone.now()
 
     class Meta:
         model = Session
         fields = [
             "id",
-            "title",
-            "description",
-            "course",
             "course_id",
+            "course",
+            "deadline_type",
+            "deadline",
+            "description",
             "grade",
-            "start_date",
             "has_started",
+            "has_ended",
+            "start_date",
+            "title",
         ]
 
 
