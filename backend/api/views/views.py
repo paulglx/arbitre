@@ -109,20 +109,6 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         else:
             response = Exercise.objects.all()
 
-        # If not owner/tutor, only return exercises that have started
-
-        if response:
-            course = Course.objects.filter(session__exercise__in=response)[0]
-
-            if (
-                self.request.user not in course.owners.all()
-                and self.request.user not in course.tutors.all()
-            ):
-                response = response.filter(
-                    Q(session__start_date__isnull=True)
-                    | Q(session__start_date__lt=timezone.now())
-                )
-
         return response
 
 
