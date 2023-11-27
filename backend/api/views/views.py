@@ -106,29 +106,13 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
         if session_id:
             response = Exercise.objects.filter(session_id=session_id)
-
-            # If not owner/tutor, error if session has not started
-            if response:
-                session = Session.objects.get(id=session_id)
-                course = session.course
-
-                if (
-                    self.request.user not in course.owners.all()
-                    and self.request.user not in course.tutors.all()
-                ):
-                    if session.start_date is None:
-                        return response
-                    elif session.start_date > timezone.now():
-                        return []
-
-        response = Exercise.objects.all()
+        else:
+            response = Exercise.objects.all()
 
         # If not owner/tutor, only return exercises that have started
 
         if response:
             course = Course.objects.filter(session__exercise__in=response)[0]
-
-            print(course)
 
             if (
                 self.request.user not in course.owners.all()
