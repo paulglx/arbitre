@@ -1,4 +1,4 @@
-import { ClockIcon } from '@heroicons/react/24/solid'
+import { ClockIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 
 const StatusBadge = (props: any) => {
@@ -52,7 +52,7 @@ const StatusBadge = (props: any) => {
 
     const LateIndicator = () => {
         return (<div className="relative -top-2 right-2 -mr-4">
-            <ClockIcon className="w-4 h-4 text-amber-500 bg-white rounded-full" />
+            <ClockIcon className="w-4 h-4 text-amber-50 bg-amber-500 rounded-full" />
         </div>)
     }
 
