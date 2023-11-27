@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import CheckConstraint, Q
 
 
 class Course(models.Model):
@@ -187,6 +189,11 @@ class Session(models.Model):
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     grade = models.FloatField(blank=True, null=True)
+    late_penalty = models.FloatField(
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+    )
 
     start_date = models.DateTimeField(blank=True, null=True)
 
@@ -199,6 +206,15 @@ class Session(models.Model):
 
     def __str__(self):
         return self.course.title + " : " + self.title
+
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=Q(late_penalty__isnull=True)
+                | Q(late_penalty__lte=1.0) & Q(late_penalty__gte=0.0),
+                name="late_penalty_between_0_and_1",
+            ),
+        ]
 
 
 class Exercise(models.Model):
