@@ -9,7 +9,7 @@ import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from "../Common/EditableContent/EditableTitle";
 import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
-import ExerciseSubmissionTab from "./ExerciseSubmissionTab";
+import ExerciseSubmissionTab from "./Submission/ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
 import NotFound from "../Util/NotFound";
 import { Tabs } from "../Common";
