@@ -11,9 +11,18 @@ class TestSerializer(serializers.ModelSerializer):
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
+    late = serializers.SerializerMethodField()
+
+    def get_late(self, obj):
+        return (
+            hasattr(obj, "exercise")
+            and obj.exercise.session.deadline
+            and obj.created > obj.exercise.session.deadline
+        )
+
     class Meta:
         model = Submission
-        fields = ["id", "exercise", "file", "status", "created"]
+        fields = ["id", "exercise", "file", "status", "created", "late"]
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):
