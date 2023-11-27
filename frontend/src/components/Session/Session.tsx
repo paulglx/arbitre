@@ -29,6 +29,8 @@ const Session = () => {
     const [updateSession] = useUpdateSessionMutation();
     const { session_id }: any = useParams();
     const [startDate, setStartDate] = useState("");
+    const [deadline, setDeadline] = useState("");
+    const [deadlineType, setDeadlineType] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const username = useSelector(selectCurrentUser);
@@ -55,10 +57,17 @@ const Session = () => {
 
             setTitle(session?.title);
             setDescription(session?.description);
+            setDeadlineType(session?.deadline_type);
+
             if (session?.start_date) {
                 setStartDate(moment(session?.start_date).format("YYYY-MM-DDTHH:mm"));
             } else {
                 setStartDate("");
+            }
+            if (session?.deadline) {
+                setDeadline(moment(session?.deadline).format("YYYY-MM-DDTHH:mm"));
+            } else {
+                setDeadline("");
             }
 
         }
@@ -68,6 +77,7 @@ const Session = () => {
 
         // Correct start_date format for Django
         const startDateFormatted = startDate === "" ? null : moment(startDate).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
+        const deadlineFormatted = deadline === "" ? null : moment(deadline).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
 
         console.log(startDateFormatted)
 
@@ -77,6 +87,8 @@ const Session = () => {
             title,
             description,
             start_date: startDateFormatted,
+            deadline: deadlineFormatted,
+            deadline_type: deadlineType,
         })
             .unwrap()
             .then(() => {
@@ -186,7 +198,16 @@ const Session = () => {
         {
             key: "schedule",
             title: "Schedule",
-            content: <SessionSchedule edit={edit} startDate={startDate} setStartDate={setStartDate} isOwner={isOwner} />,
+            content: <SessionSchedule
+                edit={edit}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                deadline={deadline}
+                setDeadline={setDeadline}
+                deadlineType={deadlineType}
+                setDeadlineType={setDeadlineType}
+                isOwner={isOwner}
+            />,
         },
     ];
 
