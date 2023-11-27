@@ -7,6 +7,8 @@ from runner.serializers import (
 )
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from django.utils import timezone
+from rest_framework import serializers
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -16,12 +18,25 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     serializer_class = SubmissionSerializer
 
     def perform_create(self, serializer):
+        # Check if there's a hard deadline and if it's passed
+        session = serializer.validated_data["exercise"].session
+        if (
+            session.deadline_type == "hard"
+            and session.deadline is not None
+            and session.deadline < timezone.now()
+        ):
+            raise serializers.ValidationError(
+                {"detail": "Hard deadline passed, can't submit"}
+            )
+
+        # If there are no tests, set submission status to "success"
         tests = Test.objects.filter(exercise=self.request.data["exercise"])
         if len(tests) == 0:
             status = "success"
         else:
             status = "pending"
 
+        # Create submission or update it if it already exists
         submission, created = Submission.objects.update_or_create(
             exercise_id=self.request.data["exercise"],
             owner=self.request.user,
