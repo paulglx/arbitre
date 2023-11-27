@@ -186,7 +186,7 @@ const Session = () => {
         {
             key: "schedule",
             title: "Schedule",
-            content: <SessionSchedule edit={edit} startDate={startDate} setStartDate={setStartDate} />,
+            content: <SessionSchedule edit={edit} startDate={startDate} setStartDate={setStartDate} isOwner={isOwner} />,
         },
     ];
 
