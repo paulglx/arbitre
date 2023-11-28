@@ -93,7 +93,7 @@ const SessionSchedule = (props: any) => {
             infoString = "has no schedule. Students can submit at any time.";
         }
 
-        return (<div className="bg-gray-50 border border-gray-100 text-gray-600 px-4 py-2 mb-2 rounded-lg text-sm flex items-center mt-4">
+        return (<div className="bg-blue-50 border border-blue-100 text-blue-700 px-4 py-2 mb-2 rounded-lg text-sm flex items-center mt-4">
             <InformationCircleIcon className="w-4 h-4 mr-1 inline" />
             This session {infoString}
         </div>)
