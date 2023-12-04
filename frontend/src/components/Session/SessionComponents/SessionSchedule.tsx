@@ -185,7 +185,7 @@ const SessionSchedule = (props: any) => {
 
             <div className="flex">
 
-                <div className="flex items-center h-5">
+                <div className="flex items-center h-5" aria-disabled={!edit} aria-label="Deadline Type : Soft">
                     <input
                         id="deadline_type"
                         aria-label="Deadline Type : Soft"
@@ -210,7 +210,7 @@ const SessionSchedule = (props: any) => {
 
             <div className="flex">
 
-                <div className="flex items-center h-5">
+                <div className="flex items-center h-5" aria-disabled={!edit} aria-label="Deadline Type : Hard">
                     <input
                         id="deadline_type"
                         aria-label="Deadline Type : Hard"
