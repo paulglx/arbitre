@@ -317,11 +317,14 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         results = []
         for exercise in exercises_to_do_dict:
             status = "not submitted"
-            late = False
 
-            for submission in submissions_serializer.data:
-                if submission["exercise"] == exercise["id"]:
-                    status = submission["status"]
+            submission = Submission.objects.filter(
+                owner=user, exercise_id=exercise["id"]
+            ).first()
+            submission_serializer = SubmissionSerializer(submission)
+
+            if submission:
+                status = submission.status
 
             # Get status for exercise tests
             testResults = TestResult.objects.filter(
@@ -329,19 +332,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
             )
             testResults_serializer = TestResultSerializer(testResults, many=True)
 
-            # Check if the submission is late
-            deadline = session.deadline
-            if (
-                deadline
-                and Submission.objects.filter(
-                    owner=user, exercise_id=exercise["id"]
-                ).first()
-                and Submission.objects.filter(owner=user, exercise_id=exercise["id"])
-                .first()
-                .created
-                > session.deadline
-            ):
-                late = True
+            late = submission_serializer.data["late"] if submission else False
 
             results.append(
                 {
