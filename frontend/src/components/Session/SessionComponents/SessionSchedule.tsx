@@ -26,9 +26,7 @@ const SessionSchedule = (props: any) => {
 
     const SessionScheduleInfo = () => {
 
-        const deadline_time = moment(deadline)
-        const start_time = moment(startDate)
-        const sessionDuration = moment.duration(deadline_time.diff(start_time));
+        const sessionDuration = moment.duration(moment(deadline).diff(moment(startDate)));
 
         let infoString = "";
 
