@@ -404,12 +404,16 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
             except StudentGroup.DoesNotExist:
                 student_group = None
 
+            # Late submission penalty (from course)
+            late_penalty = session.course.late_penalty
+
             students_data.append(
                 {
                     "user_id": student_id,
                     "username": User.objects.get(id=student_id).username,
                     "group": student_group,
                     "exercises": result_response,
+                    "late_penalty": late_penalty,
                 }
             )
 
