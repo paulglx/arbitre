@@ -31,6 +31,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "students",
             "title",
             "tutors",
+            "late_penalty",
         ]
 
 
