@@ -17,8 +17,6 @@ const DashboardResultsTable = (props: any) => {
     const session_id = props.sessionId;
     const groups = props.selectedGroups;
 
-    const LATE_SUBMISSION_PENALTY: number = 0.2;
-
     const onVisibilityChange = () => {
         setIsVisible(document.visibilityState === "visible")
     };
@@ -143,6 +141,8 @@ const DashboardResultsTable = (props: any) => {
                     var finalSessionGrade = 0;
                     var sessionGrade = 0;
 
+                    const latePenalty = student.late_penalty || 0;
+
                     return (
                         <tr key={i} className="border-t hover:bg-gray-50">
                             <td key={-1} className="px-2 py-3 bg-gray-50 border-r border-gray-200">
@@ -166,7 +166,7 @@ const DashboardResultsTable = (props: any) => {
                                 if (sumOfCoefficient !== 0) {
                                     finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
                                     if (exercise.late) {
-                                        finalExerciseGrade = finalExerciseGrade * (1 - LATE_SUBMISSION_PENALTY);
+                                        finalExerciseGrade = finalExerciseGrade * (1 - latePenalty / 100);
                                     }
                                 }
 
