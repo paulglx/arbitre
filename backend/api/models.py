@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import CheckConstraint, Q
 
 
 class Course(models.Model):
@@ -72,15 +74,11 @@ class Course(models.Model):
     join_code_enabled = models.BooleanField(default=True)
 
     groups_enabled = models.BooleanField(default=False)
-
     auto_groups_enabled = models.BooleanField(default=False)
-    auto_groups_type = models.CharField(
-        max_length=12,
-        choices=[
-            ("alphabetical", _("Alphabetical")),
-            # ("random", _("Random")), ##TODO add random groups
-        ],
-        default="alphabetical",
+
+    late_penalty = models.FloatField(
+        default=0.0,
+        validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
     )
 
     def __str__(self):
@@ -179,12 +177,23 @@ class Session(models.Model):
     A part of a course, that includes exercises
     """
 
+    class DeadlineTypes(models.TextChoices):
+        SOFT = "soft", _("Soft")
+        HARD = "hard", _("Hard")
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     grade = models.FloatField(blank=True, null=True)
 
     start_date = models.DateTimeField(blank=True, null=True)
+
+    deadline_type = models.CharField(
+        max_length=4,
+        choices=DeadlineTypes.choices,
+        default=DeadlineTypes.SOFT,
+    )
+    deadline = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.course.title + " : " + self.title

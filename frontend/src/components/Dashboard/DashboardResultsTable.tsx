@@ -75,7 +75,7 @@ const DashboardResultsTable = (props: any) => {
             <div
                 id="detailsModal"
                 aria-hidden={!showModal}
-                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50"
+                className="fixed grid place-items-center z-50 w-full p-4 overflow-x-hidden overflow-y-auto inset-0 h-screen max-h-full bg-gray-900 bg-opacity-50"
             >
                 <div className="relative w-full max-w-4xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow border">
@@ -141,6 +141,8 @@ const DashboardResultsTable = (props: any) => {
                     var finalSessionGrade = 0;
                     var sessionGrade = 0;
 
+                    const latePenalty = student.late_penalty || 0;
+
                     return (
                         <tr key={i} className="border-t hover:bg-gray-50">
                             <td key={-1} className="px-2 py-3 bg-gray-50 border-r border-gray-200">
@@ -163,6 +165,9 @@ const DashboardResultsTable = (props: any) => {
                                 let finalExerciseGrade = 0;
                                 if (sumOfCoefficient !== 0) {
                                     finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
+                                    if (exercise.late) {
+                                        finalExerciseGrade = finalExerciseGrade * (1 - latePenalty / 100);
+                                    }
                                 }
 
                                 finalSessionGrade += finalExerciseGrade;
@@ -179,12 +184,12 @@ const DashboardResultsTable = (props: any) => {
                                         <div className="flex justify-between px-2 items-center">
                                             {["success", "failed", "error"].includes(exercise.status) && exerciseGrade
                                                 ? <>
-                                                    <StatusBadge status={exercise.status} />
-                                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                                    <StatusBadge status={exercise.status} late={exercise.late} />
+                                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} late={exercise.late} />
                                                 </>
 
                                                 : <div className="mx-auto">
-                                                    <StatusBadge status={exercise.status} />
+                                                    <StatusBadge status={exercise.status} late={exercise.late} />
                                                 </div>
                                             }
                                         </div>

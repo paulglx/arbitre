@@ -309,18 +309,18 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
         exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
 
-        # Get status for exercises that have been submitted
-        submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
-        submissions_serializer = SubmissionSerializer(submissions, many=True)
-
         # Return exercise and status only
         results = []
         for exercise in exercises_to_do_dict:
             status = "not submitted"
 
-            for submission in submissions_serializer.data:
-                if submission["exercise"] == exercise["id"]:
-                    status = submission["status"]
+            submission = Submission.objects.filter(
+                owner=user, exercise_id=exercise["id"]
+            ).first()
+            submission_serializer = SubmissionSerializer(submission)
+
+            if submission:
+                status = submission.status
 
             # Get status for exercise tests
             testResults = TestResult.objects.filter(
@@ -328,12 +328,15 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
             )
             testResults_serializer = TestResultSerializer(testResults, many=True)
 
+            late = submission_serializer.data["late"] if submission else False
+
             results.append(
                 {
                     "exercise_id": exercise["id"],
                     "exercise_title": exercise["title"],
                     "status": status,
                     "testResults": testResults_serializer.data,
+                    "late": late,
                 }
             )
 
@@ -401,12 +404,16 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
             except StudentGroup.DoesNotExist:
                 student_group = None
 
+            # Late submission penalty (from course)
+            late_penalty = session.course.late_penalty
+
             students_data.append(
                 {
                     "user_id": student_id,
                     "username": User.objects.get(id=student_id).username,
                     "group": student_group,
                     "exercises": result_response,
+                    "late_penalty": late_penalty,
                 }
             )
 

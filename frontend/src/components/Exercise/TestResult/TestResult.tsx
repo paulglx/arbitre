@@ -6,6 +6,7 @@ import { DiffEditor } from '@monaco-editor/react';
 import GradeBadge from '../../Util/GradeBadge';
 import StatusBadge from '../../Util/StatusBadge';
 import TestResultCodePreviewModal from './TestResultCodePreviewModal';
+import TestResultLateBadge from './TestResultLateBadge';
 import TestResultTimeBadge from './TestResultTimeBadge';
 
 const TestResult = (props: any) => {
@@ -153,8 +154,8 @@ const TestResult = (props: any) => {
         <ul
             className='text-gray-900 bg-white border-gray-200 rounded-lg'
         >
-            <li className={` ${headerBgColor(submissionData[0].status)} w-full flex justify-between items-center px-4 py-2 border rounded-lg`}>
-                <span>
+            <li className={` ${headerBgColor(submissionData[0].status)} w-full flex flex-row justify-between items-center px-4 py-2 border rounded-lg`}>
+                <span className='flex flex-row items-center'>
                     <span className='font-bold'>
                         {submissionData[0]?.file?.split("/").pop()}
                     </span>
@@ -168,6 +169,7 @@ const TestResult = (props: any) => {
                     <TestResultTimeBadge time={submissionData[0].created} />
                 </span>
                 <div>
+                    <TestResultLateBadge submission={submissionData[0]} />
                     <StatusBadge status={submissionData[0].status} className="inline text-right" />
                     {!!props.exercise_grade
                         ? <GradeBadge grade={finalExerciseGrade} total={props.exercise_grade} /> : null}

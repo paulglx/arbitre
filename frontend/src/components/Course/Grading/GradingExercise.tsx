@@ -10,6 +10,7 @@ const GradingExercise = (props: any) => {
     const {
         data: testsResponse,
         isSuccess: testsIsSuccess,
+        isLoading: testsIsLoading,
     } = useGetTestsOfExerciseQuery({ exercise_id: props.exercise.id });
 
     const sortedTests = useMemo(() => {
@@ -62,7 +63,7 @@ const GradingExercise = (props: any) => {
                 {sortedTests?.length > 0 ? sortedTests.map((test: any) => (
                     <GradingTest test={test} key={test.id} handleTestCoefficientChangeValue={props.handleTestCoefficientChangeValue} />
                 )) : <div className='text-gray-500'>
-                    There are no tests for this exercise.
+                    {testsIsLoading ? "Loading..." : "There are no tests for this exercise."}
                 </div>}
             </div>
         </>

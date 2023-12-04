@@ -21,7 +21,6 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             "auto_groups_enabled",
-            "auto_groups_type",
             "description",
             "groups_enabled",
             "id",
@@ -32,6 +31,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "students",
             "title",
             "tutors",
+            "late_penalty",
         ]
 
 
@@ -51,30 +51,50 @@ class SessionSerializer(serializers.ModelSerializer):
     )
 
     has_started = serializers.SerializerMethodField()
+    has_ended = serializers.SerializerMethodField()
 
     def get_has_started(self, obj):
         return obj.start_date is None or obj.start_date < timezone.now()
+
+    def get_has_ended(self, obj):
+        return obj.deadline is not None and obj.deadline < timezone.now()
 
     class Meta:
         model = Session
         fields = [
             "id",
-            "title",
-            "description",
-            "course",
             "course_id",
+            "course",
+            "deadline_type",
+            "deadline",
+            "description",
             "grade",
-            "start_date",
             "has_started",
+            "has_ended",
+            "start_date",
+            "title",
         ]
 
 
 class MinimalSessionSerializer(serializers.ModelSerializer):
     course = MinimalCourseSerializer()
 
+    has_ended = serializers.SerializerMethodField()
+    can_submit = serializers.SerializerMethodField()
+
+    def get_has_ended(self, obj):
+        return SessionSerializer(obj).get_has_ended(obj)
+
+    def get_can_submit(self, obj):
+        return (
+            obj.deadline_type == "soft"
+            or obj.deadline is None
+            or obj.deadline > timezone.now()
+        )
+
     class Meta:
         model = Session
-        fields = ["id", "title", "course"]
+        fields = ["id", "title", "course", "can_submit", "has_ended", "deadline"]
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
