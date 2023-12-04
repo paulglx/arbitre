@@ -17,6 +17,8 @@ const DashboardResultsTable = (props: any) => {
     const session_id = props.sessionId;
     const groups = props.selectedGroups;
 
+    const LATE_SUBMISSION_PENALTY: number = 0.2;
+
     const onVisibilityChange = () => {
         setIsVisible(document.visibilityState === "visible")
     };
@@ -163,6 +165,9 @@ const DashboardResultsTable = (props: any) => {
                                 let finalExerciseGrade = 0;
                                 if (sumOfCoefficient !== 0) {
                                     finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
+                                    if (exercise.late) {
+                                        finalExerciseGrade = finalExerciseGrade * (1 - LATE_SUBMISSION_PENALTY);
+                                    }
                                 }
 
                                 finalSessionGrade += finalExerciseGrade;
@@ -180,7 +185,7 @@ const DashboardResultsTable = (props: any) => {
                                             {["success", "failed", "error"].includes(exercise.status) && exerciseGrade
                                                 ? <>
                                                     <StatusBadge status={exercise.status} late={exercise.late} />
-                                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} />
+                                                    <GradeBadge grade={finalExerciseGrade} total={exerciseGrade} late={exercise.late} />
                                                 </>
 
                                                 : <div className="mx-auto">
