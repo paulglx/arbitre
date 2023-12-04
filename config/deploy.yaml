@@ -41,7 +41,7 @@
       ansible.builtin.shell: |
         cd /srv/arbitre
         export NIXPKGS_ALLOW_BROKEN=1
-        nix develop --impure --command bash -c "cd backend 11 python manage.py migrate"
+        nix develop --impure --command bash -c "cd backend && python manage.py migrate"
         nix develop --impure --command bash -c "cd backend && python manage.py collectstatic --noinput"
       when: git_pull.changed # noqa: no-handler
 
