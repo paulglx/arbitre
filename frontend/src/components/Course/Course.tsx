@@ -29,6 +29,7 @@ const Course = () => {
     const [title, setTitle] = useState("");
     const [updateCourse] = useUpdateCourseMutation();
     const [updateLanguage] = useUpdateLanguageMutation();
+    const [latePenalty, setLatePenalty] = useState(0);
     const { id }: any = useParams();
     const dispatch = useDispatch();
 
@@ -120,13 +121,15 @@ const Course = () => {
         setTitle(course?.title);
         setDescription(course?.description);
         setLanguage(course?.language);
+        setLatePenalty(course?.late_penalty);
     }, [course, courseIsSuccess]);
 
     const handleUpdate = async () => {
         await updateCourse({
             id: course?.id,
             title,
-            description
+            description,
+            late_penalty: latePenalty,
         })
             .unwrap()
             .then(() => {
@@ -217,7 +220,7 @@ const Course = () => {
         {
             key: 'grading',
             title: 'Grading',
-            content: <Grading course={course} />,
+            content: <Grading course={course} latePenalty={latePenalty} setLatePenalty={setLatePenalty} edit={edit} />,
         },
     ];
 

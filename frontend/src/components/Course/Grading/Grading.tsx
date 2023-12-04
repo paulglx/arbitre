@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import GradingSession from "./GradingSession";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import LatePenalty from "./LatePenalty";
 import NeedHelp from "./NeedHelp";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useGetSessionsOfCourseQuery } from "../../../features/courses/sessionApiSlice";
@@ -43,13 +44,19 @@ const Grading = (props: any) => {
         return null;
     }
 
+    const TutorWarning = () => {
+        return <div className="bg-blue-50 border border-blue-100 text-blue-600 py-1 px-2 rounded-lg text-sm flex items-center mt-4">
+            <InformationCircleIcon className="w-4 h-4 mr-1 inline" />
+            You are a tutor. Only owners can edit the grading grid.
+        </div>
+    }
+
     return (<>
+
         {isTutor ? (
-            <div className="bg-blue-50 border border-blue-100 text-blue-600 py-1 px-2 rounded-lg text-sm flex items-center mt-4">
-                <InformationCircleIcon className="w-4 h-4 mr-1 inline" />
-                You are a tutor. Only owners can edit the grading grid.
-            </div>
+            <TutorWarning />
         ) : null}
+
         <div className={isTutor ? " pointer-events-none opacity-50 select-none" : ""}>
 
             <div className={"flex justify-end my-4"}>
@@ -61,7 +68,13 @@ const Grading = (props: any) => {
                     <span className="mr-1">Need help?</span>
                 </button>
             </div>
+
             {showHelp && <NeedHelp />}
+
+            <LatePenalty latePenalty={props.latePenalty} setLatePenalty={props.setLatePenalty} edit={props.edit} />
+
+            <br />
+
             {sortedSessions ? sortedSessions.map((session: any) => (
                 <div key={session.id}>
                     <GradingSession session={session} />
