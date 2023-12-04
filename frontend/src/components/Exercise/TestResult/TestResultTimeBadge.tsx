@@ -20,7 +20,7 @@ const TestResultTimeBadge = (props: any) => {
             </span>
         </span>
         {showTooltip ?
-            <div id="tooltip" role="tooltip" className="absolute text-center z-10 inline-block px-3 py-1 w-48 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-lg shadow-sm tooltip bottom-full -left-1/2 pointer-events-none mb-1">
+            <div id="tooltip" role="tooltip" className="absolute text-center z-10 inline-block px-3 py-1 w-48 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg shadow-sm tooltip bottom-full -left-1/2 pointer-events-none mb-1">
                 {moment(time).format('MMMM Do YYYY, h:mm:ss a')}
             </div>
             : <></>
