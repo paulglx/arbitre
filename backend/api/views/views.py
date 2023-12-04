@@ -309,10 +309,6 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
         exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
 
-        # Get status for exercises that have been submitted
-        submissions = Submission.objects.filter(owner=user, exercise__in=exercises)
-        submissions_serializer = SubmissionSerializer(submissions, many=True)
-
         # Return exercise and status only
         results = []
         for exercise in exercises_to_do_dict:
