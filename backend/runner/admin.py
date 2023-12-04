@@ -47,8 +47,9 @@ class CourseAdmin(admin.ModelAdmin):
         "owners",
         "tutors",
         "language",
+        "groups_enabled",
         "auto_groups_enabled",
-        "auto_groups_type",
+        "late_penalty",
     ]
     filter_horizontal = [
         "students",

@@ -49,10 +49,7 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                 url: `/api/course/${data.course_id}/`,
                 method: 'PATCH',
                 credentials: 'include',
-                body: {
-                    auto_groups_enabled: data.auto_groups_enabled,
-                    auto_groups_type: data.auto_groups_type,
-                }
+                body: { auto_groups_enabled: data.auto_groups_enabled, }
             })
         }),
         setGroupOfStudent: builder.mutation({

@@ -74,15 +74,11 @@ class Course(models.Model):
     join_code_enabled = models.BooleanField(default=True)
 
     groups_enabled = models.BooleanField(default=False)
-
     auto_groups_enabled = models.BooleanField(default=False)
-    auto_groups_type = models.CharField(
-        max_length=12,
-        choices=[
-            ("alphabetical", _("Alphabetical")),
-            # ("random", _("Random")), ##TODO add random groups
-        ],
-        default="alphabetical",
+
+    late_penalty = models.FloatField(
+        default=0.0,
+        validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
     )
 
     def __str__(self):
