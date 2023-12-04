@@ -13,11 +13,14 @@ const LatePenalty = (props: {
     const { latePenalty, setLatePenalty, edit } = props
 
     const isValid = (n: number) => {
-        if (!n) {
+        if (!edit)
+            return true
+        if (!n)
             return false
-        }
         return n >= 0 && n <= 100
     }
+
+    console.log(latePenalty)
 
     return (
         <div className='mb-2'>
