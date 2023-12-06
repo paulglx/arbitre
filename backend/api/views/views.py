@@ -76,11 +76,12 @@ class SessionViewSet(viewsets.ModelViewSet):
 
         if course_id:
             # If owner, return all sessions
+            course = Course.objects.prefetch_related("session_set").get(id=course_id)
             if (
-                self.request.user in Course.objects.get(id=course_id).owners.all()
-                or self.request.user in Course.objects.get(id=course_id).tutors.all()
+                self.request.user in course.owners.all()
+                or self.request.user in course.tutors.all()
             ):
-                return Session.objects.filter(course_id=course_id)
+                return course.session_set.all()
             # Else, return all sessions. If a session does have a start date, return only sessions that have started
             else:
                 return Session.objects.filter(
@@ -127,6 +128,7 @@ class StudentGroupViewSet(viewsets.ModelViewSet):
     serializer_class = StudentGroupSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
+    @silk_profile(name="StudentGroupViewSet.get_queryset")
     def get_queryset(self):
         course_id = self.request.query_params.get("course_id", None)
         if course_id:
