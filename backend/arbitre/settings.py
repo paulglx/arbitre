@@ -93,8 +93,10 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "silk.middleware.SilkyMiddleware",
 ]
+
+if env("ENABLE_PROFILING", default=False):
+    MIDDLEWARE.append("silk.middleware.SilkyMiddleware")
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -111,8 +113,8 @@ ROOT_URLCONF = "arbitre.urls"
 
 SILKY_MAX_RECORDED_REQUESTS = 10**5
 SILKY_META = True
-SILKY_PYTHON_PROFILER = True
-SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_PYTHON_PROFILER = env("ENABLE_PROFILING", default=False)
+SILKY_PYTHON_PROFILER_BINARY = env("ENABLE_PROFILING", default=False)
 SILKY_PYTHON_PROFILER_RESULT_PATH = "./profiles/"
 
 TEMPLATES = [
