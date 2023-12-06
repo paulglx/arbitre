@@ -13,7 +13,6 @@ __pycache__
 db.sqlite3
 media
 static/
-profiles/
 
 # Celery
 celerybeat-schedule

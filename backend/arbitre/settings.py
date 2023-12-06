@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework",
     "runner.apps.RunnerConfig",
-    "silk",
 ]
 
 # Add 'mozilla_django_oidc' authentication backend
@@ -94,9 +93,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 ]
 
-if env("ENABLE_PROFILER", default="False") == "True":
-    MIDDLEWARE.append("silk.middleware.SilkyMiddleware")
-
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
@@ -109,12 +105,6 @@ CSRF_COOKIE_SECURE = env("USE_HTTPS", default="True") == "True"
 SESSION_COOKIE_SECURE = env("USE_HTTPS", default="True") == "True"
 
 ROOT_URLCONF = "arbitre.urls"
-
-SILKY_MAX_RECORDED_REQUESTS = 10**5
-SILKY_META = True
-SILKY_PYTHON_PROFILER = env("ENABLE_PROFILER", default="False") == "True"
-SILKY_PYTHON_PROFILER_BINARY = env("ENABLE_PROFILER", default="False") == "True"
-SILKY_PYTHON_PROFILER_RESULT_PATH = "./profiles/"
 
 TEMPLATES = [
     {
