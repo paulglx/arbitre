@@ -15,9 +15,8 @@ import environ
 import os
 
 env = environ.Env()
-environ.Env.read_env(
-    env_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-)
+env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+environ.Env.read_env(env_file=env_file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +31,7 @@ SECRET_KEY = env(
 )  # "django-insecure-9p0it%1(1)sv%+s&bv0n@8330j*_)qm76ejwrzg(nea-m=v278"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", default=False)
+DEBUG = env("DEBUG", default="False") == "True"
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", env("HOSTNAME", default="")]
 
@@ -95,7 +94,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 ]
 
-if env("ENABLE_PROFILING", default=False):
+if env("ENABLE_PROFILER", default="False") == "True":
     MIDDLEWARE.append("silk.middleware.SilkyMiddleware")
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -106,15 +105,15 @@ CSRF_TRUSTED_ORIGINS = [
     CSRF_ORIGIN_PREFIX + env("HOSTNAME"),
     env("KEYCLOAK_URL", default="http://localhost:8080"),
 ]
-CSRF_COOKIE_SECURE = env("USE_HTTPS", default=True)
-SESSION_COOKIE_SECURE = env("USE_HTTPS", default=True)
+CSRF_COOKIE_SECURE = env("USE_HTTPS", default="True") == "True"
+SESSION_COOKIE_SECURE = env("USE_HTTPS", default="True") == "True"
 
 ROOT_URLCONF = "arbitre.urls"
 
 SILKY_MAX_RECORDED_REQUESTS = 10**5
 SILKY_META = True
-SILKY_PYTHON_PROFILER = env("ENABLE_PROFILING", default=False)
-SILKY_PYTHON_PROFILER_BINARY = env("ENABLE_PROFILING", default=False)
+SILKY_PYTHON_PROFILER = env("ENABLE_PROFILER", default="False") == "True"
+SILKY_PYTHON_PROFILER_BINARY = env("ENABLE_PROFILER", default="False") == "True"
 SILKY_PYTHON_PROFILER_RESULT_PATH = "./profiles/"
 
 TEMPLATES = [
