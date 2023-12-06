@@ -75,11 +75,12 @@ class SessionViewSet(viewsets.ModelViewSet):
 
         if course_id:
             # If owner, return all sessions
+            course = Course.objects.prefetch_related("session_set").get(id=course_id)
             if (
-                self.request.user in Course.objects.get(id=course_id).owners.all()
-                or self.request.user in Course.objects.get(id=course_id).tutors.all()
+                self.request.user in course.owners.all()
+                or self.request.user in course.tutors.all()
             ):
-                return Session.objects.filter(course_id=course_id)
+                return course.session_set.all()
             # Else, return all sessions. If a session does have a start date, return only sessions that have started
             else:
                 return Session.objects.filter(
@@ -301,44 +302,49 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-        user = User.objects.get(id=request.data["user_id"])
-        session = Session.objects.get(id=request.data["session_id"])
+        user = User.objects.prefetch_related(
+            "submission_set", "submission_set__testresult_set"
+        ).get(id=request.data["user_id"])
+
+        session = Session.objects.prefetch_related("exercise_set").get(
+            id=request.data["session_id"]
+        )
 
         # Get all the exercises to do in the session
-        exercises = Exercise.objects.filter(session=session)
-        exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
-        exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
+        exercises = session.exercise_set.all()
 
         # Return exercise and status only
         results = []
-        for exercise in exercises_to_do_dict:
-            status = "not submitted"
 
-            submission = Submission.objects.filter(
-                owner=user, exercise_id=exercise["id"]
-            ).first()
-            submission_serializer = SubmissionSerializer(submission)
+        for exercise in exercises:
+            submission = exercise.submission_set.filter(owner=user).first()
 
             if submission:
-                status = submission.status
+                submission_serializer = SubmissionSerializer(submission)
+                late = submission_serializer.data["late"] if submission else False
 
-            # Get status for exercise tests
-            testResults = TestResult.objects.filter(
-                submission__owner=user, submission__exercise_id=exercise["id"]
-            )
-            testResults_serializer = TestResultSerializer(testResults, many=True)
+                results.append(
+                    {
+                        "exercise_id": exercise.id,
+                        "exercise_title": exercise.title,
+                        "status": submission.status,
+                        "testResults": TestResultSerializer(
+                            submission.testresult_set.all(), many=True
+                        ).data,
+                        "late": late,
+                    }
+                )
 
-            late = submission_serializer.data["late"] if submission else False
-
-            results.append(
-                {
-                    "exercise_id": exercise["id"],
-                    "exercise_title": exercise["title"],
-                    "status": status,
-                    "testResults": testResults_serializer.data,
-                    "late": late,
-                }
-            )
+            else:
+                results.append(
+                    {
+                        "exercise_id": exercise.id,
+                        "exercise_title": exercise.title,
+                        "status": "not submitted",
+                        "testResults": [],
+                        "late": False,
+                    }
+                )
 
         return Response(results)
 
@@ -358,60 +364,53 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-        session = Session.objects.get(id=self.request.GET.get("session_id"))
+        session = (
+            Session.objects.select_related("course")
+            .prefetch_related("course__studentgroup_set", "course__students")
+            .get(id=self.request.GET.get("session_id"))
+        )
+        course = session.course
 
+        # If groups param is passed, get all students of the groups
         if "groups" in self.request.GET and self.request.GET.get("groups") != "":
             groups = []
-            for group_id in self.request.GET.get("groups").split(","):
-                group = StudentGroup.objects.get(id=group_id)
-                groups.append(group)
 
-            # Check if the groups exist and belong to the course
-            for group in groups:
-                if (
-                    group not in StudentGroup.objects.all()
-                    or group.course != session.course
-                ):
+            for group_id in self.request.GET.get("groups").split(","):
+                group = course.studentgroup_set.filter(id=group_id).first()
+
+                if not group:
                     return Response(
                         {"message": "NOT FOUND: Group not found or not in course"},
                         status=status.HTTP_404_NOT_FOUND,
                     )
 
+                groups.append(group)
+
             students = []
             for group in groups:
-                for student in group.students.all():
-                    students.append(student)
+                students += group.students.all()
 
         else:
-            students = session.course.students.all()
-        students_ids = [student.id for student in students]
+            students = course.students.all()
 
         students_data = []
-        for student_id in students_ids:
+        for student in students:
             result_request = HttpRequest()
             result_request.method = "GET"
             result_request.data = {
-                "user_id": student_id,
+                "user_id": student.id,
                 "session_id": session.id,
             }
 
             result_response = ResultsOfSessionViewSet.list(self, result_request).data
 
-            try:
-                student_group = StudentGroup.objects.get(
-                    students__in=[student_id], course=session.course
-                ).id
-            except StudentGroup.DoesNotExist:
-                student_group = None
-
             # Late submission penalty (from course)
-            late_penalty = session.course.late_penalty
+            late_penalty = course.late_penalty
 
             students_data.append(
                 {
-                    "user_id": student_id,
-                    "username": User.objects.get(id=student_id).username,
-                    "group": student_group,
+                    "user_id": student.id,
+                    "username": student.username,
                     "exercises": result_response,
                     "late_penalty": late_penalty,
                 }

@@ -14,11 +14,12 @@ pkgs.mkShell {
       djangorestframework-simplejwt
       drf-yasg
       gunicorn
-      python-keycloak
       mozilla-django-oidc
       packaging
       psycopg2
       pylama
+      python-keycloak
+      pyyaml
       requests
       uvicorn
     ]))
