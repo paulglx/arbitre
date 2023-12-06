@@ -303,44 +303,49 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
 
     @silk_profile(name="ResultsOfSessionViewSet.list")
     def list(self, request):
-        user = User.objects.get(id=request.data["user_id"])
-        session = Session.objects.get(id=request.data["session_id"])
+        user = User.objects.prefetch_related(
+            "submission_set", "submission_set__testresult_set"
+        ).get(id=request.data["user_id"])
+
+        session = Session.objects.prefetch_related("exercise_set").get(
+            id=request.data["session_id"]
+        )
 
         # Get all the exercises to do in the session
-        exercises = Exercise.objects.filter(session=session)
-        exercises_to_do = MinimalExerciseSerializer(instance=exercises, many=True)
-        exercises_to_do_dict = json.loads(json.dumps(exercises_to_do.data))
+        exercises = session.exercise_set.all()
 
         # Return exercise and status only
         results = []
-        for exercise in exercises_to_do_dict:
-            status = "not submitted"
 
-            submission = Submission.objects.filter(
-                owner=user, exercise_id=exercise["id"]
-            ).first()
-            submission_serializer = SubmissionSerializer(submission)
+        for exercise in exercises:
+            submission = exercise.submission_set.filter(owner=user).first()
 
             if submission:
-                status = submission.status
+                submission_serializer = SubmissionSerializer(submission)
+                late = submission_serializer.data["late"] if submission else False
 
-            # Get status for exercise tests
-            testResults = TestResult.objects.filter(
-                submission__owner=user, submission__exercise_id=exercise["id"]
-            )
-            testResults_serializer = TestResultSerializer(testResults, many=True)
+                results.append(
+                    {
+                        "exercise_id": exercise.id,
+                        "exercise_title": exercise.title,
+                        "status": submission.status,
+                        "testResults": TestResultSerializer(
+                            submission.testresult_set.all(), many=True
+                        ).data,
+                        "late": late,
+                    }
+                )
 
-            late = submission_serializer.data["late"] if submission else False
-
-            results.append(
-                {
-                    "exercise_id": exercise["id"],
-                    "exercise_title": exercise["title"],
-                    "status": status,
-                    "testResults": testResults_serializer.data,
-                    "late": late,
-                }
-            )
+            else:
+                results.append(
+                    {
+                        "exercise_id": exercise.id,
+                        "exercise_title": exercise.title,
+                        "status": "not submitted",
+                        "testResults": [],
+                        "late": False,
+                    }
+                )
 
         return Response(results)
 
