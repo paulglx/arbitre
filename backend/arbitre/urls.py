@@ -108,4 +108,6 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
+    # Silk
+    path("silk/", include("silk.urls", namespace="silk")),
 ]

@@ -10,15 +10,17 @@ pkgs.mkShell {
       django-cors-headers
       django-environ
       django-extensions
+      django-silk
       djangorestframework
       djangorestframework-simplejwt
       drf-yasg
       gunicorn
-      python-keycloak
       mozilla-django-oidc
       packaging
       psycopg2
       pylama
+      python-keycloak
+      pyyaml
       requests
       uvicorn
     ]))

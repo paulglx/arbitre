@@ -8,20 +8,20 @@ final: prev: {
       moto = super.moto.overridePythonAttrs { doCheck = false; };
       celery = super.celery.overridePythonAttrs { doCheck = false; };
       mozilla-django-oidc = self.buildPythonPackage rec {
-          pname = "mozilla-django-oidc";
-          version = "3.0.0";
-          src = self.fetchPypi {
-              inherit pname version;
-              sha256 = "sha256-p9RHr4PLWqFnGiQAmwzmsvDSWenFjYyIx6jQwnwFwE0=";
-          };
-          propagatedBuildInputs = [
-              self.django_4
-              self.josepy
-              self.requests
-              self.cryptography
-          ];
+        pname = "mozilla-django-oidc";
+        version = "3.0.0";
+        src = self.fetchPypi {
+          inherit pname version;
+          sha256 = "sha256-p9RHr4PLWqFnGiQAmwzmsvDSWenFjYyIx6jQwnwFwE0=";
+        };
+        propagatedBuildInputs = [
+          self.django_4
+          self.josepy
+          self.requests
+          self.cryptography
+        ];
 
-          doCheck = false;
+        doCheck = false;
       };
     };
   };

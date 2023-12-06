@@ -41,19 +41,20 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "corsheaders",
     "django_celery_beat",
+    "django_extensions",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "django_extensions",
     "drf_yasg",
     "mozilla_django_oidc",
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework_simplejwt",
     "rest_framework",
     "runner.apps.RunnerConfig",
+    "silk",
 ]
 
 # Add 'mozilla_django_oidc' authentication backend
@@ -92,6 +93,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "silk.middleware.SilkyMiddleware",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -106,6 +108,11 @@ CSRF_COOKIE_SECURE = env("USE_HTTPS", default=True)
 SESSION_COOKIE_SECURE = env("USE_HTTPS", default=True)
 
 ROOT_URLCONF = "arbitre.urls"
+
+SILKY_MAX_RECORDED_REQUESTS = 10**5
+SILKY_META = True
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
 
 TEMPLATES = [
     {
