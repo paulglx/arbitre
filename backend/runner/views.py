@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
+from silk.profiling.profiler import silk_profile
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -49,6 +50,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         submission.refresh_status()
 
     # Get submission for  exercise if exercise_id is given
+    @silk_profile(name="SubmissionViewSet.get_queryset")
     def get_queryset(self):
         exercise_id = self.request.query_params.get("exercise_id", None)
         user_id = self.request.query_params.get("user_id", None)
@@ -114,6 +116,7 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     # GET runner/api/submission-file?submission_id=...
+    @silk_profile(name="SubmissionFileViewSet.list")
     def list(self, request):
         error_response = JsonResponse(
             {"file": "Not Found", "content": "", "language": ""}
@@ -243,6 +246,7 @@ class TestResultViewSet(viewsets.ModelViewSet):
     serializer_class = TestResultSerializer
 
     # GET runner/api?exercise_id=...
+    @silk_profile(name="TestResultViewSet.get_queryset")
     def get_queryset(self):
         exercise_id = self.request.query_params.get("exercise_id")
 

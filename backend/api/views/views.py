@@ -16,6 +16,7 @@ from runner.models import TestResult
 from runner.serializers import SubmissionSerializer
 from runner.serializers import TestResultSerializer
 from django.utils import timezone
+from silk.profiling.profiler import silk_profile
 import json
 
 
@@ -300,6 +301,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.IsAuthenticated,)
 
+    @silk_profile(name="ResultsOfSessionViewSet.list")
     def list(self, request):
         user = User.objects.get(id=request.data["user_id"])
         session = Session.objects.get(id=request.data["session_id"])
@@ -357,6 +359,7 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.IsAuthenticated,)
 
+    @silk_profile(name="AllResultsOfSessionViewSet.list")
     def list(self, request):
         session = Session.objects.get(id=self.request.GET.get("session_id"))
 
@@ -432,6 +435,7 @@ class AllResultsViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.IsAuthenticated,)
 
+    @silk_profile(name="AllResultsViewSet.list")
     def list(self, request):
         user = self.request.user
         courses = Course.objects.filter(
