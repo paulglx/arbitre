@@ -366,60 +366,53 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
 
     @silk_profile(name="AllResultsOfSessionViewSet.list")
     def list(self, request):
-        session = Session.objects.get(id=self.request.GET.get("session_id"))
+        session = (
+            Session.objects.select_related("course")
+            .prefetch_related("course__studentgroup_set", "course__students")
+            .get(id=self.request.GET.get("session_id"))
+        )
+        course = session.course
 
+        # If groups param is passed, get all students of the groups
         if "groups" in self.request.GET and self.request.GET.get("groups") != "":
             groups = []
-            for group_id in self.request.GET.get("groups").split(","):
-                group = StudentGroup.objects.get(id=group_id)
-                groups.append(group)
 
-            # Check if the groups exist and belong to the course
-            for group in groups:
-                if (
-                    group not in StudentGroup.objects.all()
-                    or group.course != session.course
-                ):
+            for group_id in self.request.GET.get("groups").split(","):
+                group = course.studentgroup_set.filter(id=group_id).first()
+
+                if not group:
                     return Response(
                         {"message": "NOT FOUND: Group not found or not in course"},
                         status=status.HTTP_404_NOT_FOUND,
                     )
 
+                groups.append(group)
+
             students = []
             for group in groups:
-                for student in group.students.all():
-                    students.append(student)
+                students += group.students.all()
 
         else:
-            students = session.course.students.all()
-        students_ids = [student.id for student in students]
+            students = course.students.all()
 
         students_data = []
-        for student_id in students_ids:
+        for student in students:
             result_request = HttpRequest()
             result_request.method = "GET"
             result_request.data = {
-                "user_id": student_id,
+                "user_id": student.id,
                 "session_id": session.id,
             }
 
             result_response = ResultsOfSessionViewSet.list(self, result_request).data
 
-            try:
-                student_group = StudentGroup.objects.get(
-                    students__in=[student_id], course=session.course
-                ).id
-            except StudentGroup.DoesNotExist:
-                student_group = None
-
             # Late submission penalty (from course)
-            late_penalty = session.course.late_penalty
+            late_penalty = course.late_penalty
 
             students_data.append(
                 {
-                    "user_id": student_id,
-                    "username": User.objects.get(id=student_id).username,
-                    "group": student_group,
+                    "user_id": student.id,
+                    "username": student.username,
                     "exercises": result_response,
                     "late_penalty": late_penalty,
                 }
