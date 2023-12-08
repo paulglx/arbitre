@@ -384,6 +384,7 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
             .prefetch_related("course__studentgroup_set", "course__students")
             .get(id=self.request.GET.get("session_id"))
         )
+        
         course = session.course
 
         # If groups param is passed, get all students of the groups
