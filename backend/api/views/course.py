@@ -6,7 +6,6 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 import secrets
 import string
-from silk.profiling.profiler import silk_profile
 
 
 class IsCourseOwner(permissions.BasePermission):
@@ -49,7 +48,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         return join_code
 
     # Allow students, tutors or owners to get their courses
-    @silk_profile(name="CourseViewSet.get_queryset")
     def get_queryset(self):
         # if param 'all' is set, return all courses
         if self.request.query_params.get("all", None) == "true":

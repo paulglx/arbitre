@@ -70,7 +70,6 @@ class SessionViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     # Return sessions of course if course_id param passed. Else, return all sessions
-    @silk_profile(name="SessionViewSet.get_queryset")
     def get_queryset(self):
         course_id = self.request.query_params.get("course_id")
 
@@ -101,7 +100,6 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     # Return exercises of session if course_id param passed. Else, return all sessions
-    @silk_profile(name="ExerciseViewSet.get_queryset")
     def get_queryset(self):
         session_id = self.request.query_params.get("session_id")
 
@@ -247,7 +245,6 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.IsAuthenticated,)
 
-    @silk_profile(name="CoursesSessionsExercisesViewSet.list")
     def list(self, request):
         user = request.user
 
