@@ -75,6 +75,7 @@ class RefreshSubmissionViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     # GET runner/api/refresh-submission?submission_id=...
+    @silk_profile(name="RefreshSubmissionViewSet.list")
     def list(self, request):
         try:
             # if all=true parameter passed, refresh all submissions
@@ -188,6 +189,7 @@ class TestViewSet(viewsets.ModelViewSet):
     serializer_class = TestSerializer
 
     # Get the tests for the exercise if exercise_id is given
+    @silk_profile(name="TestViewSet.get_queryset")
     def get_queryset(self):
         queryset = Test.objects.all()
         exercise_id = self.request.query_params.get("exercise_id", None)
