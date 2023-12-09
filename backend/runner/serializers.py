@@ -1,7 +1,6 @@
 from .models import Submission, Test, TestResult
 from rest_framework import serializers, validators
 import copy
-import requests
 
 
 class TestSerializer(serializers.ModelSerializer):
@@ -29,7 +28,6 @@ class SubmissionSerializer(serializers.ModelSerializer):
             if isinstance(validator, validators.UniqueTogetherValidator):
                 self.validators.remove(validator)
         super(SubmissionSerializer, self).run_validators(value)
-
 
 class TestResultSerializer(serializers.ModelSerializer):
     # Fixes depth=1 ignoring fields

@@ -302,22 +302,28 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-        user = User.objects.prefetch_related(
-            "submission_set", "submission_set__testresult_set"
-        ).get(id=request.data["user_id"])
 
-        session = Session.objects.prefetch_related("exercise_set").get(
-            id=request.data["session_id"]
-        )
+        user_id = request.data.get("user_id")
+        session_id = request.data.get("session_id")
 
-        # Get all the exercises to do in the session
-        exercises = session.exercise_set.all()
+        # Get all the exercises of the session
+        exercises = Exercise.objects.filter(session_id=session_id)
 
-        # Return exercise and status only
+        # Get all the submissions of the user for the session
+        submissions = Submission.objects.filter(
+            exercise__session_id=session_id, owner_id=user_id
+        ).prefetch_related("testresult_set", "exercise__test_set").select_related("exercise", "exercise__session")
+
+        # Put this query in a dict
+        submissions_dict = {}
+        for submission in submissions:
+            submissions_dict[submission.exercise_id] = submission
+
         results = []
 
+        # For evry exercise, get the submission of the user from 'submissions'. The database is queried only once. To achieve this, we use a dictionary.
         for exercise in exercises:
-            submission = exercise.submission_set.filter(owner=user).first()
+            submission = submissions_dict.get(exercise.id, None)
 
             if submission:
                 submission_serializer = SubmissionSerializer(submission)
@@ -331,6 +337,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
                         "testResults": TestResultSerializer(
                             submission.testresult_set.all(), many=True
                         ).data,
+                        # TODO Fix this. We only pass the full testResult for grade calculation, which results in terrible performance. The way grade is calculated should be changed.
                         "late": late,
                     }
                 )
@@ -345,6 +352,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
                         "late": False,
                     }
                 )
+
 
         return Response(results)
 
@@ -369,6 +377,7 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
             .prefetch_related("course__studentgroup_set", "course__students")
             .get(id=self.request.GET.get("session_id"))
         )
+        
         course = session.course
 
         # If groups param is passed, get all students of the groups
