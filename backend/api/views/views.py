@@ -337,7 +337,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
                         "testResults": TestResultSerializer(
                             submission.testresult_set.all(), many=True
                         ).data,
-                        # TODO: Fix this. We only pass the full testResult for grade calculation, which results in terrible performance. The way grade is calculated should be changed.
+                        # TODO Fix this. We only pass the full testResult for grade calculation, which results in terrible performance. The way grade is calculated should be changed.
                         "late": late,
                     }
                 )
