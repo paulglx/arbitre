@@ -1,11 +1,11 @@
 repo_name: paulglx/arbitre
-report_id: 37a767562b4ec45fc08698530af5cb72
+report_id: 9a5222a004389e949001d60e31e11618
 repo_type: Public
-timestamp: '2023-11-09T16:00:51+00:00'
+timestamp: '2023-12-14T09:39:57+00:00'
 requested_by: paulglx
 provider: github
 branch: main
-detected_tools_count: 42
+detected_tools_count: 48
 tools:
 - name: CSS 3
   description: The latest evolution of the Cascading Style Sheets language
@@ -46,18 +46,6 @@ tools:
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1612/bynNY5dJ.jpg
   detection_source: Repo Metadata
-- name: Django
-  description: The Web framework for perfectionists with deadlines
-  website_url: https://www.djangoproject.com/
-  license: BSD-3-Clause
-  open_source: true
-  hosted_saas: false
-  category: Languages & Frameworks
-  sub_category: Frameworks (Full Stack)
-  image_url: https://img.stackshare.io/service/994/4aGjtNQv.png
-  detection_source: backend/requirements.txt
-  last_updated_by: paulglx
-  last_updated_on: 2023-08-16 10:48:34.000000000 Z
 - name: Node.js
   description: A platform built on Chrome's JavaScript runtime for easily building
     fast, scalable network applications
@@ -80,7 +68,7 @@ tools:
   category: Libraries
   sub_category: Javascript UI Libraries
   image_url: https://img.stackshare.io/service/1020/OYIaJ1KK.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -94,7 +82,7 @@ tools:
   category: Libraries
   sub_category: JavaScript Framework Components
   image_url: https://img.stackshare.io/service/3350/8261421.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -107,21 +95,22 @@ tools:
   category: Libraries
   sub_category: State Management Library
   image_url: https://img.stackshare.io/service/4074/13142323.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-17 15:25:46.000000000 Z
-- name: Celery
-  description: Distributed task queue
-  website_url: http://www.celeryproject.org/
+- name: Tailwind CSS
+  description: A utility-first CSS framework for rapid UI development
+  website_url: https://tailwindcss.com
+  license: MIT
   open_source: true
   hosted_saas: false
-  category: Data Stores
-  sub_category: Message Queue
-  image_url: https://img.stackshare.io/service/1075/celery.png
-  detection_source: backend/requirements.txt
+  category: Languages & Frameworks
+  sub_category: Front-End Frameworks
+  image_url: https://img.stackshare.io/service/8158/default_660b7c41c3ba489cb581eec89c04655404258c19.png
+  detection_source: frontend/package.json
   last_updated_by: paulglx
-  last_updated_on: 2023-06-26 15:12:10.000000000 Z
+  last_updated_on: 2023-07-20 08:14:42.000000000 Z
 - name: Redux Persist
   description: A library to persist and rehydrate a redux store
   website_url: https://github.com/rt2zz/redux-persist
@@ -132,10 +121,21 @@ tools:
   category: Data Stores
   sub_category: Javascript Utilities & Libraries
   image_url: https://img.stackshare.io/service/6740/no-img-open-source.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-17 15:25:46.000000000 Z
+- name: pgvector
+  description: Open-source vector similarity search for Postgres
+  website_url: https://github.com/pgvector/pgvector/
+  open_source: false
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Database Tools
+  image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source: backend/requirements.txt
+  last_updated_by: paulglx
+  last_updated_on: 2022-10-24 09:09:48.000000000 Z
 - name: ESLint
   description: The fully pluggable JavaScript code quality tool
   website_url: http://eslint.org/
@@ -165,7 +165,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Continuous Integration
   image_url: https://img.stackshare.io/service/11563/actions.png
-  detection_source: ".github/workflows/playwright.yml"
+  detection_source: ".github/workflows/django.yml"
   last_updated_by: paulglx
   last_updated_on: 2023-06-21 12:51:20.000000000 Z
 - name: Jest
@@ -178,7 +178,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Javascript Testing Framework
   image_url: https://img.stackshare.io/service/830/jest.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-07 08:47:25.000000000 Z
@@ -213,7 +213,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: JS Build Tools / JS Task Runners
   image_url: https://img.stackshare.io/service/1682/IMG_4636.PNG
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/webpack.config.js
   last_updated_by: paulglx
   last_updated_on: 2022-12-22 16:13:59.000000000 Z
@@ -228,6 +228,38 @@ tools:
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-07 08:47:25.000000000 Z
+- name: Flowbite
+  description: Open-source library of Tailwind CSS components
+  website_url: https://flowbite.com/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: UI Components
+  image_url: https://img.stackshare.io/service/40090/default_dd2d5033d0363b16e87367cb62b402aa9da531bf.png
+  detection_source: frontend/package.json
+  last_updated_by: paulglx
+  last_updated_on: 2023-07-03 14:53:40.000000000 Z
+- name: HTML
+  description: Hypertext Markup Language for creating web pages.
+  website_url: http://
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source: backend/runner/templates/runner/index.html
+  last_updated_by: paulglx
+  last_updated_on: 2022-09-29 08:59:50.000000000 Z
+- name: LangChain
+  description: Build AI apps with LLMs through composability
+  website_url: https://github.com/hwchase17/langchain
+  open_source: true
+  hosted_saas: false
+  category: Communications
+  sub_category: Large Language Model Tools
+  image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source: backend/requirements.txt
+  last_updated_by: paulglx
+  last_updated_on: 2022-10-24 09:09:48.000000000 Z
 - name: Moment.js
   description: A JavaScript date library for parsing, validating, manipulating, and
     formatting dates
@@ -239,7 +271,7 @@ tools:
   category: Libraries
   sub_category: Javascript Utilities & Libraries
   image_url: https://img.stackshare.io/service/3643/Xrtdc94q_400x400.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-01-03 12:57:20.000000000 Z
@@ -263,7 +295,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15840/default_004658cda9b38934f2871435e9dc15608c86e8be.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-02-01 16:21:12.000000000 Z
@@ -277,7 +309,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15809/default_5e5e8ac63beda29f31f1844df64d4b8247570a66.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-02-01 16:21:12.000000000 Z
@@ -291,7 +323,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15894/default_1d65e37e65b7f80761374f0202776043277d505d.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -305,7 +337,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15946/default_54b691c123fc8979741e800e4dcd3936c0f3b246.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -319,7 +351,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/18320/default_185a3d4e97cf62330a9efe7678914006c4eeb555.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-11-14 09:06:53.000000000 Z
@@ -333,7 +365,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15847/default_4479dbac220be99e50e724b2df6cf415241d71fd.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-01-03 12:57:20.000000000 Z
@@ -347,7 +379,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15808/default_14fd11531839d935f920b6d55bd6f3528c890ad7.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -361,7 +393,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16909/default_7b9968788548874538c601457e8dcd9c74bd2051.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -375,7 +407,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/17056/default_d17bbf7e4f3b102e29ff09c01b8165e7ba600319.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-07-07 17:51:10.000000000 Z
@@ -389,7 +421,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15984/default_f49d4c116f8ea0155f4d92673b084378bba02760.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -403,7 +435,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16025/default_e25d1fbb04a118c79fb444294461417342bd03bf.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -417,7 +449,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15985/default_8b5680d4e916298d08363c291a0d6e34c07ceb15.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: sepulvedalili
   last_updated_on: 2023-06-27 12:09:25.000000000 Z
@@ -431,13 +463,62 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/17398/default_2cd7ed1c123f2fca074a6f4b16c4e73d5bfe82be.png
-  detection_source_url: frontend/package-lock.json
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package-lock.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-07-20 08:14:42.000000000 Z
+- name: Django
+  description: A high-level Python Web framework that encourages rapid development
+    and clean
+  package_url: https://pypi.org/project/Django
+  version: 4.1.2
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19832/default_58dbe7b4d7ec447b62773209af0f9a31bbabf5bd.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
+  detection_source: backend/requirements.txt
+  last_updated_by: paulglx
+  last_updated_on: 2023-08-16 10:48:34.000000000 Z
+  vulnerabilities:
+  - name: Django bypasses validation when using one form field to upload multiple
+      files
+    cve_id: CVE-2023-31047
+    cve_url: https://github.com/advisories/GHSA-r3xc-prgr-mg9p
+    detected_date: May 10
+    severity: critical
+    first_patched: 4.1.9
+  - name: Resource exhaustion in Django
+    cve_id: CVE-2023-24580
+    cve_url: https://github.com/advisories/GHSA-2hrw-hx67-34x6
+    detected_date: Feb 16
+    severity: high
+    first_patched: 4.1.7
+  - name: Django has regular expression denial of service vulnerability in EmailValidator/URLValidator
+    cve_id: CVE-2023-36053
+    cve_url: https://github.com/advisories/GHSA-jh3w-4vvf-mjgr
+    detected_date: Jul 6
+    severity: high
+    first_patched: 4.1.10
+- name: celery
+  description: Distributed Task Queue
+  package_url: https://pypi.org/project/celery
+  version: 5.2.7
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19901/default_4f4fb10b6f169603a907dcb35a5a356d784e3bd3.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
+  detection_source: backend/requirements.txt
+  last_updated_by: paulglx
+  last_updated_on: 2023-06-26 15:12:10.000000000 Z
 - name: coverage
   description: Code coverage measurement for Python
-  package_url: https://pypi.org/coverage
+  package_url: https://pypi.org/project/coverage
   version: 6.5.0
   license: Apache-2.0
   open_source: true
@@ -445,14 +526,14 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19904/default_1d0eb6da6bdd342bb15f73d8f1721516ebacd1dc.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2022-12-02 14:13:46.000000000 Z
 - name: django-cors-headers
   description: Django-cors-headers is a Django application for handling the server
     headers required for Cross-Origin Resource Sharing
-  package_url: https://pypi.org/django-cors-headers
+  package_url: https://pypi.org/project/django-cors-headers
   version: 3.13.0
   license: MIT
   open_source: true
@@ -460,14 +541,14 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20425/default_fd0859a8a050b41b42cc678a2c0c5f51ce41801a.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2023-08-16 10:48:34.000000000 Z
 - name: django-environ
   description: Django-environ allows you to utilize 12factor inspired environment
     variables to configure your Django application
-  package_url: https://pypi.org/django-environ
+  package_url: https://pypi.org/project/django-environ
   version: 0.9.0
   license: MIT
   open_source: true
@@ -475,13 +556,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20684/default_c0915e70f83a4ff795fa420880db8a76377fceac.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2023-08-16 10:48:34.000000000 Z
 - name: django-extensions
   description: Extensions for Django
-  package_url: https://pypi.org/django-extensions
+  package_url: https://pypi.org/project/django-extensions
   version: 3.1.3
   license: MIT
   open_source: true
@@ -489,13 +570,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20221/default_de20d7ae2b6948b5b182b4fc08037d5f45d6d0a6.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2023-08-16 10:48:34.000000000 Z
 - name: djangorestframework
   description: Web APIs for Django, made easy
-  package_url: https://pypi.org/djangorestframework
+  package_url: https://pypi.org/project/djangorestframework
   version: 3.14.0
   license: BSD-3-Clause
   open_source: true
@@ -503,13 +584,27 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19870/default_d05f6f09935776629f62e8aed365805502c14921.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
+  detection_source: backend/requirements.txt
+  last_updated_by: paulglx
+  last_updated_on: 2023-08-16 10:48:34.000000000 Z
+- name: djangorestframework-simplejwt
+  description: A minimal JSON Web Token authentication plugin for Django REST Framework
+  package_url: https://pypi.org/project/djangorestframework-simplejwt
+  version: 5.2.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2023-08-16 10:48:34.000000000 Z
 - name: packaging
   description: Core utilities for Python packages
-  package_url: https://pypi.org/packaging
+  package_url: https://pypi.org/project/packaging
   version: '22.0'
   license: BSD-3-Clause,Apache-2.0
   open_source: true
@@ -517,13 +612,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19894/default_f716e4bc541a9eb6e3f5b7a20d7c35355075b0b4.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2023-06-26 15:20:04.000000000 Z
 - name: psycopg2
   description: Psycopg2 - Python-PostgreSQL Database Adapter
-  package_url: https://pypi.org/psycopg2
+  package_url: https://pypi.org/project/psycopg2
   version: 2.9.5
   license: BSD-3-Clause-Attribution
   open_source: true
@@ -531,13 +626,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20416/default_64aa60b33468d1d28611966765867676f6303b64.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2023-06-26 15:23:12.000000000 Z
 - name: requests
   description: Python HTTP for Humans
-  package_url: https://pypi.org/requests
+  package_url: https://pypi.org/project/requests
   version: 2.28.1
   license: Apache-2.0
   open_source: true
@@ -545,7 +640,7 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19826/default_d7c684bf2673f008a9f02ac93901229297a22d7e.png
-  detection_source_url: backend/requirements.txt
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2022-10-24 09:09:48.000000000 Z
