@@ -1,13 +1,12 @@
 <!--
---- Readme.md Snippet without images Start ---
+&lt;--- Readme.md Snippet without images Start ---&gt;
 ## Tech Stack
 paulglx/arbitre is built on the following main stack:
+
 - [Jest](http://facebook.github.io/jest/) – Javascript Testing Framework
 - [Python](https://www.python.org) – Languages
-- [Django](https://www.djangoproject.com/) – Frameworks (Full Stack)
 - [Node.js](http://nodejs.org/) – Frameworks (Full Stack)
 - [React](https://reactjs.org/) – Javascript UI Libraries
-- [Celery](http://www.celeryproject.org/) – Message Queue
 - [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
 - [TypeScript](http://www.typescriptlang.org) – Languages
 - [Webpack](http://webpack.js.org) – JS Build Tools / JS Task Runners
@@ -18,20 +17,24 @@ paulglx/arbitre is built on the following main stack:
 - [Nix](http://nixos.org/nix) – Package Managers
 - [Shell](https://en.wikipedia.org/wiki/Shell_script) – Shells
 - [Redux Persist](https://github.com/rt2zz/redux-persist) – Mobile Database
+- [Tailwind CSS](https://tailwindcss.com) – Front-End Frameworks
 - [GitHub Actions](https://github.com/features/actions) – Continuous Integration
+- [Flowbite](https://flowbite.com/) – UI Components
+- [LangChain](https://github.com/hwchase17/langchain) – Large Language Model Tools
+- [pgvector](https://github.com/pgvector/pgvector/) – Database Tools
 
 Full tech stack [here](/techstack.md)
---- Readme.md Snippet without images End ---
 
---- Readme.md Snippet with images Start ---
+&lt;--- Readme.md Snippet without images End ---&gt;
+
+&lt;--- Readme.md Snippet with images Start ---&gt;
 ## Tech Stack
 paulglx/arbitre is built on the following main stack:
+
 - <img width='25' height='25' src='https://img.stackshare.io/service/830/jest.png' alt='Jest'/> [Jest](http://facebook.github.io/jest/) – Javascript Testing Framework
 - <img width='25' height='25' src='https://img.stackshare.io/service/993/pUBY5pVj.png' alt='Python'/> [Python](https://www.python.org) – Languages
-- <img width='25' height='25' src='https://img.stackshare.io/service/994/4aGjtNQv.png' alt='Django'/> [Django](https://www.djangoproject.com/) – Frameworks (Full Stack)
 - <img width='25' height='25' src='https://img.stackshare.io/service/1011/n1JRsFeB_400x400.png' alt='Node.js'/> [Node.js](http://nodejs.org/) – Frameworks (Full Stack)
 - <img width='25' height='25' src='https://img.stackshare.io/service/1020/OYIaJ1KK.png' alt='React'/> [React](https://reactjs.org/) – Javascript UI Libraries
-- <img width='25' height='25' src='https://img.stackshare.io/service/1075/celery.png' alt='Celery'/> [Celery](http://www.celeryproject.org/) – Message Queue
 - <img width='25' height='25' src='https://img.stackshare.io/service/1209/javascript.jpeg' alt='JavaScript'/> [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
 - <img width='25' height='25' src='https://img.stackshare.io/service/1612/bynNY5dJ.jpg' alt='TypeScript'/> [TypeScript](http://www.typescriptlang.org) – Languages
 - <img width='25' height='25' src='https://img.stackshare.io/service/1682/IMG_4636.PNG' alt='Webpack'/> [Webpack](http://webpack.js.org) – JS Build Tools / JS Task Runners
@@ -42,17 +45,22 @@ paulglx/arbitre is built on the following main stack:
 - <img width='25' height='25' src='https://img.stackshare.io/service/4348/ET9J1uY-_400x400.png' alt='Nix'/> [Nix](http://nixos.org/nix) – Package Managers
 - <img width='25' height='25' src='https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png' alt='Shell'/> [Shell](https://en.wikipedia.org/wiki/Shell_script) – Shells
 - <img width='25' height='25' src='https://img.stackshare.io/service/6740/no-img-open-source.png' alt='Redux Persist'/> [Redux Persist](https://github.com/rt2zz/redux-persist) – Mobile Database
+- <img width='25' height='25' src='https://img.stackshare.io/service/8158/default_660b7c41c3ba489cb581eec89c04655404258c19.png' alt='Tailwind CSS'/> [Tailwind CSS](https://tailwindcss.com) – Front-End Frameworks
 - <img width='25' height='25' src='https://img.stackshare.io/service/11563/actions.png' alt='GitHub Actions'/> [GitHub Actions](https://github.com/features/actions) – Continuous Integration
+- <img width='25' height='25' src='https://img.stackshare.io/service/40090/default_dd2d5033d0363b16e87367cb62b402aa9da531bf.png' alt='Flowbite'/> [Flowbite](https://flowbite.com/) – UI Components
+- <img width='25' height='25' src='https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg' alt='LangChain'/> [LangChain](https://github.com/hwchase17/langchain) – Large Language Model Tools
+- <img width='25' height='25' src='https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png' alt='pgvector'/> [pgvector](https://github.com/pgvector/pgvector/) – Database Tools
 
 Full tech stack [here](/techstack.md)
---- Readme.md Snippet with images End ---
+
+&lt;--- Readme.md Snippet with images End ---&gt;
 -->
 <div align="center">
 
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [paulglx/arbitre](https://github.com/paulglx/arbitre)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|42<br/>Tools used|11/09/23 <br/>Report generated|
+|48<br/>Tools used|12/14/23 <br/>Report generated|
 |------|------|
 </div>
 
@@ -96,14 +104,6 @@ Full tech stack [here](/techstack.md)
 ## <img src='https://img.stackshare.io/frameworks.svg'/> Frameworks (5)
 <table><tr>
   <td align='center'>
-  <img width='36' height='36' src='https://img.stackshare.io/service/994/4aGjtNQv.png' alt='Django'>
-  <br>
-  <sub><a href="https://www.djangoproject.com/">Django</a></sub>
-  <br>
-  <sub></sub>
-</td>
-
-<td align='center'>
   <img width='36' height='36' src='https://img.stackshare.io/service/1011/n1JRsFeB_400x400.png' alt='Node.js'>
   <br>
   <sub><a href="http://nodejs.org/">Node.js</a></sub>
@@ -135,25 +135,33 @@ Full tech stack [here](/techstack.md)
   <sub>v4.2.0</sub>
 </td>
 
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/8158/default_660b7c41c3ba489cb581eec89c04655404258c19.png' alt='Tailwind CSS'>
+  <br>
+  <sub><a href="https://tailwindcss.com">Tailwind CSS</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
 </tr>
 </table>
 
 ## <img src='https://img.stackshare.io/databases.svg'/> Data (2)
 <table><tr>
   <td align='center'>
-  <img width='36' height='36' src='https://img.stackshare.io/service/1075/celery.png' alt='Celery'>
-  <br>
-  <sub><a href="http://www.celeryproject.org/">Celery</a></sub>
-  <br>
-  <sub></sub>
-</td>
-
-<td align='center'>
   <img width='36' height='36' src='https://img.stackshare.io/service/6740/no-img-open-source.png' alt='Redux Persist'>
   <br>
   <sub><a href="https://github.com/rt2zz/redux-persist">Redux Persist</a></sub>
   <br>
   <sub>v6.0.0</sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png' alt='pgvector'>
+  <br>
+  <sub><a href="https://github.com/pgvector/pgvector/">pgvector</a></sub>
+  <br>
+  <sub></sub>
 </td>
 
 </tr>
@@ -228,9 +236,33 @@ Full tech stack [here](/techstack.md)
 </tr>
 </table>
 
-## Other (2)
+## Other (5)
 <table><tr>
   <td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/40090/default_dd2d5033d0363b16e87367cb62b402aa9da531bf.png' alt='Flowbite'>
+  <br>
+  <sub><a href="https://flowbite.com/">Flowbite</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/2270/no-img-open-source.png' alt='HTML'>
+  <br>
+  <sub><a href="http://">HTML</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
+  <img width='36' height='36' src='https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg' alt='LangChain'>
+  <br>
+  <sub><a href="https://github.com/hwchase17/langchain">LangChain</a></sub>
+  <br>
+  <sub></sub>
+</td>
+
+<td align='center'>
   <img width='36' height='36' src='https://img.stackshare.io/service/3643/Xrtdc94q_400x400.png' alt='Moment.js'>
   <br>
   <sub><a href="http://momentjs.com/">Moment.js</a></sub>
@@ -250,7 +282,7 @@ Full tech stack [here](/techstack.md)
 </table>
 
 
-## <img src='https://img.stackshare.io/group.svg' /> Open source packages (21)</h2>
+## <img src='https://img.stackshare.io/group.svg' /> Open source packages (24)</h2>
 
 ## <img width='24' height='24' src='https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png'/> npm (13)
 
@@ -271,20 +303,23 @@ Full tech stack [here](/techstack.md)
 |[tailwindcss](https://www.npmjs.com/tailwindcss)|v3.3.2|07/20/23|paulglx |MIT|N/A|
 
 
-## <img width='24' height='24' src='https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg'/> PyPI (8)
+## <img width='24' height='24' src='https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg'/> PyPI (11)
 
 |NAME|VERSION|LAST UPDATED|LAST UPDATED BY|LICENSE|VULNERABILITIES|
 |:------|:------|:------|:------|:------|:------|
-|[coverage](https://pypi.org/coverage)|v6.5.0|12/02/22|paulglx |Apache-2.0|N/A|
-|[django-cors-headers](https://pypi.org/django-cors-headers)|v3.13.0|08/16/23|paulglx |MIT|N/A|
-|[django-environ](https://pypi.org/django-environ)|v0.9.0|08/16/23|paulglx |MIT|N/A|
-|[django-extensions](https://pypi.org/django-extensions)|v3.1.3|08/16/23|paulglx |MIT|N/A|
-|[djangorestframework](https://pypi.org/djangorestframework)|v3.14.0|08/16/23|paulglx |BSD-3-Clause|N/A|
-|[packaging](https://pypi.org/packaging)|v22.0|06/26/23|paulglx |BSD-3-Clause,Apache-2.0|N/A|
-|[psycopg2](https://pypi.org/psycopg2)|v2.9.5|06/26/23|paulglx |BSD-3-Clause-Attribution|N/A|
-|[requests](https://pypi.org/requests)|v2.28.1|10/24/22|paulglx |Apache-2.0|[CVE-2023-32681](https://github.com/advisories/GHSA-j8r2-6x86-q33q) (Moderate)|
+|[Django](https://pypi.org/project/Django)|v4.1.2|08/16/23|paulglx |BSD-3-Clause|[CVE-2023-31047](https://github.com/advisories/GHSA-r3xc-prgr-mg9p) (Critical)<br/>[CVE-2023-24580](https://github.com/advisories/GHSA-2hrw-hx67-34x6) (High)<br/>[CVE-2023-36053](https://github.com/advisories/GHSA-jh3w-4vvf-mjgr) (High)|
+|[celery](https://pypi.org/project/celery)|v5.2.7|06/26/23|paulglx |BSD-3-Clause|N/A|
+|[coverage](https://pypi.org/project/coverage)|v6.5.0|12/02/22|paulglx |Apache-2.0|N/A|
+|[django-cors-headers](https://pypi.org/project/django-cors-headers)|v3.13.0|08/16/23|paulglx |MIT|N/A|
+|[django-environ](https://pypi.org/project/django-environ)|v0.9.0|08/16/23|paulglx |MIT|N/A|
+|[django-extensions](https://pypi.org/project/django-extensions)|v3.1.3|08/16/23|paulglx |MIT|N/A|
+|[djangorestframework](https://pypi.org/project/djangorestframework)|v3.14.0|08/16/23|paulglx |BSD-3-Clause|N/A|
+|[djangorestframework-simplejwt](https://pypi.org/project/djangorestframework-simplejwt)|v5.2.2|08/16/23|paulglx |MIT|N/A|
+|[packaging](https://pypi.org/project/packaging)|v22.0|06/26/23|paulglx |BSD-3-Clause,Apache-2.0|N/A|
+|[psycopg2](https://pypi.org/project/psycopg2)|v2.9.5|06/26/23|paulglx |BSD-3-Clause-Attribution|N/A|
+|[requests](https://pypi.org/project/requests)|v2.28.1|10/24/22|paulglx |Apache-2.0|[CVE-2023-32681](https://github.com/advisories/GHSA-j8r2-6x86-q33q) (Moderate)|
 
 <br/>
 <div align='center'>
 
-Generated via [Stack File](https://github.com/apps/stack-file)
+Generated via [Stack File](https://github.com/marketplace/stack-file)
