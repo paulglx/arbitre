@@ -35,7 +35,6 @@ final: prev: {
           sha256 = "sha256-p9RHr4PLWqFnGiQAmwzmsvDSWenFjYyIx6jQwnwFwE0=";
         };
         propagatedBuildInputs = [
-          self.django_4
           self.josepy
           self.requests
           self.cryptography
