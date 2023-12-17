@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from environ import Env
+import environ
 import os
 import random
 
@@ -93,8 +93,9 @@ class Submission(models.Model):
         suffix = exercise.suffix
 
         # Read env
-        env = Env()
-        env.read_env()
+        env = environ.Env()
+        env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+        environ.Env.read_env(env_file=env_file)
 
         # decide Judge0 host to use
         hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])
@@ -192,8 +193,9 @@ class TestResult(models.Model):
         print("Running all pending testresults...")
 
         # Read env
-        env = Env()
-        env.read_env()
+        env = environ.Env()
+        env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+        environ.Env.read_env(env_file=env_file)
 
         # decide judge0 host to use
         hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])

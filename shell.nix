@@ -2,8 +2,7 @@
 pkgs.mkShell {
   buildInputs = with pkgs; [
     procps
-    #my_python.with ...
-    (python3.withPackages (ps: with ps; [
+    (my_python.withPackages (ps: with ps; [
       celery
       coverage
       django
