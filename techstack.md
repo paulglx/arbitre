@@ -60,7 +60,7 @@ Full tech stack [here](/techstack.md)
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [paulglx/arbitre](https://github.com/paulglx/arbitre)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|48<br/>Tools used|12/14/23 <br/>Report generated|
+|48<br/>Tools used|01/04/24 <br/>Report generated|
 |------|------|
 </div>
 
@@ -307,7 +307,7 @@ Full tech stack [here](/techstack.md)
 
 |NAME|VERSION|LAST UPDATED|LAST UPDATED BY|LICENSE|VULNERABILITIES|
 |:------|:------|:------|:------|:------|:------|
-|[Django](https://pypi.org/project/Django)|v4.1.2|08/16/23|paulglx |BSD-3-Clause|[CVE-2023-31047](https://github.com/advisories/GHSA-r3xc-prgr-mg9p) (Critical)<br/>[CVE-2023-24580](https://github.com/advisories/GHSA-2hrw-hx67-34x6) (High)<br/>[CVE-2023-36053](https://github.com/advisories/GHSA-jh3w-4vvf-mjgr) (High)|
+|[Django](https://pypi.org/project/Django)|v4.1.2|08/16/23|paulglx |BSD-3-Clause|[CVE-2023-31047](https://github.com/advisories/GHSA-r3xc-prgr-mg9p) (Critical)<br/>[CVE-2023-36053](https://github.com/advisories/GHSA-jh3w-4vvf-mjgr) (High)<br/>[CVE-2023-24580](https://github.com/advisories/GHSA-2hrw-hx67-34x6) (High)|
 |[celery](https://pypi.org/project/celery)|v5.2.7|06/26/23|paulglx |BSD-3-Clause|N/A|
 |[coverage](https://pypi.org/project/coverage)|v6.5.0|12/02/22|paulglx |Apache-2.0|N/A|
 |[django-cors-headers](https://pypi.org/project/django-cors-headers)|v3.13.0|08/16/23|paulglx |MIT|N/A|
