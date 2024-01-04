@@ -1,7 +1,8 @@
 repo_name: paulglx/arbitre
-report_id: 9a5222a004389e949001d60e31e11618
+report_id: 37a767562b4ec45fc08698530af5cb72
+version: 0.1
 repo_type: Public
-timestamp: '2023-12-14T09:39:57+00:00'
+timestamp: '2024-01-04T15:02:05+00:00'
 requested_by: paulglx
 provider: github
 branch: main
@@ -15,6 +16,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: JavaScript
   description: Lightweight, interpreted, object-oriented language with first-class
@@ -25,6 +27,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: Python
   description: A clear and powerful object-oriented programming language, comparable
@@ -35,6 +38,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: TypeScript
   description: A superset of JavaScript that compiles to clean JavaScript output
@@ -45,6 +49,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1612/bynNY5dJ.jpg
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: Node.js
   description: A platform built on Chrome's JavaScript runtime for easily building
@@ -55,6 +60,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Frameworks (Full Stack)
   image_url: https://img.stackshare.io/service/1011/n1JRsFeB_400x400.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-07 08:47:25.000000000 Z
@@ -108,6 +114,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Front-End Frameworks
   image_url: https://img.stackshare.io/service/8158/default_660b7c41c3ba489cb581eec89c04655404258c19.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-07-20 08:14:42.000000000 Z
@@ -133,6 +140,7 @@ tools:
   category: Data Stores
   sub_category: Database Tools
   image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2022-10-24 09:09:48.000000000 Z
@@ -145,6 +153,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Code Review
   image_url: https://img.stackshare.io/service/3337/Q4L7Jncy.jpg
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-07 08:47:25.000000000 Z
@@ -156,6 +165,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: GitHub Actions
   description: Automate your workflow from idea to production
@@ -165,6 +175,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Continuous Integration
   image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/.github/workflows/django.yml
   detection_source: ".github/workflows/django.yml"
   last_updated_by: paulglx
   last_updated_on: 2023-06-21 12:51:20.000000000 Z
@@ -191,6 +202,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Package Managers
   image_url: https://img.stackshare.io/service/4348/ET9J1uY-_400x400.png
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: PyPI
   description: A repository of software for the Python programming language
@@ -200,6 +212,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Hosted Package Repository
   image_url: https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2022-10-24 09:09:48.000000000 Z
@@ -225,6 +238,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Front End Package Manager
   image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2022-10-07 08:47:25.000000000 Z
@@ -237,6 +251,7 @@ tools:
   category: Languages & Frameworks
   sub_category: UI Components
   image_url: https://img.stackshare.io/service/40090/default_dd2d5033d0363b16e87367cb62b402aa9da531bf.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/frontend/package.json
   detection_source: frontend/package.json
   last_updated_by: paulglx
   last_updated_on: 2023-07-03 14:53:40.000000000 Z
@@ -246,6 +261,7 @@ tools:
   open_source: false
   hosted_saas: false
   image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/runner/templates/runner/index.html
   detection_source: backend/runner/templates/runner/index.html
   last_updated_by: paulglx
   last_updated_on: 2022-09-29 08:59:50.000000000 Z
@@ -257,6 +273,7 @@ tools:
   category: Communications
   sub_category: Large Language Model Tools
   image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source_url: https://github.com/paulglx/arbitre/blob/main/backend/requirements.txt
   detection_source: backend/requirements.txt
   last_updated_by: paulglx
   last_updated_on: 2022-10-24 09:09:48.000000000 Z
@@ -284,6 +301,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/paulglx/arbitre
   detection_source: Repo Metadata
 - name: "@types/jest"
   description: TypeScript definitions for Jest
@@ -490,18 +508,18 @@ tools:
     detected_date: May 10
     severity: critical
     first_patched: 4.1.9
-  - name: Resource exhaustion in Django
-    cve_id: CVE-2023-24580
-    cve_url: https://github.com/advisories/GHSA-2hrw-hx67-34x6
-    detected_date: Feb 16
-    severity: high
-    first_patched: 4.1.7
   - name: Django has regular expression denial of service vulnerability in EmailValidator/URLValidator
     cve_id: CVE-2023-36053
     cve_url: https://github.com/advisories/GHSA-jh3w-4vvf-mjgr
     detected_date: Jul 6
     severity: high
     first_patched: 4.1.10
+  - name: Resource exhaustion in Django
+    cve_id: CVE-2023-24580
+    cve_url: https://github.com/advisories/GHSA-2hrw-hx67-34x6
+    detected_date: Feb 16
+    severity: high
+    first_patched: 4.1.7
 - name: celery
   description: Distributed Task Queue
   package_url: https://pypi.org/project/celery
