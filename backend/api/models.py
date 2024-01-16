@@ -204,12 +204,29 @@ class Exercise(models.Model):
     The exercise given to the student
     """
 
+    class ExerciseTypes(models.TextChoices):
+        SINGLE = "single", _("Single")
+        MULTIPLE = "multiple", _("Multiple")
+
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    type = models.CharField(
+        max_length=8,
+        choices=ExerciseTypes.choices,
+        default=ExerciseTypes.SINGLE,
+    )
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    prefix = models.TextField(blank=True)
-    suffix = models.TextField(blank=True)
     grade = models.FloatField(blank=True, null=True)
 
+    # Single-file exercises specifics
+    prefix = models.TextField(blank=True)
+    suffix = models.TextField(blank=True)
+
+    # Multiple-file exercises specifics
+    teacher_files = models.FileField(upload_to="teacher_files/", blank=True)
+
     def __str__(self):
-        return self.title
+        if self.exercise.type == self.ExerciseTypes.MULTIPLE:
+            return self.title + " (multiple-file)"
+        else:
+            return self.title
