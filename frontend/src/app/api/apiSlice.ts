@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: window.location.protocol + '//' + window.location.hostname,
+    baseUrl: process.env.REACT_APP_API_URL,
     credentials: 'include',
     prepareHeaders: (headers: Headers, { getState }: any) => {
         const keycloakToken = getState().auth.keycloakToken
