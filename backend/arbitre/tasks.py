@@ -10,15 +10,7 @@ environ.Env.read_env(
     env_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 )
 
-
-@shared_task
-def run_test(
-    hostname, submission_id, test_id, file_content, prefix, suffix, lang
-) -> None:
-    """
-    Runs one test on a submission, and stores the result in the database.
-    """
-
+def get_lang_id(lang):
     JUDGE0_LANG_IDS = {
         "asm": 45,
         "bash": 46,
@@ -58,18 +50,16 @@ def run_test(
         "typescript": 74,
         "vbnet": 84,
     }
+    return JUDGE0_LANG_IDS[lang]
 
-    # Arbitre API urls
+def get_base_url():
     if env("USE_HTTPS", default=True):
         base_url = "https://" + env("HOSTNAME") + "/runner/api"
     else:
         base_url = "http://" + env("HOSTNAME") + "/runner/api"
-    testresult_post_url = f"{base_url}/testresult/"
+    return base_url
 
-    # Get test data from REST API
-    test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
-
-    # Save the empty test result with "running" status
+def post_running_testresult(submission_id, test_id, testresult_post_url):
     testresult_before_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
@@ -77,40 +67,79 @@ def run_test(
     }
     requests.post(testresult_post_url, data=testresult_before_data)
 
-    judge0_url = f"http://{hostname}/submissions?wait=true"
+def send_test_to_judge0(judge0_url, source_code, language_id, stdin):
+    response_object = requests.post(
+        judge0_url,
+        json={
+            "language_id": language_id,
+            "source_code": source_code,
+            "stdin": stdin,
+        },
+    )
+    return json.loads(response_object.text)
 
+def post_error_testresult(submission_id, test_id, testresult_post_url):
+    after_data = {
+        "submission_pk": submission_id,
+        "exercise_test_pk": test_id,
+        "stdout": "Error: no response from runner",
+        "status": "error",
+        "time": 0,
+        "memory": 0,
+    }
+    requests.post(testresult_post_url, data=after_data)
+
+def process_source_single_file(file_content, prefix, suffix):
     # Fix prefix line endings
     if not prefix.endswith("\r") and not prefix.endswith("\n"):
         prefix += "\n"
     source_code = prefix + "\n" + file_content + "\n" + suffix
 
-    language_id = JUDGE0_LANG_IDS[lang]
+    return source_code
+
+def process_source_multifile(file_content, teacher_files):
+    # Unimplemented
+    pass
+
+@shared_task
+def run_test(
+    hostname, exercise_type, submission_id, test_id, file_content, prefix, suffix, lang
+) -> None:
+    """
+    Runs one test on a submission, and stores the result in the database.
+    """
+
+    # Arbitre API urls
+    base_url = get_base_url()
+    testresult_post_url = f"{base_url}/testresult/"
+
+    # Get test data from REST API
+    test_data = requests.get(f"{base_url}/test/{test_id}/").content
+    test = json.loads(test_data)
+
+    # Save the empty test result with "running" status
+    post_running_testresult(submission_id, test_id, testresult_post_url)
+
+    judge0_url = f"http://{hostname}/submissions?wait=true"
+
+    if exercise_type == "single":
+        source_code = process_source_single_file(file_content, prefix, suffix)
+    elif exercise_type == "multiple":
+        #teacher_files = json.loads(requests.get(f"{base_url}/exercise/{test['exercise']}/").content)["teacher_files"]
+        teacher_files = ""
+        source_code = process_source_multifile(file_content, teacher_files)
+    else:
+        raise Exception("Invalid exercise type")
+
+    language_id = get_lang_id(lang)
 
     try:
-        response_object = requests.post(
-            judge0_url,
-            json={
-                "language_id": language_id,
-                "source_code": source_code,
-                "stdin": test["stdin"],
-            },
-        )
+        response = send_test_to_judge0(judge0_url, source_code, language_id, test["stdin"])
     except requests.exceptions.ConnectionError:
-        after_data = {
-            "submission_pk": submission_id,
-            "exercise_test_pk": test_id,
-            "stdout": "Error: the code runner seems to be offline",
-            "status": "error",
-            "time": 0,
-            "memory": 0,
-        }
-        print("data to send:" + str(after_data))
-        finalpost = requests.post(testresult_post_url, data=after_data)
+        post_error_testresult(submission_id, test_id, testresult_post_url)
         return
-
-    response = json.loads(response_object.text)
-
-    print("response:", response)
+    
+    print("Judge0 response:" + str(response))
 
     if "stdout" or "stderr" in response:
         status = ""
@@ -123,10 +152,6 @@ def run_test(
                 status = "failed"
         else:
             status = "error"
-
-        print("status:", status)
-        print("stdout", response["stdout"])
-        print("stderr", response["stderr"])
 
         stdout = ""
         if response["message"] is not None:
@@ -157,7 +182,6 @@ def run_test(
 
     print("data to send:" + str(after_data))
     finalpost = requests.post(testresult_post_url, data=after_data)
-    print("final post:", finalpost)
 
 
 @shared_task(ignore_result=True)

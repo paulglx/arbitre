@@ -89,6 +89,8 @@ class Submission(models.Model):
         course = exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
 
+        type = exercise.type
+
         prefix = exercise.prefix
         suffix = exercise.suffix
 
@@ -104,22 +106,25 @@ class Submission(models.Model):
         if tests:
             super(Submission, self).save(*args, **kwargs)
 
+            file_content = ""
             with self.file.open(mode="rb") as f:
                 file_content = f.read().decode()
-                for test in tests:
-                    # Add Judge0 task to queue
-                    celery.send_task(
-                        "arbitre.tasks.run_test",
-                        (
-                            host,
-                            self.id,
-                            test.id,
-                            file_content,
-                            prefix,
-                            suffix,
-                            course.language,
-                        ),
-                    )
+
+            for test in tests:
+                # Add Judge0 task to queue
+                celery.send_task(
+                    "arbitre.tasks.run_test",
+                    (
+                        host,
+                        type,
+                        self.id,
+                        test.id,
+                        file_content,
+                        prefix,
+                        suffix,
+                        course.language,
+                    ),
+                )
         else:
             self.status = "success"
             super(Submission, self).save(*args, **kwargs)
@@ -212,6 +217,7 @@ class TestResult(models.Model):
                 file_content = f.read()
 
             lang = submission.exercise.session.course.language
+            type = submission.exercise.type
             prefix = submission.exercise.prefix
             suffix = submission.exercise.suffix
 
@@ -222,6 +228,7 @@ class TestResult(models.Model):
                     "arbitre.tasks.run_test",
                     (
                         host,
+                        type,
                         submission.id,
                         exercise_test.id,
                         file_content,
