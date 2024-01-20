@@ -226,7 +226,7 @@ class Exercise(models.Model):
     teacher_files = models.FileField(upload_to="teacher_files/", blank=True)
 
     def __str__(self):
-        if self.exercise.type == self.ExerciseTypes.MULTIPLE:
+        if self.type == self.ExerciseTypes.MULTIPLE:
             return self.title + " (multiple-file)"
         else:
             return self.title

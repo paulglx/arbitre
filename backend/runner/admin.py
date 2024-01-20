@@ -24,7 +24,9 @@ class TestInline(admin.StackedInline):
 
 
 class ExerciseAdmin(admin.ModelAdmin):
-    fields = ["session", "title", "description", "prefix", "suffix"]
+    fields = ["session", "title", "description", "prefix", "suffix", "type", "grade", "teacher_files"]
+    list_display = ["title", "session", "type", "grade"]
+    list_filter = ["session", "type"]
     inlines = [TestInline]
 
 

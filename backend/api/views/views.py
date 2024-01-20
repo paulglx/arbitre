@@ -2,21 +2,19 @@ from ..models import Course, Session, Exercise, StudentGroup
 from ..serializers import (
     CourseSerializer,
     ExerciseSerializer,
-    MinimalExerciseSerializer,
     SessionSerializer,
     StudentGroupSerializer,
 )
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpRequest
+from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from runner.models import Submission
-from runner.models import TestResult
 from runner.serializers import SubmissionSerializer
 from runner.serializers import TestResultSerializer
-from django.utils import timezone
-import json
 
 
 class IsCourseOwner(permissions.BasePermission):
@@ -112,6 +110,29 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
         return response
 
+class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
+    """
+    Get the teacher_files ZIP file of an exercise.
+    """
+    
+    serializer_class = ExerciseSerializer
+    permission_classes = (permissions.AllowAny,)
+    
+
+    def list(self, request):
+        import base64 
+
+        user = self.request.user
+        exercise_id = self.request.query_params.get("exercise_id")
+        exercise = Exercise.objects.get(id=exercise_id)
+
+        #TODO: check if user has rights
+
+        zip = exercise.teacher_files
+        zip_to_base64 = base64.b64encode(zip.read())
+        zip.close()
+
+        return Response(zip_to_base64)
 
 class StudentGroupViewSet(viewsets.ModelViewSet):
     """
