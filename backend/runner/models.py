@@ -107,8 +107,19 @@ class Submission(models.Model):
             super(Submission, self).save(*args, **kwargs)
 
             file_content = ""
-            with self.file.open(mode="rb") as f:
-                file_content = f.read().decode()
+
+            if type == "single":
+                with self.file.open(mode="rb") as f:
+                    file_content = f.read().decode()
+
+            elif type == "multiple":
+                # convert zip file to base64
+                import base64
+                with self.file.open(mode="rb") as f:
+                    file_content = base64.b64encode(f.read()).decode()
+
+            else:
+                raise Exception("Invalid exercise type")
 
             for test in tests:
                 # Add Judge0 task to queue

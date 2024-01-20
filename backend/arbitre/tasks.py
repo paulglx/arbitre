@@ -54,10 +54,16 @@ def get_lang_id(lang):
 
 def get_base_url():
     if env("USE_HTTPS", default=True):
-        base_url = "https://" + env("HOSTNAME") + "/runner/api"
+        base_url = "https://" + env("HOSTNAME")
     else:
-        base_url = "http://" + env("HOSTNAME") + "/runner/api"
+        base_url = "http://" + env("HOSTNAME")
     return base_url
+
+def get_base_api_url():
+    return get_base_url() + "/api"
+
+def get_base_runner_url():
+    return get_base_url() + "/runner/api"
 
 def post_running_testresult(submission_id, test_id, testresult_post_url):
     testresult_before_data = {
@@ -67,14 +73,20 @@ def post_running_testresult(submission_id, test_id, testresult_post_url):
     }
     requests.post(testresult_post_url, data=testresult_before_data)
 
-def send_test_to_judge0(judge0_url, source_code, language_id, stdin):
+def send_test_to_judge0(judge0_url, source_code, additional_files, language_id, stdin):
+
+    request = {
+        "language_id": language_id,
+        "source_code": source_code,
+        "stdin": stdin,
+    }
+
+    if(additional_files):
+        request["additional_files"] = additional_files
+
     response_object = requests.post(
         judge0_url,
-        json={
-            "language_id": language_id,
-            "source_code": source_code,
-            "stdin": stdin,
-        },
+        json=request
     )
     return json.loads(response_object.text)
 
@@ -89,6 +101,18 @@ def post_error_testresult(submission_id, test_id, testresult_post_url):
     }
     requests.post(testresult_post_url, data=after_data)
 
+def zip_directory(path, zip_file_handle):
+
+    for root, _dirs, files in os.walk(path):
+        for file in files:
+            zip_file_handle.write(
+                os.path.join(root, file),
+                os.path.basename(os.path.join(root,file))
+                
+            )
+
+    print(f'Directory {path} zipped successfully')
+
 def process_source_single_file(file_content, prefix, suffix):
     # Fix prefix line endings
     if not prefix.endswith("\r") and not prefix.endswith("\n"):
@@ -97,9 +121,63 @@ def process_source_single_file(file_content, prefix, suffix):
 
     return source_code
 
-def process_source_multifile(file_content, teacher_files):
-    # Unimplemented
-    pass
+def process_source_multifile(student_files, exercise_id):
+
+    # student_files is the base64-encoded zip file containing the student's files
+    import base64
+    import tempfile
+    import zipfile
+    import os
+
+    teacher_files_request = requests.get(
+        f"{get_base_api_url()}/exercise_teacher_files?exercise_id={exercise_id}"
+    )
+
+    teacher_files = teacher_files_request.content.decode().replace("\"", "")
+
+    student_files_data = base64.b64decode(student_files)
+    teacher_files_data = base64.b64decode(teacher_files)
+
+    student_files_zip = tempfile.NamedTemporaryFile()
+    teacher_files_zip = tempfile.NamedTemporaryFile()
+
+    with open(student_files_zip.name, 'wb') as f:
+        f.write(student_files_data)
+
+    with open(teacher_files_zip.name, 'wb') as f:
+        f.write(teacher_files_data)
+
+    with tempfile.TemporaryDirectory() as tmp:
+
+        # Extract zips in temp folder
+        zipfile.ZipFile(teacher_files_zip).extractall(tmp)
+        zipfile.ZipFile(student_files_zip).extractall(tmp)
+
+        print("ls : " + str(os.listdir(tmp)))
+
+        # Create final zip file
+        final = tempfile.NamedTemporaryFile()
+
+        # Zip whole tmp directory
+        with zipfile.ZipFile(
+            final.name,
+            mode='w'
+        ) as final_zip:
+            zip_directory(tmp, final_zip)
+            print("I am now done zipping. This is my content")
+            print(final_zip.namelist())
+
+        # Convert zip to b64
+        final_b64 = base64.b64encode(final.read())
+        final_b64_str = final_b64.decode().replace("\"", "")
+
+        final.close()
+
+    student_files_zip.close()
+    teacher_files_zip.close()
+
+    return final_b64_str
+
 
 @shared_task
 def run_test(
@@ -109,8 +187,10 @@ def run_test(
     Runs one test on a submission, and stores the result in the database.
     """
 
-    # Arbitre API urls
-    base_url = get_base_url()
+    # Arbitre API urldef get_base_ap
+    
+
+    base_url = get_base_runner_url()
     testresult_post_url = f"{base_url}/testresult/"
 
     # Get test data from REST API
@@ -123,22 +203,22 @@ def run_test(
     judge0_url = f"http://{hostname}/submissions?wait=true"
 
     if exercise_type == "single":
+        language_id = get_lang_id(lang)
         source_code = process_source_single_file(file_content, prefix, suffix)
+        additional_files = ""
     elif exercise_type == "multiple":
-        #teacher_files = json.loads(requests.get(f"{base_url}/exercise/{test['exercise']}/").content)["teacher_files"]
-        teacher_files = ""
-        source_code = process_source_multifile(file_content, teacher_files)
+        language_id = 89
+        source_code = ""
+        additional_files = process_source_multifile(file_content, test["exercise"])
     else:
         raise Exception("Invalid exercise type")
 
-    language_id = get_lang_id(lang)
-
     try:
-        response = send_test_to_judge0(judge0_url, source_code, language_id, test["stdin"])
+        response = send_test_to_judge0(judge0_url, source_code, additional_files, language_id, test["stdin"])
     except requests.exceptions.ConnectionError:
         post_error_testresult(submission_id, test_id, testresult_post_url)
         return
-    
+            
     print("Judge0 response:" + str(response))
 
     if "stdout" or "stderr" in response:
