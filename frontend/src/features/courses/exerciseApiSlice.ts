@@ -15,7 +15,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
             })
         }),
         createExercise: builder.mutation({
-            query: (data:any) => {
+            query: (data: any) => {
                 return (
                     {
                         url: '/api/exercise/',
@@ -27,7 +27,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
             }
         }),
         updateExercise: builder.mutation({
-            query: (data:any) => {
+            query: (data: any) => {
                 return (
                     {
                         url: `/api/exercise/${data.id}/`,
@@ -39,7 +39,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
             }
         }),
         deleteExercise: builder.mutation({
-            query: (data:any) => {
+            query: (data: any) => {
                 return (
                     {
                         url: `/api/exercise/${data.id}/`,
@@ -49,6 +49,16 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
                 )
             }
         }),
+        setTeacherFiles: builder.mutation<{}, FormData>({
+            query: (formData: any) => {
+                return ({
+                    url: `/api/exercise/${formData.id}/`,
+                    method: 'PATCH',
+                    credentials: 'include',
+                    body: formData
+                })
+            }
+        })
     })
 })
 
@@ -57,5 +67,6 @@ export const {
     useGetExercisesOfSessionQuery,
     useCreateExerciseMutation,
     useUpdateExerciseMutation,
-    useDeleteExerciseMutation
+    useDeleteExerciseMutation,
+    useSetTeacherFilesMutation
 } = exerciseApiSlice;
