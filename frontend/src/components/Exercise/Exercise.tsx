@@ -8,7 +8,7 @@ import CSELoading from "../Common/CSE/CSELoading";
 import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from "../Common/EditableContent/EditableTitle";
-import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
+import ExerciseRuntimeTab from "./Runtime/ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./Submission/ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
 import NotFound from "../Util/NotFound";
@@ -178,7 +178,17 @@ const Exercise = () => {
         {
             key: "runtime",
             title: "Runtime",
-            content: <ExerciseRuntimeTab edit={edit} course={course} exercise={exercise} isOwner={isOwner} prefix={prefix} suffix={suffix} setPrefix={setPrefix} setSuffix={setSuffix} />,
+            content: <ExerciseRuntimeTab
+                exerciseType={exercise?.type}
+                edit={edit}
+                course={course}
+                exercise={exercise}
+                isOwner={isOwner}
+                prefix={prefix}
+                suffix={suffix}
+                setPrefix={setPrefix}
+                setSuffix={setSuffix}
+            />,
         },
         {
             key: "submission",

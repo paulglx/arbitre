@@ -1,7 +1,7 @@
 import Editor from "@monaco-editor/react";
+import React from 'react'
 
-const ExerciseRuntimeTab = (props: any) => {
-
+const SinglefileRuntime = (props: any) => {
     const { edit, course, isOwner, prefix, setPrefix, suffix, setSuffix } = props
 
     const getContentHeight = (content: string) => {
@@ -95,4 +95,4 @@ const ExerciseRuntimeTab = (props: any) => {
     )
 }
 
-export default ExerciseRuntimeTab
+export default SinglefileRuntime
