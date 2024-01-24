@@ -125,13 +125,14 @@ class ExerciseSerializer(serializers.ModelSerializer):
             "type",
             "title",
             "description",
-            "session_id",
-            "session",
+            "grade",
+            "type",
             "prefix",
             "suffix",
             "teacher_files",
-            "grade",
             "submission_status",
+            "session",
+            "session_id",
         ]
 
 

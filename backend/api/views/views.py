@@ -8,7 +8,6 @@ from ..serializers import (
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpRequest
-from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
@@ -122,7 +121,6 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
     def list(self, request):
         import base64 
 
-        user = self.request.user
         exercise_id = self.request.query_params.get("exercise_id")
         exercise = Exercise.objects.get(id=exercise_id)
 
