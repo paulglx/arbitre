@@ -49,13 +49,18 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
                 )
             }
         }),
-        setTeacherFiles: builder.mutation<{}, FormData>({
-            query: (formData: any) => {
+        setTeacherFiles: builder.mutation({
+            query: (data: any) => {
+
+                const formData = new FormData();
+                formData.append('teacher_files', data.teacher_files);
+
                 return ({
-                    url: `/api/exercise/${formData.id}/`,
-                    method: 'PATCH',
+                    body: formData,
                     credentials: 'include',
-                    body: formData
+                    formData: true,
+                    method: 'PATCH',
+                    url: `/api/exercise/${data.id}/`,
                 })
             }
         })
