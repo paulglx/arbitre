@@ -1,4 +1,4 @@
-import React from 'react'
+import { DocumentIcon } from '@heroicons/react/24/outline';
 import TeacherFilesField from './TeacherFilesField'
 
 const MultifileRuntime = (props: any) => {
@@ -6,35 +6,40 @@ const MultifileRuntime = (props: any) => {
     const { exercise } = props;
 
     const ThereAreTeacherFiles = () => {
-        return (
-            <div className='text-sm p-3 border rounded-lg bg-green-50 border-green-400'>
-                <p className='font-semibold text-green-800'>Teacher files set</p>
-                <p className='text-green-700'>The teacher files are set for this exercise. To change them, submit a new zip file below.</p>
-            </div>
-        )
+        return (<>
+            <span className='inline-flex items-center border shadow rounded-lg px-2 py-1 bg-green-50 border-green-300 text-green-800 font-semibold font-mono text-sm'>
+                <DocumentIcon className='inline h-4 w-4 text-green-600 mr-1' />
+                teacher_files.zip
+            </span>
+            <span className='text-green-500 ml-2'>✓</span>
+            <p className='text-sm text-green-700 mt-2 ml-1'>
+                Your files are on the server. The worker is ready to run and test student code. You can change the files by uploading a new zip file.
+            </p>
+        </>)
     }
 
     const ThereAreNoTeacherFiles = () => {
-        return (
-            <div className='text-sm p-3 border rounded-lg bg-yellow-50 border-yellow-400'>
-                <p className='font-semibold text-yellow-800'>No teacher files yet</p>
-                <p className='text-yellow-700'>Submit a zip file containing the teacher files below. They must include a&nbsp;
-                    <span className='font-mono font-semibold'>run</span> file, and an additional&nbsp;
-                    <span className='font-mono font-semibold'>compile</span> file for compiled languages.</p>
-            </div>
-        )
+        return (<>
+            <span className='inline-flex items-center border shadow rounded-lg px-2 py-1 bg-gray-50 border-gray-300 text-gray-800 font-semibold font-mono text-sm border-dashed'>
+                <DocumentIcon className='inline h-4 w-4 text-gray-600 mr-1' />
+                teacher_files.zip
+            </span>
+            <span className='text-gray-500 ml-2 text-sm'>(missing)</span>
+            <p className='text-sm text-gray-500 mt-2 ml-1'>
+                The worker doesn't know how to run the student code yet. Please upload a zip file including the necessary files.
+            </p>
+        </>)
     }
 
     return (<div className='p-1'>
 
-        {exercise.teacher_files === null ? <ThereAreNoTeacherFiles /> : <ThereAreTeacherFiles />}
-
-        <h3 className="font-semibold mt-4">Teacher Files</h3>
+        <h3 className="font-semibold">Teacher Files</h3>
         <p className='text-sm text-gray-500'>
             Select a zip file. Its content will be added at the root of the directory where the student code is executed.
         </p>
 
         <TeacherFilesField exercise={props.exercise} />
+        {exercise.teacher_files === null ? <ThereAreNoTeacherFiles /> : <ThereAreTeacherFiles />}
     </div>)
 }
 
