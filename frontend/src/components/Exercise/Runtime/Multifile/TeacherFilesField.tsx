@@ -44,20 +44,26 @@ const TeacherFilesField = (props: any) => {
             })
     }
 
-    return (<form
-        className="flex items-center justify-between space-x-3 rounded-lg pt-2 pb-4"
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-    >
-        <label className="block bg-white rounded-lg border p-2 w-full">
+    return (
+        <form
+            className="flex items-center justify-between space-x-3 rounded-lg pt-2 pb-4"
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+        >
+            <label className="block bg-white rounded-lg border p-2 w-full">
 
-            <span className="sr-only">Select a zip file</span>
-            <input type="file" className="block w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 file:cursor-pointer file:transition-colors hover:file:bg-gray-200" />
-        </label>
+                <span className="sr-only">Select a zip file</span>
+                <input
+                    type="file"
+                    className="block w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 file:cursor-pointer file:transition-colors hover:file:bg-gray-200"
+                    accept='.zip'
+                />
+            </label>
 
-        <button type="submit" className="rounded-lg bg-gray-50 px-4 py-2 text-gray-700 font-semibold border hover:bg-gray-100 transition-colors">Submit</button>
+            <button type="submit" className="rounded-lg bg-gray-50 px-4 py-2 text-gray-700 font-semibold border hover:bg-gray-100 transition-colors">Submit</button>
 
-    </form>)
+        </form>
+    )
 }
 
 export default TeacherFilesField
