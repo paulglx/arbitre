@@ -26,20 +26,21 @@ const TeacherFilesField = (props: any) => {
             e.stopPropagation();
         }
 
-        const formData = new FormData();
-        formData.append("id", exercise.id);
-        formData.append("teacher_files", form.files[0]);
+        const data = {
+            id: exercise.id,
+            teacher_files: form.files[0]
+        }
 
-        console.log("exercise.id:", exercise.id)
-        console.log("Formdata @ tff:", formData)
-
-        await setTeacherFiles(formData)
+        await setTeacherFiles(data)
             .unwrap()
             .catch(() => {
                 dispatch(pushNotification({
                     message: "There was an error while setting the teacher files. Your file was not submitted.",
                     type: "error"
                 }));
+            })
+            .then(() => {
+                window.location.reload();
             })
     }
 
