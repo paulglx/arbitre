@@ -51,7 +51,6 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
         }),
         setTeacherFiles: builder.mutation({
             query: (data: any) => {
-
                 const formData = new FormData();
                 formData.append('teacher_files', data.teacher_files);
 
@@ -59,6 +58,21 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
                     body: formData,
                     credentials: 'include',
                     formData: true,
+                    method: 'PATCH',
+                    url: `/api/exercise/${data.id}/`,
+                })
+            }
+        }),
+        removeTeacherFiles: builder.mutation({
+            query: (data: any) => {
+
+                const body = {
+                    "teacher_files": null,
+                }
+
+                return ({
+                    body: body,
+                    credentials: 'include',
                     method: 'PATCH',
                     url: `/api/exercise/${data.id}/`,
                 })
@@ -73,5 +87,6 @@ export const {
     useCreateExerciseMutation,
     useUpdateExerciseMutation,
     useDeleteExerciseMutation,
-    useSetTeacherFilesMutation
+    useSetTeacherFilesMutation,
+    useRemoveTeacherFilesMutation
 } = exerciseApiSlice;

@@ -1,4 +1,5 @@
 import { DocumentIcon } from '@heroicons/react/24/outline';
+import RemoveTeacherFiles from './RemoveTeacherFiles';
 import TeacherFilesField from './TeacherFilesField'
 
 const MultifileRuntime = (props: any) => {
@@ -12,6 +13,7 @@ const MultifileRuntime = (props: any) => {
                 teacher_files.zip
             </span>
             <span className='text-green-500 ml-2'>✓</span>
+            <RemoveTeacherFiles exercise={props.exercise} />
             <p className='text-sm text-green-700 mt-2 ml-1'>
                 Your files are on the server. The worker is ready to run and test student code. You can change the files by uploading a new zip file.
             </p>
@@ -20,7 +22,7 @@ const MultifileRuntime = (props: any) => {
 
     const ThereAreNoTeacherFiles = () => {
         return (<>
-            <span className='inline-flex items-center border shadow rounded-lg px-2 py-1 bg-gray-50 border-gray-300 text-gray-800 font-semibold font-mono text-sm border-dashed'>
+            <span className='inline-flex items-center border shadow rounded-lg px-2 py-1 bg-gray-50 border-gray-300 text-gray-500 font-semibold font-mono text-sm border-dashed'>
                 <DocumentIcon className='inline h-4 w-4 text-gray-600 mr-1' />
                 teacher_files.zip
             </span>
