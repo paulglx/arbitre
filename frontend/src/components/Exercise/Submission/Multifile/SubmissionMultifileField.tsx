@@ -1,6 +1,6 @@
 import * as zip from "@zip.js/zip.js";
 
-import { ChangeEvent, useEffect, useMemo, useState } from "react"
+import { ChangeEvent, useMemo, useState } from "react"
 
 import { pushNotification } from "../../../../features/notification/notificationSlice";
 import { useCreateSubmissionMutation } from "../../../../features/submission/submissionApiSlice";
