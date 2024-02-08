@@ -1,6 +1,6 @@
 import React from 'react'
-import { pushNotification } from '../../../features/notification/notificationSlice';
-import { useCreateSubmissionMutation } from "../../../features/submission/submissionApiSlice";
+import { pushNotification } from '../../../../features/notification/notificationSlice';
+import { useCreateSubmissionMutation } from "../../../../features/submission/submissionApiSlice";
 import { useDispatch } from 'react-redux';
 
 const SubmissionFileField = (props: any) => {
