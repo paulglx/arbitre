@@ -14,7 +14,7 @@ const ExerciseSubmissionTab = (props: any) => {
             exercise?.type === "single" ?
                 <SubmissionFileField exercise={exercise} />
                 :
-                <SubmissionMultifileField />
+                <SubmissionMultifileField exercise={exercise} />
             :
             <SubmissionFileFieldDisabled />
         }
