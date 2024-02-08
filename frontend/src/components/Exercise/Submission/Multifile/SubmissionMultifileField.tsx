@@ -13,14 +13,47 @@ const SubmissionMultifileField = (props: any) => {
     const [createSubmission] = useCreateSubmissionMutation();
 
     const [files, setFiles] = useState<FileList | null>(null);
-
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFiles(e.target.files);
-    }
+    const [isValid, setIsValid] = useState(false);
 
     const filesAsList = useMemo(() => {
         return files ? Array.from(files) : [];
     }, [files]);
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+
+        setFiles(e.target.files);
+
+        if (e.target.files?.length === 0) {
+            setIsValid(false);
+            return;
+        }
+
+        const filesAsList = Array.from(e.target.files as FileList);
+
+        // Check if there is no "run" or "compile" file
+        const hasRunFile = filesAsList.some(file => file.name === "run");
+        const hasCompileFile = filesAsList.some(file => file.name === "compile");
+
+        let isValid = true;
+
+        if (hasRunFile) {
+            dispatch(pushNotification({
+                message: "You can't add a file named 'run'.",
+                type: "error"
+            }));
+            isValid = false;
+        }
+        if (hasCompileFile) {
+            setIsValid(false);
+            dispatch(pushNotification({
+                message: "You can't add a file named 'compile'.",
+                type: "error"
+            }));
+            isValid = false;
+        }
+
+        setIsValid(isValid);
+    }
 
     const generateZip = async () => {
         const zipFileWriter = new zip.BlobWriter("application/zip");
@@ -55,7 +88,7 @@ const SubmissionMultifileField = (props: any) => {
         await createSubmission(formData)
             .unwrap()
             .then(() => {
-                //window.location.reload();
+                window.location.reload();
             })
             .catch(() => {
                 dispatch(pushNotification({
@@ -101,7 +134,12 @@ const SubmissionMultifileField = (props: any) => {
                 />
             </label>
 
-            <button type="submit" className='rounded-lg bg-indigo-50 px-6 py-3 text-indigo-700 font-semibold border border-indigo-200 hover:bg-indigo-100 transition-colors'>
+            <button
+                type="submit"
+                className={`rounded-lg px-6 py-3 font-semibold border transition-colors
+                ${isValid ? `bg-indigo-50 text-indigo-700  border-indigo-200 hover:bg-indigo-100` : `bg-gray-100 text-gray-500 border-gray-200`}`}
+                disabled={!isValid}
+            >
                 Submit
             </button>
         </form>
