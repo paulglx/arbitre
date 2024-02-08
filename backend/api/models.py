@@ -223,7 +223,7 @@ class Exercise(models.Model):
     suffix = models.TextField(blank=True)
 
     # Multiple-file exercises specifics
-    teacher_files = models.FileField(upload_to="teacher_files/", blank=True)
+    teacher_files = models.FileField(upload_to="teacher_files/", blank=True, null=True)
 
     def __str__(self):
         if self.type == self.ExerciseTypes.MULTIPLE:
