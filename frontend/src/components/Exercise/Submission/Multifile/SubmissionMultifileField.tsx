@@ -2,6 +2,7 @@ import * as zip from "@zip.js/zip.js";
 
 import { ChangeEvent, useMemo, useState } from "react"
 
+import { DocumentIcon } from "@heroicons/react/24/solid";
 import { pushNotification } from "../../../../features/notification/notificationSlice";
 import { useCreateSubmissionMutation } from "../../../../features/submission/submissionApiSlice";
 import { useDispatch } from "react-redux";
@@ -104,7 +105,8 @@ const SubmissionMultifileField = (props: any) => {
                 {filesAsList?.map((file, index) => {
                     return (
                         <span key={index} className="mx-1">
-                            <span className="font-mono border rounded-lg px-2 py-1 bg-indigo-50 border-indigo-300 text-indigo-800 shadow-sm">
+                            <span className="inline-flex items-center font-mono border rounded-lg px-2 py-1 bg-indigo-50 border-indigo-300 text-indigo-800 shadow-sm">
+                                <DocumentIcon className="inline h-3 w-3 text-indigo-600 mr-1" />
                                 {file.name}
                             </span>
                         </span>
