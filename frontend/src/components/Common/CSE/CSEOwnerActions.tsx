@@ -37,12 +37,12 @@ const CSEOwnerActions = (props: any) => {
                 </button>)}
             <button
                 onClick={() => setModalIsOpen(true)}
-                className="bg-red-500 hover:bg-red-600 border border-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm sm:leading-6"
+                className="bg-red-50 hover:bg-red-100 border border-red-300 text-red-600 font-semibold py-2 px-4 rounded-lg shadow-sm sm:leading-6"
                 aria-label='Delete exercise'
                 aria-haspopup="true"
 
             >
-                <TrashIcon className="w-6 h-6" />
+                <TrashIcon className="w-5 h-5" />
 
             </button>
         </div>

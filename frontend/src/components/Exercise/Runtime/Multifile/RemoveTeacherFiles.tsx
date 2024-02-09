@@ -39,6 +39,7 @@ const RemoveTeacherFiles = (props: any) => {
             onClick={() => setModalIsOpen(true)}
         >
             <TrashIcon className="w-4 h-4" />
+            <span className="sr-only">Remove teacher files</span>
         </button>
         {modalIsOpen &&
             <Modal
