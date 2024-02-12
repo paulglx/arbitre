@@ -1,5 +1,6 @@
 import MultifileRuntime from "./Multifile/MultifileRuntime";
 import SinglefileRuntime from "./Singlefile/SinglefileRuntime";
+import TypePicker from "./TypePicker";
 
 const ExerciseRuntimeTab = (props: any) => {
     const exerciseType = props.exerciseType;
@@ -16,17 +17,20 @@ const ExerciseRuntimeTab = (props: any) => {
     const setPrefix = props.setPrefix;
     const setSuffix = props.setSuffix;
 
-    return exerciseType === "single"
-        ? <SinglefileRuntime
-            edit={edit}
-            course={course}
-            isOwner={isOwner}
-            prefix={prefix}
-            suffix={suffix}
-            setPrefix={setPrefix}
-            setSuffix={setSuffix}
-        />
-        : <MultifileRuntime exercise={exercise} />
+    return <>
+        <TypePicker />
+        {exerciseType === "single"
+            ? <SinglefileRuntime
+                edit={edit}
+                course={course}
+                isOwner={isOwner}
+                prefix={prefix}
+                suffix={suffix}
+                setPrefix={setPrefix}
+                setSuffix={setSuffix}
+            />
+            : <MultifileRuntime exercise={exercise} />}
+    </>
 }
 
 export default ExerciseRuntimeTab
