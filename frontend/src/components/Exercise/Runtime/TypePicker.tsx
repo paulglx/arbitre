@@ -1,11 +1,14 @@
 import { DocumentTextIcon, FolderOpenIcon } from '@heroicons/react/20/solid';
 
+import { pushNotification } from '../../../features/notification/notificationSlice';
+import { useDispatch } from 'react-redux';
 import { useUpdateExerciseMutation } from '../../../features/courses/exerciseApiSlice';
 
 const TypePicker = (props: any) => {
 
     const { exercise, type, setType } = props;
     const [updateExercise] = useUpdateExerciseMutation();
+    const dispatch = useDispatch();
 
     const enabledStyle = "outline outline-2 shadow-lg"
     const singleEnabledStyle = "bg-blue-50 border-blue-300 outline-blue-400 shadow-blue-100"
@@ -14,16 +17,25 @@ const TypePicker = (props: any) => {
 
     const handleSwitchType = async (e: any) => {
 
+        const oldType = type;
         const newType = type === "single" ? "multiple" : "single"
 
         e.preventDefault();
+
+        setType(newType);
 
         await updateExercise({
             id: exercise.id,
             type: newType,
         })
-
-        setType(newType);
+            .unwrap()
+            .catch(() => {
+                dispatch(pushNotification({
+                    message: "There was an error while changing the exercise type",
+                    type: "error"
+                }))
+                setType(oldType);
+            })
     }
 
     return (
