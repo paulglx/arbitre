@@ -55,12 +55,12 @@ const TeacherFilesField = (props: any) => {
                 <span className="sr-only">Select a zip file</span>
                 <input
                     type="file"
-                    className="block w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 file:cursor-pointer file:transition-colors hover:file:bg-blue-100"
+                    className="block w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 file:cursor-pointer file:transition-colors hover:file:bg-indigo-100"
                     accept='.zip'
                 />
             </label>
 
-            <button type="submit" className="rounded-lg bg-blue-50 px-4 py-2 text-blue-700 font-semibold border border-blue-300 hover:bg-blue-100 transition-colors">Submit</button>
+            <button type="submit" className="rounded-lg bg-indigo-50 px-4 py-2 text-indigo-700 font-semibold border border-indigo-300 hover:bg-indigo-100 transition-colors">Submit</button>
 
         </form>
     )
