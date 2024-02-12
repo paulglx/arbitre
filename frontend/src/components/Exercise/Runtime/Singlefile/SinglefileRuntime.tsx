@@ -10,71 +10,68 @@ const SinglefileRuntime = (props: any) => {
 
     return (<>
         <div className="my-4">
-            <h5 className="text-2xl font-bold">Prefix</h5>
-            <p className="text-gray-600 mb-4 text-sm">This will be appended before the student's code at runtime.</p>
+            <h3 className="text-md font-semibold">Prefix</h3>
+            <p className="text-gray-600 mb-2 text-sm">This will be appended before the student's code at runtime.</p>
 
-            <div className="relative rounded-2xl">
-                <Editor
-                    className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
-                    value={prefix}
-                    height={getContentHeight(prefix) + "px"}
-                    onChange={(value, e) => { setPrefix(value as string) }}
-                    language={course?.language?.toLowerCase()}
-                    options={{
-                        minimap: { enabled: false },
-                        lineNumbers: "on",
-                        readOnly: !isOwner || !edit,
-                        renderLineHighlight: "none",
-                        renderFinalNewline: "off",
-                        renderLineHighlightOnlyWhenFocus: false,
-                        renderValidationDecorations: "on",
-                        renderWhitespace: "none",
-                        scrollBeyondLastLine: false,
-                        scrollbar: {
-                            vertical: "hidden",
-                            alwaysConsumeMouseWheel: false,
-                        },
-                    }}
-                />
-            </div>
+            <Editor
+                className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
+                value={prefix}
+                height={getContentHeight(prefix) + "px"}
+                onChange={(value, e) => { setPrefix(value as string) }}
+                language={course?.language?.toLowerCase()}
+                options={{
+                    minimap: { enabled: false },
+                    lineNumbers: "on",
+                    readOnly: !isOwner || !edit,
+                    renderLineHighlight: "none",
+                    renderFinalNewline: "off",
+                    renderLineHighlightOnlyWhenFocus: false,
+                    renderValidationDecorations: "on",
+                    renderWhitespace: "none",
+                    scrollBeyondLastLine: false,
+                    scrollbar: {
+                        vertical: "hidden",
+                        alwaysConsumeMouseWheel: false,
+                    },
+                }}
+            />
 
-            <h5 className="text-2xl font-bold mt-2">Suffix</h5>
+            <h3 className="text-md font-semibold">Suffix</h3>
             <p className="text-gray-600 mb-4 text-sm">This will be appended after the student's code at runtime.</p>
 
-            <div className="relative rounded-2xl">
-                <Editor
-                    className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
-                    value={suffix}
-                    height={getContentHeight(suffix) + "px"}
-                    onChange={(value, e) => { setSuffix(value as string) }}
-                    language={course?.language?.toLowerCase()}
-                    options={{
-                        minimap: { enabled: false },
-                        lineNumbers: "on",
-                        readOnly: !isOwner || !edit,
-                        renderLineHighlight: "none",
-                        renderFinalNewline: "off",
-                        renderLineHighlightOnlyWhenFocus: false,
-                        renderValidationDecorations: "on",
-                        renderWhitespace: "none",
-                        scrollBeyondLastLine: false,
-                        scrollBeyondLastColumn: 0,
-                        scrollbar: {
-                            vertical: "hidden",
-                            alwaysConsumeMouseWheel: false,
-                        },
-                    }}
-                />
-            </div>
+            <Editor
+                className="p-2 rounded-lg bg-white border mb-4 focus:ring-blue-500 focus:border-blue-500"
+                value={suffix}
+                height={getContentHeight(suffix) + "px"}
+                onChange={(value, e) => { setSuffix(value as string) }}
+                language={course?.language?.toLowerCase()}
+                options={{
+                    minimap: { enabled: false },
+                    lineNumbers: "on",
+                    readOnly: !isOwner || !edit,
+                    renderLineHighlight: "none",
+                    renderFinalNewline: "off",
+                    renderLineHighlightOnlyWhenFocus: false,
+                    renderValidationDecorations: "on",
+                    renderWhitespace: "none",
+                    scrollBeyondLastLine: false,
+                    scrollBeyondLastColumn: 0,
+                    scrollbar: {
+                        vertical: "hidden",
+                        alwaysConsumeMouseWheel: false,
+                    },
+                }}
+            />
         </div >
 
         <div className="p-1 mb-4">
-            <h5 className="text-2xl font-bold mb-2">Code preview</h5>
-            <p className="text-gray-600 mb-4">This is what the tested file will look like.</p>
-            <pre className="border rounded-lg bg-gray-100 p-4">
+            <h3 className="text-md font-bold">Code preview</h3>
+            <p className="text-gray-500 mb-2 text-sm">This is what the tested file will look like.</p>
+
+            <pre className="border rounded-lg text-xs bg-gray-100 p-4">
                 {prefix ? (
                     <>
-                        <span className="font-bold text-sm text-gray-600">{prefix}</span>
+                        <span className="text-xs text-gray-600">{prefix}</span>
                         <br /><br />
                     </>
                 ) : null}
@@ -86,7 +83,7 @@ const SinglefileRuntime = (props: any) => {
                 {suffix ? (
                     <>
                         <br />
-                        <span className="font-bold text-sm text-gray-600">{suffix}</span>
+                        <span className="text-xs text-gray-600">{suffix}</span>
                     </>
                 ) : null}
             </pre>
