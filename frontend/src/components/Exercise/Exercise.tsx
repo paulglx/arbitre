@@ -30,6 +30,7 @@ const Exercise = () => {
     const [requeueSubmissions] = useRequeueSubmissionsMutation();
     const [suffix, setSuffix] = useState("");
     const [title, setTitle] = useState("");
+    const [type, setType] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
     const { exercise_id }: any = useParams();
     const dispatch = useDispatch();
@@ -50,7 +51,6 @@ const Exercise = () => {
     useTitle(exercise?.title);
 
     useEffect(() => {
-
         if (exerciseIsSuccess) {
             if (exercise?.title === "" && exercise?.description === "") {
                 setEdit(true);
@@ -58,6 +58,7 @@ const Exercise = () => {
 
             setTitle(exercise?.title);
             setDescription(exercise?.description);
+            setType(exercise?.type)
             setPrefix(exercise?.prefix);
             setSuffix(exercise?.suffix);
         }
@@ -179,7 +180,8 @@ const Exercise = () => {
             key: "runtime",
             title: "Runtime",
             content: <ExerciseRuntimeTab
-                exerciseType={exercise?.type}
+                type={type}
+                setType={setType}
                 edit={edit}
                 course={course}
                 exercise={exercise}

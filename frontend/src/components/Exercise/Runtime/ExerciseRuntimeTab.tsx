@@ -3,7 +3,8 @@ import SinglefileRuntime from "./Singlefile/SinglefileRuntime";
 import TypePicker from "./TypePicker";
 
 const ExerciseRuntimeTab = (props: any) => {
-    const exerciseType = props.exerciseType;
+    const type = props.type;
+    const setType = props.setType;
 
     // Multi file
     const exercise = props.exercise;
@@ -18,8 +19,8 @@ const ExerciseRuntimeTab = (props: any) => {
     const setSuffix = props.setSuffix;
 
     return <>
-        <TypePicker />
-        {exerciseType === "single"
+        <TypePicker exercise={exercise} type={type} setType={setType} />
+        {type === "single"
             ? <SinglefileRuntime
                 edit={edit}
                 course={course}

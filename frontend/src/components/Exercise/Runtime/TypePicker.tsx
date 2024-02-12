@@ -1,20 +1,29 @@
 import { DocumentTextIcon, FolderOpenIcon } from '@heroicons/react/20/solid';
 
-import { Modal } from '../../Common';
-import React from 'react'
-import { useState } from 'react'
+import { useUpdateExerciseMutation } from '../../../features/courses/exerciseApiSlice';
 
-const TypePicker = () => {
+const TypePicker = (props: any) => {
 
-    const [type, setType] = useState("single");
+    const { exercise, type, setType } = props;
+    const [updateExercise] = useUpdateExerciseMutation();
 
     const enabledStyle = "outline outline-2 shadow-lg"
     const singleEnabledStyle = "bg-blue-50 border-blue-300 outline-blue-400 shadow-blue-100"
     const multiEnabledStyle = "bg-indigo-50 border-indigo-300 outline-indigo-400 shadow-indigo-100"
     const disabledStyle = "bg-gray-50 border-gray-300 outline-gray-400 shadow-gray-100 border-dashed"
 
-    const handleSwitchType = async () => {
-        setType(type === "single" ? "multiple" : "single");
+    const handleSwitchType = async (e: any) => {
+
+        const newType = type === "single" ? "multiple" : "single"
+
+        e.preventDefault();
+
+        await updateExercise({
+            id: exercise.id,
+            type: newType,
+        })
+
+        setType(newType);
     }
 
     return (

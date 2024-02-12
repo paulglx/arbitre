@@ -31,7 +31,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
                 return (
                     {
                         url: `/api/exercise/${data.id}/`,
-                        method: 'PUT',
+                        method: 'PATCH',
                         credentials: 'include',
                         body: data,
                     }
