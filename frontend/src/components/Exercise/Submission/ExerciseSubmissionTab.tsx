@@ -6,12 +6,12 @@ import TestResult from '../TestResult/TestResult'
 
 const ExerciseSubmissionTab = (props: any) => {
 
-    const { exercise } = props
+    const { exercise, type } = props
 
     return (<>
         <SubmissionDeadline exercise={exercise} />
         {exercise?.session?.can_submit ?
-            exercise?.type === "single" ?
+            type === "single" ?
                 <SubmissionFileField exercise={exercise} />
                 :
                 <SubmissionMultifileField exercise={exercise} />

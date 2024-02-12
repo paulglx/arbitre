@@ -195,7 +195,7 @@ const Exercise = () => {
         {
             key: "submission",
             title: "Submission",
-            content: <ExerciseSubmissionTab exercise={exercise} />,
+            content: <ExerciseSubmissionTab exercise={exercise} type={type} />,
         },
     ];
 
