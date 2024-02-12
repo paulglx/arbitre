@@ -234,17 +234,12 @@ def run_test(
             status = "error"
 
         stdout = ""
-        if response["message"] is not None:
-            stdout += response["message"]
-        if response["stdout"] is not None:
-            stdout += response["stdout"]
-        if response["stderr"] is not None:
-            stdout += response["stderr"]
-        if response["compile_output"] is not None:
-            stdout += response["compile_output"]
+        for key in ["message", "stdout", "stderr", "compile_output"]:
+            if response[key] is not None:
+                stdout += response[key]
 
-        time = response["time"] if response["time"] is not None else 0
-        memory = response["memory"] if response["memory"] is not None else 0
+        time = response.get("time", 0)
+        memory = response.get("memory", 0)
 
         # Save results to database using REST API
         after_data = {
