@@ -16,6 +16,9 @@ const SubmissionMultifileField = (props: any) => {
     const [files, setFiles] = useState<FileList | null>(null);
     const [isValid, setIsValid] = useState(false);
 
+    const isMac = navigator.userAgent.includes('Mac');
+    const holdKey = isMac ? "command" : "control";
+
     const filesAsList = useMemo(() => {
         return files ? Array.from(files) : [];
     }, [files]);
@@ -116,6 +119,13 @@ const SubmissionMultifileField = (props: any) => {
         )
     }
 
+    const KeyboardHint = () => {
+        return (<div className="text-gray-400 text-xs mt-1">
+            Hold&nbsp;
+            <kbd className="inline-flex justify-center items-center py-0.5 px-1 bg-gray-50 text-gray-500 border font-mono rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)]">{holdKey}</kbd> to select multiple files
+        </div>)
+    }
+
     return (<div className="pb-4">
         <form
             className="flex items-center justify-between space-x-3 rounded-lg pt-2"
@@ -145,6 +155,7 @@ const SubmissionMultifileField = (props: any) => {
                 Submit
             </button>
         </form>
+        <KeyboardHint />
 
         <FileList />
     </div>)
