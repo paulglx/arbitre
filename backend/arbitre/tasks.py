@@ -74,7 +74,11 @@ def get_base_runner_url():
 def get_api_key():
     api_key = env("API_KEY", default="")
     if api_key == "":
-        raise Exception("API_KEY is not set. The runners can't access the REST API.")
+        print(
+            "API_KEY is not set. The runners can't access the REST API.",
+            file=sys.stderr,
+        )
+        return
     return api_key
 
 
