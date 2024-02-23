@@ -29,10 +29,10 @@ final: prev: {
     packageOverrides = self: super: {
       mozilla-django-oidc = self.buildPythonPackage rec {
         pname = "mozilla-django-oidc";
-        version = "3.0.0";
+        version = "4.0.0";
         src = self.fetchPypi {
           inherit pname version;
-          sha256 = "sha256-p9RHr4PLWqFnGiQAmwzmsvDSWenFjYyIx6jQwnwFwE0=";
+          sha256 = "sha256-frnQWgM6xhp06jvjPT+CKBi8jcq4HEcf75TA1lx8vhw=";
         };
         propagatedBuildInputs = [
           self.josepy
