@@ -7,6 +7,7 @@ from runner.serializers import (
 )
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from rest_framework_api_key.permissions import HasAPIKey
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -183,8 +184,7 @@ class RequeueSubmissionsViewSet(viewsets.ViewSet):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
-
-    # TODO secure with API key
+    permission_classes = [permissions.IsAuthenticated | HasAPIKey]
 
     # Get the tests for the exercise if exercise_id is given
     def get_queryset(self):

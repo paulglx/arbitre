@@ -82,6 +82,20 @@ def get_api_key():
     return api_key
 
 
+def get_test(base_url, test_id, api_key):
+    tests = requests.get(
+        f"{base_url}/test/{test_id}/",
+        headers={"Authorization": f"Api-Key {api_key}"},
+    )
+    if tests.status_code == 401:
+        print(
+            "ERROR while trying to get tests content : Unauthorized access to the REST API",
+            file=sys.stderr,
+        )
+        return
+    return json.loads(tests.content)
+
+
 def post_running_testresult(submission_id, test_id, testresult_post_url):
     testresult_before_data = {
         "submission_pk": submission_id,
@@ -219,8 +233,7 @@ def run_test(
         api_key = get_api_key()
 
         # Get test data from REST API
-        test_data = requests.get(f"{base_url}/test/{test_id}/").content
-        test = json.loads(test_data)
+        test = get_test(base_url, test_id, api_key)
 
         # Save the empty test result with "running" status
         post_running_testresult(submission_id, test_id, testresult_post_url)
