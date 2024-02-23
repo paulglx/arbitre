@@ -115,6 +115,7 @@ class Submission(models.Model):
             elif type == "multiple":
                 # convert zip file to base64
                 import base64
+
                 with self.file.open(mode="rb") as f:
                     file_content = base64.b64encode(f.read()).decode()
 
@@ -201,7 +202,7 @@ class TestResult(models.Model):
 
         pending_testresults = TestResult.objects.filter(
             status=TestResult.TestResultStatus.PENDING
-        )
+        ).prefetch_related("submission", "exercise_test")
 
         if len(pending_testresults) == 0:
             return
@@ -223,9 +224,19 @@ class TestResult(models.Model):
                 continue
             exercise_test = testresult.exercise_test
 
-            # read file content
-            with open(submission.file.path, "r") as f:
-                file_content = f.read()
+            # Read file content
+            file_content = ""
+
+            if submission.exercise.type == "single":
+                with submission.file.open(mode="rb") as f:
+                    file_content = f.read().decode()
+
+            elif submission.exercise.type == "multiple":
+                # convert zip file to base64
+                import base64
+
+                with submission.file.open(mode="rb") as f:
+                    file_content = base64.b64encode(f.read()).decode()
 
             lang = submission.exercise.session.course.language
             type = submission.exercise.type
