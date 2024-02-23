@@ -184,6 +184,8 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
 
+    # TODO secure with API key
+
     # Get the tests for the exercise if exercise_id is given
     def get_queryset(self):
         queryset = Test.objects.all()

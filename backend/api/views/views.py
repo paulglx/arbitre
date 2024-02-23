@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import HttpRequest
 from django.utils import timezone
 from rest_framework import viewsets, permissions, status
+from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.response import Response
 from runner.models import Submission
 from runner.serializers import SubmissionSerializer
@@ -109,28 +110,27 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 
         return response
 
+
 class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
     """
     Get the teacher_files ZIP file of an exercise.
     """
-    
+
     serializer_class = ExerciseSerializer
-    permission_classes = (permissions.AllowAny,)
-    
+    permission_classes = [permissions.IsAuthenticated | HasAPIKey]
 
     def list(self, request):
-        import base64 
+        import base64
 
         exercise_id = self.request.query_params.get("exercise_id")
         exercise = Exercise.objects.get(id=exercise_id)
-
-        #TODO: check if user has rights
 
         zip = exercise.teacher_files
         zip_to_base64 = base64.b64encode(zip.read())
         zip.close()
 
         return Response(zip_to_base64)
+
 
 class StudentGroupViewSet(viewsets.ModelViewSet):
     """
@@ -329,9 +329,11 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         exercises = Exercise.objects.filter(session_id=session_id)
 
         # Get all the submissions of the user for the session
-        submissions = Submission.objects.filter(
-            exercise__session_id=session_id, owner_id=user_id
-        ).prefetch_related("testresult_set", "exercise__test_set").select_related("exercise", "exercise__session")
+        submissions = (
+            Submission.objects.filter(exercise__session_id=session_id, owner_id=user_id)
+            .prefetch_related("testresult_set", "exercise__test_set")
+            .select_related("exercise", "exercise__session")
+        )
 
         # Put this query in a dict
         submissions_dict = {}
@@ -372,7 +374,6 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
                     }
                 )
 
-
         return Response(results)
 
 
@@ -396,7 +397,7 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
             .prefetch_related("course__studentgroup_set", "course__students")
             .get(id=self.request.GET.get("session_id"))
         )
-        
+
         course = session.course
 
         # If groups param is passed, get all students of the groups
