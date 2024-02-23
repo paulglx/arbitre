@@ -117,14 +117,15 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
         error_response = JsonResponse(
-            {"file": "Not Found", "content": "", "language": ""}
+            {"file": "Not Found", "content": "", "language": "", "type": ""}
         )
 
         try:
-            submission = Submission.objects.get(
-                pk=request.query_params["submission_id"]
-            )
+            submission = Submission.objects.select_related(
+                "exercise", "exercise__session", "exercise__session__course"
+            ).get(pk=request.query_params["submission_id"])
 
+            type = submission.exercise.type
             language = submission.exercise.session.course.language
 
             if (
@@ -136,7 +137,16 @@ class SubmissionFileViewSet(viewsets.ViewSet):
 
             try:
                 with submission.file.open(mode="rb") as f:
-                    file_content = f.read().decode()
+                    if type == "single":
+                        file_content = f.read().decode()
+                    elif type == "multiple":
+                        # Get zip file, encode it in base64 and return it
+                        import base64
+
+                        file_content = base64.b64encode(f.read()).decode()
+                    else:
+                        return error_response
+
             except FileNotFoundError:
                 return error_response
 
@@ -145,6 +155,7 @@ class SubmissionFileViewSet(viewsets.ViewSet):
                     "file": str(submission.file),
                     "content": file_content,
                     "language": language,
+                    "type": type,
                 }
             )
 
