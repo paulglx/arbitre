@@ -187,9 +187,7 @@ def run_test(
     Runs one test on a submission, and stores the result in the database.
     """
 
-    # Arbitre API urldef get_base_ap
-    
-
+    # Arbitre API base URL
     base_url = get_base_runner_url()
     testresult_post_url = f"{base_url}/testresult/"
 
@@ -239,7 +237,10 @@ def run_test(
                 stdout += response[key]
 
         time = response.get("time", 0)
+        time = time if time is not None else 0
+
         memory = response.get("memory", 0)
+        memory = memory if memory is not None else 0
 
         # Save results to database using REST API
         after_data = {
