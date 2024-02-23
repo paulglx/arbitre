@@ -178,8 +178,8 @@ def process_source_multifile(student_files, exercise_id):
     student_files_data = base64.b64decode(student_files)
     teacher_files_data = base64.b64decode(teacher_files)
 
-    student_files_zip = tempfile.NamedTemporaryFile()
-    teacher_files_zip = tempfile.NamedTemporaryFile()
+    student_files_zip = tempfile.NamedTemporaryFile(prefix="studentfiles-")
+    teacher_files_zip = tempfile.NamedTemporaryFile(prefix="teacherfiles-")
 
     with open(student_files_zip.name, "wb") as f:
         f.write(student_files_data)
@@ -187,7 +187,7 @@ def process_source_multifile(student_files, exercise_id):
     with open(teacher_files_zip.name, "wb") as f:
         f.write(teacher_files_data)
 
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(prefix="finaldir-") as tmp:
 
         # Extract zips in temp folder
         zipfile.ZipFile(teacher_files_zip).extractall(tmp)
@@ -196,7 +196,7 @@ def process_source_multifile(student_files, exercise_id):
         print("ls : " + str(os.listdir(tmp)))
 
         # Create final zip file
-        final = tempfile.NamedTemporaryFile()
+        final = tempfile.NamedTemporaryFile(prefix="final-")
 
         # Zip whole tmp directory
         with zipfile.ZipFile(final.name, mode="w") as final_zip:
