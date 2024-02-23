@@ -1,5 +1,6 @@
 import CodePreviewDownloadButton from "./CodePreviewDownloadButton";
 import Editor from "@monaco-editor/react";
+import ZipfileCodePreview from "./ZipfileCodePreview";
 import { useGetSubmissionFileContentQuery } from '../../../features/submission/submissionApiSlice';
 
 const CodePreview = (props: any) => {
@@ -8,10 +9,23 @@ const CodePreview = (props: any) => {
 
     const {
         data: fileContent,
-        isSuccess,
+        isLoading,
+        isError
     } = useGetSubmissionFileContentQuery({ submission_id: submission_id });
 
-    return isSuccess ? (<>
+    if (isError) {
+        return <div className="p-4 text-red-700">An error occurred</div>
+    }
+
+    if (isLoading) {
+        return <div className="p-4">Loading...</div>
+    }
+
+    if (fileContent.type === "not-found") {
+        return <div className="p-4 text-red-600">Error: File(s) not found on the server</div>
+    }
+
+    return fileContent.type === "single" ? (<>
         <Editor
             defaultLanguage={fileContent.language}
             height={500}
@@ -26,8 +40,9 @@ const CodePreview = (props: any) => {
         />
         <CodePreviewDownloadButton fileContent={fileContent} />
     </>
-
-    ) : (<></>)
+    ) : (<>
+        <ZipfileCodePreview fileContent={fileContent} />
+    </>)
 }
 
 export default CodePreview

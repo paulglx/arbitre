@@ -117,7 +117,7 @@ class SubmissionFileViewSet(viewsets.ViewSet):
     # GET runner/api/submission-file?submission_id=...
     def list(self, request):
         error_response = JsonResponse(
-            {"file": "Not Found", "content": "", "language": "", "type": ""}
+            {"file": "Not Found", "content": "", "language": "", "type": "not-found"}
         )
 
         try:
