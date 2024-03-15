@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from environ import Env
+import environ
 import os
 import random
 
@@ -89,12 +89,15 @@ class Submission(models.Model):
         course = exercise.session.course
         tests = Test.objects.filter(exercise=self.exercise)
 
+        type = exercise.type
+
         prefix = exercise.prefix
         suffix = exercise.suffix
 
         # Read env
-        env = Env()
-        env.read_env()
+        env = environ.Env()
+        env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+        environ.Env.read_env(env_file=env_file)
 
         # decide Judge0 host to use
         hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])
@@ -103,22 +106,37 @@ class Submission(models.Model):
         if tests:
             super(Submission, self).save(*args, **kwargs)
 
-            with self.file.open(mode="rb") as f:
-                file_content = f.read().decode()
-                for test in tests:
-                    # Add Judge0 task to queue
-                    celery.send_task(
-                        "arbitre.tasks.run_test",
-                        (
-                            host,
-                            self.id,
-                            test.id,
-                            file_content,
-                            prefix,
-                            suffix,
-                            course.language,
-                        ),
-                    )
+            file_content = ""
+
+            if type == "single":
+                with self.file.open(mode="rb") as f:
+                    file_content = f.read().decode()
+
+            elif type == "multiple":
+                # convert zip file to base64
+                import base64
+
+                with self.file.open(mode="rb") as f:
+                    file_content = base64.b64encode(f.read()).decode()
+
+            else:
+                raise Exception("Invalid exercise type")
+
+            for test in tests:
+                # Add Judge0 task to queue
+                celery.send_task(
+                    "arbitre.tasks.run_test",
+                    (
+                        host,
+                        type,
+                        self.id,
+                        test.id,
+                        file_content,
+                        prefix,
+                        suffix,
+                        course.language,
+                    ),
+                )
         else:
             self.status = "success"
             super(Submission, self).save(*args, **kwargs)
@@ -184,7 +202,7 @@ class TestResult(models.Model):
 
         pending_testresults = TestResult.objects.filter(
             status=TestResult.TestResultStatus.PENDING
-        )
+        ).prefetch_related("submission", "exercise_test")
 
         if len(pending_testresults) == 0:
             return
@@ -192,8 +210,9 @@ class TestResult(models.Model):
         print("Running all pending testresults...")
 
         # Read env
-        env = Env()
-        env.read_env()
+        env = environ.Env()
+        env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+        environ.Env.read_env(env_file=env_file)
 
         # decide judge0 host to use
         hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])
@@ -205,11 +224,22 @@ class TestResult(models.Model):
                 continue
             exercise_test = testresult.exercise_test
 
-            # read file content
-            with open(submission.file.path, "r") as f:
-                file_content = f.read()
+            # Read file content
+            file_content = ""
+
+            if submission.exercise.type == "single":
+                with submission.file.open(mode="rb") as f:
+                    file_content = f.read().decode()
+
+            elif submission.exercise.type == "multiple":
+                # convert zip file to base64
+                import base64
+
+                with submission.file.open(mode="rb") as f:
+                    file_content = base64.b64encode(f.read()).decode()
 
             lang = submission.exercise.session.course.language
+            type = submission.exercise.type
             prefix = submission.exercise.prefix
             suffix = submission.exercise.suffix
 
@@ -220,6 +250,7 @@ class TestResult(models.Model):
                     "arbitre.tasks.run_test",
                     (
                         host,
+                        type,
                         submission.id,
                         exercise_test.id,
                         file_content,

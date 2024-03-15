@@ -11,6 +11,7 @@ pkgs.mkShell {
       django-environ
       django-extensions
       djangorestframework
+      djangorestframework-api-key
       djangorestframework-simplejwt
       drf-yasg
       gunicorn

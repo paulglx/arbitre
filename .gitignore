@@ -1,6 +1,7 @@
 *inventory.yaml
 *inventory.ini
 *uploads
+*teacher_files
 *tests-examples/*
 *.hurricane-api-token
 *.dump

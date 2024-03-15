@@ -1,13 +1,13 @@
-![Arbitre](.github/banner.png)
+# ![Arbitre](.github/banner.png)
 
 ![Django Logo](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![React Logo](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
 Arbitre allows computer science teachers to create and grade assignments for their students. Create exercises, share them with students, and view the results of automated testing in real time.
 
-## Installation 🧑‍💻
+## Documentation 🧑‍💻
 
-To install and run Arbitre locally, follow [this wiki page](https://github.com/paulglx/arbitre/wiki/Running-Arbitre-locally).
+Learn how to use Arbitre or install it locally in the [Documentation](https://silicon-saver-c3d.notion.site/ARBITRE-Docs-0eda4df036504c5f98b1b7b14083f706).
 
 ## Features ✨
 

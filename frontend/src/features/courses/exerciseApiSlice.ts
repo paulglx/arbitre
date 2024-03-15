@@ -15,7 +15,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
             })
         }),
         createExercise: builder.mutation({
-            query: (data:any) => {
+            query: (data: any) => {
                 return (
                     {
                         url: '/api/exercise/',
@@ -27,11 +27,11 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
             }
         }),
         updateExercise: builder.mutation({
-            query: (data:any) => {
+            query: (data: any) => {
                 return (
                     {
                         url: `/api/exercise/${data.id}/`,
-                        method: 'PUT',
+                        method: 'PATCH',
                         credentials: 'include',
                         body: data,
                     }
@@ -39,7 +39,7 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
             }
         }),
         deleteExercise: builder.mutation({
-            query: (data:any) => {
+            query: (data: any) => {
                 return (
                     {
                         url: `/api/exercise/${data.id}/`,
@@ -49,6 +49,35 @@ export const exerciseApiSlice = apiSlice.injectEndpoints({
                 )
             }
         }),
+        setTeacherFiles: builder.mutation({
+            query: (data: any) => {
+                const formData = new FormData();
+                formData.append('teacher_files', data.teacher_files);
+
+                return ({
+                    body: formData,
+                    credentials: 'include',
+                    formData: true,
+                    method: 'PATCH',
+                    url: `/api/exercise/${data.id}/`,
+                })
+            }
+        }),
+        removeTeacherFiles: builder.mutation({
+            query: (data: any) => {
+
+                const body = {
+                    "teacher_files": null,
+                }
+
+                return ({
+                    body: body,
+                    credentials: 'include',
+                    method: 'PATCH',
+                    url: `/api/exercise/${data.id}/`,
+                })
+            }
+        })
     })
 })
 
@@ -57,5 +86,7 @@ export const {
     useGetExercisesOfSessionQuery,
     useCreateExerciseMutation,
     useUpdateExerciseMutation,
-    useDeleteExerciseMutation
+    useDeleteExerciseMutation,
+    useSetTeacherFilesMutation,
+    useRemoveTeacherFilesMutation
 } = exerciseApiSlice;
