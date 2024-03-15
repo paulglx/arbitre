@@ -5,9 +5,9 @@
 
 Arbitre allows computer science teachers to create and grade assignments for their students. Create exercises, share them with students, and view the results of automated testing in real time.
 
-## Installation 🧑‍💻
+## Documentation 🧑‍💻
 
-To install and run Arbitre locally, follow [this wiki page](https://github.com/paulglx/arbitre/wiki/Running-Arbitre-locally).
+Learn how to use Arbitre or install it locally in the [Documentation](https://silicon-saver-c3d.notion.site/ARBITRE-Docs-0eda4df036504c5f98b1b7b14083f706).
 
 ## Features ✨
 
