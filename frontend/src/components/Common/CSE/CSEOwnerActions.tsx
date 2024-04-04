@@ -23,26 +23,26 @@ const CSEOwnerActions = (props: any) => {
                         setEdit(false);
                         handleUpdate();
                     }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-500 font-semibold py-2 px-4 rounded-lg shadow-sm sm:leading-6"
+                    className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-semibold py-2 px-4 rounded-lg shadow-sm sm:leading-6 ml-1 transition-all"
                     aria-label='Save exercise'
                 >
                     Save
                 </button>) : (
                 <button
                     onClick={() => setEdit(true)}
-                    className="border font-semibold py-2 px-4 rounded-lg hover:bg-gray-50 shadow-sm sm:leading-6"
+                    className="border font-semibold py-2 px-4 rounded-lg bg-gray-50 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 shadow-sm sm:leading-6 transition-all"
                     aria-label='Edit exercise'
                 >
                     Edit
                 </button>)}
             <button
                 onClick={() => setModalIsOpen(true)}
-                className="bg-red-500 hover:bg-red-600 border border-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm sm:leading-6"
+                className="bg-gray-50 hover:bg-red-50 border hover:border-red-300 text-red-600 font-semibold py-2 px-4 rounded-lg shadow-sm sm:leading-6 transition-all"
                 aria-label='Delete exercise'
                 aria-haspopup="true"
 
             >
-                <TrashIcon className="w-6 h-6" />
+                <TrashIcon className="w-5 h-5" />
 
             </button>
         </div>

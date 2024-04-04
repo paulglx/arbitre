@@ -8,7 +8,7 @@ import CSELoading from "../Common/CSE/CSELoading";
 import CSEOwnerActions from "../Common/CSE/CSEOwnerActions";
 import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from "../Common/EditableContent/EditableTitle";
-import ExerciseRuntimeTab from "./ExerciseRuntimeTab";
+import ExerciseRuntimeTab from "./Runtime/ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./Submission/ExerciseSubmissionTab";
 import ExerciseTestsTab from "./ExerciseTestsTab";
 import NotFound from "../Util/NotFound";
@@ -30,6 +30,7 @@ const Exercise = () => {
     const [requeueSubmissions] = useRequeueSubmissionsMutation();
     const [suffix, setSuffix] = useState("");
     const [title, setTitle] = useState("");
+    const [type, setType] = useState("");
     const [updateExercise] = useUpdateExerciseMutation();
     const { exercise_id }: any = useParams();
     const dispatch = useDispatch();
@@ -50,7 +51,6 @@ const Exercise = () => {
     useTitle(exercise?.title);
 
     useEffect(() => {
-
         if (exerciseIsSuccess) {
             if (exercise?.title === "" && exercise?.description === "") {
                 setEdit(true);
@@ -58,6 +58,7 @@ const Exercise = () => {
 
             setTitle(exercise?.title);
             setDescription(exercise?.description);
+            setType(exercise?.type)
             setPrefix(exercise?.prefix);
             setSuffix(exercise?.suffix);
         }
@@ -178,12 +179,23 @@ const Exercise = () => {
         {
             key: "runtime",
             title: "Runtime",
-            content: <ExerciseRuntimeTab edit={edit} course={course} exercise={exercise} isOwner={isOwner} prefix={prefix} suffix={suffix} setPrefix={setPrefix} setSuffix={setSuffix} />,
+            content: <ExerciseRuntimeTab
+                type={type}
+                setType={setType}
+                edit={edit}
+                course={course}
+                exercise={exercise}
+                isOwner={isOwner}
+                prefix={prefix}
+                suffix={suffix}
+                setPrefix={setPrefix}
+                setSuffix={setSuffix}
+            />,
         },
         {
             key: "submission",
             title: "Submission",
-            content: <ExerciseSubmissionTab exercise={exercise} />,
+            content: <ExerciseSubmissionTab exercise={exercise} type={type} />,
         },
     ];
 

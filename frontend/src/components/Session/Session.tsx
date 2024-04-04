@@ -79,8 +79,6 @@ const Session = () => {
         const startDateFormatted = startDate === "" ? null : moment(startDate).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
         const deadlineFormatted = deadline === "" ? null : moment(deadline).format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
 
-        console.log(startDateFormatted)
-
         await updateSession({
             course_id: course?.id,
             id: session?.id,

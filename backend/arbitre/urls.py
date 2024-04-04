@@ -27,6 +27,7 @@ from api.views import (
     CourseTutorViewSet,
     CourseViewSet,
     ExerciseViewSet,
+    ExerciseTeacherFilesViewSet,
     ResultsOfSessionViewSet,
     SessionViewSet,
     StudentGroupViewSet,
@@ -72,6 +73,11 @@ router.register(r"course_student", CourseStudentViewSet, basename="course_studen
 router.register(r"course_tutor", CourseTutorViewSet, basename="course_tutor")
 router.register(r"course", CourseViewSet, basename="course")
 router.register(r"exercise", ExerciseViewSet, basename="exercise")
+router.register(
+    r"exercise_teacher_files",
+    ExerciseTeacherFilesViewSet,
+    basename="exercise_teacher_files",
+)
 router.register(r"session", SessionViewSet, basename="session")
 router.register(r"student_group", StudentGroupViewSet, basename="student_group")
 router.register(

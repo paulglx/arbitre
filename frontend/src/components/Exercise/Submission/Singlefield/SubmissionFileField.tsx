@@ -1,6 +1,6 @@
 import React from 'react'
-import { pushNotification } from '../../../features/notification/notificationSlice';
-import { useCreateSubmissionMutation } from "../../../features/submission/submissionApiSlice";
+import { pushNotification } from '../../../../features/notification/notificationSlice';
+import { useCreateSubmissionMutation } from "../../../../features/submission/submissionApiSlice";
 import { useDispatch } from 'react-redux';
 
 const SubmissionFileField = (props: any) => {
@@ -47,7 +47,7 @@ const SubmissionFileField = (props: any) => {
     return (<form className="flex items-center justify-between space-x-3 rounded-lg pt-2 pb-4" onSubmit={handleSubmit} encType="multipart/form-data">
         <label className="block bg-white rounded-lg border p-2 w-full">
             <span className="sr-only">Send your file</span>
-            <input type="file" className="block w-full text-sm text-slate-500
+            <input type="file" className="block w-full text-sm text-gray-500
                     file:mr-2 file:py-2 file:px-4
                     file:rounded-lg file:border-0
                     file:text-sm file:font-semibold
