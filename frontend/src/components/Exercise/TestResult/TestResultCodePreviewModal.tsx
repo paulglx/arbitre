@@ -30,7 +30,7 @@ const TestResultCodePreviewModal = (props: any) => {
                         </button>
                     </div>
 
-                    <CodePreview submissionId={submission.id} />
+                    {show ? <CodePreview submissionId={submission.id} /> : <></>}
 
                 </div>
             </div>

@@ -122,14 +122,17 @@ class ExerciseSerializer(serializers.ModelSerializer):
         model = Exercise
         fields = [
             "id",
+            "type",
             "title",
             "description",
-            "session_id",
-            "session",
+            "grade",
+            "type",
             "prefix",
             "suffix",
-            "grade",
+            "teacher_files",
             "submission_status",
+            "session",
+            "session_id",
         ]
 
 

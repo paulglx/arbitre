@@ -3,6 +3,7 @@ import json
 import requests
 import environ
 import os
+import sys
 
 # Reading .env file
 env = environ.Env()
@@ -11,14 +12,7 @@ environ.Env.read_env(
 )
 
 
-@shared_task
-def run_test(
-    hostname, submission_id, test_id, file_content, prefix, suffix, lang
-) -> None:
-    """
-    Runs one test on a submission, and stores the result in the database.
-    """
-
+def get_lang_id(lang):
     JUDGE0_LANG_IDS = {
         "asm": 45,
         "bash": 46,
@@ -58,18 +52,51 @@ def run_test(
         "typescript": 74,
         "vbnet": 84,
     }
+    return JUDGE0_LANG_IDS[lang]
 
-    # Arbitre API urls
+
+def get_base_url():
     if env("USE_HTTPS", default=True):
-        base_url = "https://" + env("HOSTNAME") + "/runner/api"
+        base_url = "https://" + env("HOSTNAME")
     else:
-        base_url = "http://" + env("HOSTNAME") + "/runner/api"
-    testresult_post_url = f"{base_url}/testresult/"
+        base_url = "http://" + env("HOSTNAME")
+    return base_url
 
-    # Get test data from REST API
-    test = json.loads(requests.get(f"{base_url}/test/{test_id}/").content)
 
-    # Save the empty test result with "running" status
+def get_base_api_url():
+    return get_base_url() + "/api"
+
+
+def get_base_runner_url():
+    return get_base_url() + "/runner/api"
+
+
+def get_api_key():
+    api_key = env("API_KEY", default="")
+    if api_key == "":
+        print(
+            "API_KEY is not set. The runners can't access the REST API.",
+            file=sys.stderr,
+        )
+        return
+    return api_key
+
+
+def get_test(base_url, test_id, api_key):
+    tests = requests.get(
+        f"{base_url}/test/{test_id}/",
+        headers={"Authorization": f"Api-Key {api_key}"},
+    )
+    if tests.status_code == 401:
+        print(
+            "ERROR while trying to get tests content : Unauthorized access to the REST API",
+            file=sys.stderr,
+        )
+        return
+    return json.loads(tests.content)
+
+
+def post_running_testresult(submission_id, test_id, testresult_post_url):
     testresult_before_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
@@ -77,79 +104,211 @@ def run_test(
     }
     requests.post(testresult_post_url, data=testresult_before_data)
 
-    judge0_url = f"http://{hostname}/submissions?wait=true"
 
+def send_test_to_judge0(judge0_url, source_code, additional_files, language_id, stdin):
+
+    request = {
+        "language_id": language_id,
+        "source_code": source_code,
+        "stdin": stdin,
+    }
+
+    if additional_files:
+        request["additional_files"] = additional_files
+
+    response_object = requests.post(judge0_url, json=request)
+    return json.loads(response_object.text)
+
+
+def post_error_testresult(submission_id, test_id, testresult_post_url):
+    after_data = {
+        "submission_pk": submission_id,
+        "exercise_test_pk": test_id,
+        "stdout": "Error: no response from runner",
+        "status": "error",
+        "time": 0,
+        "memory": 0,
+    }
+    requests.post(testresult_post_url, data=after_data)
+
+
+def zip_directory(path, zip_file_handle):
+
+    for root, _dirs, files in os.walk(path):
+        for file in files:
+            zip_file_handle.write(
+                os.path.join(root, file), os.path.basename(os.path.join(root, file))
+            )
+
+    print(f"Directory {path} zipped successfully")
+
+
+def process_source_single_file(file_content, prefix, suffix):
     # Fix prefix line endings
     if not prefix.endswith("\r") and not prefix.endswith("\n"):
         prefix += "\n"
     source_code = prefix + "\n" + file_content + "\n" + suffix
 
-    language_id = JUDGE0_LANG_IDS[lang]
+    return source_code
 
-    try:
-        response_object = requests.post(
-            judge0_url,
-            json={
-                "language_id": language_id,
-                "source_code": source_code,
-                "stdin": test["stdin"],
-            },
+
+def process_source_multifile(student_files, exercise_id):
+
+    # student_files is the base64-encoded zip file containing the student's files
+    import base64
+    import tempfile
+    import zipfile
+    import os
+
+    teacher_files_request = requests.get(
+        f"{get_base_api_url()}/exercise_teacher_files?exercise_id={exercise_id}",
+        headers={"Authorization": f"Api-Key {get_api_key()}"},
+    )
+
+    # Handle 401 error
+    if teacher_files_request.status_code == 401:
+        print(
+            "ERROR while trying to get teacher files content : Unauthorized access to the REST API",
+            file=sys.stderr,
         )
-    except requests.exceptions.ConnectionError:
-        after_data = {
-            "submission_pk": submission_id,
-            "exercise_test_pk": test_id,
-            "stdout": "Error: the code runner seems to be offline",
-            "status": "error",
-            "time": 0,
-            "memory": 0,
-        }
-        print("data to send:" + str(after_data))
-        finalpost = requests.post(testresult_post_url, data=after_data)
         return
 
-    response = json.loads(response_object.text)
+    teacher_files = teacher_files_request.content.decode().replace('"', "")
 
-    print("response:", response)
+    student_files_data = base64.b64decode(student_files)
+    teacher_files_data = base64.b64decode(teacher_files)
 
-    if "stdout" or "stderr" in response:
-        status = ""
-        if response["stdout"]:
-            if test["stdout"] == "":  # nothing to test for
-                status = "success"
-            if response["stdout"] == test["stdout"]:
-                status = "success"
-            else:
-                status = "failed"
+    student_files_zip = tempfile.NamedTemporaryFile(prefix="studentfiles-")
+    teacher_files_zip = tempfile.NamedTemporaryFile(prefix="teacherfiles-")
+
+    with open(student_files_zip.name, "wb") as f:
+        f.write(student_files_data)
+
+    with open(teacher_files_zip.name, "wb") as f:
+        f.write(teacher_files_data)
+
+    with tempfile.TemporaryDirectory(prefix="finaldir-") as tmp:
+
+        # Extract zips in temp folder
+        zipfile.ZipFile(teacher_files_zip).extractall(tmp)
+        zipfile.ZipFile(student_files_zip).extractall(tmp)
+
+        print("ls : " + str(os.listdir(tmp)))
+
+        # Create final zip file
+        final = tempfile.NamedTemporaryFile(prefix="final-")
+
+        # Zip whole tmp directory
+        with zipfile.ZipFile(final.name, mode="w") as final_zip:
+            zip_directory(tmp, final_zip)
+            print("I am now done zipping. This is my content")
+            print(final_zip.namelist())
+
+        # Convert zip to b64
+        final_b64 = base64.b64encode(final.read())
+        final_b64_str = final_b64.decode().replace('"', "")
+
+        final.close()
+
+    student_files_zip.close()
+    teacher_files_zip.close()
+
+    return final_b64_str
+
+
+@shared_task
+def run_test(
+    hostname, exercise_type, submission_id, test_id, file_content, prefix, suffix, lang
+) -> None:
+    """
+    Runs one test on a submission, and stores the result in the database.
+    """
+
+    # Arbitre API base URL
+    base_url = get_base_runner_url()
+    testresult_post_url = f"{base_url}/testresult/"
+
+    try:
+        # API key
+        api_key = get_api_key()
+
+        # Get test data from REST API
+        test = get_test(base_url, test_id, api_key)
+
+        # Save the empty test result with "running" status
+        post_running_testresult(submission_id, test_id, testresult_post_url)
+
+        judge0_url = f"http://{hostname}/submissions?wait=true"
+
+        if exercise_type == "single":
+            language_id = get_lang_id(lang)
+            source_code = process_source_single_file(file_content, prefix, suffix)
+            additional_files = ""
+        elif exercise_type == "multiple":
+            language_id = 89
+            source_code = ""
+            additional_files = process_source_multifile(file_content, test["exercise"])
         else:
-            status = "error"
+            raise Exception("Invalid exercise type")
 
-        print("status:", status)
-        print("stdout", response["stdout"])
-        print("stderr", response["stderr"])
+        try:
+            response = send_test_to_judge0(
+                judge0_url, source_code, additional_files, language_id, test["stdin"]
+            )
+        except requests.exceptions.ConnectionError:
+            post_error_testresult(submission_id, test_id, testresult_post_url)
+            return
 
-        stdout = ""
-        if response["message"] is not None:
-            stdout += response["message"]
-        if response["stdout"] is not None:
-            stdout += response["stdout"]
-        if response["stderr"] is not None:
-            stdout += response["stderr"]
+        print("Judge0 response:" + str(response))
 
-        # Save results to database using REST API
+        if "stdout" or "stderr" in response:
+            status = ""
+            if response["stdout"]:
+                if test["stdout"] == "":  # nothing to test for
+                    status = "success"
+                if response["stdout"] == test["stdout"]:
+                    status = "success"
+                else:
+                    status = "failed"
+            else:
+                status = "error"
+
+            stdout = ""
+            for key in ["message", "stdout", "stderr", "compile_output"]:
+                if response[key] is not None:
+                    stdout += response[key]
+
+            time = response.get("time", 0)
+            time = time if time is not None else 0
+
+            memory = response.get("memory", 0)
+            memory = memory if memory is not None else 0
+
+            # Save results to database using REST API
+            after_data = {
+                "submission_pk": submission_id,
+                "exercise_test_pk": test_id,
+                "stdout": stdout,
+                "status": status,
+                "time": time,
+                "memory": memory,
+            }
+        else:
+            after_data = {
+                "submission_pk": submission_id,
+                "exercise_test_pk": test_id,
+                "stdout": "Error: no response from runner",
+                "status": "error",
+                "time": 0,
+                "memory": 0,
+            }
+
+    except Exception as e:
+        print("Exception: " + str(e))
         after_data = {
             "submission_pk": submission_id,
             "exercise_test_pk": test_id,
-            "stdout": stdout,
-            "status": status,
-            "time": response["time"],
-            "memory": response["memory"],
-        }
-    else:
-        after_data = {
-            "submission_pk": submission_id,
-            "exercise_test_pk": test_id,
-            "stdout": "Error: no response from runner",
+            "stdout": "An error occured while running the test. Please contact the administrator.",
             "status": "error",
             "time": 0,
             "memory": 0,
@@ -157,7 +316,6 @@ def run_test(
 
     print("data to send:" + str(after_data))
     finalpost = requests.post(testresult_post_url, data=after_data)
-    print("final post:", finalpost)
 
 
 @shared_task(ignore_result=True)

@@ -20,8 +20,6 @@ const LatePenalty = (props: {
         return n >= 0 && n <= 100
     }
 
-    console.log(latePenalty)
-
     return (
         <div className='mb-2'>
             <div
