@@ -32,7 +32,7 @@ echo ""
 
     echo "Installing dependencies..."
     cd frontend
-    npm install &> /dev/null
+    npm ci &> /dev/null
     echo "Setting up database..."
     cd ../backend
     python manage.py makemigrations > /dev/null
