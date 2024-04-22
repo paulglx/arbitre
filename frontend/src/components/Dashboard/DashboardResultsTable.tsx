@@ -149,7 +149,7 @@ const DashboardResultsTable = (props: any) => {
                                 {student.username}
                             </td>
                             {student.exercises.map((exercise: any, j: number) => {
-                                const exerciseGrade = sortedExercises ? sortedExercises[j].grade : 0;
+                                const exerciseGrade = sortedExercises?.[j].grade ? sortedExercises[j].grade : 0;
                                 let sumOfCoefficient = 0;
                                 let dividendTestGrade = 0;
 
