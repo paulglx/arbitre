@@ -32,7 +32,7 @@ const DashboardResultsTable = (props: any) => {
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
     } = useGetResultsOfSessionQuery({ session_id, groups }, {
-        pollingInterval: showModal || !isVisible ? 0 : 1000,
+        pollingInterval: showModal || !isVisible ? 0 : 5000,
     });
 
     const resultsSortedByUsername = useMemo(() => {
@@ -150,6 +150,7 @@ const DashboardResultsTable = (props: any) => {
                             </td>
                             {student.exercises.map((exercise: any, j: number) => {
                                 const exerciseGrade = sortedExercises?.[j].grade ? sortedExercises[j].grade : 0;
+
                                 let sumOfCoefficient = 0;
                                 let dividendTestGrade = 0;
 
