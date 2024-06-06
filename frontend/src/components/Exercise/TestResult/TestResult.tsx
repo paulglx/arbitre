@@ -105,12 +105,12 @@ const TestResult = (props: any) => {
                 />
             </div>
         } else {
-            return <span className="font-monospace">
-                <CommandLineIcon className="inline w-5 h-5 text-gray-600" />
+            return <span className="font-monospace flex">
+                <CommandLineIcon className="w-5 h-5 text-gray-600 hidden sm:inline" />
                 &nbsp;
-                <code>
+                <pre className='w-full'>
                     {result.stdout}
-                </code>
+                </pre>
             </span>
         }
     }
