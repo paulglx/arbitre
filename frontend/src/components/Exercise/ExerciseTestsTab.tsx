@@ -7,6 +7,16 @@ import autosize from 'autosize';
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 
+interface Test {
+    id: number;
+    exercise: number;
+    name: string;
+    stdin: string;
+    stdout: string;
+    coefficient: number;
+    new: boolean;
+}
+
 const ExerciseTestsTab = (props: any) => {
 
     const NEW_TEST_NAME = "New Test";
@@ -18,7 +28,7 @@ const ExerciseTestsTab = (props: any) => {
     const [editTest, setEditTest] = useState(false);
     const [editTestId, setEditTestId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [tests, setTests] = useState([] as any[]);
+    const [tests, setTests] = useState([] as Test[]);
     const [updateTest] = useUpdateTestMutation();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
     const dispatch = useDispatch();
@@ -34,12 +44,24 @@ const ExerciseTestsTab = (props: any) => {
 
     useEffect(() => {
         autosize(document.querySelectorAll('textarea'));
+        const duplicateNames: boolean = tests?.some((t1: Test) => tests.filter((t2: Test) => t1.name === t2.name).length > 1);
+
+        if (duplicateNames) {
+            dispatch(pushNotification({
+                message: "Test names must be unique",
+                type: "warning",
+            }));
+        }
+
     }, [tests]);
 
+    const randomTestId = (): number => {
+        return Math.floor(Math.random() * 10000) + 1000;
+    }
 
-    const handleCreateOrUpdateTest = async (testId: any) => {
-        const test = tests.filter((t: any) => t.id === testId)[0]
-        const newTest: boolean = test?.new;
+    const handleCreateOrUpdateTest = async (testId: number) => {
+        const test: Test = tests.find((t: Test) => t.id === testId)!;
+        const newTest: boolean = test?.new || false;
         if (newTest) {
             await createTest({
                 exercise: exercise_id,
@@ -48,7 +70,10 @@ const ExerciseTestsTab = (props: any) => {
                 stdout: test.stdout,
             })
                 .unwrap()
-                .then(() => {
+                .then((response: Test) => {
+                    // set test as not new, with new id
+                    const newTestId = response.id
+                    setTests(tests.map((t: Test) => t.id === testId ? { ...t, new: false, id: newTestId } : t))
                     dispatch(pushNotification({
                         message: "Test created successfully",
                         type: "success",
@@ -56,12 +81,10 @@ const ExerciseTestsTab = (props: any) => {
                 })
                 .catch((error) => {
                     dispatch(pushNotification({
-                        message: "There was an error creating the test",
+                        message: "There was an error creating the test.",
                         type: "error",
                     }));
                 });
-            // set test as not new
-            setTests(tests.map((t: any) => t.id === testId ? { ...t, new: false } : t))
         } else {
             await updateTest({
                 id: test.id,
@@ -80,7 +103,7 @@ const ExerciseTestsTab = (props: any) => {
                 })
                 .catch((error) => {
                     dispatch(pushNotification({
-                        message: "There was an error updating the test",
+                        message: "There was an error updating the test.",
                         type: "error",
                     }));
                 });
@@ -88,7 +111,7 @@ const ExerciseTestsTab = (props: any) => {
     }
 
     const handleDeleteConfirmation = async () => {
-        const test = tests.filter((t: any) => t.id === editTestId)[0];
+        const test = tests.find((t: Test) => t.id === editTestId);
         if (!test?.new) {
             await deleteTest({ id: editTestId })
                 .unwrap()
@@ -106,7 +129,7 @@ const ExerciseTestsTab = (props: any) => {
                 });
         }
         setShowModal(false);
-        setTests(tests.filter((t: any) => t.id !== editTestId));
+        setTests(tests.filter((t: Test) => t.id !== editTestId));
     }
 
     return (
@@ -125,14 +148,9 @@ const ExerciseTestsTab = (props: any) => {
                                     <button
                                         className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                                         onClick={(e) => {
-                                            const randomId = Array(16)
-                                                .join()
-                                                .split(",")
-                                                .map(function () {
-                                                    return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                                                })
-                                                .join("");
-                                            setTests([...tests, { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true }]);
+                                            const randomId = randomTestId();
+                                            const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                            setTests([...tests, newTest]);
                                         }}
                                     >
                                         <PlusIcon className="mr-2 w-6 h-6" />
@@ -151,7 +169,7 @@ const ExerciseTestsTab = (props: any) => {
                             className={`mb-6 w-full`}
                             tabIndex={0}
                             onFocus={() => {
-                                isOwner && setEditTestId(test?.id);
+                                isOwner && setEditTestId(test?.id as any);
                                 setEditTest(true);
                             }}
                             onBlur={(e: any) => {
@@ -265,14 +283,9 @@ const ExerciseTestsTab = (props: any) => {
                             <button
                                 className="w-full inline-flex items-center text-primary text-sm border bg-gray-50 hover:bg-gray-100 font-semibold py-2 px-2 rounded-lg focus:outline-none focus:shadow-outline"
                                 onClick={(e) => {
-                                    const randomId = Array(16)
-                                        .join()
-                                        .split(",")
-                                        .map(function () {
-                                            return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                                        })
-                                        .join("");
-                                    setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                    const randomId = randomTestId();
+                                    const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                    setTests([...tests, newTest]);
                                     setEditTestId(randomId as any);
                                     setEditTest(true);
                                 }}
