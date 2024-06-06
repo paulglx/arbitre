@@ -34,11 +34,20 @@ const ExerciseTestsTab = (props: any) => {
 
     useEffect(() => {
         autosize(document.querySelectorAll('textarea'));
+        const duplicateNames: boolean = tests.some((t1: any) => tests.filter((t2: any) => t1.name === t2.name).length > 1);
+
+        if (duplicateNames) {
+            dispatch(pushNotification({
+                message: "Test names must be unique",
+                type: "warning",
+            }));
+        }
+
     }, [tests]);
 
 
     const handleCreateOrUpdateTest = async (testId: any) => {
-        const test = tests.filter((t: any) => t.id === testId)[0]
+        const test = tests.find((t: any) => t.id === testId);
         const newTest: boolean = test?.new;
         if (newTest) {
             await createTest({
@@ -48,7 +57,10 @@ const ExerciseTestsTab = (props: any) => {
                 stdout: test.stdout,
             })
                 .unwrap()
-                .then(() => {
+                .then((response: any) => {
+                    // set test as not new, with new id
+                    const newTestId = response.id
+                    setTests(tests.map((t: any) => t.id === testId ? { ...t, new: false, id: newTestId } : t))
                     dispatch(pushNotification({
                         message: "Test created successfully",
                         type: "success",
@@ -56,12 +68,10 @@ const ExerciseTestsTab = (props: any) => {
                 })
                 .catch((error) => {
                     dispatch(pushNotification({
-                        message: "There was an error creating the test",
+                        message: "There was an error creating the test.",
                         type: "error",
                     }));
                 });
-            // set test as not new
-            setTests(tests.map((t: any) => t.id === testId ? { ...t, new: false } : t))
         } else {
             await updateTest({
                 id: test.id,
@@ -80,7 +90,7 @@ const ExerciseTestsTab = (props: any) => {
                 })
                 .catch((error) => {
                     dispatch(pushNotification({
-                        message: "There was an error updating the test",
+                        message: "There was an error updating the test.",
                         type: "error",
                     }));
                 });
@@ -88,7 +98,7 @@ const ExerciseTestsTab = (props: any) => {
     }
 
     const handleDeleteConfirmation = async () => {
-        const test = tests.filter((t: any) => t.id === editTestId)[0];
+        const test = tests.find((t: any) => t.id === editTestId);
         if (!test?.new) {
             await deleteTest({ id: editTestId })
                 .unwrap()
