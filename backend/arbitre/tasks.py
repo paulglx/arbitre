@@ -272,7 +272,10 @@ def run_test(
             if response["stdout"]:
                 if test["stdout"] == "":  # nothing to test for
                     status = "success"
-                if response["stdout"] == test["stdout"]:
+                if (
+                    response["stdout"] == test["stdout"]
+                    or response["stdout"] == test["stdout"] + "\n"
+                ):
                     status = "success"
                 else:
                     status = "failed"
@@ -300,14 +303,7 @@ def run_test(
                 "memory": memory,
             }
         else:
-            after_data = {
-                "submission_pk": submission_id,
-                "exercise_test_pk": test_id,
-                "stdout": "Error: no response from runner",
-                "status": "error",
-                "time": 0,
-                "memory": 0,
-            }
+            raise requests.exceptions.ConnectionError
     except requests.exceptions.ConnectionError:
         post_error_testresult(
             "No response from runner. Please contact the administrator.",
