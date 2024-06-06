@@ -1,5 +1,5 @@
 import './index.css';
-import "@fontsource/inter/variable.css"
+import "@fontsource/inter"
 import "@fontsource/jetbrains-mono"
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
