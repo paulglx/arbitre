@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from runner.models import Submission
 from runner.serializers import SubmissionSerializer
 from runner.serializers import TestResultSerializer
+import os
 
 
 class IsCourseOwner(permissions.BasePermission):
@@ -126,6 +127,14 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
         exercise = Exercise.objects.get(id=exercise_id)
 
         zip = exercise.teacher_files
+
+        # Check if the file exists
+        if(not os.path.exists(zip.path)):
+            return Response(
+                {"message": "The teacher files cannot be found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         zip_to_base64 = base64.b64encode(zip.read())
         zip.close()
 

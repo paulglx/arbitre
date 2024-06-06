@@ -4,6 +4,7 @@ import requests
 import environ
 import os
 import sys
+from rest_framework import status
 
 # Reading .env file
 env = environ.Env()
@@ -120,11 +121,11 @@ def send_test_to_judge0(judge0_url, source_code, additional_files, language_id, 
     return json.loads(response_object.text)
 
 
-def post_error_testresult(submission_id, test_id, testresult_post_url):
+def post_error_testresult(message, submission_id, test_id, testresult_post_url):
     after_data = {
         "submission_pk": submission_id,
         "exercise_test_pk": test_id,
-        "stdout": "Error: no response from runner",
+        "stdout": message,
         "status": "error",
         "time": 0,
         "memory": 0,
@@ -152,7 +153,7 @@ def process_source_single_file(file_content, prefix, suffix):
     return source_code
 
 
-def process_source_multifile(student_files, exercise_id):
+def process_source_multifile(student_files, exercise_id, submission_id, test_id):
 
     # student_files is the base64-encoded zip file containing the student's files
     import base64
@@ -166,12 +167,19 @@ def process_source_multifile(student_files, exercise_id):
     )
 
     # Handle 401 error
-    if teacher_files_request.status_code == 401:
-        print(
-            "ERROR while trying to get teacher files content : Unauthorized access to the REST API",
-            file=sys.stderr,
+    if teacher_files_request.status_code == status.HTTP_401_UNAUTHORIZED:
+        raise FileNotFoundError("Unauthorized access to the REST API")
+
+    # Handle 404 error
+    if teacher_files_request.status_code == status.HTTP_404_NOT_FOUND:
+        testresult_post_url = f"{get_base_runner_url()}/testresult/"
+        post_error_testresult(
+            "The files required to run tests are missing. Please contact your teacher.",
+            submission_id,
+            test_id,
+            testresult_post_url,
         )
-        return
+        raise FileNotFoundError("Teacher files not found")
 
     teacher_files = teacher_files_request.content.decode().replace('"', "")
 
@@ -247,17 +255,15 @@ def run_test(
         elif exercise_type == "multiple":
             language_id = 89
             source_code = ""
-            additional_files = process_source_multifile(file_content, test["exercise"])
+            additional_files = process_source_multifile(
+                file_content, test["exercise"], submission_id, test_id
+            )
         else:
             raise Exception("Invalid exercise type")
 
-        try:
-            response = send_test_to_judge0(
-                judge0_url, source_code, additional_files, language_id, test["stdin"]
-            )
-        except requests.exceptions.ConnectionError:
-            post_error_testresult(submission_id, test_id, testresult_post_url)
-            return
+        response = send_test_to_judge0(
+            judge0_url, source_code, additional_files, language_id, test["stdin"]
+        )
 
         print("Judge0 response:" + str(response))
 
@@ -302,17 +308,25 @@ def run_test(
                 "time": 0,
                 "memory": 0,
             }
-
+    except requests.exceptions.ConnectionError:
+        post_error_testresult(
+            "No response from runner. Please contact the administrator.",
+            submission_id,
+            test_id,
+            testresult_post_url,
+        )
+        return
+    except FileNotFoundError as e:
+        return
     except Exception as e:
         print("Exception: " + str(e))
-        after_data = {
-            "submission_pk": submission_id,
-            "exercise_test_pk": test_id,
-            "stdout": "An error occured while running the test. Please contact the administrator.",
-            "status": "error",
-            "time": 0,
-            "memory": 0,
-        }
+        post_error_testresult(
+            "An error occured while running the test. Please contact the administrator.",
+            submission_id,
+            test_id,
+            testresult_post_url,
+        )
+        return
 
     print("data to send:" + str(after_data))
     finalpost = requests.post(testresult_post_url, data=after_data)
