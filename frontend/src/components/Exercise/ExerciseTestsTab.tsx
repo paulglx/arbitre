@@ -44,7 +44,7 @@ const ExerciseTestsTab = (props: any) => {
 
     useEffect(() => {
         autosize(document.querySelectorAll('textarea'));
-        const duplicateNames: boolean = tests?.some((t1: any) => tests.filter((t2: any) => t1.name === t2.name).length > 1);
+        const duplicateNames: boolean = tests?.some((t1: Test) => tests.filter((t2: Test) => t1.name === t2.name).length > 1);
 
         if (duplicateNames) {
             dispatch(pushNotification({
@@ -59,8 +59,8 @@ const ExerciseTestsTab = (props: any) => {
         return Math.floor(Math.random() * 10000) + 1000;
     }
 
-    const handleCreateOrUpdateTest = async (testId: any) => {
-        const test: Test = tests.find((t: any) => t.id === testId)!;
+    const handleCreateOrUpdateTest = async (testId: number) => {
+        const test: Test = tests.find((t: Test) => t.id === testId)!;
         const newTest: boolean = test?.new || false;
         if (newTest) {
             await createTest({
@@ -70,10 +70,10 @@ const ExerciseTestsTab = (props: any) => {
                 stdout: test.stdout,
             })
                 .unwrap()
-                .then((response: any) => {
+                .then((response: Test) => {
                     // set test as not new, with new id
                     const newTestId = response.id
-                    setTests(tests.map((t: any) => t.id === testId ? { ...t, new: false, id: newTestId } : t))
+                    setTests(tests.map((t: Test) => t.id === testId ? { ...t, new: false, id: newTestId } : t))
                     dispatch(pushNotification({
                         message: "Test created successfully",
                         type: "success",
@@ -111,7 +111,7 @@ const ExerciseTestsTab = (props: any) => {
     }
 
     const handleDeleteConfirmation = async () => {
-        const test = tests.find((t: any) => t.id === editTestId);
+        const test = tests.find((t: Test) => t.id === editTestId);
         if (!test?.new) {
             await deleteTest({ id: editTestId })
                 .unwrap()
@@ -129,7 +129,7 @@ const ExerciseTestsTab = (props: any) => {
                 });
         }
         setShowModal(false);
-        setTests(tests.filter((t: any) => t.id !== editTestId));
+        setTests(tests.filter((t: Test) => t.id !== editTestId));
     }
 
     return (
