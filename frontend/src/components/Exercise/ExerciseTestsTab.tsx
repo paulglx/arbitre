@@ -7,6 +7,16 @@ import autosize from 'autosize';
 import { pushNotification } from '../../features/notification/notificationSlice';
 import { useDispatch } from 'react-redux';
 
+interface Test {
+    id: number;
+    exercise: number;
+    name: string;
+    stdin: string;
+    stdout: string;
+    coefficient: number;
+    new: boolean;
+}
+
 const ExerciseTestsTab = (props: any) => {
 
     const NEW_TEST_NAME = "New Test";
@@ -18,7 +28,7 @@ const ExerciseTestsTab = (props: any) => {
     const [editTest, setEditTest] = useState(false);
     const [editTestId, setEditTestId] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [tests, setTests] = useState([] as any[]);
+    const [tests, setTests] = useState([] as Test[]);
     const [updateTest] = useUpdateTestMutation();
     const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
     const dispatch = useDispatch();
@@ -34,7 +44,7 @@ const ExerciseTestsTab = (props: any) => {
 
     useEffect(() => {
         autosize(document.querySelectorAll('textarea'));
-        const duplicateNames: boolean = tests.some((t1: any) => tests.filter((t2: any) => t1.name === t2.name).length > 1);
+        const duplicateNames: boolean = tests?.some((t1: any) => tests.filter((t2: any) => t1.name === t2.name).length > 1);
 
         if (duplicateNames) {
             dispatch(pushNotification({
@@ -45,10 +55,13 @@ const ExerciseTestsTab = (props: any) => {
 
     }, [tests]);
 
+    const randomTestId = (): number => {
+        return Math.floor(Math.random() * 10000) + 1000;
+    }
 
     const handleCreateOrUpdateTest = async (testId: any) => {
-        const test = tests.find((t: any) => t.id === testId);
-        const newTest: boolean = test?.new;
+        const test: Test = tests.find((t: any) => t.id === testId)!;
+        const newTest: boolean = test?.new || false;
         if (newTest) {
             await createTest({
                 exercise: exercise_id,
@@ -135,14 +148,9 @@ const ExerciseTestsTab = (props: any) => {
                                     <button
                                         className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                                         onClick={(e) => {
-                                            const randomId = Array(16)
-                                                .join()
-                                                .split(",")
-                                                .map(function () {
-                                                    return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                                                })
-                                                .join("");
-                                            setTests([...tests, { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true }]);
+                                            const randomId = randomTestId();
+                                            const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                            setTests([...tests, newTest]);
                                         }}
                                     >
                                         <PlusIcon className="mr-2 w-6 h-6" />
@@ -161,7 +169,7 @@ const ExerciseTestsTab = (props: any) => {
                             className={`mb-6 w-full`}
                             tabIndex={0}
                             onFocus={() => {
-                                isOwner && setEditTestId(test?.id);
+                                isOwner && setEditTestId(test?.id as any);
                                 setEditTest(true);
                             }}
                             onBlur={(e: any) => {
@@ -275,14 +283,9 @@ const ExerciseTestsTab = (props: any) => {
                             <button
                                 className="w-full inline-flex items-center text-primary text-sm border bg-gray-50 hover:bg-gray-100 font-semibold py-2 px-2 rounded-lg focus:outline-none focus:shadow-outline"
                                 onClick={(e) => {
-                                    const randomId = Array(16)
-                                        .join()
-                                        .split(",")
-                                        .map(function () {
-                                            return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                                        })
-                                        .join("");
-                                    setTests([...tests, { id: randomId, name: "New Test", stdin: "", stdout: "", new: true }]);
+                                    const randomId = randomTestId();
+                                    const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                    setTests([...tests, newTest]);
                                     setEditTestId(randomId as any);
                                     setEditTest(true);
                                 }}
