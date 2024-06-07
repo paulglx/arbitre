@@ -153,6 +153,14 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 body: data //Must include : course_id, enabled
             })
         }),
+        cloneCourse: builder.mutation({
+            query: (data: any) => ({
+                url: `api/course_clone/`,
+                method: 'POST',
+                credentials: 'include',
+                body: data // Must include : course_id
+            })
+        })
     })
 })
 
@@ -160,6 +168,7 @@ export const {
     useAddOwnerMutation,
     useAddStudentMutation,
     useAddTutorMutation,
+    useCloneCourseMutation,
     useCreateCourseMutation,
     useDeleteCourseMutation,
     useGetAllCoursesQuery,
