@@ -1,4 +1,5 @@
-from api.models import Course, StudentGroup
+from api.models import Course, StudentGroup, Session, Exercise
+from runner.models import Test
 from api.serializers import CourseSerializer
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -406,3 +407,87 @@ class CourseStudentViewSet(viewsets.ViewSet):
             return Response(
                 {"message": "User is not a student"}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+class CourseCloneViewSet(viewsets.ViewSet):
+    # Check if user is an owner of the course
+    # Create a new course with same title, description, no students
+    # Create groups to match the original course
+    # For session in course:
+    #   Create new_sess in new_course
+    #   For exercise in session:
+    #       Create new_exercise in new_session
+    #           For test in exercise:
+    #               Create new_test in new_exercise
+
+    permission_classes = [IsCourseOwner]
+
+    def create(self, request):
+        course = Course.objects.get(pk=request.data.get("course_id"))
+
+        # Create new course
+        new_course = Course.objects.create(
+            title=course.title + " (clone)",
+            description=course.description,
+            language=course.language,
+            join_code_enabled=course.join_code_enabled,
+            join_code=CourseViewSet.generate_join_code(self),
+            groups_enabled=course.groups_enabled,
+            auto_groups_enabled=course.auto_groups_enabled,
+            late_penalty=course.late_penalty,
+        )
+
+        new_course.owners.add(request.user)
+        new_course.save()
+
+        # Clone student groups, with no students
+        student_groups = StudentGroup.objects.filter(course=course)
+        for student_group in student_groups:
+            new_student_group = StudentGroup.objects.create(
+                name=student_group.name, course=new_course
+            )
+            new_student_group.save()
+
+        # Clone sessions
+        for session in course.session_set.all():
+            new_session = Session.objects.create(
+                course=new_course,
+                title=session.title,
+                description=session.description,
+                grade=session.grade,
+                deadline_type=session.deadline_type,
+            )
+            new_session.save()
+
+            # Clone exercises
+            for exercise in session.exercise_set.all():
+                new_exercise = Exercise.objects.create(
+                    session=new_session,
+                    type=exercise.type,
+                    title=exercise.title,
+                    description=exercise.description,
+                    grade=exercise.grade,
+                    prefix=exercise.prefix,
+                    suffix=exercise.suffix,
+                    teacher_files=exercise.teacher_files,
+                )
+                new_exercise.save()
+
+                # Clone tests
+                for test in exercise.test_set.all():
+                    new_test = Test.objects.create(
+                        exercise=new_exercise,
+                        name=test.name,
+                        stdin=test.stdin,
+                        stdout=test.stdout,
+                        coefficient=test.coefficient,
+                    )
+                    new_test.save()
+
+        return Response(
+            {
+                "message": "Course cloned",
+                "new_course_id": new_course.id,
+            },
+            status=status.HTTP_200_OK,
+        )
