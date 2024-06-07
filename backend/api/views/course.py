@@ -423,7 +423,25 @@ class CourseCloneViewSet(viewsets.ViewSet):
     permission_classes = [IsCourseOwner]
 
     def create(self, request):
-        course = Course.objects.get(pk=request.data.get("course_id"))
+        try:
+            course = Course.objects.get(pk=request.data.get("course_id"))
+        except Course.DoesNotExist:
+            return Response(
+                {
+                    "message": "This course does not exist",
+                    "new_course_id": None,
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if not request.user in course.owners.all():
+            return Response(
+                {
+                    "message": "You are not an owner of this course",
+                    "new_course_id": None,
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Create new course
         new_course = Course.objects.create(
