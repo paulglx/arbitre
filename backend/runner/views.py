@@ -1,11 +1,12 @@
 from rest_framework import viewsets, permissions
 from .models import Submission, Test, TestResult
+from api.models import Exercise
 from runner.serializers import (
     SubmissionSerializer,
     TestResultSerializer,
     TestSerializer,
 )
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.contrib.auth.models import User
 from rest_framework_api_key.permissions import HasAPIKey
 from django.utils import timezone
@@ -161,6 +162,34 @@ class SubmissionFileViewSet(viewsets.ViewSet):
 
         except Submission.DoesNotExist:
             return error_response
+
+
+class TeacherFilesViewSet(viewsets.ViewSet):
+    """
+    Returns teacher files
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    # GET runner/api/teacher-files?exercise_id=...
+    def list(self, request):
+
+        try:
+            exercise = Exercise.objects.get(pk=request.query_params["exercise_id"])
+
+            if (
+                request.user not in exercise.session.course.owners.all()
+                and request.user not in exercise.session.course.tutors.all()
+            ):
+                return JsonResponse({"file": "Not Found"})
+
+            with exercise.teacher_files.open("rb") as f:
+                teacher_files_data = f.read()
+
+            return FileResponse(teacher_files_data)
+
+        except:
+            return JsonResponse({"file": "Not Found"})
 
 
 class RequeueSubmissionsViewSet(viewsets.ViewSet):

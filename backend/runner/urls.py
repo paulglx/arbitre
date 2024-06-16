@@ -13,6 +13,7 @@ router.register(
 router.register(
     r"submission-file", views.SubmissionFileViewSet, basename="submission-file"
 )
+router.register(r"teacher-files", views.TeacherFilesViewSet, basename="teacher-files")
 router.register(
     r"requeue-submissions",
     views.RequeueSubmissionsViewSet,
