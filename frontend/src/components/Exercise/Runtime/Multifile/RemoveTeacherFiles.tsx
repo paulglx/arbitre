@@ -35,8 +35,9 @@ const RemoveTeacherFiles = (props: any) => {
 
     return (<>
         <button
-            className="inline p-1 ml-1 text-gray-500 border border-white bg-gray-50 hover:text-red-800 hover:border-red-300 hover:bg-red-50 transition-all rounded-md"
+            className="inline p-1 ml-1 text-gray-500 border bg-gray-50 hover:text-red-800 hover:border-red-300 hover:bg-red-50 transition-all rounded-md"
             onClick={() => setModalIsOpen(true)}
+            aria-label='Delete teacher files'
         >
             <TrashIcon className="w-4 h-4" />
             <span className="sr-only">Remove teacher files</span>
