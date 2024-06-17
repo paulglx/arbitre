@@ -7,7 +7,7 @@ from ..serializers import (
 )
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpRequest
+from django.http import FileResponse, HttpRequest
 from django.utils import timezone
 from rest_framework import viewsets, permissions, status
 from rest_framework_api_key.permissions import HasAPIKey
@@ -115,6 +115,12 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
     """
     Get the teacher_files ZIP file of an exercise.
+    Returns the ZIP file in base64 format by default.
+    If base64 is set to false, returns the ZIP file as a file.
+
+    Params:
+    - exercise_id : number
+    - base64 : boolean (optional) (default: true)
     """
 
     serializer_class = ExerciseSerializer
@@ -124,21 +130,30 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
         import base64
 
         exercise_id = self.request.query_params.get("exercise_id")
+        return_base64 = self.request.query_params.get("base64", True)
+
         exercise = Exercise.objects.get(id=exercise_id)
 
-        zip = exercise.teacher_files
+        teacher_files_zip = exercise.teacher_files
 
         # Check if the file exists
-        if(not os.path.exists(zip.path)):
+        if not os.path.exists(teacher_files_zip.path):
             return Response(
                 {"message": "The teacher files cannot be found"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
-        zip_to_base64 = base64.b64encode(zip.read())
-        zip.close()
+        if return_base64 in ["false", "False", False, "0", 0]:
 
-        return Response(zip_to_base64)
+            with teacher_files_zip.open("rb") as f:
+                teacher_files_data = f.read()
+
+            return FileResponse(teacher_files_data)
+
+        teacher_files_zip_to_base64 = base64.b64encode(teacher_files_zip.read())
+        teacher_files_zip.close()
+
+        return Response(teacher_files_zip_to_base64)
 
 
 class StudentGroupViewSet(viewsets.ModelViewSet):
