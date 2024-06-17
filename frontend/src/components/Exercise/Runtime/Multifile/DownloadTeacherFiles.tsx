@@ -13,7 +13,7 @@ const DownloadTeacherFiles = (props: any) => {
         await getTeacherFiles({
             id: exercise.id,
             base64: true
-        })
+        }, false)
             .unwrap()
             .then(async (response) => {
                 const base64response = await fetch(`data:application/zip;base64,${response}`);
