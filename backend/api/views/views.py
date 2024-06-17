@@ -115,6 +115,11 @@ class ExerciseViewSet(viewsets.ModelViewSet):
 class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
     """
     Get the teacher_files ZIP file of an exercise.
+    Returns the ZIP file in base64 format by default.
+    If base64 is set to false, returns the ZIP file as a file.
+
+    Params:
+    - exercise_id : number
     """
 
     serializer_class = ExerciseSerializer
@@ -124,21 +129,22 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
         import base64
 
         exercise_id = self.request.query_params.get("exercise_id")
+
         exercise = Exercise.objects.get(id=exercise_id)
 
-        zip = exercise.teacher_files
+        teacher_files_zip = exercise.teacher_files
 
         # Check if the file exists
-        if(not os.path.exists(zip.path)):
+        if not os.path.exists(teacher_files_zip.path):
             return Response(
                 {"message": "The teacher files cannot be found"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
-        zip_to_base64 = base64.b64encode(zip.read())
-        zip.close()
+        teacher_files_zip_to_base64 = base64.b64encode(teacher_files_zip.read())
+        teacher_files_zip.close()
 
-        return Response(zip_to_base64)
+        return Response(teacher_files_zip_to_base64)
 
 
 class StudentGroupViewSet(viewsets.ModelViewSet):

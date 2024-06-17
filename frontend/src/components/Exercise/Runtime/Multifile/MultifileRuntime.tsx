@@ -1,4 +1,5 @@
 import { DocumentIcon } from '@heroicons/react/24/outline';
+import DownloadTeacherFiles from './DownloadTeacherFiles';
 import RemoveTeacherFiles from './RemoveTeacherFiles';
 import TeacherFilesField from './TeacherFilesField'
 
@@ -14,6 +15,7 @@ const MultifileRuntime = (props: any) => {
             </span>
             <span className='text-green-500 ml-2'>✓</span>
             <RemoveTeacherFiles exercise={props.exercise} />
+            <DownloadTeacherFiles exercise={props.exercise} />
             <p className='text-sm text-green-700 mt-2 ml-1'>
                 Your files are on the server. The worker is ready to run and test student code. You can change the files by uploading a new zip file.
             </p>
