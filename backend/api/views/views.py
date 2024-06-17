@@ -120,7 +120,6 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
 
     Params:
     - exercise_id : number
-    - base64 : boolean (optional) (default: true)
     """
 
     serializer_class = ExerciseSerializer
@@ -130,7 +129,6 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
         import base64
 
         exercise_id = self.request.query_params.get("exercise_id")
-        return_base64 = self.request.query_params.get("base64", True)
 
         exercise = Exercise.objects.get(id=exercise_id)
 
@@ -142,13 +140,6 @@ class ExerciseTeacherFilesViewSet(viewsets.ViewSet):
                 {"message": "The teacher files cannot be found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-        if return_base64 in ["false", "False", False, "0", 0]:
-
-            with teacher_files_zip.open("rb") as f:
-                teacher_files_data = f.read()
-
-            return FileResponse(teacher_files_data)
 
         teacher_files_zip_to_base64 = base64.b64encode(teacher_files_zip.read())
         teacher_files_zip.close()
