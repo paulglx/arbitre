@@ -7,7 +7,7 @@ from ..serializers import (
 )
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import FileResponse, HttpRequest
+from django.http import HttpRequest
 from django.utils import timezone
 from rest_framework import viewsets, permissions, status
 from rest_framework_api_key.permissions import HasAPIKey

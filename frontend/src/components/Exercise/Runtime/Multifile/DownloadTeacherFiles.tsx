@@ -1,5 +1,4 @@
 import { ArrowDownTrayIcon } from '@heroicons/react/20/solid'
-import React from 'react'
 import { useLazyGetTeacherFilesQuery } from '../../../../features/courses/exerciseApiSlice'
 
 const DownloadTeacherFiles = (props: any) => {
