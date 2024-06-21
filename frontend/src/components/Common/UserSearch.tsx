@@ -34,6 +34,7 @@ const UserSearch = (props: any) => {
                 aria-label="Search users"
                 autoComplete="off"
                 type="text"
+                id={props.id}
                 className="w-full border border-gray-300 rounded-md shadow-sm pl-8 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder={placeholder}
                 value={userToAdd}
