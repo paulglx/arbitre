@@ -8,6 +8,12 @@ const CSEOwnerActions = (props: any) => {
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  // Warns the user if they close the page with unsaved changes
+  window.onbeforeunload = () => {
+    return edit ? true : undefined;
+  }
+
+
   return isOwner ? (
     <>
       <div className="flex flex-row gap-2 ml-1">

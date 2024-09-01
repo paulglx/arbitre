@@ -15,6 +15,7 @@ interface Test {
     stdout: string;
     coefficient: number;
     new: boolean;
+    edited: boolean;
 }
 
 const ExerciseTestsTab = (props: any) => {
@@ -32,15 +33,18 @@ const ExerciseTestsTab = (props: any) => {
 
     const {
         data: testsResponse,
+        isSuccess: testsSuccess
     } = useGetTestsOfExerciseQuery({ exercise_id });
 
 
     useEffect(() => {
-        setTests(testsResponse);
+        if (!testsSuccess) return;
+
+        setTests([...testsResponse]?.sort((a: Test, b: Test) => a.id - b.id));
     }, [testsResponse]);
 
     useEffect(() => {
-        // autosize(document.querySelectorAll('textarea'));
+        autosize(document.querySelectorAll('textarea'));
         const duplicateNames: boolean = tests?.some((t1: Test) => tests.filter((t2: Test) => t1.name === t2.name).length > 1);
 
         if (duplicateNames) {
@@ -76,7 +80,7 @@ const ExerciseTestsTab = (props: any) => {
                 .then((response: Test) => {
                     // set test as not new, with new id
                     const newTestId = response.id
-                    setTests(tests.map((t: Test) => t.id === testId ? { ...t, new: false, id: newTestId } : t))
+                    setTests(tests.map((t: Test) => t.id === testId ? { ...t, new: false, edited: false, id: newTestId } : t))
                     dispatch(pushNotification({
                         message: "Test created successfully",
                         type: "success",
@@ -97,6 +101,7 @@ const ExerciseTestsTab = (props: any) => {
                 stdout: test.stdout
             })
                 .unwrap()
+                .then(() => setTests(tests.map((t: Test) => t.id === test.id ? { ...t, edited: false, } : t)))
                 .catch((error) => {
                     dispatch(pushNotification({
                         message: "There was an error updating the test.",
@@ -128,6 +133,13 @@ const ExerciseTestsTab = (props: any) => {
         setTests(tests.filter((t: Test) => t.id !== test_id));
     }
 
+    const thereIsAtLeastOneEditedTest = tests.some((t: Test) => t.edited);
+
+    // Warns the user if they close the page with unsaved changes
+    window.onbeforeunload = () => {
+        return thereIsAtLeastOneEditedTest ? true : undefined;
+    }
+
     return (
         <div className='pb-3'>
             {exerciseIsSuccess && tests && (
@@ -144,7 +156,7 @@ const ExerciseTestsTab = (props: any) => {
                                     className="flex items-center w-fit text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-bold py-1 px-2 rounded-lg focus:outline-none focus:shadow-outline"
                                     onClick={(e) => {
                                         const randomId = randomTestId();
-                                        const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                        const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1, edited: true };
                                         setTests([...tests, newTest]);
                                     }}
                                 >
@@ -159,28 +171,35 @@ const ExerciseTestsTab = (props: any) => {
                     {tests.map((test) => (
                         <div
                             key={test?.id}
-                            className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2`}
-                            tabIndex={0}
+                            className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2 rounded-lg ${test.edited && "border-r-2 border-blue-500"} transition-all`}
                         >
-                            <span className='border-l border-t rounded-tl-lg p-2'>Title</span>
+                            <span className='border-l border-t rounded-tl-lg bg-gray-50 p-2'>Title</span>
                             <input
                                 type="text"
                                 placeholder="Test name"
                                 aria-label="Test name"
                                 value={test?.name}
                                 autoComplete="off"
-                                className={`p-2 w-full bg-gray-50 border border-b-0 rounded-tr-lg text-gray-700 focus:outline-none focus:border-blue-500`}
+                                className={`p-2 w-full border border-b-0 rounded-tr-lg text-gray-700 focus:outline-none focus:border-blue-500`}
                                 onChange={(e) => {
                                     isOwner && setTests(
                                         tests.map((t) =>
-                                            t.id === test?.id ? { ...t, name: e.target.value } : t
+                                            t.id === test?.id ? { ...t, name: e.target.value, edited: true } : t
                                         ));
                                 }}
                             />
 
-                            <span className="border-l border-t p-2">Input</span>
+                            <button
+                                className="hidden group-hover:flex group-focus-within:flex items-center absolute end-2 top-2 text-gray-400 border border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-500 focus:bg-red-50 focus:border-red-500 focus:text-red-500 rounded-lg px-2 w-fit transition-all"
+                                onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation(test.id)}
+                            >
+                                <TrashIcon className="size-3" />
+                                <span className='ms-1.5'>Delete</span>
+                            </button>
+
+                            <span className="border-l border-t bg-gray-50 p-2">Input</span>
                             <textarea
-                                className="p-2 w-full border border-b-0 bg-gray-50 text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
+                                className="p-2 w-full border border-b-0 text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
                                 placeholder="Input to test for"
                                 rows={1}
                                 aria-label="Input"
@@ -190,15 +209,15 @@ const ExerciseTestsTab = (props: any) => {
                                     isOwner &&
                                         setTests(
                                             tests.map((t) =>
-                                                t.id === test?.id ? { ...t, stdin: e.target.value } : t
+                                                t.id === test?.id ? { ...t, stdin: e.target.value, edited: true } : t
                                             )
                                         );
                                 }}
                             />
 
-                            <span className="border-l border-t border-b rounded-bl-lg p-2">Output</span>
+                            <span className="border-l border-t border-b bg-gray-50 rounded-bl-lg p-2">Output</span>
                             <textarea
-                                className="p-2 w-full border rounded-br-lg bg-gray-50 text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
+                                className="p-2 w-full border rounded-br-lg text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
                                 placeholder="Expected output"
                                 rows={1}
                                 aria-label="Output"
@@ -207,18 +226,11 @@ const ExerciseTestsTab = (props: any) => {
                                 onChange={(e) => {
                                     setTests(
                                         tests.map((t) =>
-                                            t.id === test?.id ? { ...t, stdout: e.target.value } : t
+                                            t.id === test?.id ? { ...t, stdout: e.target.value, edited: true } : t
                                         )
                                     );
                                 }}
                             />
-                            <button
-                                className="hidden group-hover:flex items-center absolute end-2 top-2 focus:outline-none text-gray-400 border border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-500 rounded-lg px-2 w-fit transition-all"
-                                onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation(test.id)}
-                            >
-                                <TrashIcon className="size-3" />
-                                <span className='ms-1.5'>Delete</span>
-                            </button>
 
                             <>
                                 {showModal && (
@@ -240,7 +252,7 @@ const ExerciseTestsTab = (props: any) => {
                                 className="flex items-center gap-2 text-primary text-sm bg-white hover:bg-gray-50 border border-gray-200 font-semibold py-2 px-4 rounded-lg"
                                 onClick={(e) => {
                                     const randomId = randomTestId();
-                                    const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                    const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1, edited: true };
                                     setTests([...tests, newTest]);
                                 }}
                             >
@@ -248,7 +260,7 @@ const ExerciseTestsTab = (props: any) => {
                                 Add test
                             </button>
                             <button
-                                className="flex items-center gap-2 text-primary text-sm bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200 font-semibold py-2 px-4 rounded-lg"
+                                className={`flex items-center gap-2 text-primary text-sm ${thereIsAtLeastOneEditedTest ? "bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200" : "bg-white border border-gray-200 text-gray-600"} font-semibold py-2 px-4 rounded-lg transition-all`}
                                 onClick={handleSaveAllTests}
                             >
                                 <CheckIcon className='w-4 h-4' />
