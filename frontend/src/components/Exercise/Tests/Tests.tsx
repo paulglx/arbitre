@@ -1,11 +1,21 @@
-import { CheckIcon, ExclamationTriangleIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
-import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
-import { useEffect, useState } from 'react'
+import {
+    CheckIcon,
+    ExclamationTriangleIcon,
+    PlusIcon,
+    TrashIcon,
+} from "@heroicons/react/16/solid";
+import {
+    useCreateTestMutation,
+    useDeleteTestMutation,
+    useGetTestsOfExerciseQuery,
+    useUpdateTestMutation,
+} from "../../../features/courses/testApiSlice";
+import { useEffect, useState } from "react";
 
-import { Modal } from "../Common";
-import autosize from 'autosize';
-import { pushNotification } from '../../features/notification/notificationSlice';
-import { useDispatch } from 'react-redux';
+import { Modal } from "../../Common";
+import autosize from "autosize";
+import { pushNotification } from "../../../features/notification/notificationSlice";
+import { useDispatch } from "react-redux";
 
 interface Test {
     id: number;
@@ -18,11 +28,14 @@ interface Test {
     edited: boolean;
 }
 
-const ExerciseTestsTab = (props: any) => {
-
+const Tests = (props: {
+    exerciseIsSuccess: boolean;
+    isOwner: boolean;
+    exercise_id: number;
+}) => {
     const NEW_TEST_NAME = "New Test";
 
-    const { exerciseIsSuccess, isOwner, exercise_id } = props
+    const { exerciseIsSuccess, isOwner, exercise_id } = props;
 
     const [createTest] = useCreateTestMutation();
     const [deleteTest] = useDeleteTestMutation();
@@ -31,11 +44,8 @@ const ExerciseTestsTab = (props: any) => {
     const [updateTest] = useUpdateTestMutation();
     const dispatch = useDispatch();
 
-    const {
-        data: testsResponse,
-        isSuccess: testsSuccess
-    } = useGetTestsOfExerciseQuery({ exercise_id });
-
+    const { data: testsResponse, isSuccess: testsSuccess } =
+        useGetTestsOfExerciseQuery({ exercise_id });
 
     useEffect(() => {
         if (!testsSuccess) return;
@@ -44,27 +54,30 @@ const ExerciseTestsTab = (props: any) => {
     }, [testsResponse]);
 
     useEffect(() => {
-        autosize(document.querySelectorAll('textarea'));
-        const duplicateNames: boolean = tests?.some((t1: Test) => tests.filter((t2: Test) => t1.name === t2.name).length > 1);
+        autosize(document.querySelectorAll("textarea"));
+        const duplicateNames: boolean = tests?.some(
+            (t1: Test) => tests.filter((t2: Test) => t1.name === t2.name).length > 1
+        );
 
         if (duplicateNames) {
-            dispatch(pushNotification({
-                message: "Test names must be unique",
-                type: "warning",
-            }));
+            dispatch(
+                pushNotification({
+                    message: "Test names must be unique",
+                    type: "warning",
+                })
+            );
         }
-
     }, [tests]);
 
     const randomTestId = (): number => {
         return Math.floor(Math.random() * 10000) + 1000;
-    }
+    };
 
     const handleSaveAllTests = async () => {
-        tests.forEach(test => {
-            handleCreateOrUpdateTest(test.id)
+        tests.forEach((test) => {
+            handleCreateOrUpdateTest(test.id);
         });
-    }
+    };
 
     const handleCreateOrUpdateTest = async (testId: number) => {
         const test: Test = tests.find((t: Test) => t.id === testId)!;
@@ -79,18 +92,28 @@ const ExerciseTestsTab = (props: any) => {
                 .unwrap()
                 .then((response: Test) => {
                     // set test as not new, with new id
-                    const newTestId = response.id
-                    setTests(tests.map((t: Test) => t.id === testId ? { ...t, new: false, edited: false, id: newTestId } : t))
-                    dispatch(pushNotification({
-                        message: "Test created successfully",
-                        type: "success",
-                    }));
+                    const newTestId = response.id;
+                    setTests(
+                        tests.map((t: Test) =>
+                            t.id === testId
+                                ? { ...t, new: false, edited: false, id: newTestId }
+                                : t
+                        )
+                    );
+                    dispatch(
+                        pushNotification({
+                            message: "Test created successfully",
+                            type: "success",
+                        })
+                    );
                 })
                 .catch((error) => {
-                    dispatch(pushNotification({
-                        message: "There was an error creating the test.",
-                        type: "error",
-                    }));
+                    dispatch(
+                        pushNotification({
+                            message: "There was an error creating the test.",
+                            type: "error",
+                        })
+                    );
                 });
         } else {
             await updateTest({
@@ -98,18 +121,26 @@ const ExerciseTestsTab = (props: any) => {
                 exercise: exercise_id,
                 name: test.name,
                 stdin: test.stdin,
-                stdout: test.stdout
+                stdout: test.stdout,
             })
                 .unwrap()
-                .then(() => setTests(tests.map((t: Test) => t.id === test.id ? { ...t, edited: false, } : t)))
+                .then(() =>
+                    setTests(
+                        tests.map((t: Test) =>
+                            t.id === test.id ? { ...t, edited: false } : t
+                        )
+                    )
+                )
                 .catch((error) => {
-                    dispatch(pushNotification({
-                        message: "There was an error updating the test.",
-                        type: "error",
-                    }));
+                    dispatch(
+                        pushNotification({
+                            message: "There was an error updating the test.",
+                            type: "error",
+                        })
+                    );
                 });
         }
-    }
+    };
 
     const handleDeleteConfirmation = async (test_id: number) => {
         const test = tests.find((t: Test) => t.id === test_id);
@@ -117,31 +148,35 @@ const ExerciseTestsTab = (props: any) => {
             await deleteTest({ id: test_id })
                 .unwrap()
                 .then(() => {
-                    dispatch(pushNotification({
-                        message: "Test deleted successfully",
-                        type: "success",
-                    }));
+                    dispatch(
+                        pushNotification({
+                            message: "Test deleted successfully",
+                            type: "success",
+                        })
+                    );
                 })
                 .catch((error) => {
-                    dispatch(pushNotification({
-                        message: "There was an error deleting the test",
-                        type: "error",
-                    }));
+                    dispatch(
+                        pushNotification({
+                            message: "There was an error deleting the test",
+                            type: "error",
+                        })
+                    );
                 });
         }
         setShowModal(false);
         setTests(tests.filter((t: Test) => t.id !== test_id));
-    }
+    };
 
     const thereIsAtLeastOneEditedTest = tests.some((t: Test) => t.edited);
 
     // Warns the user if they close the page with unsaved changes
     window.onbeforeunload = () => {
         return thereIsAtLeastOneEditedTest ? true : undefined;
-    }
+    };
 
     return (
-        <div className='pb-3'>
+        <div className="pb-3">
             {exerciseIsSuccess && tests && (
                 <>
                     {tests.length > 0 ? (
@@ -150,13 +185,24 @@ const ExerciseTestsTab = (props: any) => {
                         </h6>
                     ) : (
                         <div className="flex flex-col py-4 rounded-lg">
-                            <h6 className="text-gray-600 text-sm mb-4">This exercise doesn't have any tests.</h6>
+                            <h6 className="text-gray-600 text-sm mb-4">
+                                This exercise doesn't have any tests.
+                            </h6>
                             {isOwner && (
                                 <button
                                     className="flex items-center w-fit text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-bold py-1 px-2 rounded-lg focus:outline-none focus:shadow-outline"
                                     onClick={(e) => {
                                         const randomId = randomTestId();
-                                        const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1, edited: true };
+                                        const newTest: Test = {
+                                            id: randomId,
+                                            name: NEW_TEST_NAME,
+                                            stdin: "",
+                                            stdout: "",
+                                            new: true,
+                                            exercise: exercise_id,
+                                            coefficient: 1,
+                                            edited: true,
+                                        };
                                         setTests([...tests, newTest]);
                                     }}
                                 >
@@ -165,15 +211,17 @@ const ExerciseTestsTab = (props: any) => {
                                 </button>
                             )}
                         </div>
-
                     )}
 
                     {tests.map((test) => (
                         <div
                             key={test?.id}
-                            className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2 rounded-lg ${test.edited && "border-r-2 border-blue-500"} transition-all`}
+                            className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2 rounded-lg ${test.edited && "border-r-2 border-blue-500"
+                                } transition-all`}
                         >
-                            <span className='border-l border-t rounded-tl-lg bg-gray-50 p-2'>Title</span>
+                            <span className="border-l border-t rounded-tl-lg bg-gray-50 p-2">
+                                Title
+                            </span>
                             <input
                                 type="text"
                                 placeholder="Test name"
@@ -182,19 +230,27 @@ const ExerciseTestsTab = (props: any) => {
                                 autoComplete="off"
                                 className={`p-2 w-full border border-b-0 rounded-tr-lg text-gray-700 focus:outline-none focus:border-blue-500`}
                                 onChange={(e) => {
-                                    isOwner && setTests(
-                                        tests.map((t) =>
-                                            t.id === test?.id ? { ...t, name: e.target.value, edited: true } : t
-                                        ));
+                                    isOwner &&
+                                        setTests(
+                                            tests.map((t) =>
+                                                t.id === test?.id
+                                                    ? { ...t, name: e.target.value, edited: true }
+                                                    : t
+                                            )
+                                        );
                                 }}
                             />
 
                             <button
                                 className="hidden group-hover:flex group-focus-within:flex items-center absolute end-2 top-2 text-gray-400 border border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-500 focus:bg-red-50 focus:border-red-500 focus:text-red-500 rounded-lg px-2 w-fit transition-all"
-                                onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation(test.id)}
+                                onClick={() =>
+                                    test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout
+                                        ? setShowModal(true)
+                                        : handleDeleteConfirmation(test.id)
+                                }
                             >
                                 <TrashIcon className="size-3" />
-                                <span className='ms-1.5'>Delete</span>
+                                <span className="ms-1.5">Delete</span>
                             </button>
 
                             <span className="border-l border-t bg-gray-50 p-2">Input</span>
@@ -209,13 +265,17 @@ const ExerciseTestsTab = (props: any) => {
                                     isOwner &&
                                         setTests(
                                             tests.map((t) =>
-                                                t.id === test?.id ? { ...t, stdin: e.target.value, edited: true } : t
+                                                t.id === test?.id
+                                                    ? { ...t, stdin: e.target.value, edited: true }
+                                                    : t
                                             )
                                         );
                                 }}
                             />
 
-                            <span className="border-l border-t border-b bg-gray-50 rounded-bl-lg p-2">Output</span>
+                            <span className="border-l border-t border-b bg-gray-50 rounded-bl-lg p-2">
+                                Output
+                            </span>
                             <textarea
                                 className="p-2 w-full border rounded-br-lg text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
                                 placeholder="Expected output"
@@ -226,7 +286,9 @@ const ExerciseTestsTab = (props: any) => {
                                 onChange={(e) => {
                                     setTests(
                                         tests.map((t) =>
-                                            t.id === test?.id ? { ...t, stdout: e.target.value, edited: true } : t
+                                            t.id === test?.id
+                                                ? { ...t, stdout: e.target.value, edited: true }
+                                                : t
                                         )
                                     );
                                 }}
@@ -235,13 +297,20 @@ const ExerciseTestsTab = (props: any) => {
                             <>
                                 {showModal && (
                                     <Modal
-                                        title={<h2 className="text-xl font-semibold">Confirmation</h2>}
-                                        icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                                        decription={<p className="mb-4">Are you sure you want to delete this test?</p>}
+                                        title={
+                                            <h2 className="text-xl font-semibold">Confirmation</h2>
+                                        }
+                                        icon={
+                                            <ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />
+                                        }
+                                        decription={
+                                            <p className="mb-4">
+                                                Are you sure you want to delete this test?
+                                            </p>
+                                        }
                                         handleCloseModal={() => setShowModal(false)}
                                         delete={() => handleDeleteConfirmation(test.id)}
                                     />
-
                                 )}
                             </>
                         </div>
@@ -252,7 +321,16 @@ const ExerciseTestsTab = (props: any) => {
                                 className="flex items-center gap-2 text-primary text-sm bg-white hover:bg-gray-50 border border-gray-200 font-semibold py-2 px-4 rounded-lg"
                                 onClick={(e) => {
                                     const randomId = randomTestId();
-                                    const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1, edited: true };
+                                    const newTest: Test = {
+                                        id: randomId,
+                                        name: NEW_TEST_NAME,
+                                        stdin: "",
+                                        stdout: "",
+                                        new: true,
+                                        exercise: exercise_id,
+                                        coefficient: 1,
+                                        edited: true,
+                                    };
                                     setTests([...tests, newTest]);
                                 }}
                             >
@@ -260,10 +338,13 @@ const ExerciseTestsTab = (props: any) => {
                                 Add test
                             </button>
                             <button
-                                className={`flex items-center gap-2 text-primary text-sm ${thereIsAtLeastOneEditedTest ? "bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200" : "bg-white border border-gray-200 text-gray-600"} font-semibold py-2 px-4 rounded-lg transition-all`}
+                                className={`flex items-center gap-2 text-primary text-sm ${thereIsAtLeastOneEditedTest
+                                        ? "bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200"
+                                        : "bg-white border border-gray-200 text-gray-600"
+                                    } font-semibold py-2 px-4 rounded-lg transition-all`}
                                 onClick={handleSaveAllTests}
                             >
-                                <CheckIcon className='w-4 h-4' />
+                                <CheckIcon className="w-4 h-4" />
                                 Save tests
                             </button>
                         </div>
@@ -272,7 +353,6 @@ const ExerciseTestsTab = (props: any) => {
             )}
         </div>
     );
+};
 
-}
-
-export default ExerciseTestsTab
+export default Tests;
