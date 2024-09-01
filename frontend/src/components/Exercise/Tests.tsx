@@ -1,4 +1,4 @@
-import { ExclamationTriangleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { CheckIcon, ExclamationTriangleIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useCreateTestMutation, useDeleteTestMutation, useGetTestsOfExerciseQuery, useUpdateTestMutation } from "../../features/courses/testApiSlice";
 import { useEffect, useState } from 'react'
 
@@ -17,7 +17,7 @@ interface Test {
     new: boolean;
 }
 
-const Tests = (props: any) => {
+const ExerciseTestsTab = (props: any) => {
 
     const NEW_TEST_NAME = "New Test";
 
@@ -25,12 +25,9 @@ const Tests = (props: any) => {
 
     const [createTest] = useCreateTestMutation();
     const [deleteTest] = useDeleteTestMutation();
-    const [editTest, setEditTest] = useState(false);
-    const [editTestId, setEditTestId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [tests, setTests] = useState([] as Test[]);
     const [updateTest] = useUpdateTestMutation();
-    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //used to generate unique ids for tests
     const dispatch = useDispatch();
 
     const {
@@ -43,7 +40,7 @@ const Tests = (props: any) => {
     }, [testsResponse]);
 
     useEffect(() => {
-        autosize(document.querySelectorAll('textarea'));
+        // autosize(document.querySelectorAll('textarea'));
         const duplicateNames: boolean = tests?.some((t1: Test) => tests.filter((t2: Test) => t1.name === t2.name).length > 1);
 
         if (duplicateNames) {
@@ -57,6 +54,12 @@ const Tests = (props: any) => {
 
     const randomTestId = (): number => {
         return Math.floor(Math.random() * 10000) + 1000;
+    }
+
+    const handleSaveAllTests = async () => {
+        tests.forEach(test => {
+            handleCreateOrUpdateTest(test.id)
+        });
     }
 
     const handleCreateOrUpdateTest = async (testId: number) => {
@@ -94,13 +97,6 @@ const Tests = (props: any) => {
                 stdout: test.stdout
             })
                 .unwrap()
-                .then(() => {
-                    dispatch(pushNotification({
-                        title: "Success",
-                        message: "Test updated successfully",
-                        type: "success",
-                    }));
-                })
                 .catch((error) => {
                     dispatch(pushNotification({
                         message: "There was an error updating the test.",
@@ -110,10 +106,10 @@ const Tests = (props: any) => {
         }
     }
 
-    const handleDeleteConfirmation = async () => {
-        const test = tests.find((t: Test) => t.id === editTestId);
+    const handleDeleteConfirmation = async (test_id: number) => {
+        const test = tests.find((t: Test) => t.id === test_id);
         if (!test?.new) {
-            await deleteTest({ id: editTestId })
+            await deleteTest({ id: test_id })
                 .unwrap()
                 .then(() => {
                     dispatch(pushNotification({
@@ -129,7 +125,7 @@ const Tests = (props: any) => {
                 });
         }
         setShowModal(false);
-        setTests(tests.filter((t: Test) => t.id !== editTestId));
+        setTests(tests.filter((t: Test) => t.id !== test_id));
     }
 
     return (
@@ -141,23 +137,20 @@ const Tests = (props: any) => {
                             {isOwner ? "" : "Tests can only be edited by owners"}
                         </h6>
                     ) : (
-                        <div className="bg-gray-50 border shadow p-6 md:p-2 flex justify-center items-center flex-col rounded-lg">
-                            <h6 className="text-muted p-2 md:p-4">This exercise doesn't have any tests</h6>
+                        <div className="flex flex-col py-4 rounded-lg">
+                            <h6 className="text-gray-600 text-sm mb-4">This exercise doesn't have any tests.</h6>
                             {isOwner && (
-                                <div className="flex justify-center p-2 md:p-2">
-                                    <button
-                                        className="inline-flex items-center text-primary text-sm btn-link bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                        onClick={(e) => {
-                                            const randomId = randomTestId();
-                                            const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
-                                            setTests([...tests, newTest]);
-                                        }}
-                                    >
-                                        <PlusIcon className="mr-2 w-6 h-6" />
-                                        Create test
-                                    </button>
-                                </div>
-
+                                <button
+                                    className="flex items-center w-fit text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-bold py-1 px-2 rounded-lg focus:outline-none focus:shadow-outline"
+                                    onClick={(e) => {
+                                        const randomId = randomTestId();
+                                        const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
+                                        setTests([...tests, newTest]);
+                                    }}
+                                >
+                                    <PlusIcon className="mr-2 size-4" />
+                                    Create test
+                                </button>
                             )}
                         </div>
 
@@ -166,132 +159,100 @@ const Tests = (props: any) => {
                     {tests.map((test) => (
                         <div
                             key={test?.id}
-                            className={`mb-6 w-full`}
+                            className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2`}
                             tabIndex={0}
-                            onFocus={() => {
-                                isOwner && setEditTestId(test?.id as any);
-                                setEditTest(true);
-                            }}
-                            onBlur={(e: any) => {
-                                if (!e.currentTarget.contains(e.relatedTarget)) {
-                                    isOwner && setEditTestId(null);
-                                    setEditTest(false);
-                                }
-                            }}
                         >
-                            <div className={`flex flex-col w-full gap-2 ${editTest && editTestId === test.id ? "border-blue-600" : "border-gray-200"} border-l-2 border-gray-200 pl-4`}>
-                                <div className='w-full flex items-center'>
-                                    <span className='pr-3 py-2'>Title</span>
-                                    <input
-                                        type="text"
-                                        placeholder="Test name"
-                                        aria-label="Test name"
-                                        value={test?.name}
-                                        autoComplete="off"
-                                        className={`w-full rounded-lg p-2 text-gray-700 border focus:outline-none focus:border-blue-500`}
-                                        onChange={(e) => {
-                                            isOwner && setTests(
-                                                tests.map((t) =>
-                                                    t.id === test?.id ? { ...t, name: e.target.value } : t
-                                                ));
-                                        }}
-                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
+                            <span className='border-l border-t rounded-tl-lg p-2'>Title</span>
+                            <input
+                                type="text"
+                                placeholder="Test name"
+                                aria-label="Test name"
+                                value={test?.name}
+                                autoComplete="off"
+                                className={`p-2 w-full bg-gray-50 border border-b-0 rounded-tr-lg text-gray-700 focus:outline-none focus:border-blue-500`}
+                                onChange={(e) => {
+                                    isOwner && setTests(
+                                        tests.map((t) =>
+                                            t.id === test?.id ? { ...t, name: e.target.value } : t
+                                        ));
+                                }}
+                            />
+
+                            <span className="border-l border-t p-2">Input</span>
+                            <textarea
+                                className="p-2 w-full border border-b-0 bg-gray-50 text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
+                                placeholder="Input to test for"
+                                rows={1}
+                                aria-label="Input"
+                                value={test?.stdin}
+                                autoComplete="off"
+                                onChange={(e) => {
+                                    isOwner &&
+                                        setTests(
+                                            tests.map((t) =>
+                                                t.id === test?.id ? { ...t, stdin: e.target.value } : t
+                                            )
+                                        );
+                                }}
+                            />
+
+                            <span className="border-l border-t border-b rounded-bl-lg p-2">Output</span>
+                            <textarea
+                                className="p-2 w-full border rounded-br-lg bg-gray-50 text-gray-700 focus:outline-none focus:border-blue-500 font-mono"
+                                placeholder="Expected output"
+                                rows={1}
+                                aria-label="Output"
+                                value={test?.stdout}
+                                autoComplete="off"
+                                onChange={(e) => {
+                                    setTests(
+                                        tests.map((t) =>
+                                            t.id === test?.id ? { ...t, stdout: e.target.value } : t
+                                        )
+                                    );
+                                }}
+                            />
+                            <button
+                                className="hidden group-hover:flex items-center absolute end-2 top-2 focus:outline-none text-gray-400 border border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-500 rounded-lg px-2 w-fit transition-all"
+                                onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation(test.id)}
+                            >
+                                <TrashIcon className="size-3" />
+                                <span className='ms-1.5'>Delete</span>
+                            </button>
+
+                            <>
+                                {showModal && (
+                                    <Modal
+                                        title={<h2 className="text-xl font-semibold">Confirmation</h2>}
+                                        icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
+                                        decription={<p className="mb-4">Are you sure you want to delete this test?</p>}
+                                        handleCloseModal={() => setShowModal(false)}
+                                        delete={() => handleDeleteConfirmation(test.id)}
                                     />
-                                </div>
 
-                                <div className="w-full flex items-center">
-                                    <span className="pr-3 py-2 rounded-l-lg">Input</span>
-                                    <textarea
-                                        className="border rounded-lg w-full form-control focus:outline-none focus:border-blue-500 h-10 p-2 font-mono"
-                                        placeholder="Input to test for"
-                                        rows={1}
-                                        aria-label="Input"
-                                        value={test?.stdin}
-                                        autoComplete="off"
-                                        onChange={(e) => {
-                                            isOwner &&
-                                                setTests(
-                                                    tests.map((t) =>
-                                                        t.id === test?.id ? { ...t, stdin: e.target.value } : t
-                                                    )
-                                                );
-                                        }}
-                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                    />
-                                </div>
-
-                                <div className="w-full flex items-center">
-                                    <span className="pr-3 py-2 rounded-l-lg">Output</span>
-                                    <textarea
-                                        className="border rounded-lg w-full form-control focus:outline-none focus:border-blue-500 h-10 p-2 font-mono"
-                                        placeholder="Expected output"
-                                        rows={1}
-                                        aria-label="Output"
-                                        value={test?.stdout}
-                                        autoComplete="off"
-                                        onChange={(e) => {
-                                            setTests(
-                                                tests.map((t) =>
-                                                    t.id === test?.id ? { ...t, stdout: e.target.value } : t
-                                                )
-                                            );
-                                        }}
-                                        {...(editTest && editTestId === test?.id ? {} : { disabled: true, readOnly: true })}
-                                    />
-                                </div>
-                                <div className="inline-flex justify-start gap-2">
-                                    <button
-                                        className="font-medium focus:outline-none text-blue-500 border border-blue-500 hover:bg-blue-50 rounded-lg px-3 py-1.5 transition-all duration-300 flex items-center"
-                                        onClick={() => {
-                                            handleCreateOrUpdateTest(test?.id);
-                                            setEditTest(false);
-                                        }}
-                                    >
-                                        <TrashIcon className="w-4 h-4" />
-                                        <span className='ml-2'>Save</span>
-                                    </button>
-                                    <button
-                                        className="font-medium focus:outline-none text-red-500 border border-red-500 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-all duration-300 flex items-center"
-                                        onClick={() => test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout ? setShowModal(true) : handleDeleteConfirmation()}
-                                    >
-                                        <TrashIcon className="w-4 h-4" />
-                                        <span className='ml-2'>Delete</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="md:col-auto">
-                                {editTest && editTestId === test?.id ? (
-                                    <>
-                                        {showModal && (
-                                            <Modal
-                                                title={<h2 className="text-xl font-semibold">Confirmation</h2>}
-                                                icon={<ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />}
-                                                decription={<p className="mb-4">Are you sure you want to delete this test?</p>}
-                                                handleCloseModal={() => setShowModal(false)}
-                                                delete={handleDeleteConfirmation}
-                                            />
-
-                                        )}
-                                    </>
-                                ) : null}
-                            </div>
+                                )}
+                            </>
                         </div>
                     ))}
                     {isOwner && tests.length > 0 && (
-                        <div className="flex justify-center mt-6">
+                        <div className="mt-2 flex gap-2">
                             <button
-                                className="w-full inline-flex items-center text-primary text-sm border bg-gray-50 hover:bg-gray-100 font-semibold py-2 px-2 rounded-lg focus:outline-none focus:shadow-outline"
+                                className="flex items-center gap-2 text-primary text-sm bg-white hover:bg-gray-50 border border-gray-200 font-semibold py-2 px-4 rounded-lg"
                                 onClick={(e) => {
                                     const randomId = randomTestId();
                                     const newTest: Test = { id: randomId, name: NEW_TEST_NAME, stdin: "", stdout: "", new: true, exercise: exercise_id, coefficient: 1 };
                                     setTests([...tests, newTest]);
-                                    setEditTestId(randomId as any);
-                                    setEditTest(true);
                                 }}
                             >
-                                <PlusIcon className="mr-2 w-4 h-4" />
+                                <PlusIcon className="w-4 h-4" />
                                 Add test
+                            </button>
+                            <button
+                                className="flex items-center gap-2 text-primary text-sm bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200 font-semibold py-2 px-4 rounded-lg"
+                                onClick={handleSaveAllTests}
+                            >
+                                <CheckIcon className='w-4 h-4' />
+                                Save tests
                             </button>
                         </div>
                     )}
@@ -302,4 +263,4 @@ const Tests = (props: any) => {
 
 }
 
-export default Tests
+export default ExerciseTestsTab
