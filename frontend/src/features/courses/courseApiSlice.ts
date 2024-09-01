@@ -104,6 +104,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 url: `/api/course_student?course_id=${params.course_id}`,
                 method: "GET",
             }),
+            providesTags: ['Students']
         }),
         addStudent: builder.mutation({
             query: (data: any) => ({
@@ -112,6 +113,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 credentials: "include",
                 body: data, //Must include : course_id, user_id
             }),
+            invalidatesTags: ["Students"]
         }),
         removeStudent: builder.mutation({
             query: (data: any) => ({
@@ -120,6 +122,7 @@ export const courseApiSlice = apiSlice.injectEndpoints({
                 credentials: "include",
                 body: { user_id: data.user_id },
             }),
+            invalidatesTags: ["Students"]
         }),
         updateLanguage: builder.mutation({
             query: (data: any) => ({

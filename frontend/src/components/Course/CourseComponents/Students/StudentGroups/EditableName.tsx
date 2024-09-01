@@ -5,7 +5,6 @@ import { useState } from "react";
 
 const EditableName = (props: any) => {
   const group = props.group;
-  const refetch = props.refetch;
 
   const [name, setName] = useState<string>(props.group.name);
   const [edit, setEdit] = useState<boolean>(false);
@@ -32,7 +31,6 @@ const EditableName = (props: any) => {
         );
       })
       .then((res) => {
-        refetch();
         if (res.course) {
           dispatch(
             pushNotification({

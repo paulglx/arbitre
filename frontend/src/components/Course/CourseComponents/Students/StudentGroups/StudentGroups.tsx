@@ -13,7 +13,6 @@ import { useState } from "react";
 const StudentGroups = (props: any) => {
   const course = props.course;
   const refetch = props.refetch;
-  const refetchGroups = props.refetchGroups;
   const groups = props.groups;
 
   const [accordionOpened, setAccordionOpened] = useState<any>(false);
@@ -144,7 +143,7 @@ const StudentGroups = (props: any) => {
   const GroupsListWrapper = () => {
     return (
       <>
-        <div className="p-1 mt-1">
+        <div className="p-1 mt-4">
           <label
             htmlFor="auto-groups-enabled-checkbox"
             className="font-medium text-gray-900"
@@ -153,13 +152,12 @@ const StudentGroups = (props: any) => {
           </label>
           <p
             id="auto-groups-info-text"
-            className="text-sm font-normal text-gray-500"
+            className="text-xs font-normal text-gray-500 mb-2"
           >
             Click on a group to edit its name.
           </p>
           <StudentGroupList
             course={course}
-            refetchGroups={refetchGroups}
             groups={groups}
           />
         </div>

@@ -13,7 +13,6 @@ const StudentsListGroupPicker = (props: any) => {
     const setCourse = props.setCourse
     const student = props.student
     const groups = props.groups
-    const refetchGroups = props.refetchGroups
 
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const dropdownButtonRef = createRef<HTMLButtonElement>()
@@ -21,10 +20,6 @@ const StudentsListGroupPicker = (props: any) => {
 
     const dispatch = useDispatch()
     const [setStudentGroup] = useSetGroupOfStudentMutation()
-
-    useEffect(() => {
-        refetchGroups()
-    }, [course, refetchGroups])
 
     useEffect(() => {
         const handleClickOutside = (event: any) => {

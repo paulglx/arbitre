@@ -17,31 +17,26 @@ const StudentsList = (props: any) => {
   const [addStudent] = useAddStudentMutation();
   const [allUsers, setAllUsers] = useState<any>([]);
   const [removeStudent] = useRemoveStudentMutation();
-  const [students, setStudents] = useState<any>([]);
   const [studentToAdd, setStudentToAdd] = useState<any>("");
   const course = props.course;
   const setCourse = props.setCourse;
   const dispatch = useDispatch();
 
+  const {
+    data: students,
+    isSuccess: studentsSuccess,
+  } = useGetStudentsQuery({ course_id: course.id });
+
   const sortedStudents = useMemo(() => {
+
+    if(!studentsSuccess) return [];
+
     const studentsToSort = structuredClone(students);
     const sortedStudents = studentsToSort.sort((a: any, b: any) => {
       return a.username.localeCompare(b.username);
     });
     return sortedStudents;
   }, [students]);
-
-  const {
-    data: studentsData,
-    isSuccess: studentsSuccess,
-    refetch: refetchStudents,
-  } = useGetStudentsQuery({ course_id: course.id });
-
-  useEffect(() => {
-    if (studentsSuccess) {
-      refetchStudents();
-    }
-  }, [course, studentsSuccess, refetchStudents]);
 
   const { data: usersData, isSuccess: usersSuccess } = useGetUsersQuery({});
 
@@ -79,7 +74,6 @@ const StudentsList = (props: any) => {
         );
       })
       .then((res) => {
-        refetchStudents();
         setStudentToAdd("");
       });
   };
@@ -95,16 +89,7 @@ const StudentsList = (props: any) => {
           }),
         );
       })
-      .then(() => {
-        refetchStudents();
-      });
   };
-
-  useEffect(() => {
-    if (studentsSuccess) {
-      setStudents(studentsData.students);
-    }
-  }, [studentsSuccess, studentsData]);
 
   useEffect(() => {
     if (usersSuccess) {

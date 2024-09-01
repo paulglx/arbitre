@@ -1,3 +1,4 @@
+import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import {
   useAddStudentGroupMutation,
   useRemoveStudentGroupMutation,
@@ -10,7 +11,6 @@ import { useMemo } from "react";
 
 const StudentGroupList = (props: any) => {
   const course = props.course;
-  const refetchGroups = props.refetchGroups;
   const groups = props.groups;
 
   const sortedGroups = useMemo(() => {
@@ -41,9 +41,6 @@ const StudentGroupList = (props: any) => {
           }),
         );
       })
-      .then(() => {
-        refetchGroups();
-      });
   };
 
   const handleRemoveStudentGroup = async (group: any) => {
@@ -59,33 +56,32 @@ const StudentGroupList = (props: any) => {
           }),
         );
       })
-      .then(() => {
-        refetchGroups();
-      });
   };
 
   return (
     <div className="flex flex-col w-full lg:w-1/2">
       {sortedGroups?.map((group: any, i: number) => {
         return (
-          <div className="flex flex-row items-center justify-between" key={i}>
+          <div className="flex flex-row items-center group" key={i}>
             <div className="flex flex-row items-center justify-start">
               <span className="text-gray-400 text-sm w-4">{i + 1}</span>
-              <EditableName group={group} refetch={refetchGroups} />
+              <EditableName group={group} />
             </div>
             <button
-              className="border rounded-md bg-gray-50 hover:bg-gray-100 text-sm px-1"
+              className="hidden group-hover:flex items-center gap-1 rounded-md bg-gray-50 hover:bg-gray-100 text-xs px-1 py-1 ms-4 text-gray-600"
               onClick={() => handleRemoveStudentGroup(group)}
             >
+              <TrashIcon className="size-3" />
               Remove
             </button>
           </div>
         );
       })}
       <button
-        className="border rounded-lg text-left bg-gray-50 hover:bg-gray-100 px-2 py-1 text-sm mt-1"
+        className="flex items-center w-fit gap-1 hover:underline text-sm mt-1 text-blue-500"
         onClick={handleAddStudentGroup}
       >
+        <PlusIcon className="size-3" />
         Add group
       </button>
     </div>

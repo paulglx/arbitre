@@ -335,11 +335,7 @@ class CourseStudentViewSet(viewsets.ViewSet):
                 }
             )
 
-        return Response(
-            {
-                "students": students,
-            }
-        )
+        return Response(students)
 
     def create(self, request):
         course = Course.objects.get(pk=request.data.get("course_id"))
