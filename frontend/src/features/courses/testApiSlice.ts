@@ -6,42 +6,34 @@ export const testApiSlice = apiSlice.injectEndpoints({
             query: data => ({
                 url: `/runner/api/test?exercise_id=${data.exercise_id}`,
                 method: 'GET',
-            })
+            }),
+            providesTags: ["Tests"]
         }),
         createTest: builder.mutation({
-            query: (data:any) => {
-                return (
-                    {
-                        url: '/runner/api/test/',
-                        method: 'POST',
-                        credentials: 'include',
-                        body: data,
-                    }
-                )
-            }
+            query: (data: any) => ({
+                url: '/runner/api/test/',
+                method: 'POST',
+                credentials: 'include',
+                body: data,
+            }),
+            invalidatesTags: ['Tests']
         }),
         updateTest: builder.mutation({
-            query: (data:any) => {
-                return (
-                    {
-                        url: `/runner/api/test/${data.id}/`,
-                        method: 'PUT',
-                        credentials: 'include',
-                        body: data,
-                    }
-                )
-            }
+            query: (data: any) => ({
+                url: `/runner/api/test/${data.id}/`,
+                method: 'PUT',
+                credentials: 'include',
+                body: data,
+            }),
+            invalidatesTags: ['Tests']
         }),
         deleteTest: builder.mutation({
-            query: (data:any) => {
-                return (
-                    {
-                        url: `/runner/api/test/${data.id}/`,
-                        method: 'DELETE',
-                        credentials: 'include',
-                    }
-                )
-            }
+            query: (data: any) => ({
+                url: `/runner/api/test/${data.id}/`,
+                method: 'DELETE',
+                credentials: 'include',
+            }),
+            invalidatesTags: ['Tests']
         }),
     })
 })

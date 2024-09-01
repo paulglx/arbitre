@@ -187,12 +187,7 @@ class CourseOwnerViewSet(viewsets.ViewSet):
     def list(self, request):
         course = Course.objects.get(pk=request.query_params.get("course_id"))
         return Response(
-            {
-                "owners": [
-                    {"id": user.id, "username": user.username}
-                    for user in course.owners.all()
-                ]
-            }
+            [{"id": user.id, "username": user.username} for user in course.owners.all()]
         )
 
     def create(self, request):
@@ -255,12 +250,7 @@ class CourseTutorViewSet(viewsets.ViewSet):
     def list(self, request):
         course = Course.objects.get(pk=request.query_params.get("course_id"))
         return Response(
-            {
-                "tutors": [
-                    {"id": user.id, "username": user.username}
-                    for user in course.tutors.all()
-                ]
-            }
+            [{"id": user.id, "username": user.username} for user in course.tutors.all()]
         )
 
     def create(self, request):
@@ -345,11 +335,7 @@ class CourseStudentViewSet(viewsets.ViewSet):
                 }
             )
 
-        return Response(
-            {
-                "students": students,
-            }
-        )
+        return Response(students)
 
     def create(self, request):
         course = Course.objects.get(pk=request.data.get("course_id"))

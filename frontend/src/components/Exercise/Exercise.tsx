@@ -10,9 +10,9 @@ import EditableDescription from "../Common/EditableContent/EditableDescription";
 import EditableTitle from "../Common/EditableContent/EditableTitle";
 import ExerciseRuntimeTab from "./Runtime/ExerciseRuntimeTab";
 import ExerciseSubmissionTab from "./Submission/ExerciseSubmissionTab";
-import ExerciseTestsTab from "./ExerciseTestsTab";
 import NotFound from "../Util/NotFound";
 import { Tabs } from "../Common";
+import Tests from "./Tests";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
@@ -174,7 +174,7 @@ const Exercise = () => {
         {
             key: "tests",
             title: "Tests",
-            content: <ExerciseTestsTab exercise_id={exercise?.id} isOwner={isOwner} exerciseIsSuccess={exerciseIsSuccess} />,
+            content: <Tests exercise_id={exercise?.id} isOwner={isOwner} exerciseIsSuccess={exerciseIsSuccess} />,
         },
         {
             key: "runtime",

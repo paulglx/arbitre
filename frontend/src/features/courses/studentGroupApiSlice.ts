@@ -6,7 +6,8 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
             query: params => ({
                 url: `/api/student_group?course_id=${params.course_id}`,
                 method: 'GET',
-            })
+            }),
+            providesTags: ["Students"]
         }),
         addStudentGroup: builder.mutation({
             query: (data: any) => ({
@@ -17,14 +18,16 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                     course: data.course,
                     name: data.name,
                 }
-            })
+            }),
+            invalidatesTags: ["Students"]
         }),
         removeStudentGroup: builder.mutation({
             query: (data: any) => ({
                 url: `/api/student_group/${data.id}/`,
                 method: 'DELETE',
                 credentials: 'include',
-            })
+            }),
+            invalidatesTags: ["Students"]
         }),
         changeStudentGroup: builder.mutation({
             query: (data: any) => ({
@@ -34,7 +37,8 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                 body: {
                     name: data.name,
                 }
-            })
+            }),
+            invalidatesTags: ["Students"]
         }),
         setGroupsEnabled: builder.mutation({
             query: (data: any) => ({
@@ -50,7 +54,8 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                 method: 'PATCH',
                 credentials: 'include',
                 body: { auto_groups_enabled: data.auto_groups_enabled, }
-            })
+            }),
+            invalidatesTags: ["Students"]
         }),
         setGroupOfStudent: builder.mutation({
             query: (data: any) => ({
@@ -61,7 +66,8 @@ export const studentGroupApiSlice = apiSlice.injectEndpoints({
                     user_id: data.user_id,
                     student_group: data.student_group,
                 }
-            })
+            }),
+            invalidatesTags: ["Students"]
         }),
     })
 })

@@ -6,48 +6,39 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
             query: params => ({
                 url: `/api/session/${params.id}/`,
                 method: 'GET',
-            })
+            }),
+            providesTags: ["Session"]
         }),
         getSessionsOfCourse: builder.query({
             query: params => ({
                 url: `/api/session?course_id=${params.course_id}`,
                 method: 'GET',
-            })
+            }),
         }),
         createSession: builder.mutation({
-            query: (data:any) => {
-                return (
-                    {
-                        url: '/api/session/',
-                        method: 'POST',
-                        credentials: 'include',
-                        body: data,
-                    }
-                )
-            }
+            query: data => ({
+                url: '/api/session/',
+                method: 'POST',
+                credentials: 'include',
+                body: data,
+            }),
         }),
         updateSession: builder.mutation({
-            query: (data:any) => {
-                return (
-                    {
-                        url: `/api/session/${data.id}/`,
-                        method: 'PUT',
-                        credentials: 'include',
-                        body: data,
-                    }
-                )
-            }
+            query: data => ({
+                url: `/api/session/${data.id}/`,
+                method: 'PUT',
+                credentials: 'include',
+                body: data,
+            }),
+            invalidatesTags: ["Session"]
         }),
         deleteSession: builder.mutation({
-            query: (data:any) => {
-                return (
-                    {
-                        url: `/api/session/${data.id}/`,
-                        method: 'DELETE',
-                        credentials: 'include',
-                    }
-                )
-            }
+            query: data => ({
+                url: `/api/session/${data.id}/`,
+                method: 'DELETE',
+                credentials: 'include',
+            }),
+            invalidatesTags: ["Session"]
         }),
     })
 })

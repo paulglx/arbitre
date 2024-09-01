@@ -40,7 +40,6 @@ const Session = () => {
         isLoading: sessionIsLoading,
         isSuccess: sessionIsSuccess,
         isError: sessionIsError,
-        refetch: refetchSession,
     } = useGetSessionQuery({ id: session_id });
 
     const course = session?.course;
@@ -94,7 +93,6 @@ const Session = () => {
                     message: "The session has been updated",
                     type: "success"
                 }));
-                refetchSession();
             })
             .catch((e) => {
                 dispatch(pushNotification({

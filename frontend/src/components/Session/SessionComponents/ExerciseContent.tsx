@@ -95,7 +95,7 @@ const ExerciseContent = (props: any) => {
                             ${exercise.submission_status === "success" ?
                                     "border-green-300 bg-green-50 text-green-600" :
                                     "border-gray-300 bg-gray-50 text-gray-600"}
-                            rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg`}
+                            rounded-xl p-4 flex flex-col items-center justify-center transition-all ease-in-out transform hover:border-b-4 hover:-translate-y-1 hover:shadow-sm hover:-mb-1`}
                             to={"/exercise/" + exercise.id}
                         >
                             <p className={`text-xl line-clamp-3 font-medium `}>

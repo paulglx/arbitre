@@ -88,11 +88,12 @@ const SessionContent = (props: any) => {
     else if (sessionsIsSuccess) {
         return (
             <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2 md:mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-2 md:mt-6">
                     {sortedSessions.map((session: any, i: number) => (
                         <Link
                             key={i}
-                            className="border bg-gray-50 border-gray-300 rounded-md shadow p-4 flex flex-col items-center justify-center transition duration-300 ease-in-out transform hover:shadow-lg hover:scale-105"
+                            className="border-2 bg-gray-50 border-gray-200
+                            rounded-xl p-4 flex flex-col items-center justify-center transition-all ease-in-out transform hover:border-b-4 hover:-translate-y-1 hover:shadow-sm hover:-mb-1"
                             to={"/session/" + session.id}
                         >
                             <p className={`text-xl line-clamp-3 font-medium ${session.title ? "text-gray-700" : "text-gray-500"}`}>
