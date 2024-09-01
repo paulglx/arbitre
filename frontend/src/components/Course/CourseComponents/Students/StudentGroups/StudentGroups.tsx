@@ -82,6 +82,7 @@ const StudentGroups = (props: any) => {
     return (
       <div className="flex items-baseline mb-2">
         <input
+          aria-labelledby="groups-enabled-description"
           aria-describedby="groups-enabled-description"
           id="groups-enabled-checkbox"
           type="checkbox"
@@ -112,6 +113,7 @@ const StudentGroups = (props: any) => {
       <div>
         <div className="flex items-baseline">
           <input
+            aria-labelledby="auto-groups-enabled-description"
             aria-describedby="auto-groups-enabled-description"
             id="auto-groups-enabled-checkbox"
             type="checkbox"
@@ -170,11 +172,10 @@ const StudentGroups = (props: any) => {
       <div
         className={`
                     flex flex-row items-center justify-between px-4 py-3 border cursor-pointer
-                    ${
-                      accordionOpened
-                        ? "bg-gray-100 hover:bg-gray-200 rounded-t-lg"
-                        : " bg-gray-50 hover:bg-gray-100 rounded-lg"
-                    }
+                    ${accordionOpened
+            ? "bg-gray-100 hover:bg-gray-200 rounded-t-lg"
+            : " bg-gray-50 hover:bg-gray-100 rounded-lg"
+          }
                 `}
         onClick={() => setAccordionOpened(!accordionOpened)}
       >

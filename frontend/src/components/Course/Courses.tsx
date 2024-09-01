@@ -7,13 +7,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import Error from "../Util/Error";
+import JoinCourse from "./JoinCourse";
 import Markdown from "../Util/Markdown";
 import { pushNotification } from "../../features/notification/notificationSlice";
 import { useCreateCourseMutation } from "../../features/courses/courseApiSlice";
 import { useGetAllCoursesQuery } from "../../features/courses/courseApiSlice";
 import { useMemo } from "react";
 import { useTitle } from "../../hooks/useTitle";
-import JoinCourse from "./JoinCourse";
 
 const Courses = () => {
   useTitle("Courses");
@@ -114,7 +114,7 @@ const Courses = () => {
                       <li key={i}>
                         <Link
                           to={`/course/${course.id}`}
-                          className="flex md:block items-center bg-blue-50 border border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-44"
+                          className="flex md:block items-center bg-blue-50 border-2 border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-44"
                         >
                           <h3
                             className={`text-lg font-bold leading-tight line-clamp-2 md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}

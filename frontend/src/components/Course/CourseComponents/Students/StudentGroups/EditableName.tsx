@@ -49,6 +49,7 @@ const EditableName = (props: any) => {
           className="rounded-md border border-gray-300 w-auto p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
           type="text"
           value={name}
+          aria-label="Group name"
           onChange={(e) => {
             setName(e.target.value);
           }}
