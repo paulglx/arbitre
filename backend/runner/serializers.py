@@ -9,6 +9,11 @@ class TestSerializer(serializers.ModelSerializer):
         fields = ["id", "exercise", "name", "stdin", "stdout", "coefficient"]
 
 
+class RawTestsSerializer(serializers.Serializer):
+    class Meta:
+        fields = ["exercise_id", "raw_tests"]
+
+
 class SubmissionSerializer(serializers.ModelSerializer):
     late = serializers.SerializerMethodField()
 
@@ -28,6 +33,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
             if isinstance(validator, validators.UniqueTogetherValidator):
                 self.validators.remove(validator)
         super(SubmissionSerializer, self).run_validators(value)
+
 
 class TestResultSerializer(serializers.ModelSerializer):
     # Fixes depth=1 ignoring fields
