@@ -2,6 +2,7 @@ import { UseDispatch, useDispatch } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
 
 import { Editor } from "@monaco-editor/react";
+import RawEditorHelp from "./RawEditorHelp";
 import { pushNotification } from "../../../features/notification/notificationSlice";
 import { useGetTestsOfExerciseQuery } from "../../../features/courses/testApiSlice";
 import { useUploadRawTestsMutation } from "../../../features/courses/testApiSlice";
@@ -64,7 +65,8 @@ const RawEditor = (props: { exercise_id: number }) => {
   };
 
   return (
-    <div className="pt-4">
+    <div className="pt-2">
+      <RawEditorHelp />
       <Editor
         height="40vh"
         defaultLanguage="json"
