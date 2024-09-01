@@ -17,7 +17,7 @@ interface Test {
     new: boolean;
 }
 
-const ExerciseTestsTab = (props: any) => {
+const Tests = (props: any) => {
 
     const NEW_TEST_NAME = "New Test";
 
@@ -302,4 +302,4 @@ const ExerciseTestsTab = (props: any) => {
 
 }
 
-export default ExerciseTestsTab
+export default Tests
