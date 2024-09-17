@@ -72,6 +72,17 @@ const RawEditor = (props: { exercise_id: number }) => {
         defaultLanguage="json"
         value={rawTestsString}
         onChange={(value: any, event: any) => setRawTestsString(value)}
+        options={{
+          minimap: { enabled: false },
+          lineNumbers: "on",
+          renderFinalNewline: "off",
+          renderValidationDecorations: "on",
+          scrollBeyondLastLine: false,
+          scrollbar: {
+            vertical: "hidden",
+            alwaysConsumeMouseWheel: false,
+          },
+        }}
       />
       <button
         className={`flex items-center gap-2 text-primary text-sm
