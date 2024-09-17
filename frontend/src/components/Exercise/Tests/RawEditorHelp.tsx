@@ -9,14 +9,30 @@ const RawEditorHelp = () => {
         className="text-sm mb-2 text-gray-500 hover:underline"
         onClick={() => setOpen(!open)}
       >
-        Help on Raw Editor
+        {open ? "Close help" : "Help on Raw Editor"}
       </button>
 
       {open && (
-        <div className="bg-indigo-50 rounded mb-2 text-sm p-4">
+        <div className="bg-indigo-50 border border-indigo-100 rounded-lg mb-4 text-sm p-4">
           <p>
-            Put a well-formatted JSON array into the editor, and click "Save
-            tests". <br />
+            Tests need 3 string values :
+            <ul>
+              <li>
+                <span className="font-semibold font-mono">name</span> : a unique
+                title, displayed on the UI
+              </li>
+              <li>
+                <span className="font-semibold font-mono">stdin</span> : what is
+                fed to the program via standard input
+              </li>
+              <li>
+                <span className="font-semibold font-mono">stdout</span> : the
+                program's expected output
+              </li>
+            </ul>
+            <br />
+            Put a well-formatted JSON array of Tests into the editor, and click
+            "Save tests". <br />
             <br />
             Example :
             <pre className="bg-indigo-100 text-indigo-950 rounded text-xs p-1">
@@ -44,6 +60,7 @@ const RawEditorHelp = () => {
                 </b>{" "}
                 are accepted.
               </li>
+              <li>Test names must be unique.</li>
               <li>
                 Make sure the editor shows no{" "}
                 <span className="underline decoration-wavy decoration-red-500">
