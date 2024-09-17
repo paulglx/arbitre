@@ -2,15 +2,18 @@ from rest_framework import viewsets, permissions
 from .models import Submission, Test, TestResult
 from api.models import Exercise
 from runner.serializers import (
+    RawTestsSerializer,
     SubmissionSerializer,
     TestResultSerializer,
     TestSerializer,
 )
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse
+from rest_framework.exceptions import ValidationError, ParseError
 from django.contrib.auth.models import User
 from rest_framework_api_key.permissions import HasAPIKey
 from django.utils import timezone
 from rest_framework import serializers
+import json
 
 
 class SubmissionViewSet(viewsets.ModelViewSet):
@@ -191,6 +194,51 @@ class RequeueSubmissionsViewSet(viewsets.ViewSet):
 
         except Submission.DoesNotExist:
             return JsonResponse({"status": "Not Found"})
+
+
+class RawTestsViewSet(viewsets.ModelViewSet):
+    """
+    Lets teachers manage tests in a raw object format (JSON).
+
+    body: {
+        "exercise_id": 1,
+        "raw_tests": "{'test1': {'stdin': '1','stdout': '2'}, 'test2': {'stdin': '3','stdout': '4'}}"
+    }
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = RawTestsSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+
+        exercise_id = self.request.data.get("exercise_id")
+        exercise = Exercise.objects.get(id=exercise_id)
+
+        if user not in exercise.session.course.owners.all():
+            raise ValidationError("You are not the owner of this course")
+
+        # Parse the raw tests string first
+        raw_tests = self.request.data.get("raw_tests")
+        tests = json.loads(raw_tests)
+
+        # Check that every object has the correct keys only
+        for test in tests:
+            if set(test) != set(["name", "stdin", "stdout"]):
+                raise ParseError("Malformed data")
+
+        # Delete all former tests
+        for test in Test.objects.filter(exercise__id=exercise_id).all():
+            test.delete()
+
+        # Create new objects
+        for test in tests:
+            Test.objects.create(
+                exercise=exercise,
+                name=test.get("name"),
+                stdin=test.get("stdin"),
+                stdout=test.get("stdout"),
+            )
 
 
 class TestViewSet(viewsets.ModelViewSet):

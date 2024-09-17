@@ -35,6 +35,15 @@ export const testApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Tests']
         }),
+        uploadRawTests: builder.mutation({
+            query: (data: any) => ({
+                url: `/runner/api/tests-raw/?exercise_id=${data.exercise_id}`,
+                method: "POST",
+                credentials: 'include',
+                body: data,
+            }),
+            invalidatesTags: ['Tests']
+        })
     })
 })
 
@@ -42,5 +51,6 @@ export const {
     useGetTestsOfExerciseQuery,
     useCreateTestMutation,
     useUpdateTestMutation,
-    useDeleteTestMutation
+    useDeleteTestMutation,
+    useUploadRawTestsMutation
 } = testApiSlice;
