@@ -1,5 +1,9 @@
 {
-    "python.linting.pylamaEnabled": true,
-    "python.linting.enabled": true,
-    "python.formatting.provider": "black"
+  "python.linting.pylamaEnabled": true,
+  "python.linting.enabled": true,
+  "python.formatting.provider": "black",
+  "yaml.schemas": {
+    "file:///Users/paul/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+    "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": "file:///Users/paul/Local/arbitre/config/deploy.yaml"
+  }
 }

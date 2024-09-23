@@ -1,0 +1,91 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgresql://arbitre:${DB_PASSWORD}@db/arbitre
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+      - keycloak
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=arbitre
+      - POSTGRES_USER=arbitre
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - keycloak_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.4
+    command: start
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - DB_VENDOR=postgres
+      - DB_ADDR=db
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - keycloak_network
+
+  redis:
+    image: redis:6
+
+  celery_worker:
+    build: ./backend
+    command: celery -A arbitre worker -l info
+    depends_on:
+      - backend
+      - redis
+      - keycloak
+
+  celery_beat:
+    build: ./backend
+    command: celery -A arbitre beat -l info
+    depends_on:
+      - backend
+      - redis
+      - keycloak
+
+  celery_flower:
+    build: ./backend
+    command: celery -A arbitre flower --basic-auth=flower:${FLOWER_PASSWORD}
+    ports:
+      - "5555:5555"
+    depends_on:
+      - backend
+      - redis
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  keycloak_network:
+    driver: bridge
