@@ -19,17 +19,15 @@ const StudentsList = (props: any) => {
   const [removeStudent] = useRemoveStudentMutation();
   const [studentToAdd, setStudentToAdd] = useState<any>("");
   const course = props.course;
-  const setCourse = props.setCourse;
+  const refetch = props.refetch;
   const dispatch = useDispatch();
 
-  const {
-    data: students,
-    isSuccess: studentsSuccess,
-  } = useGetStudentsQuery({ course_id: course.id });
+  const { data: students, isSuccess: studentsSuccess } = useGetStudentsQuery({
+    course_id: course.id,
+  });
 
   const sortedStudents = useMemo(() => {
-
-    if(!studentsSuccess) return [];
+    if (!studentsSuccess) return [];
 
     const studentsToSort = structuredClone(students);
     const sortedStudents = studentsToSort.sort((a: any, b: any) => {
@@ -46,7 +44,7 @@ const StudentsList = (props: any) => {
         pushNotification({
           message: "User does not exist",
           type: "error",
-        }),
+        })
       );
       return;
     }
@@ -58,7 +56,7 @@ const StudentsList = (props: any) => {
         pushNotification({
           message: "Student is already in the course",
           type: "error",
-        }),
+        })
       );
       return;
     }
@@ -70,7 +68,7 @@ const StudentsList = (props: any) => {
           pushNotification({
             message: "Failed to add student",
             type: "error",
-          }),
+          })
         );
       })
       .then((res) => {
@@ -86,9 +84,9 @@ const StudentsList = (props: any) => {
           pushNotification({
             message: "Failed to remove student",
             type: "error",
-          }),
+          })
         );
-      })
+      });
   };
 
   useEffect(() => {
@@ -101,7 +99,7 @@ const StudentsList = (props: any) => {
     if (studentsSuccess && usersSuccess) {
       const studentsIds = students.map((s: any) => s.id);
       setAddableStudents(
-        allUsers?.filter((u: any) => !studentsIds.includes(u.id)),
+        allUsers?.filter((u: any) => !studentsIds.includes(u.id))
       );
     }
   }, [studentsSuccess, usersSuccess, students, allUsers]);
@@ -123,13 +121,19 @@ const StudentsList = (props: any) => {
             </td>
             <td className="flex justify-end pr-3 pt-3">
               <button
-                className={`${studentToAdd ? "bg-blue-50 hover:bg-blue-100 border-blue-300" : "bg-gray-200 border-gray-300"} align-middle border p-1 rounded-md flex items-center text-gray-60 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className={`${
+                  studentToAdd
+                    ? "bg-blue-50 hover:bg-blue-100 border-blue-300"
+                    : "bg-gray-200 border-gray-300"
+                } align-middle border p-1 rounded-md flex items-center text-gray-60 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 disabled={!studentToAdd}
                 onClick={handleAddStudent}
                 aria-label="Add student"
               >
                 <UserPlusIcon
-                  className={`w-5 h-5 ${studentToAdd ? "text-blue-700" : "text-gray-400"}`}
+                  className={`w-5 h-5 ${
+                    studentToAdd ? "text-blue-700" : "text-gray-400"
+                  }`}
                 />
               </button>
             </td>
@@ -146,7 +150,7 @@ const StudentsList = (props: any) => {
                     <StudentsListGroupPicker
                       student={student}
                       course={course}
-                      setCourse={setCourse}
+                      refetch={refetch}
                       groups={props.groups}
                       refetchGroups={props.refetchGroups}
                     />
