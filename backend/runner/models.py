@@ -109,15 +109,15 @@ class Submission(models.Model):
             file_content = ""
 
             if type == "single":
-                with self.file.open(mode="rb", errors="ignore") as f:
-                    file_content = f.read().decode()
+                with self.file.open(mode="rb") as f:
+                    file_content = f.read().decode("utf-8", "ignore")
 
             elif type == "multiple":
                 # convert zip file to base64
                 import base64
 
-                with self.file.open(mode="rb", errors="ignore") as f:
-                    file_content = base64.b64encode(f.read()).decode()
+                with self.file.open(mode="rb") as f:
+                    file_content = base64.b64encode(f.read()).decode("utf-8", "ignore")
 
             else:
                 raise Exception("Invalid exercise type")
