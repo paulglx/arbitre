@@ -3,18 +3,44 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
+    environment:
+      - REACT_APP_HOSTNAME=localhost
+      - REACT_APP_BACKEND_URL=http://localhost:8000
+      - REACT_APP_KEYCLOAK_URL=http://localhost:8080
+      - REACT_APP_KEYCLOAK_REALM_NAME=master
+      - REACT_APP_KEYCLOAK_CLIENT_ID=arbitre
     depends_on:
       - backend
+    networks:
+      - keycloak_network
 
   backend:
     build: ./backend
     environment:
-      - DATABASE_URL=postgresql://arbitre:${DB_PASSWORD}@db/arbitre
+      - DEBUG=True
+      - HOSTNAME=localhost
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_NAME=arbitre
+      - DB_USER=arbitre
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      # - DB_HOST=postgresql://arbitre:${DB_PASSWORD}@db/arbitre
+      - DB_PORT=5432
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM_NAME=master
+      - KEYCLOAK_ADMIN_USERNAME=admin
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - OIDC_RP_CLIENT_ID=arbitre
       - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "8000:8000"
     depends_on:
       - db
       - redis
       - keycloak
+    networks:
+      - keycloak_network
+      - db_network
 
   db:
     image: postgres:13
@@ -25,53 +51,63 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
+      - db_network
+
+  kc-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/data
+    networks:
       - keycloak_network
 
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.4
-    command: start
+    command: start-dev
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - DB_VENDOR=postgres
-      - DB_ADDR=db
-      - DB_DATABASE=keycloak
-      - DB_USER=keycloak
-      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://kc-db:5432/keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - kc-db
     networks:
       - keycloak_network
 
   redis:
     image: redis:6
 
-  celery_worker:
-    build: ./backend
-    command: celery -A arbitre worker -l info
-    depends_on:
-      - backend
-      - redis
-      - keycloak
+  # celery_worker:
+  #   build: ./backend
+  #   command: celery -A arbitre worker -l info
+  #   environment:
+  #     - HOSTNAME=localhost
+  #     - KEYCLOAK_URL=http://keycloak:8080
+  #   depends_on:
+  #     - backend
+  #     - redis
+  #     - keycloak
 
-  celery_beat:
-    build: ./backend
-    command: celery -A arbitre beat -l info
-    depends_on:
-      - backend
-      - redis
-      - keycloak
-
-  celery_flower:
-    build: ./backend
-    command: celery -A arbitre flower --basic-auth=flower:${FLOWER_PASSWORD}
-    ports:
-      - "5555:5555"
-    depends_on:
-      - backend
-      - redis
+  # celery_beat:
+  #   build: ./backend
+  #   command: celery -A arbitre beat -l info
+  #   environment:
+  #     - HOSTNAME=localhost
+  #     - KEYCLOAK_URL=http://keycloak:8080
+  #   depends_on:
+  #     - backend
+  #     - redis
+  #     - keycloak
 
   nginx:
     build: ./nginx
@@ -79,13 +115,17 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - frontend
+      # - frontend
       - backend
 
 volumes:
   postgres_data:
     driver: local
+  keycloak_postgres_data:
+    driver: local
 
 networks:
   keycloak_network:
+    driver: bridge
+  db_network:
     driver: bridge

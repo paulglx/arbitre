@@ -97,7 +97,9 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_ORIGIN_PREFIX = "https://" if env("USE_HTTPS") == "true" else "http://"
+CSRF_ORIGIN_PREFIX = (
+    "https://" if env("USE_HTTPS", default="false") == "true" else "http://"
+)
 CSRF_TRUSTED_ORIGINS = [
     CSRF_ORIGIN_PREFIX + env("HOSTNAME"),
     env("KEYCLOAK_URL", default="http://localhost:8080"),

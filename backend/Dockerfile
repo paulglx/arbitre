@@ -1,5 +1,5 @@
 # Use an official Python runtime as the base image
-FROM python:3.9
+FROM python:3.11
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -9,13 +9,13 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Copy the requirements file
-COPY requirements.txt .
+COPY requirements.txt /app
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the backend code
-COPY . .
+COPY . /app
 
 # Expose port 8000
 EXPOSE 8000
