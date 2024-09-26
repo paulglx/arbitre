@@ -229,14 +229,14 @@ class TestResult(models.Model):
 
             if submission.exercise.type == "single":
                 with submission.file.open(mode="rb") as f:
-                    file_content = f.read().decode()
+                    file_content = f.read().decode("utf-8", "ignore")
 
             elif submission.exercise.type == "multiple":
                 # convert zip file to base64
                 import base64
 
                 with submission.file.open(mode="rb") as f:
-                    file_content = base64.b64encode(f.read()).decode()
+                    file_content = base64.b64encode(f.read()).decode("utf-8", "ignore")
 
             lang = submission.exercise.session.course.language
             type = submission.exercise.type

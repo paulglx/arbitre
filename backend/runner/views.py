@@ -142,12 +142,14 @@ class SubmissionFileViewSet(viewsets.ViewSet):
             try:
                 with submission.file.open(mode="rb") as f:
                     if type == "single":
-                        file_content = f.read().decode()
+                        file_content = f.read().decode("utf-8", "ignore")
                     elif type == "multiple":
                         # Get zip file, encode it in base64 and return it
                         import base64
 
-                        file_content = base64.b64encode(f.read()).decode()
+                        file_content = base64.b64encode(f.read()).decode(
+                            "utf-8", "ignore"
+                        )
                     else:
                         return error_response
 
