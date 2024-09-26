@@ -1,25 +1,29 @@
-import SubmissionDeadline from './SubmissionDeadline';
-import SubmissionFileField from './Singlefield/SubmissionFileField';
-import SubmissionFileFieldDisabled from './SubmissionFileFieldDisabled';
-import SubmissionMultifileField from './Multifile/SubmissionMultifileField';
-import TestResult from '../TestResult/TestResult'
+import SubmissionDeadline from "./SubmissionDeadline";
+import SubmissionFileField from "./Singlefield/SubmissionFileField";
+import SubmissionFileFieldDisabled from "./SubmissionFileFieldDisabled";
+import SubmissionMultifileField from "./Multifile/SubmissionMultifileField";
+import TestResult from "../TestResult/TestResult";
 
 const ExerciseSubmissionTab = (props: any) => {
+  const { exercise } = props;
 
-    const { exercise, type } = props
+  console.log(exercise);
 
-    return (<>
-        <SubmissionDeadline exercise={exercise} />
-        {exercise?.session?.can_submit ?
-            type === "single" ?
-                <SubmissionFileField exercise={exercise} />
-                :
-                <SubmissionMultifileField exercise={exercise} />
-            :
-            <SubmissionFileFieldDisabled />
-        }
-        <TestResult exercise_id={exercise.id} exercise_grade={exercise.grade} />
-    </>)
-}
+  return (
+    <>
+      <SubmissionDeadline exercise={exercise} />
+      {exercise?.session?.can_submit ? (
+        exercise?.type === "single" ? (
+          <SubmissionFileField exercise={exercise} />
+        ) : (
+          <SubmissionMultifileField exercise={exercise} />
+        )
+      ) : (
+        <SubmissionFileFieldDisabled />
+      )}
+      <TestResult exercise_id={exercise.id} exercise_grade={exercise.grade} />
+    </>
+  );
+};
 
-export default ExerciseSubmissionTab
+export default ExerciseSubmissionTab;
