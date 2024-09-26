@@ -109,14 +109,14 @@ class Submission(models.Model):
             file_content = ""
 
             if type == "single":
-                with self.file.open(mode="rb") as f:
+                with self.file.open(mode="rb", errors="ignore") as f:
                     file_content = f.read().decode()
 
             elif type == "multiple":
                 # convert zip file to base64
                 import base64
 
-                with self.file.open(mode="rb") as f:
+                with self.file.open(mode="rb", errors="ignore") as f:
                     file_content = base64.b64encode(f.read()).decode()
 
             else:
