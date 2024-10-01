@@ -82,9 +82,9 @@ class TestResultSerializer(serializers.ModelSerializer):
             testresult.time = -1
             testresult.memory = -1
         else:
-            testresult.stdout = request["stdout"]
-            testresult.time = request["time"]
-            testresult.memory = request["memory"]
+            testresult.stdout = request["stdout"] if "stdout" in request else ""
+            testresult.time = request["time"] if "time" in request else -1
+            testresult.memory = request["memory"] if "memory" in request else -1
 
         testresult.save()
 
