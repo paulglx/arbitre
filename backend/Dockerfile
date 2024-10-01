@@ -21,4 +21,6 @@ COPY . /app
 EXPOSE 8000
 
 # Start the Django server
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "arbitre.asgi:application"]
+ENV STATIC_ROOT /static
+CMD ["/app/entrypoint.sh"]
+# CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "arbitre.asgi:application"]
