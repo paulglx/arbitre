@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 import environ
 import os
 import random
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 class Submission(models.Model):
@@ -77,6 +79,17 @@ class Submission(models.Model):
             status = "pending"
         submission = Submission.objects.filter(pk=self.id)
         submission.update(status=status)
+
+        # Send WebSocket update
+        channel_layer = get_channel_layer()
+
+        from arbitre.util import prepare_submission_message
+
+        message = prepare_submission_message(self.id)
+
+        async_to_sync(channel_layer.group_send)(
+            f"submission_{self.exercise.id}_{self.owner.id}", message
+        )
 
     def save(self, *args, **kwargs):
         if self.ignore:
