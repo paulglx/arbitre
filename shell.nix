@@ -4,7 +4,10 @@ pkgs.mkShell {
     procps
     (my_python.withPackages (ps: with ps; [
       celery
+      channels
+      channels-redis
       coverage
+      daphne
       django
       django-celery-beat
       django-cors-headers
@@ -21,6 +24,8 @@ pkgs.mkShell {
       pylama
       python-keycloak
       pyyaml
+      pyjwt
+      redis
       requests
       uvicorn
     ]))
