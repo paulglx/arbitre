@@ -14,12 +14,18 @@ import { selectCurrentKeycloakToken } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 
 const TestResult = (props: any) => {
-  const [submissionData, setSubmissionData] = useState(null as any);
-  const [testResults, setTestResults] = useState([]);
+  const [submission, setSubmission] = useState(null as any);
+  const [testResults, setTestResults] = useState(new Map<number, any>());
   const [showCodePreview, setShowCodePreview] = useState(false);
   const [finalExerciseGrade, setFinalExerciseGrade] = useState(0);
 
+  const testResultsArray = Array.from(testResults.values());
+
   const keycloakToken = useSelector(selectCurrentKeycloakToken);
+
+  const updateTestResults = (key: any, value: any) => {
+    setTestResults((map: Map<any, any>) => new Map(map.set(key, value)));
+  };
 
   useEffect(() => {
     if (!keycloakToken) {
@@ -35,11 +41,13 @@ const TestResult = (props: any) => {
       const data = JSON.parse(event.data);
 
       if (data?.message.submission) {
-        setSubmissionData(data?.message?.submission);
+        setSubmission(data?.message.submission);
       }
 
       if (data?.message.test_results) {
-        setTestResults(data.message.test_results);
+        data.message.test_results.forEach((test_result: any) => {
+          updateTestResults(test_result.id, test_result);
+        });
       }
     };
 
@@ -47,6 +55,11 @@ const TestResult = (props: any) => {
       socket.close();
     };
   }, [props.exercise_id, keycloakToken]);
+
+  useEffect(() => {
+    const trs = testResultsArray.map((tr: any) => [tr.id, tr.status]);
+    console.log(trs);
+  }, [testResults]);
 
   useEffect(() => {
     if (!testResults) return;
@@ -94,7 +107,9 @@ const TestResult = (props: any) => {
     );
   };
 
-  const testResultContent = (result: any) => {
+  const TestResultContent = (props: any) => {
+    const result = props.result;
+
     if (result.running) {
       return <Spinner />;
     } else if (result.status === "failed") {
@@ -130,7 +145,7 @@ const TestResult = (props: any) => {
         <span className="font-monospace flex">
           <CommandLineIcon className="w-5 h-5 text-gray-600 hidden sm:inline" />
           &nbsp;
-          <pre className="w-full">{result.stdout}</pre>
+          <pre className="w-full overflow-x-scroll">{result.stdout}</pre>
         </span>
       );
     }
@@ -161,14 +176,14 @@ const TestResult = (props: any) => {
     }
   };
 
-  if (!submissionData || !testResults) {
+  if (!submission || !testResults) {
     return <></>;
   }
 
   return (
     <>
       <TestResultCodePreviewModal
-        submission={submissionData}
+        submission={submission}
         show={showCodePreview}
         setShow={setShowCodePreview}
       />
@@ -176,12 +191,12 @@ const TestResult = (props: any) => {
       <ul className="text-gray-900 bg-white border-gray-200 rounded-lg">
         <li
           className={` ${headerBgColor(
-            submissionData.status
+            submission.status
           )} w-full flex flex-row justify-between items-center px-4 py-2 border rounded-lg`}
         >
           <span className="flex flex-row items-center">
             <span className="font-bold">
-              {submissionData?.file?.split("/").pop()}
+              {submission?.file?.split("/").pop()}
             </span>
             &nbsp;
             <DocumentMagnifyingGlassIcon
@@ -192,12 +207,12 @@ const TestResult = (props: any) => {
               }}
             />
             &nbsp;
-            <TestResultTimeBadge time={submissionData.created} />
+            <TestResultTimeBadge time={submission.created} />
           </span>
           <div>
-            <TestResultLateBadge submission={submissionData} />
+            <TestResultLateBadge submission={submission} />
             <StatusBadge
-              status={submissionData.status}
+              status={submission.status}
               className="inline text-right"
             />
             {props.exercise_grade ? (
@@ -209,7 +224,7 @@ const TestResult = (props: any) => {
           </div>
         </li>
 
-        {testResults.map((result: any, i: number) => {
+        {testResultsArray.map((result: any, i: number) => {
           return (
             <li
               className={`px-4 py-2 my-2 border hover:bg-gray-100 bg-gray-50 rounded-lg`}
@@ -224,7 +239,7 @@ const TestResult = (props: any) => {
                     <StatusBadge status={result.status} />
                   </div>
                 </div>
-                {testResultContent(result)}
+                <TestResultContent result={result} />
               </div>
             </li>
           );
