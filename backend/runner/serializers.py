@@ -77,7 +77,7 @@ class TestResultSerializer(serializers.ModelSerializer):
         )
 
         testresult.status = request["status"]
-        if testresult.status == "running":
+        if testresult.status in ["pending", "running"]:
             testresult.stdout = ""
             testresult.time = -1
             testresult.memory = -1
