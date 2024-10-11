@@ -16,10 +16,6 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
         )
         self.submission_group_name = f"submission_{self.exercise_id}_{self.user_id}"
 
-        print(
-            f"ex_id:{self.exercise_id}\t user_id:{self.user_id}\t submission_group_name:{self.submission_group_name}"
-        )
-
         # Get the submission ID
         self.submission_id = await self.get_submission_id()
 
