@@ -2,6 +2,22 @@ from runner.models import Submission, TestResult
 from runner.serializers import SubmissionSerializer, TestResultSerializer
 
 
+def prepare_test_result_message(test_result_id):
+    # Get the test results
+    try:
+        test_result = TestResult.objects.get(id=test_result_id)
+    except TestResult.DoesNotExist:
+        test_result = None
+    test_results_serializer = TestResultSerializer(test_result)
+
+    return {
+        "type": "submission_update",
+        "message": {
+            "test_results": [test_results_serializer.data],
+        },
+    }
+
+
 def prepare_submission_message(submission_id):
     """
     Prepare the submission message to be sent to the frontend
