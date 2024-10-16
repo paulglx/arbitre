@@ -57,11 +57,6 @@ const TestResult = (props: any) => {
   }, [props.exercise_id, keycloakToken]);
 
   useEffect(() => {
-    const trs = testResultsArray.map((tr: any) => [tr.id, tr.status]);
-    console.log(trs);
-  }, [testResults]);
-
-  useEffect(() => {
     if (!testResults) return;
 
     let sumOfCoefficient = 0;
