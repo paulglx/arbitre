@@ -108,7 +108,7 @@ const TestResult = (props: any) => {
             return <span className="font-monospace flex">
                 <CommandLineIcon className="w-5 h-5 text-gray-600 hidden sm:inline" />
                 &nbsp;
-                <pre className='w-full'>
+                <pre className='w-full overflow-y-scroll'>
                     {result.stdout}
                 </pre>
             </span>
