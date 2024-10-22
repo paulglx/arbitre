@@ -5,24 +5,26 @@ pkgs.mkShell {
     (my_python.withPackages (ps: with ps; [
       celery
       coverage
+      daphne
       django
       django-celery-beat
       django-cors-headers
       django-environ
       django-extensions
+      django-eventstream
       djangorestframework
       djangorestframework-api-key
       djangorestframework-simplejwt
       drf-yasg
-      gunicorn
+      gripcontrol
       mozilla-django-oidc
       packaging
+      pubcontrol
       psycopg2
       pylama
       python-keycloak
       pyyaml
       requests
-      uvicorn
     ]))
     nodejs
     nodePackages.serve

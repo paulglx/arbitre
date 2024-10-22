@@ -31,6 +31,48 @@ final: prev: {
           ];
           doCheck = false;
         };
+
+      # django-eventstream
+      django-eventstream = self.buildPythonPackage
+        rec {
+          pname = "django-eventstream";
+          version = "5.3.1";
+          src = self.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-Qi41NOK1WI2g3JdGfqqwIPo/lC9wcKBvwXHRjHVznEE=";
+          };
+          propagatedBuildInputs = [
+            self.django
+            self.djangorestframework
+          ];
+          doCheck = false;
+        };
+      gripcontrol = self.buildPythonPackage
+        rec {
+          pname = "gripcontrol";
+          version = "4.2.0";
+          src = self.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-8VMqlNX30qLuz47NOguwmRcordwCtrr+nIsFC2Z7e4Y=";
+          };
+          propagatedBuildInputs = [
+            self.django-eventstream
+          ];
+          doCheck = false;
+        };
+      pubcontrol = self.buildPythonPackage
+        rec {
+          pname = "pubcontrol";
+          version = "3.5.0";
+          src = self.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-pexrP1Pt/QBWdVGOXkzCOzQSJ3aDWufG29HbFz0f8Ms=";
+          };
+          propagatedBuildInputs = [
+            self.gripcontrol
+          ];
+          doCheck = false;
+        };
     };
   };
 }

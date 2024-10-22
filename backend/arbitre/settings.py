@@ -21,6 +21,8 @@ environ.Env.read_env(env_file=env_file)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ASGI_APPLICATION = "arbitre.asgi.application"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -39,6 +41,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", env("HOSTNAME", default="")]
 INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "corsheaders",
+    "daphne",
     "django_celery_beat",
     "django_extensions",
     "django.contrib.admin",
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
+    "django_eventstream",
     "drf_yasg",
     "mozilla_django_oidc",
     "rest_framework_simplejwt.token_blacklist",
