@@ -1,3 +1,21 @@
+x-backend-env: &backend-env 
+  - DEBUG=True
+  - USE_HTTPS=False
+  - HOSTNAME=localhost
+  - SECRET_KEY=${SECRET_KEY}
+  - DB_NAME=arbitre
+  - DB_USER=arbitre
+  - DB_PASSWORD=${DB_PASSWORD}
+  - DB_HOST=db
+  - DB_PORT=5432
+  - KEYCLOAK_URL=http://keycloak:8080
+  - KEYCLOAK_REALM_NAME=master
+  - KEYCLOAK_ADMIN_USERNAME=admin
+  - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+  - OIDC_RP_CLIENT_ID=arbitre
+  - API_KEY=${BACKEND_API_KEY}
+  - REDIS_URL=redis://redis:6379/0
+
 services:
   frontend:
     build: ./frontend
@@ -10,27 +28,11 @@ services:
     depends_on:
       - backend
     networks:
-      - keycloak_network
+      - arbitre_network
 
   backend:
     build: ./backend
-    environment:
-      - DEBUG=True
-      - HOSTNAME=localhost
-      - SECRET_KEY=${SECRET_KEY}
-      - DB_NAME=arbitre
-      - DB_USER=arbitre
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=db
-      # - DB_HOST=postgresql://arbitre:${DB_PASSWORD}@db/arbitre
-      - DB_PORT=5432
-      - KEYCLOAK_URL=http://keycloak:8080
-      - KEYCLOAK_REALM_NAME=master
-      - KEYCLOAK_ADMIN_USERNAME=admin
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - OIDC_RP_CLIENT_ID=arbitre
-      - API_KEY=${BACKEND_API_KEY}
-      - REDIS_URL=redis://redis:6379/0
+    environment: *backend-env 
     ports:
       - "8000:8000"
     depends_on:
@@ -38,8 +40,7 @@ services:
       - redis
       - keycloak
     networks:
-      - keycloak_network
-      - db_network
+      - arbitre_network
 
   db:
     image: postgres:13
@@ -50,7 +51,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - db_network
+      - arbitre_network
 
   kc-db:
     image: postgres:13
@@ -61,41 +62,62 @@ services:
     volumes:
       - keycloak_postgres_data:/var/lib/postgresql/data
     networks:
-      - keycloak_network
+      - arbitre_network
 
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.4
     command: start-dev
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - KC_HTTP_ENABLED=true
-      - KC_HOSTNAME=localhost
-      - KC_HOSTNAME_STRICT_HTTPS=false
       - KC_DB=postgres
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
       - KC_DB_URL=jdbc:postgresql://kc-db:5432/keycloak
       - KC_DB_USERNAME=keycloak
-      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+
+      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME_PORT=8080
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+
+      - KC_HTTP_ENABLED=true
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      
+      - KC_LOG_LEVEL=debug
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - kc-db
     networks:
-      - keycloak_network
+      - arbitre_network
 
   redis:
     image: redis:6
+    networks:
+      - arbitre_network
 
-  # celery_worker:
-  #   build: ./backend
-  #   command: celery -A arbitre worker -l info
-  #   environment:
-  #     - HOSTNAME=localhost
-  #     - KEYCLOAK_URL=http://keycloak:8080
-  #   depends_on:
-  #     - backend
-  #     - redis
-  #     - keycloak
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - arbitre_network
+
+  celery:
+    build: ./backend
+    command: celery -A arbitre worker -l info
+    environment: *backend-env
+    depends_on:
+      - backend
+      - redis
+      - rabbitmq
+      - keycloak
+    networks:
+      - arbitre_network
 
   # celery_beat:
   #   build: ./backend
@@ -120,7 +142,7 @@ services:
       - backend
       - keycloak
     networks:
-      - keycloak_network
+      - arbitre_network
 
 volumes:
   postgres_data:
@@ -129,7 +151,5 @@ volumes:
     driver: local
 
 networks:
-  keycloak_network:
-    driver: bridge
-  db_network:
+  arbitre_network:
     driver: bridge
