@@ -20,7 +20,8 @@ COPY . /app
 # Expose port 8000
 EXPOSE 8000
 
+# Volume for static files
+VOLUME ["/app/static"]
+
 # Start the Django server
-ENV STATIC_ROOT /static
 CMD ["/app/entrypoint.sh"]
-# CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "arbitre.asgi:application"]
