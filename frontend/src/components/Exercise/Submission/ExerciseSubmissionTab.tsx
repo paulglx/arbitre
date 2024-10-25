@@ -7,8 +7,6 @@ import TestResult from "../TestResult/TestResult";
 const ExerciseSubmissionTab = (props: any) => {
   const { exercise } = props;
 
-  console.log(exercise);
-
   return (
     <>
       <SubmissionDeadline exercise={exercise} />

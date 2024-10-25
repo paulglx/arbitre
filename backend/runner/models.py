@@ -173,7 +173,7 @@ class Submission(models.Model):
                     ),
                 )
         else:
-            self.status = "success"
+            self.status = Submission.SubmissionStatus.SUCCESS
             super(Submission, self).save(*args, **kwargs)
 
     class Meta:

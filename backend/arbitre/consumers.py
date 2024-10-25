@@ -10,9 +10,9 @@ import jwt
 class SubmissionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.exercise_id = self.scope["url_route"]["kwargs"]["exercise_id"]
-        self.user_id = await self.get_user_id(
-            self.scope["url_route"]["kwargs"]["token"]
-        )
+
+        token = self.scope["query_string"].decode("utf-8").split("=")[1]
+        self.user_id = await self.get_user_id(token)
         self.submission_group_name = f"submission_{self.exercise_id}_{self.user_id}"
 
         # Get the submission ID
