@@ -13,6 +13,8 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
 
         token = self.scope["query_string"].decode("utf-8").split("=")[1]
         self.user_id = await self.get_user_id(token)
+        if self.user_id == None:
+            self.close()
 
         self.submission_group_name = f"submission_{self.exercise_id}_{self.user_id}"
 
