@@ -18,7 +18,7 @@ def prepare_test_result_message(test_result_id):
     }
 
 
-def prepare_submission_message(submission_id):
+def prepare_submission_message(submission_id, with_test_results=False):
     """
     Prepare the submission message to be sent to the frontend
 
@@ -32,7 +32,8 @@ def prepare_submission_message(submission_id):
     }
     """
 
-    # Get the submission
+    message = {}
+
     try:
         submission = Submission.objects.get(id=submission_id)
     except Submission.DoesNotExist:
@@ -40,17 +41,15 @@ def prepare_submission_message(submission_id):
 
     submission_serializer = SubmissionSerializer(submission)
 
-    # Get the test results
-    try:
-        test_results = TestResult.objects.filter(submission=submission)
-    except TestResult.DoesNotExist:
-        test_results = []
-    test_results_serializer = TestResultSerializer(test_results, many=True)
+    message["submission"] = submission_serializer.data
 
-    return {
-        "type": "submission_update",
-        "message": {
-            "submission": submission_serializer.data,
-            "test_results": test_results_serializer.data,
-        },
-    }
+    if with_test_results:
+        try:
+            test_results = TestResult.objects.filter(submission=submission)
+        except TestResult.DoesNotExist:
+            test_results = []
+        test_results_serializer = TestResultSerializer(test_results, many=True)
+
+        message["test_results"] = test_results_serializer.data
+
+    return {"type": "submission_update", "message": message}

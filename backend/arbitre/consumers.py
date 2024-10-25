@@ -13,6 +13,7 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
 
         token = self.scope["query_string"].decode("utf-8").split("=")[1]
         self.user_id = await self.get_user_id(token)
+
         self.submission_group_name = f"submission_{self.exercise_id}_{self.user_id}"
 
         # Get the submission ID
@@ -26,7 +27,9 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         # Prepare the submission message
-        message = await self.prepare_submission_message(self.submission_id)
+        message = await self.prepare_submission_message(
+            self.submission_id, with_test_results=True
+        )
 
         # Send the submission message
         await self.send(text_data=json.dumps(message))
@@ -76,5 +79,7 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
             return None
 
     @database_sync_to_async
-    def prepare_submission_message(self, submission_id):
-        return prepare_submission_message(submission_id)
+    def prepare_submission_message(self, submission_id, with_test_results=False):
+        return prepare_submission_message(
+            submission_id, with_test_results=with_test_results
+        )
