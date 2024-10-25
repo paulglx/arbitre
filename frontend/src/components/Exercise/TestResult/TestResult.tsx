@@ -34,7 +34,7 @@ const TestResult = (props: any) => {
     }
 
     const socket = new WebSocket(
-      `ws://localhost:8000/ws/submission/${props.exercise_id}/${keycloakToken}`
+      `ws://${process.env.REACT_APP_API_URL}/ws/submission/${props.exercise_id}?token=${keycloakToken}`
     );
 
     socket.onmessage = (event) => {
