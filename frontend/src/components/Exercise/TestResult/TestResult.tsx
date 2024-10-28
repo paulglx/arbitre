@@ -33,8 +33,9 @@ const TestResult = (props: any) => {
       return;
     }
 
+    const ws_prefix = process.env.REACT_APP_USE_HTTPS === "true" ? "wss://" : "ws://";
     const socket = new WebSocket(
-      `ws://${process.env.REACT_APP_API_URL}/ws/submission/${props.exercise_id}?token=${keycloakToken}`
+      `${ws_prefix + process.env.REACT_APP_API_URL}/ws/submission/${props.exercise_id}?token=${keycloakToken}`
     );
 
     socket.onmessage = (event) => {
