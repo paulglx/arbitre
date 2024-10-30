@@ -32,7 +32,7 @@ const DashboardResultsTable = (props: any) => {
         isSuccess: isResultsSuccess,
         isLoading: isResultsLoading,
     } = useGetResultsOfSessionQuery({ session_id, groups }, {
-        pollingInterval: showModal || !isVisible ? 0 : 1000,
+        pollingInterval: showModal || !isVisible ? 0 : 10000,
     });
 
     const resultsSortedByUsername = useMemo(() => {
