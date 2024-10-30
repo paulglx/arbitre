@@ -18,6 +18,7 @@ const TestResult = (props: any) => {
   const [testResults, setTestResults] = useState(new Map<number, any>());
   const [showCodePreview, setShowCodePreview] = useState(false);
   const [finalExerciseGrade, setFinalExerciseGrade] = useState(0);
+  const [connectionError, setConnectionError] = useState(false);
 
   const testResultsArray = Array.from(testResults.values());
 
@@ -51,6 +52,14 @@ const TestResult = (props: any) => {
         });
       }
     };
+
+    socket.onopen = () => {
+      setConnectionError(false);
+    }
+
+    socket.onerror = () => {
+      setConnectionError(true);
+    }
 
     return () => {
       socket.close();
@@ -171,6 +180,13 @@ const TestResult = (props: any) => {
         return "bg-gray-50";
     }
   };
+
+  if (connectionError) return <>
+    <div className="px-1 text-red-500">
+      <p className="font-semibold">Error: Can't get submission results from server</p>
+      <p className="text-sm">Please try again later.</p>
+    </div>
+  </>
 
   if (!submission || !testResults) {
     return <></>;
