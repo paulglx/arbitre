@@ -12,7 +12,7 @@ const TestsWrapper = (props: {
 
   return (
     <TabGroup>
-      <TabList className="rounded-full w-fit p-1 text-sm my-2 bg-gray-100 *:px-2 *:rounded-full data-[selected]:*:bg-white data-[selected]:*:border-gray-300 *:border *:border-transparent">
+      <TabList className="rounded-full w-fit p-0.5 text-sm my-2 bg-white border border-gray-200 *:px-2 *:rounded-full data-[selected]:*:text-blue-600 data-[selected]:*:font-semibold data-[selected]:*:bg-blue-50 data-[selected]:*:border-blue-200 hover:*:bg-gray-100 *:border *:border-transparent">
         <Tab>Visual editor</Tab>
         <Tab>Raw editor</Tab>
       </TabList>
