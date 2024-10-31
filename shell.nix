@@ -17,7 +17,6 @@ pkgs.mkShell {
       djangorestframework-api-key
       djangorestframework-simplejwt
       drf-yasg
-      gunicorn
       mozilla-django-oidc
       packaging
       psycopg2
@@ -27,7 +26,6 @@ pkgs.mkShell {
       pyjwt
       redis
       requests
-      uvicorn
     ]))
     nodejs
     nodePackages.serve
