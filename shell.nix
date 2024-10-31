@@ -4,7 +4,10 @@ pkgs.mkShell {
     procps
     (my_python.withPackages (ps: with ps; [
       celery
+      channels
+      channels-redis
       coverage
+      daphne
       django
       django-celery-beat
       django-cors-headers
@@ -14,15 +17,15 @@ pkgs.mkShell {
       djangorestframework-api-key
       djangorestframework-simplejwt
       drf-yasg
-      gunicorn
       mozilla-django-oidc
       packaging
       psycopg2
       pylama
       python-keycloak
       pyyaml
+      pyjwt
+      redis
       requests
-      uvicorn
     ]))
     nodejs
     nodePackages.serve
