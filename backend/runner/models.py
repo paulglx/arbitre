@@ -8,8 +8,6 @@ from django.utils.translation import gettext_lazy as _
 import environ
 import os
 import random
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
 
 class Submission(models.Model):
@@ -62,22 +60,16 @@ class Submission(models.Model):
 
     def refresh_status(self):
         # Refresh submission status
-
-        old_status = self.status
-
         test_results = TestResult.objects.filter(submission=self)
         status = ""
         if test_results:
-
-            statuses = set([result.status for result in test_results])
-
-            if statuses == set(["success"]):
+            if all([result.status == "success" for result in test_results]):
                 status = "success"
-            elif "error" in statuses:
+            elif any([result.status == "error" for result in test_results]):
                 status = "error"
-            elif "failed" in statuses:
+            elif any([result.status == "failed" for result in test_results]):
                 status = "failed"
-            elif "pending" in statuses:
+            elif any([result.status == "pending" for result in test_results]):
                 status = "pending"
             else:
                 status = "running"
@@ -85,21 +77,6 @@ class Submission(models.Model):
             status = "pending"
         submission = Submission.objects.filter(pk=self.id)
         submission.update(status=status)
-
-        if status != old_status:
-
-            print(f"Submission status changed : {old_status} -> {status}")
-
-            # Send WebSocket update
-            channel_layer = get_channel_layer()
-
-            from arbitre.util import prepare_submission_message
-
-            message = prepare_submission_message(self.id)
-
-            async_to_sync(channel_layer.group_send)(
-                f"submission_{self.exercise.id}_{self.owner.id}", message
-            )
 
     def save(self, *args, **kwargs):
         if self.ignore:
@@ -125,18 +102,6 @@ class Submission(models.Model):
         # decide Judge0 host to use
         hosts = env.list("JUDGE0_HOSTNAMES", default=["localhost"])
         host = random.choice(hosts)
-
-        # put all former tests (if any) in pending state
-        # using save() in a for loop instead of update() on the queryset, because it would skip save()
-        test_results = TestResult.objects.filter(submission__id=self.id)
-        for test_result in test_results:
-            test_result.status = Submission.SubmissionStatus.PENDING
-            test_result.memory = -1
-            test_result.time = -1
-            test_result.stdout = ""
-            test_result.save()
-
-        self.refresh_status()
 
         if tests:
             super(Submission, self).save(*args, **kwargs)
@@ -173,7 +138,7 @@ class Submission(models.Model):
                     ),
                 )
         else:
-            self.status = Submission.SubmissionStatus.SUCCESS
+            self.status = "success"
             super(Submission, self).save(*args, **kwargs)
 
     class Meta:
@@ -231,21 +196,6 @@ class TestResult(models.Model):
             + str(self.submission.owner)
             + ")"
         )
-
-    def save(self, *args, **kwargs):
-        super(TestResult, self).save(*args, **kwargs)
-
-        # Get group to send to
-        channel_layer = get_channel_layer()
-        channels_group = (
-            f"submission_{self.exercise_test.exercise.id}_{self.submission.owner.id}"
-        )
-
-        from arbitre.util import prepare_test_result_message
-
-        message = prepare_test_result_message(self.id)
-
-        async_to_sync(channel_layer.group_send)(channels_group, message)
 
     def run_all_pending_testresults():
         celery = Celery("arbitre", include=["arbitre.tasks"])
