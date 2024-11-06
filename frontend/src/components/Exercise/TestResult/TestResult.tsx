@@ -13,7 +13,11 @@ import TestResultTimeBadge from "./TestResultTimeBadge";
 import { selectCurrentKeycloakToken } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 
-const TestResult = (props: any) => {
+const TestResult = (props: {
+  exercise_grade?: number
+  exercise_id: number,
+  user_id?: number,
+}) => {
   const [submission, setSubmission] = useState(null as any);
   const [testResults, setTestResults] = useState(new Map<number, any>());
   const [showCodePreview, setShowCodePreview] = useState(false);
@@ -35,8 +39,12 @@ const TestResult = (props: any) => {
     }
 
     const ws_prefix = process.env.REACT_APP_USE_HTTPS === "true" ? "wss://" : "ws://";
+
     const socket = new WebSocket(
-      `${ws_prefix + process.env.REACT_APP_API_URL}/ws/submission/${props.exercise_id}?token=${keycloakToken}`
+      props.user_id ?
+        `${ws_prefix + process.env.REACT_APP_API_URL}/ws/submission/${props.exercise_id}/${props.user_id}?token=${keycloakToken}`
+        :
+        `${ws_prefix + process.env.REACT_APP_API_URL}/ws/submission/${props.exercise_id}?token=${keycloakToken}`
     );
 
     socket.onmessage = (event) => {
@@ -74,7 +82,7 @@ const TestResult = (props: any) => {
 
     testResults.forEach((testResult: any) => {
       sumOfCoefficient += testResult.exercise_test.coefficient || 0;
-      if (testResult?.status === "success") {
+      if (testResult?.status === "success" && props.exercise_grade) {
         dividendTestGrade +=
           props.exercise_grade * (testResult.exercise_test.coefficient || 0);
       }

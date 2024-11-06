@@ -8,4 +8,8 @@ websocket_urlpatterns = [
         r"ws/submission/(?P<exercise_id>\d+)$",
         consumers.SubmissionConsumer.as_asgi(),
     ),
+    re_path(
+        r"ws/submission/(?P<exercise_id>\d+)/(?P<user_id>\d+)$",
+        consumers.SubmissionConsumer.as_asgi(),
+    )
 ]
