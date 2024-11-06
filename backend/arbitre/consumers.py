@@ -13,8 +13,8 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
 
         token = self.scope["query_string"].decode("utf-8").split("=")[1]
         self.user_id = await self.get_user_id(token)
-        if self.user_id == None:
-            self.close()
+        if self.user_id is None:
+            await self.close()
 
         self.submission_group_name = f"submission_{self.exercise_id}_{self.user_id}"
 
@@ -43,7 +43,7 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
         )
 
     # Receive message from WebSocket
-    async def receive(self, text_data):
+    async def receive(self, text_data=None, bytes_data=None):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
 
