@@ -4,7 +4,6 @@ import {
 } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 
-import { DiffEditor } from "@monaco-editor/react";
 import GradeBadge from "../../Util/GradeBadge";
 import StatusBadge from "../../Util/StatusBadge";
 import TestResultCodePreviewModal from "./TestResultCodePreviewModal";
