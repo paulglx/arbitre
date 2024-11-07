@@ -2,36 +2,43 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
 from runner.models import Submission
-from api.models import Exercise 
+from api.models import Exercise
 from .util import prepare_submission_message
 import json
 import jwt
 
+
 class SubmissionConsumer(AsyncWebsocketConsumer):
+    """
+    Used to deliver Submission + TestResults live to the client
+    Can be used :
+        - By a student to get Submission results
+        - By their teacher/tutor in the dashboard
+    """
 
     async def connect(self):
         # Get exercise_id
         self.exercise_id = self.scope["url_route"]["kwargs"]["exercise_id"]
-        
+
         # Get user initiating request from token (in query string)
         token = self.scope["query_string"].decode("utf-8").split("=")[1]
         self.request_user_id = await self.get_user_id(token)
         if self.request_user_id is None:
             await self.close()
-        
+
         # Get user whose submission to display
         if "user_id" in self.scope["url_route"]["kwargs"]:
             # Requesting user must be a teacher (owner or tutor) on this course
-            authorized = await self.check_user_authorization(self.request_user_id, self.exercise_id)
+            authorized = await self.check_user_authorization(
+                self.request_user_id, self.exercise_id
+            )
             if not authorized:
                 await self.close()
                 return
 
             self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
-
         else:
             self.user_id = self.request_user_id
-
 
         self.submission_group_name = f"submission_{self.exercise_id}_{self.user_id}"
 
@@ -114,7 +121,7 @@ class SubmissionConsumer(AsyncWebsocketConsumer):
         course_teachers = list(course.owners.all()) + list(course.tutors.all())
 
         return user in course_teachers
-    
+
     @database_sync_to_async
     def prepare_submission_message(self, submission_id, with_test_results=False):
         return prepare_submission_message(
