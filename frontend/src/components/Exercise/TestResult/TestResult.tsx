@@ -10,6 +10,7 @@ import StatusBadge from "../../Util/StatusBadge";
 import TestResultCodePreviewModal from "./TestResultCodePreviewModal";
 import TestResultLateBadge from "./TestResultLateBadge";
 import TestResultTimeBadge from "./TestResultTimeBadge";
+import Spoiler from "./Spoiler";
 import { selectCurrentKeycloakToken } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 
@@ -126,33 +127,7 @@ const TestResult = (props: {
     if (result.running) {
       return <Spinner />;
     } else if (result.status === "failed") {
-      const diffEditorHeight = result.stdout.split("\n").length * 20 + 20;
-
-      return (
-        <div className="border my-2">
-          <DiffEditor
-            original={result.stdout}
-            modified={result.exercise_test.stdout}
-            language="plaintext"
-            theme="light"
-            height={diffEditorHeight}
-            options={{
-              automaticLayout: true,
-              enableSplitViewResizing: false,
-              renderSideBySide: false,
-              readOnly: true,
-              minimap: {
-                enabled: false,
-              },
-              scrollBeyondLastLine: false,
-              scrollbar: {
-                vertical: "hidden",
-                alwaysConsumeMouseWheel: false,
-              },
-            }}
-          />
-        </div>
-      );
+      return <Spoiler output={result.stdout} expected={result.exercise_test.stdout} />
     } else {
       return (
         <span className="font-monospace flex">
