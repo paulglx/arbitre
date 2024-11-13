@@ -37,8 +37,10 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", env("HOSTNAME", default="")]
 
 # Application definition
 INSTALLED_APPS = [
+    "channels",
     "api.apps.ApiConfig",
     "corsheaders",
+    "daphne",
     "django_celery_beat",
     "django_extensions",
     "django.contrib.admin",
@@ -125,6 +127,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "arbitre.wsgi.application"
 
+ASGI_APPLICATION = "arbitre.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -191,7 +204,7 @@ REST_FRAMEWORK = {
 # Celery Settings
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_BROKER_URL = "amqp://guest:guest@localhost//"
-CELERY_RESULT_BACKEND = "rpc://"
+CELERY_BROKER_URL = "amqp://guest@localhost/"
+CELERY_RESULT_BACKEND = "redis://"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
