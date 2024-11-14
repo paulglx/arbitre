@@ -336,7 +336,6 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-
         user_id = request.data.get("user_id")
         session_id = request.data.get("session_id")
 
@@ -370,10 +369,7 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
                         "exercise_id": exercise.id,
                         "exercise_title": exercise.title,
                         "status": submission.status,
-                        "testResults": TestResultSerializer(
-                            submission.testresult_set.all(), many=True
-                        ).data,
-                        # TODO Fix this. We only pass the full testResult for grade calculation, which results in terrible performance. The way grade is calculated should be changed.
+                        "grade": submission.grade,
                         "late": late,
                     }
                 )
@@ -448,15 +444,11 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
 
             result_response = ResultsOfSessionViewSet.list(self, result_request).data
 
-            # Late submission penalty (from course)
-            late_penalty = course.late_penalty
-
             students_data.append(
                 {
                     "user_id": student.id,
                     "username": student.username,
                     "exercises": result_response,
-                    "late_penalty": late_penalty,
                 }
             )
 

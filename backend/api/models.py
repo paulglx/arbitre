@@ -112,6 +112,7 @@ class Course(models.Model):
 
             # Get submissions related to this course
             # And update their grades
+            # TODO only if penalty changed!
             from runner.models import Submission
 
             course_submissions = Submission.objects.filter(
@@ -209,6 +210,8 @@ class Session(models.Model):
         return self.course.title + " : " + self.title
 
     def save(self, *args, **kwargs):
+        super(Session, self).save(*args, **kwargs)
+
         if self.pk is not None:
             # Get submissions related to this session
             # And update their grades
@@ -218,8 +221,6 @@ class Session(models.Model):
             session_submissions = Submission.objects.filter(exercise__session=self)
             for submission in session_submissions:
                 submission.refresh_grade()
-
-        super(Session, self).save(*args, **kwargs)
 
 
 class Exercise(models.Model):
