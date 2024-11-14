@@ -21,7 +21,6 @@ const TestResult = (props: {
   const [submission, setSubmission] = useState(null as any);
   const [testResults, setTestResults] = useState(new Map<number, any>());
   const [showCodePreview, setShowCodePreview] = useState(false);
-  const [finalExerciseGrade, setFinalExerciseGrade] = useState(0);
   const [connectionError, setConnectionError] = useState(false);
 
   const testResultsArray = Array.from(testResults.values());
@@ -73,28 +72,6 @@ const TestResult = (props: {
       socket.close();
     };
   }, [props.exercise_id, keycloakToken]);
-
-  useEffect(() => {
-    if (!testResults) return;
-
-    let sumOfCoefficient = 0;
-    let dividendTestGrade = 0;
-
-    testResults.forEach((testResult: any) => {
-      sumOfCoefficient += testResult.exercise_test.coefficient || 0;
-      if (testResult?.status === "success" && props.exercise_grade) {
-        dividendTestGrade +=
-          props.exercise_grade * (testResult.exercise_test.coefficient || 0);
-      }
-    });
-
-    let _finalExerciseGrade = 0;
-    if (sumOfCoefficient !== 0) {
-      _finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
-    }
-
-    setFinalExerciseGrade(_finalExerciseGrade);
-  }, [testResults, props.exercise_grade]);
 
   const Spinner = () => {
     return (
@@ -211,7 +188,7 @@ const TestResult = (props: {
             />
             {props.exercise_grade ? (
               <GradeBadge
-                grade={finalExerciseGrade}
+                grade={submission.grade}
                 total={props.exercise_grade}
               />
             ) : null}
