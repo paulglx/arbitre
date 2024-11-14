@@ -26,7 +26,8 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ["id", "exercise", "file", "status", "created", "late"]
+        fields = ["id", "exercise", "file", "status", "created", "late", "grade"]
+        read_only_fields = ["grade"]
 
     def run_validators(self, value):
         for validator in copy.copy(self.validators):

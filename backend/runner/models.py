@@ -24,12 +24,12 @@ class Submission(models.Model):
         FAILED = "failed", _("Failed")
         ERROR = "error", _("Error")
 
-    def get_file_name(instance, filename):
+    def get_file_name(self, _):
         path = "uploads"
-        extension = instance.file.name.split(".")[-1]
+        extension = self.file.name.split(".")[-1]
 
-        exercise = instance.exercise
-        created_with_correct_timezone = timezone.localtime(instance.created)
+        exercise = self.exercise
+        created_with_correct_timezone = timezone.localtime(self.created)
         created_month_day_hour_minutes_seconds = created_with_correct_timezone.strftime(
             "%m-%d_%H-%M-%S"
         )
@@ -37,7 +37,7 @@ class Submission(models.Model):
         format = (
             exercise.title[0:10]
             + "_"
-            + instance.owner.username[0:10]
+            + self.owner.username[0:10]
             + "_"
             + created_month_day_hour_minutes_seconds
             + "."
@@ -56,6 +56,7 @@ class Submission(models.Model):
     )
     created = models.DateTimeField(auto_now=True)
     ignore = models.BooleanField(default=False, blank=True)
+    grade = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return self.file.name
@@ -86,6 +87,8 @@ class Submission(models.Model):
         submission = Submission.objects.filter(pk=self.id)
         submission.update(status=status)
 
+        self.refresh_grade()
+
         if status != old_status:
 
             print(f"Submission status changed : {old_status} -> {status}")
@@ -100,6 +103,26 @@ class Submission(models.Model):
             async_to_sync(channel_layer.group_send)(
                 f"submission_{self.exercise.id}_{self.owner.id}", message
             )
+
+    def refresh_grade(self):
+        test_results = TestResult.objects.filter(submission=self)
+
+        if(len(test_results) == 0):
+            grade = None
+            Submission.objects.filter(pk=self.id).update(grade=grade)
+
+        exercise_max_grade = test_results[0].exercise_test.exercise.grade
+
+        sum_of_grades = 0
+        sum_of_coefficients = 0
+
+        for t in test_results:
+            sum_of_grades += t.exercise_test.coefficient if t.status == "success" else 0
+            sum_of_coefficients += t.exercise_test.coefficient
+
+        grade = (sum_of_grades / sum_of_coefficients) * exercise_max_grade
+        Submission.objects.filter(pk=self.id).update(grade=grade)
+
 
     def save(self, *args, **kwargs):
         if self.ignore:
