@@ -13,6 +13,7 @@ pkgs.mkShell {
       django-cors-headers
       django-environ
       django-extensions
+      django-stubs-ext
       djangorestframework
       djangorestframework-api-key
       djangorestframework-simplejwt
