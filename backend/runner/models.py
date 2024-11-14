@@ -108,8 +108,15 @@ class Submission(models.Model):
         if(len(test_results) == 0):
             grade = None
             Submission.objects.filter(pk=self.id).update(grade=grade)
+            return
 
-        exercise_max_grade = test_results[0].exercise_test.exercise.grade
+        exercise = test_results[0].exercise_test.exercise
+        exercise_max_grade = exercise.grade
+
+        if not exercise_max_grade:
+            grade = None
+            Submission.objects.filter(pk=self.id).update(grade=grade)
+            return
 
         sum_of_grades = 0
         sum_of_coefficients = 0
@@ -119,6 +126,13 @@ class Submission(models.Model):
             sum_of_coefficients += t.exercise_test.coefficient
 
         grade = (sum_of_grades / sum_of_coefficients) * exercise_max_grade
+
+        session = exercise.session
+        course = session.course
+
+        if session.deadline and session.deadline < self.created:
+            grade *= (1 - course.late_penalty / 100)
+
         Submission.objects.filter(pk=self.id).update(grade=grade)
 
 
