@@ -68,7 +68,6 @@ class Submission(models.Model):
         test_results = TestResult.objects.filter(submission=self)
         status = ""
         if test_results:
-
             statuses = set([result.status for result in test_results])
 
             if statuses == set(["success"]):
@@ -87,7 +86,6 @@ class Submission(models.Model):
         submission.update(status=status)
 
         if status != old_status:
-
             print(f"Submission status changed : {old_status} -> {status}")
 
             # Send WebSocket update
@@ -274,6 +272,10 @@ class TestResult(models.Model):
                 continue
             exercise_test = testresult.exercise_test
 
+            print(
+                f"Re-running testresult {testresult.id} (status: {testresult.status}) in {submission.id} by {submission.owner} (created {submission.created}, submission status {submission.status})"
+            )
+
             # Read file content
             file_content = ""
 
@@ -293,8 +295,8 @@ class TestResult(models.Model):
             prefix = submission.exercise.prefix
             suffix = submission.exercise.suffix
 
-            # if submission created more than 1 minute ago
-            if submission.created < timezone.now() - timedelta(seconds=10):
+            # if submission created more than 20 seconds ago
+            if submission.created < timezone.now() - timedelta(seconds=20):
                 # Add Judge0 task to queue
                 celery.send_task(
                     "arbitre.tasks.run_test",

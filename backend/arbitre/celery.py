@@ -21,6 +21,6 @@ app.autodiscover_tasks()
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
-        10.0,  # every 10 seconds
+        15.0,  # every 15 seconds
         run_all_pending_testresults.s(),
     )
