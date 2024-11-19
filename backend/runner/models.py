@@ -173,12 +173,12 @@ class Submission(models.Model):
         else:
             self.status = Submission.SubmissionStatus.SUCCESS
             super(Submission, self).save(*args, **kwargs)
+            self.refresh_status()
 
     class Meta:
         unique_together = ("exercise", "owner")
 
 
-# Create your models here
 class Test(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default="")

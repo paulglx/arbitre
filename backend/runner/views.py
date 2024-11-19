@@ -34,24 +34,15 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 {"detail": "Hard deadline passed, can't submit"}
             )
 
-        # If there are no tests, set submission status to "success"
-        tests = Test.objects.filter(exercise=self.request.data["exercise"])
-        if len(tests) == 0:
-            status = "success"
-        else:
-            status = "pending"
-
         # Create submission or update it if it already exists
         submission, created = Submission.objects.update_or_create(
             exercise_id=self.request.data["exercise"],
             owner=self.request.user,
             defaults={
                 "file": self.request.data["file"],
-                "status": status,
+                "status": Submission.SubmissionStatus.PENDING,
             },
         )
-        submission.save()
-        submission.refresh_status()
 
     # Get submission for  exercise if exercise_id is given
     def get_queryset(self):
