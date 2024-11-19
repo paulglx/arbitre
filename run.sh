@@ -24,6 +24,7 @@ echo -e "${BLUE} Automated code correction platform ${NC}"
         exit 0  # optional; use if you don't want to propagate (rethrow) error to outer shell
     }
     function _finally {
+        # cd backend && sudo celery multi stopwait w1 w2 w3 w4 w5 w6 -Ofair -E
         echo -e "${BLUE}Arbitre has been stopped successfully.${NC}"
     }
 
@@ -32,7 +33,7 @@ echo -e "${BLUE} Automated code correction platform ${NC}"
     (trap 'kill 0' SIGINT;
         cd backend && python manage.py runserver &
         cd backend && celery -A arbitre worker -l info -B -E &
-        #cd backend && celery -A arbitre multi start w1 w2 w3 w4 -l info -B -E &
+        # cd backend && sudo celery -A arbitre multi start w1 w2 w3 w4 w5 w6 --loglevel="DEBUG" -Ofair -B -E &
         cd frontend && npm start
     )
 )

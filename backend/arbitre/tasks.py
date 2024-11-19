@@ -107,7 +107,6 @@ def post_running_testresult(submission_id, test_id, testresult_post_url):
 
 
 def send_test_to_judge0(judge0_url, source_code, additional_files, language_id, stdin):
-
     request = {
         "language_id": language_id,
         "source_code": source_code,
@@ -134,7 +133,6 @@ def post_error_testresult(message, submission_id, test_id, testresult_post_url):
 
 
 def zip_directory(path, zip_file_handle):
-
     for root, _dirs, files in os.walk(path):
         for file in files:
             zip_file_handle.write(
@@ -154,7 +152,6 @@ def process_source_single_file(file_content, prefix, suffix):
 
 
 def process_source_multifile(student_files, exercise_id, submission_id, test_id):
-
     # student_files is the base64-encoded zip file containing the student's files
     import base64
     import tempfile
@@ -196,7 +193,6 @@ def process_source_multifile(student_files, exercise_id, submission_id, test_id)
         f.write(teacher_files_data)
 
     with tempfile.TemporaryDirectory(prefix="finaldir-") as tmp:
-
         # Extract zips in temp folder
         zipfile.ZipFile(teacher_files_zip).extractall(tmp)
         zipfile.ZipFile(student_files_zip).extractall(tmp)
@@ -224,7 +220,7 @@ def process_source_multifile(student_files, exercise_id, submission_id, test_id)
     return final_b64_str
 
 
-@shared_task
+@shared_task(acks_late=True)
 def run_test(
     hostname, exercise_type, submission_id, test_id, file_content, prefix, suffix, lang
 ) -> None:
@@ -317,7 +313,7 @@ def run_test(
     except Exception as e:
         print("Exception: " + str(e))
         post_error_testresult(
-            "An error occured while running the test. Please contact the administrator.",
+            "An error occured while running the test.",
             submission_id,
             test_id,
             testresult_post_url,
