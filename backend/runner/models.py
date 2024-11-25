@@ -1,15 +1,18 @@
 from api.models import Exercise
+from asgiref.sync import async_to_sync
 from celery import Celery
+from channels.layers import get_channel_layer
 from datetime import timedelta
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum, Case, When, F
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from typing_extensions import Optional
 import environ
 import os
 import random
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
 
 class Submission(models.Model):
@@ -102,39 +105,58 @@ class Submission(models.Model):
                 f"submission_{self.exercise.id}_{self.owner.id}", message
             )
 
-    def refresh_grade(self):
-        test_results = TestResult.objects.filter(submission=self)
+    def _update_grade(self, grade: Optional[Decimal]):
+        """
+        Helper function for updating grade field
 
-        if(len(test_results) == 0):
-            grade = None
-            Submission.objects.filter(pk=self.id).update(grade=grade)
-            return
-
-        exercise = test_results[0].exercise_test.exercise
-        exercise_max_grade = exercise.grade
-
-        if not exercise_max_grade:
-            grade = None
-            Submission.objects.filter(pk=self.id).update(grade=grade)
-            return
-
-        sum_of_grades = 0
-        sum_of_coefficients = 0
-
-        for t in test_results:
-            sum_of_grades += t.exercise_test.coefficient if t.status == "success" else 0
-            sum_of_coefficients += t.exercise_test.coefficient
-
-        grade = (sum_of_grades / sum_of_coefficients) * exercise_max_grade
-
-        session = exercise.session
-        course = session.course
-
-        if session.deadline and session.deadline < self.created:
-            grade *= (1 - course.late_penalty / 100)
+        NOTE : Not using `save()` because it triggers testing
+        """
 
         Submission.objects.filter(pk=self.id).update(grade=grade)
 
+    def refresh_grade(self):
+        test_results = TestResult.objects.filter(submission=self).select_related(
+            "exercise_test__exercise__session__course"
+        )
+
+        if not test_results.exists():
+            self._update_grade(None)
+            return
+
+        exercise = test_results.first().exercise_test.exercise
+        if not exercise.grade:
+            self._update_grade(None)
+            return
+
+        # Compute grade using aggregation
+        grade_calculation = test_results.aggregate(
+            sum_of_coefficients=Sum("exercise_test__coefficient"),
+            successful_tests=Sum(
+                Case(
+                    When(status="success", then=F("exercise_test__coefficient")),
+                    default=0,
+                )
+            ),
+        )
+
+        sum_of_coefficients = grade_calculation["sum_of_coefficients"]
+        successful_tests = grade_calculation["successful_tests"]
+
+        if not sum_of_coefficients:
+            self._update_grade(None)
+            return
+
+        grade = (Decimal(successful_tests) / Decimal(sum_of_coefficients)) * Decimal(
+            exercise.grade
+        )
+
+        session = exercise.session
+
+        if session.deadline and session.deadline < self.created:
+            late_penalty = Decimal(session.course.late_penalty) / Decimal(100)
+            grade *= 1 - late_penalty
+
+        self._update_grade(grade)
 
     def save(self, *args, **kwargs):
         if self.ignore:
