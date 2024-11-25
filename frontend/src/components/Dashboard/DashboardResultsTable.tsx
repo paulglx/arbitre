@@ -141,10 +141,8 @@ const DashboardResultsTable = (props: any) => {
 
           console.log(student)
 
-          var finalSessionGrade = 0;
-          var sessionGrade = 0;
-
-          const latePenalty = student.late_penalty || 0;
+          var studentSessionGrade = 0;
+          const maxSessionGrade = sortedExercises?.map((exercise: any) => exercise.grade).reduce((a: number, b: number) => a + b, 0)
 
           return (
             <tr key={i} className="border-t hover:bg-gray-50">
@@ -153,6 +151,8 @@ const DashboardResultsTable = (props: any) => {
               </td>
               {student.exercises.map((exercise: any, j: number) => {
                 const exerciseGrade = sortedExercises ? sortedExercises[j].grade : 0;
+
+                studentSessionGrade += exercise.grade || 0;
 
                 return (
                   <td
@@ -179,7 +179,7 @@ const DashboardResultsTable = (props: any) => {
                 );
               })}
               <td className="text-center border-l border-gray-200 bg-blue-50">
-                <GradeBadge grade={finalSessionGrade} total={sessionGrade} />
+                <GradeBadge grade={studentSessionGrade} total={maxSessionGrade} />
               </td>
             </tr>)
         }
