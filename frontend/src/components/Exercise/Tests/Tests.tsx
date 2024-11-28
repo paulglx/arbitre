@@ -12,7 +12,6 @@ import {
 } from "../../../features/courses/testApiSlice";
 import { useEffect, useState } from "react";
 
-import { Modal } from "../../Common";
 import autosize from "autosize";
 import { pushNotification } from "../../../features/notification/notificationSlice";
 import { useDispatch } from "react-redux";
@@ -39,7 +38,6 @@ const Tests = (props: {
 
   const [createTest] = useCreateTestMutation();
   const [deleteTest] = useDeleteTestMutation();
-  const [showModal, setShowModal] = useState(false);
   const [tests, setTests] = useState([] as Test[]);
   const [updateTest] = useUpdateTestMutation();
   const dispatch = useDispatch();
@@ -142,8 +140,9 @@ const Tests = (props: {
     }
   };
 
-  const handleDeleteConfirmation = async (test_id: number) => {
+  const handleDeleteTest = async (test_id: number) => {
     const test = tests.find((t: Test) => t.id === test_id);
+
     if (!test?.new) {
       await deleteTest({ id: test_id })
         .unwrap()
@@ -164,11 +163,41 @@ const Tests = (props: {
           );
         });
     }
-    setShowModal(false);
     setTests(tests.filter((t: Test) => t.id !== test_id));
   };
 
   const thereIsAtLeastOneEditedTest = tests.some((t: Test) => t.edited);
+
+  const DeleteTestButton = ({ test_id }: { test_id: number }) => {
+
+    // Two-step button: ask the user to confirm before deleting
+    const [promptedToConfirm, setPromptedToConfirm] = useState(false);
+
+    const promptConfirm = () => {
+      setPromptedToConfirm(true);
+      setTimeout(() => {
+        setPromptedToConfirm(false);
+      }, 4000);
+    }
+
+    return (
+      <button
+        className="hidden group-hover:flex group-focus-within:flex items-center absolute end-2 top-2 text-gray-400 border border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-500 focus:bg-red-50 focus:border-red-500 focus:text-red-500 rounded-lg px-2 w-fit transition-all"
+        onClick={() => promptedToConfirm ?
+          handleDeleteTest(test_id)
+          :
+          promptConfirm()
+        }
+      >
+        <TrashIcon className="size-3" />
+        <span className="ms-1.5">{
+          promptedToConfirm ?
+            "Are you sure?" :
+            "Delete"
+        }</span>
+      </button >
+    )
+  }
 
   // Warns the user if they close the page with unsaved changes
   window.onbeforeunload = () => {
@@ -216,9 +245,8 @@ const Tests = (props: {
           {tests.map((test) => (
             <div
               key={test?.id}
-              className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2 rounded-lg ${
-                test.edited && "border-r-2 border-blue-500"
-              } transition-all`}
+              className={`relative group w-full grid grid-cols-[20%_80%] md:grid-cols-[10%_90%] grid-rows-3 text-sm *:border-gray-200 mb-2 rounded-lg ${test.edited && "border-r-2 border-blue-500"
+                } transition-all`}
             >
               <span className="border-l border-t rounded-tl-lg bg-gray-50 p-2">
                 Name
@@ -242,17 +270,7 @@ const Tests = (props: {
                 }}
               />
 
-              <button
-                className="hidden group-hover:flex group-focus-within:flex items-center absolute end-2 top-2 text-gray-400 border border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-500 focus:bg-red-50 focus:border-red-500 focus:text-red-500 rounded-lg px-2 w-fit transition-all"
-                onClick={() =>
-                  test?.name !== NEW_TEST_NAME || test?.stdin || test?.stdout
-                    ? setShowModal(true)
-                    : handleDeleteConfirmation(test.id)
-                }
-              >
-                <TrashIcon className="size-3" />
-                <span className="ms-1.5">Delete</span>
-              </button>
+              <DeleteTestButton test_id={test?.id} />
 
               <span className="border-l border-t bg-gray-50 p-2">Input</span>
               <textarea
@@ -294,26 +312,6 @@ const Tests = (props: {
                   );
                 }}
               />
-
-              <>
-                {showModal && (
-                  <Modal
-                    title={
-                      <h2 className="text-xl font-semibold">Confirmation</h2>
-                    }
-                    icon={
-                      <ExclamationTriangleIcon className="text-yellow-500 w-12 h-12 mb-2" />
-                    }
-                    decription={
-                      <p className="mb-4">
-                        Are you sure you want to delete this test?
-                      </p>
-                    }
-                    handleCloseModal={() => setShowModal(false)}
-                    delete={() => handleDeleteConfirmation(test.id)}
-                  />
-                )}
-              </>
             </div>
           ))}
           {isOwner && tests.length > 0 && (
@@ -339,11 +337,10 @@ const Tests = (props: {
                 Add test
               </button>
               <button
-                className={`flex items-center gap-2 text-primary text-sm ${
-                  thereIsAtLeastOneEditedTest
-                    ? "bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200"
-                    : "bg-white border border-gray-200 text-gray-600"
-                } font-semibold py-2 px-4 rounded-lg transition-all`}
+                className={`flex items-center gap-2 text-primary text-sm ${thereIsAtLeastOneEditedTest
+                  ? "bg-blue-50 hover:bg-blue-100 text-blue-500 border border-blue-200"
+                  : "bg-white border border-gray-200 text-gray-600"
+                  } font-semibold py-2 px-4 rounded-lg transition-all`}
                 onClick={handleSaveAllTests}
               >
                 <CheckIcon className="w-4 h-4" />
