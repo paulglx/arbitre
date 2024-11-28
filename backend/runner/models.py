@@ -328,6 +328,7 @@ class TestResult(models.Model):
         for testresult in pending_testresults:
             submission = testresult.submission
             if submission.ignore:
+                print(f"Submission {submission.id} ({submission.owner}) ignored")
                 continue
             exercise_test = testresult.exercise_test
 
