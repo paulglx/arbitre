@@ -10,7 +10,7 @@ const GradeBadge = (props: { grade: number, total: number, late?: boolean }) => 
     <span
       className={`${props.late ? "text-amber-600" : "text-blue-800"}`}
     >
-      {round(props.grade, 1)}
+      {props.grade ? round(props.grade, 1) : "-"}
     </span>
     &nbsp;
     <span className={`${props.late ? "text-amber-600" : "text-blue-800"} opacity-75`}>

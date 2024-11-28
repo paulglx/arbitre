@@ -139,8 +139,6 @@ const DashboardResultsTable = (props: any) => {
       <tbody className="w-full">
         {results.map((student: any, i: number) => {
 
-          console.log(student)
-
           var studentSessionGrade = 0;
           const maxSessionGrade = sortedExercises?.map((exercise: any) => exercise.grade).reduce((a: number, b: number) => a + b, 0)
 
