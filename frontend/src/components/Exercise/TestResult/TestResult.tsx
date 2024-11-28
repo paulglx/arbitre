@@ -127,6 +127,16 @@ const TestResult = (props: {
     }
   };
 
+  const FileName = ({ filename }: { filename: string }) => {
+    if (filename) return (<span className="font-bold text-sm">
+      {submission?.file?.split("/").pop()}
+    </span>)
+
+    return <span className="italic text-sm">
+      ⚠️ File missing from server
+    </span>
+  }
+
   const headerColor = (status: string) => {
     switch (status) {
       case "success":
@@ -166,9 +176,7 @@ const TestResult = (props: {
           )} w-full flex flex-row justify-between items-center px-4 py-2 border rounded-lg`}
         >
           <span className="flex flex-row items-center">
-            <span className="font-bold text-sm">
-              {submission?.file?.split("/").pop()}
-            </span>
+            <FileName filename={submission.file ?? ""} />
             &nbsp;
             <DocumentMagnifyingGlassIcon
               className="inline w-4 h-4 text-gray-700 hover:text-gray-800"
