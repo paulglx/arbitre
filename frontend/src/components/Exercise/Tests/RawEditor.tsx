@@ -1,5 +1,5 @@
-import { UseDispatch, useDispatch } from "react-redux";
-import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
 import { Editor } from "@monaco-editor/react";
 import RawEditorHelp from "./RawEditorHelp";
@@ -16,7 +16,7 @@ interface Test {
   coefficient: number;
 }
 
-const RawEditor = (props: { exercise_id: number }) => {
+const RawEditor = (props: { exercise_id: number, isOwner: boolean }) => {
   const { data: tests, isSuccess: testsSuccess } = useGetTestsOfExerciseQuery({
     exercise_id: props.exercise_id,
   });
@@ -43,9 +43,8 @@ const RawEditor = (props: { exercise_id: number }) => {
       raw_tests: rawTestsString.replace(/(\r\n|\n|\r)/gm, ""),
     })
       .unwrap()
-      .then((response: Test) => {
+      .then(() => {
         // set test as not new, with new id
-        const newTestId = response.id;
         dispatch(
           pushNotification({
             message: "Tests uploaded successfully",
@@ -53,7 +52,7 @@ const RawEditor = (props: { exercise_id: number }) => {
           })
         );
       })
-      .catch((error) => {
+      .catch(() => {
         dispatch(
           pushNotification({
             message:
@@ -71,7 +70,7 @@ const RawEditor = (props: { exercise_id: number }) => {
         height="40vh"
         defaultLanguage="json"
         value={rawTestsString}
-        onChange={(value: any, event: any) => setRawTestsString(value)}
+        onChange={(value: any, _: any) => setRawTestsString(value)}
         options={{
           minimap: { enabled: false },
           lineNumbers: "on",
@@ -82,6 +81,8 @@ const RawEditor = (props: { exercise_id: number }) => {
             vertical: "hidden",
             alwaysConsumeMouseWheel: false,
           },
+          readOnly: !props.isOwner,
+          readOnlyMessage: { value: "Only owners can edit tests" }
         }}
       />
       <button
