@@ -1,6 +1,5 @@
 import {
   CheckIcon,
-  ExclamationTriangleIcon,
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/16/solid";
@@ -105,7 +104,7 @@ const Tests = (props: {
             })
           );
         })
-        .catch((error) => {
+        .catch(() => {
           dispatch(
             pushNotification({
               message: "There was an error creating the test.",
@@ -129,7 +128,7 @@ const Tests = (props: {
             )
           )
         )
-        .catch((error) => {
+        .catch(() => {
           dispatch(
             pushNotification({
               message: "There was an error updating the test.",
@@ -154,7 +153,7 @@ const Tests = (props: {
             })
           );
         })
-        .catch((error) => {
+        .catch(() => {
           dispatch(
             pushNotification({
               message: "There was an error deleting the test",
@@ -220,7 +219,7 @@ const Tests = (props: {
               {isOwner && (
                 <button
                   className="flex items-center w-fit text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 font-bold py-1 px-2 rounded-lg focus:outline-none focus:shadow-outline"
-                  onClick={(e) => {
+                  onClick={() => {
                     const randomId = randomTestId();
                     const newTest: Test = {
                       id: randomId,
@@ -318,7 +317,7 @@ const Tests = (props: {
             <div className="mt-2 flex gap-2">
               <button
                 className="flex items-center gap-2 text-primary text-sm bg-white hover:bg-gray-50 border border-gray-200 font-semibold py-2 px-4 rounded-lg"
-                onClick={(e) => {
+                onClick={() => {
                   const randomId = randomTestId();
                   const newTest: Test = {
                     id: randomId,
