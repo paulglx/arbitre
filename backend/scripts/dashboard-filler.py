@@ -5,7 +5,7 @@ import random
 """
 Fill a course with dummy submissions and test results.
 
-> python manage.py runscript dashboard-filler [--script-args course_id=1 nocheck]
+> python manage.py runscript dashboard-filler --script-args course_id=1 [nocheck]
 
 Arguments:
 - course_id: ID of the course to fill (optional)
@@ -40,8 +40,8 @@ def generate_result():
         return status
 
 
-def confirmation_step(course):
-    print("Present submissions will be {bcolors.WARNING}deleted{bcolors.ENDC}.")
+def confirmation_step():
+    print(f"Present submissions will be {bcolors.WARNING}deleted{bcolors.ENDC}.")
     confirmation = input("Are you sure ? [y/N] ")
     if confirmation != "y":
         print("Aborting.")
@@ -49,6 +49,12 @@ def confirmation_step(course):
 
 
 def run(*args):
+    if not args:
+        print(
+            "Usage : python manage.py runscript dashboard-filler --script-args course_id=1 [nocheck]"
+        )
+        return
+
     # ID of the course you want to fill
     if "course_id" in args[0]:
         COURSE_ID = int(args[0].split("=")[1])
@@ -63,7 +69,7 @@ def run(*args):
         f"{bcolors.OKBLUE}{course.title}{bcolors.ENDC} will be filled with dummy submissions."
     )
     if "nocheck" not in args:
-        confirmation_step(course)
+        confirmation_step()
 
     # Get all course students
     students = course.students.all()

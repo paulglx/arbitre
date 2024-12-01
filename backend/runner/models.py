@@ -1,15 +1,18 @@
 from api.models import Exercise
+from asgiref.sync import async_to_sync
 from celery import Celery
+from channels.layers import get_channel_layer
 from datetime import timedelta
+from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum, Case, When, F
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from typing_extensions import Optional
 import environ
 import os
 import random
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
 
 class Submission(models.Model):
@@ -24,12 +27,12 @@ class Submission(models.Model):
         FAILED = "failed", _("Failed")
         ERROR = "error", _("Error")
 
-    def get_file_name(instance, filename):
+    def get_file_name(self, _):
         path = "uploads"
-        extension = instance.file.name.split(".")[-1]
+        extension = self.file.name.split(".")[-1]
 
-        exercise = instance.exercise
-        created_with_correct_timezone = timezone.localtime(instance.created)
+        exercise = self.exercise
+        created_with_correct_timezone = timezone.localtime(self.created)
         created_month_day_hour_minutes_seconds = created_with_correct_timezone.strftime(
             "%m-%d_%H-%M-%S"
         )
@@ -37,7 +40,7 @@ class Submission(models.Model):
         format = (
             exercise.title[0:10]
             + "_"
-            + instance.owner.username[0:10]
+            + self.owner.username[0:10]
             + "_"
             + created_month_day_hour_minutes_seconds
             + "."
@@ -56,6 +59,7 @@ class Submission(models.Model):
     )
     created = models.DateTimeField(auto_now=True)
     ignore = models.BooleanField(default=False, blank=True)
+    grade = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return self.file.name
@@ -85,6 +89,8 @@ class Submission(models.Model):
         submission = Submission.objects.filter(pk=self.id)
         submission.update(status=status)
 
+        self.refresh_grade()
+
         if status != old_status:
             print(f"Submission status changed : {old_status} -> {status}")
 
@@ -98,6 +104,59 @@ class Submission(models.Model):
             async_to_sync(channel_layer.group_send)(
                 f"submission_{self.exercise.id}_{self.owner.id}", message
             )
+
+    def _update_grade(self, grade: Optional[Decimal]):
+        """
+        Helper function for updating grade field
+
+        NOTE : Not using `save()` because it triggers testing
+        """
+
+        Submission.objects.filter(pk=self.id).update(grade=grade)
+
+    def refresh_grade(self):
+        test_results = TestResult.objects.filter(submission=self).select_related(
+            "exercise_test__exercise__session__course"
+        )
+
+        if not test_results.exists():
+            self._update_grade(None)
+            return
+
+        exercise = test_results.first().exercise_test.exercise
+        if not exercise.grade:
+            self._update_grade(None)
+            return
+
+        # Compute grade using aggregation
+        grade_calculation = test_results.aggregate(
+            sum_of_coefficients=Sum("exercise_test__coefficient"),
+            successful_tests=Sum(
+                Case(
+                    When(status="success", then=F("exercise_test__coefficient")),
+                    default=0,
+                )
+            ),
+        )
+
+        sum_of_coefficients = grade_calculation["sum_of_coefficients"]
+        successful_tests = grade_calculation["successful_tests"]
+
+        if not sum_of_coefficients:
+            self._update_grade(None)
+            return
+
+        grade = (Decimal(successful_tests) / Decimal(sum_of_coefficients)) * Decimal(
+            exercise.grade
+        )
+
+        session = exercise.session
+
+        if session.deadline and session.deadline < self.created:
+            late_penalty = Decimal(session.course.late_penalty) / Decimal(100)
+            grade *= 1 - late_penalty
+
+        self._update_grade(grade)
 
     def save(self, *args, **kwargs):
         if self.ignore:
@@ -269,6 +328,7 @@ class TestResult(models.Model):
         for testresult in pending_testresults:
             submission = testresult.submission
             if submission.ignore:
+                print(f"Submission {submission.id} ({submission.owner}) ignored")
                 continue
             exercise_test = testresult.exercise_test
 

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import environ
 import os
+import django_stubs_ext
+
+django_stubs_ext.monkeypatch()
 
 env = environ.Env()
 env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")

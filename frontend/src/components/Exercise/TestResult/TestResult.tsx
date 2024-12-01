@@ -1,7 +1,7 @@
 import {
   CommandLineIcon,
   DocumentMagnifyingGlassIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 
 import GradeBadge from "../../Util/GradeBadge";
@@ -21,7 +21,6 @@ const TestResult = (props: {
   const [submission, setSubmission] = useState(null as any);
   const [testResults, setTestResults] = useState(new Map<number, any>());
   const [showCodePreview, setShowCodePreview] = useState(false);
-  const [finalExerciseGrade, setFinalExerciseGrade] = useState(0);
   const [connectionError, setConnectionError] = useState(false);
 
   const testResultsArray = Array.from(testResults.values());
@@ -74,28 +73,6 @@ const TestResult = (props: {
     };
   }, [props.exercise_id, keycloakToken]);
 
-  useEffect(() => {
-    if (!testResults) return;
-
-    let sumOfCoefficient = 0;
-    let dividendTestGrade = 0;
-
-    testResults.forEach((testResult: any) => {
-      sumOfCoefficient += testResult.exercise_test.coefficient || 0;
-      if (testResult?.status === "success" && props.exercise_grade) {
-        dividendTestGrade +=
-          props.exercise_grade * (testResult.exercise_test.coefficient || 0);
-      }
-    });
-
-    let _finalExerciseGrade = 0;
-    if (sumOfCoefficient !== 0) {
-      _finalExerciseGrade = dividendTestGrade / sumOfCoefficient;
-    }
-
-    setFinalExerciseGrade(_finalExerciseGrade);
-  }, [testResults, props.exercise_grade]);
-
   const Spinner = () => {
     return (
       <>
@@ -145,21 +122,31 @@ const TestResult = (props: {
       return <></>;
     } else {
       return (
-        <span className="text-gray-500 text-sm font-normal mr-2">{time} s</span>
+        <span className="text-gray-500 text-xs font-normal mr-2">{time} s</span>
       );
     }
   };
 
-  const headerBgColor = (status: string) => {
+  const FileName = ({ filename }: { filename: string }) => {
+    if (filename) return (<span className="font-bold text-sm">
+      {submission?.file?.split("/").pop()}
+    </span>)
+
+    return <span className="italic text-sm">
+      ⚠️ File missing from server
+    </span>
+  }
+
+  const headerColor = (status: string) => {
     switch (status) {
       case "success":
-        return "bg-green-50";
+        return "bg-green-50 border-green-200";
       case "failed":
-        return "bg-gray-50";
+        return "bg-gray-50 border-gray-200";
       case "error":
-        return "bg-red-50";
+        return "bg-red-50 border-red-200";
       default:
-        return "bg-gray-50";
+        return "bg-gray-50 border-gray-200";
     }
   };
 
@@ -184,18 +171,17 @@ const TestResult = (props: {
 
       <ul className="text-gray-900 bg-white border-gray-200 rounded-lg">
         <li
-          className={` ${headerBgColor(
+          className={`${headerColor(
             submission.status
           )} w-full flex flex-row justify-between items-center px-4 py-2 border rounded-lg`}
         >
           <span className="flex flex-row items-center">
-            <span className="font-bold">
-              {submission?.file?.split("/").pop()}
-            </span>
+            <FileName filename={submission.file ?? ""} />
             &nbsp;
             <DocumentMagnifyingGlassIcon
-              className="inline w-5 h-5"
+              className="inline w-4 h-4 text-gray-700 hover:text-gray-800"
               role="button"
+              title="Open code preview"
               onClick={() => {
                 setShowCodePreview(true);
               }}
@@ -211,7 +197,7 @@ const TestResult = (props: {
             />
             {props.exercise_grade ? (
               <GradeBadge
-                grade={finalExerciseGrade}
+                grade={submission.grade}
                 total={props.exercise_grade}
               />
             ) : null}
@@ -221,7 +207,7 @@ const TestResult = (props: {
         {testResultsArray.map((result: any, i: number) => {
           return (
             <li
-              className={`px-4 py-2 my-2 border hover:bg-gray-100 bg-gray-50 rounded-lg`}
+              className={`px-4 py-2 my-2 border hover:bg-gray-100 bg-gray-50 rounded-lg text-sm`}
               key={i}
             >
               <div className="">

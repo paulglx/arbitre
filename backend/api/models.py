@@ -109,6 +109,18 @@ class Course(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is not None:
             self.handle_student_groups_change(*args, **kwargs)
+
+            # Get submissions related to this course
+            # And update their grades
+            # TODO only if penalty changed!
+            from runner.models import Submission
+
+            course_submissions = Submission.objects.filter(
+                exercise__session__course=self
+            )
+            for submission in course_submissions:
+                submission.refresh_grade()
+
         super(Course, self).save(*args, **kwargs)
 
     def make_auto_groups(self):
@@ -136,7 +148,7 @@ class Course(models.Model):
 
         # Put students into groups according to repartition
         for i in range(number_of_groups):
-            for j in range(group_repartition[i]):
+            for _ in range(group_repartition[i]):
                 student_groups[i].students.add(students.pop(0))
 
         # Save groups
@@ -196,6 +208,19 @@ class Session(models.Model):
 
     def __str__(self):
         return self.course.title + " : " + self.title
+
+    def save(self, *args, **kwargs):
+        super(Session, self).save(*args, **kwargs)
+
+        if self.pk is not None:
+            # Get submissions related to this session
+            # And update their grades
+            # TODO only if session grade or deadline changed!
+            from runner.models import Submission
+
+            session_submissions = Submission.objects.filter(exercise__session=self)
+            for submission in session_submissions:
+                submission.refresh_grade()
 
 
 class Exercise(models.Model):

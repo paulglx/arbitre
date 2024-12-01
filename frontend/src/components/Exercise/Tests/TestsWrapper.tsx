@@ -26,7 +26,7 @@ const TestsWrapper = (props: {
         </TabPanel>
 
         <TabPanel>
-          <RawEditor exercise_id={exercise_id} />
+          <RawEditor exercise_id={exercise_id} isOwner={isOwner} />
         </TabPanel>
       </TabPanels>
     </TabGroup>
