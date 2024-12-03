@@ -422,26 +422,28 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
         session = (
             Session.objects.select_related("course")
             .prefetch_related(
+                # Move the Prefetch to the direct StudentGroup query
+                "course__students",
                 Prefetch(
                     "course__studentgroup_set",
                     queryset=StudentGroup.objects.filter(id__in=group_ids)
                     if group_ids and group_ids[0]
-                    else StudentGroup.objects.all(),
+                    else StudentGroup.objects.none(),  # Use .none() as default
                     to_attr="filtered_groups",
                 ),
-                "course__students",
             )
             .get(id=session_id)
         )
 
         if group_ids and group_ids[0]:
             students = User.objects.filter(
-                studentgroup__students__in=session.filtered_groups
+                studentgroup_students__in=session.course.filtered_groups
             ).distinct()
         else:
             students = session.course.students.all()
 
-        exercises = Exercise.objects.filter(session_id=session_id)
+        # using `list` to evaluate the query directly
+        exercises = list(Exercise.objects.filter(session_id=session_id))
 
         # Fetch all submissions in one query
         submissions = (
