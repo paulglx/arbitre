@@ -272,9 +272,9 @@ class SetStudentGroupViewSet(viewsets.ViewSet):
         )
 
 
-class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
+class CoursesSessionsViewSet(viewsets.ViewSet):
     """
-    Return all courses, sessions and exercises.
+    Return all courses and sessions.
 
     GET : Get all courses, sessions and exercises of current user
     """
@@ -290,13 +290,7 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
                 # Prefetch sessions with their exercises
                 Prefetch(
                     "session_set",
-                    queryset=Session.objects.prefetch_related(
-                        # Prefetch exercises with specific fields
-                        Prefetch(
-                            "exercise_set",
-                            queryset=Exercise.objects.only("id", "title", "session_id"),
-                        )
-                    ).only("id", "title", "course_id"),
+                    queryset=Session.objects.only("id", "title", "course_id"),
                 ),
                 # Prefetch student groups
                 Prefetch(
@@ -321,13 +315,6 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
                     {
                         "id": session.id,
                         "title": session.title,
-                        "exercises": [
-                            {
-                                "id": exercise.id,
-                                "title": exercise.title,
-                            }
-                            for exercise in session.exercise_set.all()
-                        ],
                     }
                     for session in course.session_set.all()
                 ],
