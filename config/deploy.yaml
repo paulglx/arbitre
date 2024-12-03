@@ -16,7 +16,7 @@
 - name: Deploy Arbitre to production server
   hosts: prod
   become: true
-  become_user: paul
+  become_user: root
   tasks:
     - name: Execute git pull in /srv/arbitre directory
       ansible.builtin.git:
@@ -29,13 +29,13 @@
       community.general.npm:
         path: /srv/arbitre/frontend
         state: present
-      when: git_pull.changed # noqa: no-handler
+      # when: git_pull.changed # noqa: no-handler
 
     - name: Build frontend
       ansible.builtin.command: npm run build
       args:
         chdir: /srv/arbitre/frontend
-      when: git_pull.changed # noqa: no-handler
+      # when: git_pull.changed # noqa: no-handler
 
     - name: Make migrations and migrate database
       ansible.builtin.shell: |
@@ -43,16 +43,7 @@
         export NIXPKGS_ALLOW_BROKEN=1
         nix develop --impure --command bash -c "cd backend && python manage.py migrate"
         nix develop --impure --command bash -c "cd backend && python manage.py collectstatic --noinput"
-      when: git_pull.changed # noqa: no-handler
-
-    - name: Restart Keycloak
-      ansible.builtin.systemd:
-        name: keycloak
-        state: restarted
-        enabled: true
-      become: true
-      become_user: root
-      when: git_pull.changed # noqa: no-handler
+      # when: git_pull.changed # noqa: no-handler
 
     - name: Restart web services
       ansible.builtin.systemd:
@@ -66,4 +57,4 @@
         - celery
         - celerybeat
         - nginx
-      when: git_pull.changed # noqa: no-handler
+      # when: git_pull.changed # noqa: no-handler

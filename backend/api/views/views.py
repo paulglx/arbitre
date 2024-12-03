@@ -1,3 +1,4 @@
+from django.db.models.query import Prefetch
 from ..models import Course, Session, Exercise, StudentGroup
 from ..serializers import (
     CourseSerializer,
@@ -6,6 +7,7 @@ from ..serializers import (
     StudentGroupSerializer,
 )
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models import Q
 from django.http import HttpRequest
 from django.utils import timezone
@@ -270,9 +272,9 @@ class SetStudentGroupViewSet(viewsets.ViewSet):
         )
 
 
-class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
+class CoursesSessionsViewSet(viewsets.ViewSet):
     """
-    Return all courses, sessions and exercises.
+    Return all courses and sessions.
 
     GET : Get all courses, sessions and exercises of current user
     """
@@ -282,43 +284,54 @@ class CoursesSessionsExercisesViewSet(viewsets.ViewSet):
     def list(self, request):
         user = request.user
 
-        courses = Course.objects.filter(
-            Q(tutors__in=[user]) | Q(owners__in=[user])
-        ).distinct()
+        courses = (
+            Course.objects.filter(Q(tutors=user) | Q(owners=user))
+            .prefetch_related(
+                # Prefetch sessions with their exercises
+                Prefetch(
+                    "session_set",
+                    queryset=Session.objects.only("id", "title", "course_id"),
+                ),
+                # Prefetch student groups
+                Prefetch(
+                    "studentgroup_set",
+                    queryset=StudentGroup.objects.only(
+                        "id", "name", "course_id"
+                    ).prefetch_related(
+                        Prefetch(
+                            "students", queryset=User.objects.only("id", "username")
+                        )
+                    ),
+                ),
+            )
+            .distinct()
+        )
 
-        courses_data = []
-        for course in courses:
-            sessions = Session.objects.filter(course=course)
-            sessions_data = []
-            for session in sessions:
-                exercises = Exercise.objects.filter(session=session)
-                exercises_data = []
-                for exercise in exercises:
-                    exercises_data.append(
-                        {
-                            "id": exercise.id,
-                            "title": exercise.title,
-                        }
-                    )
-
-                sessions_data.append(
+        courses_data = [
+            {
+                "id": course.id,
+                "title": course.title,
+                "sessions": [
                     {
                         "id": session.id,
                         "title": session.title,
-                        "exercises": exercises_data,
                     }
-                )
-
-            courses_data.append(
-                {
-                    "id": course.id,
-                    "title": course.title,
-                    "sessions": sessions_data,
-                    "student_groups": StudentGroupSerializer(
-                        StudentGroup.objects.filter(course=course), many=True
-                    ).data,
-                }
-            )
+                    for session in course.session_set.all()
+                ],
+                "student_groups": [
+                    {
+                        "id": group.id,
+                        "name": group.name,
+                        "students": [
+                            {"id": student.id, "username": student.username}
+                            for student in group.students.all()
+                        ],
+                    }
+                    for group in course.studentgroup_set.all()
+                ],
+            }
+            for course in courses
+        ]
 
         return Response(courses_data)
 
@@ -340,50 +353,46 @@ class ResultsOfSessionViewSet(viewsets.ViewSet):
         session_id = request.data.get("session_id")
 
         # Get all the exercises of the session
-        exercises = Exercise.objects.filter(session_id=session_id)
+        exercises = Exercise.objects.filter(session_id=session_id).select_related(
+            "session"
+        )
 
         # Get all the submissions of the user for the session
         submissions = (
             Submission.objects.filter(exercise__session_id=session_id, owner_id=user_id)
-            .prefetch_related("testresult_set", "exercise__test_set")
             .select_related("exercise", "exercise__session")
+            .prefetch_related("testresult_set", "exercise__test_set")
+            .annotate(
+                late=models.Case(
+                    models.When(
+                        created__gt=models.F("exercise__session__deadline"),
+                        then=True,
+                    ),
+                    default=False,
+                    output_field=models.BooleanField(),
+                )
+            )
         )
 
         # Put this query in a dict
-        submissions_dict = {}
-        for submission in submissions:
-            submissions_dict[submission.exercise_id] = submission
+        submissions_dict = {sub.exercise_id: sub for sub in submissions}
 
-        results = []
-
-        # For evry exercise, get the submission of the user from 'submissions'. The database is queried only once. To achieve this, we use a dictionary.
-        for exercise in exercises:
-            submission = submissions_dict.get(exercise.id, None)
-
-            if submission:
-                submission_serializer = SubmissionSerializer(submission)
-                late = submission_serializer.data["late"] if submission else False
-
-                results.append(
-                    {
-                        "exercise_id": exercise.id,
-                        "exercise_title": exercise.title,
-                        "status": submission.status,
-                        "grade": submission.grade,
-                        "late": late,
-                    }
-                )
-
-            else:
-                results.append(
-                    {
-                        "exercise_id": exercise.id,
-                        "exercise_title": exercise.title,
-                        "status": "not submitted",
-                        "testResults": [],
-                        "late": False,
-                    }
-                )
+        results = [
+            {
+                "exercise_id": exercise.id,
+                "exercise_title": exercise.title,
+                "status": submissions_dict[exercise.id].status
+                if exercise.id in submissions_dict
+                else "not submitted",
+                "grade": submissions_dict[exercise.id].grade
+                if exercise.id in submissions_dict
+                else None,
+                "late": submissions_dict[exercise.id].late
+                if exercise.id in submissions_dict
+                else False,
+            }
+            for exercise in exercises
+        ]
 
         return Response(results)
 
@@ -403,52 +412,89 @@ class AllResultsOfSessionViewSet(viewsets.ViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request):
-        session = (
-            Session.objects.select_related("course")
-            .prefetch_related("course__studentgroup_set", "course__students")
-            .get(id=self.request.GET.get("session_id"))
+        session_id = self.request.GET.get("session_id")
+        group_ids = (
+            self.request.GET.get("groups", "").split(",")
+            if "groups" in self.request.GET
+            else []
         )
 
-        course = session.course
+        session = (
+            Session.objects.select_related("course")
+            .prefetch_related(
+                # Move the Prefetch to the direct StudentGroup query
+                "course__students",
+                Prefetch(
+                    "course__studentgroup_set",
+                    queryset=StudentGroup.objects.filter(id__in=group_ids)
+                    if group_ids and group_ids[0]
+                    else StudentGroup.objects.none(),  # Use .none() as default
+                    to_attr="filtered_groups",
+                ),
+            )
+            .get(id=session_id)
+        )
 
-        # If groups param is passed, get all students of the groups
-        if "groups" in self.request.GET and self.request.GET.get("groups") != "":
-            groups = []
-
-            for group_id in self.request.GET.get("groups").split(","):
-                group = course.studentgroup_set.filter(id=group_id).first()
-
-                if not group:
-                    return Response(
-                        {"message": "NOT FOUND: Group not found or not in course"},
-                        status=status.HTTP_404_NOT_FOUND,
-                    )
-
-                groups.append(group)
-
-            students = []
-            for group in groups:
-                students += group.students.all()
-
+        if group_ids and group_ids[0]:
+            students = User.objects.filter(
+                studentgroup_students__in=session.course.filtered_groups
+            ).distinct()
         else:
-            students = course.students.all()
+            students = session.course.students.all()
+
+        # using `list` to evaluate the query directly
+        exercises = list(Exercise.objects.filter(session_id=session_id))
+
+        # Fetch all submissions in one query
+        submissions = (
+            Submission.objects.filter(
+                exercise__session_id=session_id, owner__in=students
+            )
+            .select_related("owner", "exercise")
+            .prefetch_related("testresult_set")
+            .annotate(
+                late=models.Case(
+                    models.When(
+                        created__gt=models.F("exercise__session__deadline"),
+                        then=True,
+                    ),
+                    default=False,
+                    output_field=models.BooleanField(),
+                )
+            )
+        )
+
+        # Lookup dictionary for submissions
+        submission_lookup = {
+            (sub.owner_id, sub.exercise_id): sub for sub in submissions
+        }
 
         students_data = []
         for student in students:
-            result_request = HttpRequest()
-            result_request.method = "GET"
-            result_request.data = {
-                "user_id": student.id,
-                "session_id": session.id,
-            }
-
-            result_response = ResultsOfSessionViewSet.list(self, result_request).data
+            exercises_data = [
+                {
+                    "exercise_id": exercise.id,
+                    "exercise_title": exercise.title,
+                    "status": submission_lookup.get(
+                        (student.id, exercise.id), {}
+                    ).status
+                    if (student.id, exercise.id) in submission_lookup
+                    else "not submitted",
+                    "grade": submission_lookup.get((student.id, exercise.id), {}).grade
+                    if (student.id, exercise.id) in submission_lookup
+                    else None,
+                    "late": submission_lookup.get((student.id, exercise.id), {}).late
+                    if (student.id, exercise.id) in submission_lookup
+                    else False,
+                }
+                for exercise in exercises
+            ]
 
             students_data.append(
                 {
                     "user_id": student.id,
                     "username": student.username,
-                    "exercises": result_response,
+                    "exercises": exercises_data,
                 }
             )
 

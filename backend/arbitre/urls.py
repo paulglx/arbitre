@@ -22,7 +22,7 @@ from api.views import (
     CourseJoinViewSet,
     CourseOwnerViewSet,
     CourseRefreshCodeViewSet,
-    CoursesSessionsExercisesViewSet,
+    CoursesSessionsViewSet,
     CourseStudentViewSet,
     CourseTutorViewSet,
     CourseViewSet,
@@ -87,9 +87,9 @@ router.register(
 )
 
 router.register(
-    r"courses_sessions_exercises",
-    CoursesSessionsExercisesViewSet,
-    basename="courses_sessions_exercises",
+    r"courses_sessions",
+    CoursesSessionsViewSet,
+    basename="courses_sessions",
 )
 
 router.register(r"results", ResultsOfSessionViewSet, basename="results")
