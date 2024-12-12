@@ -4,6 +4,7 @@ from keycloak import KeycloakAdmin
 import environ
 import os
 import django
+from django.core.cache import cache
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "arbitre.settings")
 django.setup()
@@ -24,6 +25,10 @@ keycloak_admin = KeycloakAdmin(
     realm_name=env("KEYCLOAK_REALM_NAME"),
     verify=True,
 )
+
+# Delete keycloak_teachers cache
+# This cache in used in RoleBasedViewset
+cache.delete("keycloak_teachers")
 
 # Fetch users from Keycloak
 keycloak_users = keycloak_admin.get_users()
