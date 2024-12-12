@@ -1,11 +1,12 @@
 """
 Use moodle-exported data to batch submit on exercises
 
-> python manage.py runscript import-submission-from-moodle --script-args <students_csv> <submissions_dir>
+> python manage.py runscript import-submission-from-moodle --script-args <students_csv> <submissions_dir> [overwrite]
 
 Arguments:
 - students_csv: A CSV file containing at least SURNAME, NAME, MAIL rows at the beginning.
 - submissions_dir: Path to a directory containing Moodle-extracted data
+- overwrite (optional): Re-create submissions even if student already submitted
 
   Example tree in submissions_dir :
 
@@ -25,7 +26,7 @@ import os
 import csv
 
 from django.db.utils import IntegrityError
-from api.models import Exercise, Course
+from api.models import Exercise
 from runner.models import Submission
 from django.contrib.auth.models import User
 
@@ -60,13 +61,19 @@ def ok(s):
 
 
 def run(*args):
-    if len(args) != 2:
+    if len(args) not in [2, 3]:
         fail(
-            "Usage: python manage.py runscript import-submission-from-moodle --script-args <students_csv> <submissions_dir>"
+            "Usage: python manage.py runscript import-submission-from-moodle --script-args <students_csv> <submissions_dir> [overwrite]"
         )
         return
 
     # Check Arguments
+    if args[-1] == "overwrite":
+        args = args[:-1]
+        OVERWRITE = True
+        ok("Overwrite mode : existing submissions will be deleted")
+    else:
+        OVERWRITE = False
     students_csv, submissions_dir = args
 
     if not os.path.isdir(submissions_dir):
@@ -153,6 +160,9 @@ Let's create this file-to-exercise mapping.\n""")
             fail("Provided exercises aren't under the same course")
             return
 
+    # Keep track of status
+    overwritten, error, total = 0, 0, 0
+
     # Create "files_to_send" dict (with empty values)
     # Dict : User -> Path of directory containing submission files (like `Doe John_12345_assignsubmission_file`)
     files_to_send = dict()
@@ -169,6 +179,7 @@ Let's create this file-to-exercise mapping.\n""")
             student = fullname_to_user[fullname.lower()]
         except KeyError:
             fail(f"Found files for {fullname} but they're missing from the CSV")
+            error += 1
             continue
 
         # Check whether there are missing or extra files
@@ -178,11 +189,14 @@ Let's create this file-to-exercise mapping.\n""")
 
         if expected_extra:
             fail(f"{student.username} is missing files: {expected_extra}")
+            error += 1
             continue
         if student_extra:
             warning(f"{student.username} got extra files: {student_extra}")
 
         files_to_send[student] = dir_path
+
+    total = len(files_to_send) * len(filename_to_exercise)
 
     # Create submissions (aka send files !)
     for student, path in files_to_send.items():
@@ -194,13 +208,30 @@ Let's create this file-to-exercise mapping.\n""")
 
             full_path = os.path.join(path, file)
 
+            if OVERWRITE:
+                prev_submission = Submission.objects.filter(
+                    exercise=exercise, owner=student
+                )
+                if prev_submission:
+                    prev_submission.first().delete()
+                    warning(f"{student}'s submission on {exercise} overwritten")
+                    overwritten += 1
+
             try:
                 submission = Submission(
                     exercise=exercise, file=full_path, owner=student
                 )
                 submission.save()
 
-                ok(f"{student} submitted {file} on {exercise}")
             except IntegrityError:
-                fail(f"{student} already submitted a file on {exercise}")
+                fail(
+                    f"{student} already submitted a file on {exercise} {bcolors.ENDC}{bcolors.DIM}(start script in overwrite mode to overwrite)"
+                )
                 continue
+
+    print(f"{bcolors.BOLD}Import process done{bcolors.ENDC}")
+    success(f"{total - error} submissions created")
+    if OVERWRITE:
+        ok(f"Including {overwritten} overwritten submissions")
+    if error > 0:
+        fail(f"{error} submissions weren't handled (see logs above)")
