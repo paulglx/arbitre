@@ -14,10 +14,11 @@ from rest_framework_api_key.permissions import HasAPIKey
 from django.utils import timezone
 from rest_framework import serializers
 import json
+from api.util.views import RoleBasedViewSet
 
 
-class SubmissionViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+class SubmissionViewSet(RoleBasedViewSet):
+    # permission_classes = [permissions.IsAuthenticated]
 
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
@@ -234,10 +235,10 @@ class RawTestsViewSet(viewsets.ModelViewSet):
             )
 
 
-class TestViewSet(viewsets.ModelViewSet):
+class TestViewSet(RoleBasedViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
-    permission_classes = [permissions.IsAuthenticated | HasAPIKey]
+    # permission_classes = [permissions.IsAuthenticated | HasAPIKey]
 
     # Get the tests for the exercise if exercise_id is given
     def get_queryset(self):
