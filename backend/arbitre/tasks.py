@@ -83,10 +83,10 @@ def get_api_key():
     return api_key
 
 
-def get_test(base_url, test_id, api_key):
+def get_test(base_url, test_id):
     tests = requests.get(
         f"{base_url}/test/{test_id}/",
-        headers={"Authorization": f"Api-Key {api_key}"},
+        headers={"Authorization": f"Api-Key {get_api_key()}"},
     )
     if tests.status_code == 401:
         print(
@@ -103,7 +103,11 @@ def post_running_testresult(submission_id, test_id, testresult_post_url):
         "exercise_test_pk": test_id,
         "status": "running",
     }
-    requests.post(testresult_post_url, data=testresult_before_data)
+    requests.post(
+        testresult_post_url,
+        data=testresult_before_data,
+        headers={"Authorization": f"Api-Key {get_api_key()}"},
+    )
 
 
 def send_test_to_judge0(judge0_url, source_code, additional_files, language_id, stdin):
@@ -129,7 +133,11 @@ def post_error_testresult(message, submission_id, test_id, testresult_post_url):
         "time": 0,
         "memory": 0,
     }
-    requests.post(testresult_post_url, data=after_data)
+    requests.post(
+        testresult_post_url,
+        data=after_data,
+        headers={"Authorization": f"Api-Key {get_api_key()}"},
+    )
 
 
 def zip_directory(path, zip_file_handle):
@@ -233,11 +241,8 @@ def run_test(
     testresult_post_url = f"{base_url}/testresult/"
 
     try:
-        # API key
-        api_key = get_api_key()
-
         # Get test data from REST API
-        test = get_test(base_url, test_id, api_key)
+        test = get_test(base_url, test_id)
 
         # Save the empty test result with "running" status
         post_running_testresult(submission_id, test_id, testresult_post_url)
@@ -321,7 +326,11 @@ def run_test(
         return
 
     print("data to send:" + str(after_data))
-    finalpost = requests.post(testresult_post_url, data=after_data)
+    finalpost = requests.post(
+        testresult_post_url,
+        data=after_data,
+        headers={"Authorization": f"Api-Key {get_api_key()}"},
+    )
 
 
 @shared_task(ignore_result=True)
