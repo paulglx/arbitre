@@ -3,6 +3,7 @@ from runner.models import Submission
 from rest_framework import serializers
 from api.auth.serializers import MinimalUserSerializer
 from django.utils import timezone
+from api.util.serializers import RoleBasedSerializer
 
 
 class StudentGroupSerializer(serializers.ModelSerializer):
@@ -13,7 +14,7 @@ class StudentGroupSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "course", "students"]
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseSerializer(RoleBasedSerializer):
     owners = MinimalUserSerializer(many=True, read_only=True)
     tutors = MinimalUserSerializer(many=True, read_only=True)
 
@@ -34,14 +35,21 @@ class CourseSerializer(serializers.ModelSerializer):
             "late_penalty",
         ]
 
+    role_fields = {
+        "teacher": None,
+        "student": ["id", "title", "description", "language"],
+    }
 
-class MinimalCourseSerializer(serializers.ModelSerializer):
+
+class MinimalCourseSerializer(RoleBasedSerializer):
     owners = MinimalUserSerializer(many=True, read_only=True)
     tutors = MinimalUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
         fields = ["id", "title", "owners", "tutors", "language"]
+
+    role_fields = {"teacher": None, "student": ["id", "title"]}
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -97,7 +105,7 @@ class MinimalSessionSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "course", "can_submit", "has_ended", "deadline"]
 
 
-class ExerciseSerializer(serializers.ModelSerializer):
+class ExerciseSerializer(RoleBasedSerializer):
     session = MinimalSessionSerializer(read_only=True)
     session_id = serializers.PrimaryKeyRelatedField(
         queryset=Session.objects.all(), source="session", write_only=True
@@ -134,6 +142,21 @@ class ExerciseSerializer(serializers.ModelSerializer):
             "session",
             "session_id",
         ]
+
+    role_fields = {
+        "teacher": None,
+        "student": [
+            "id",
+            "type",
+            "title",
+            "description",
+            "grade",
+            "type",
+            "submission_status",
+            "session",
+            "session_id",
+        ],
+    }
 
 
 class MinimalExerciseSerializer(serializers.ModelSerializer):

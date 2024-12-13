@@ -204,6 +204,12 @@ REST_FRAMEWORK = {
     )
 }
 
+# Disable browsable API in production
+if not DEBUG:
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = (
+        "rest_framework.renderers.JSONRenderer",
+    )
+
 # Celery Settings
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
