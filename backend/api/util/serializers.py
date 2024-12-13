@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from typing import List, Dict
-from django.core.exceptions import ImproperlyConfigured
 from api.auth.views import get_teachers
 from django.core.cache import cache
+from rest_framework_api_key.permissions import KeyParser
+from rest_framework_api_key.models import APIKey
 
 
 def get_cached_teachers():
@@ -43,27 +44,45 @@ class RoleBasedSerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         fields = super().get_fields()
+
+        # Get user from context
         request = self.context.get("request")
-
-        if not request or not request.user:
-            return {}
-
-        user_role = self.get_user_role(request.user)
+        user_role = self.get_user_role(request)
         allowed_fields = self.role_fields.get(user_role, [])
 
-        # If allowed_fields is None, return all fields
-        if allowed_fields is None:
+        if allowed_fields is None:  # Teacher role gets all fields
             return fields
 
-        # Otherwise, filter fields based on the role
         return {
             field_name: field
             for field_name, field in fields.items()
             if field_name in allowed_fields
         }
 
-    def get_user_role(self, user):
-        """Determine user's role. Override this method if needed."""
+    def get_user_role(self, request):
+        """Determine user's role using cached teachers list."""
+
+        if not request:
+            # Happens when using WebSocket
+            return "student"
+
+        user = request.user
+
+        if not user or not user.is_authenticated:
+            if self.has_valid_api_key(request):
+                return "teacher"
+            else:
+                return "student"
+
         if user in get_cached_teachers():
             return "teacher"
         return "student"
+
+    def has_valid_api_key(self, request):
+        """
+        Parses the request for API Key and checks if it's valid
+        """
+        keyParser = KeyParser()
+        key = keyParser.get_from_authorization(request)
+
+        return key and APIKey.objects.is_valid(key)
