@@ -321,9 +321,7 @@ const Course = () => {
       content: (
         <Students
           course={course}
-          groups={groups}
           refetch={refetchCourse}
-          refetchGroups={refetchGroups}
         />
       ),
     },
