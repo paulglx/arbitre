@@ -1,23 +1,33 @@
 import StudentGroups from "./StudentGroups/StudentGroups";
 import StudentsInvite from "./StudentsInvite";
 import StudentsList from "./StudentsList/StudentsList";
+import { useGetCourseStudentGroupsQuery } from "../../../../features/courses/studentGroupApiSlice";
 
-const Students = (props: any) => {
+const Students = ({ course, refetch }: { course: any, refetch: any }) => {
+
+  const { data: groups, refetch: refetchGroups } =
+    useGetCourseStudentGroupsQuery(
+      { course_id: course?.id },
+      {
+        skip: !course?.id,
+      }
+    );
+
   return (
     <>
-      <StudentsInvite course={props.course} />
+      <StudentsInvite course={course} />
       <br />
       <StudentGroups
-        course={props.course}
-        refetch={props.refetch}
-        refetchGroups={props.refetchGroups}
-        groups={props.groups}
+        course={course}
+        refetch={refetch}
+        refetchGroups={refetchGroups}
+        groups={groups}
       />
       <StudentsList
-        course={props.course}
-        refetch={props.refetch}
-        groups={props.groups}
-        refetchGroups={props.refetchGroups}
+        course={course}
+        refetch={refetch}
+        groups={groups}
+        refetchGroups={refetchGroups}
       />
     </>
   );
