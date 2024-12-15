@@ -42,7 +42,7 @@ const Courses = () => {
   }, [coursesIsSuccess, courses]);
 
   const stripCourseDescription = (description: string) => {
-    return <Markdown strip={true}>{description.replace("\n", "")}</Markdown>;
+    return <Markdown strip={true}>{description.replaceAll(/\n+/g, "")}</Markdown>;
   };
 
   const handleCreateCourse = async (e: any) => {
@@ -114,15 +114,15 @@ const Courses = () => {
                       <li key={i}>
                         <Link
                           to={`/course/${course.id}`}
-                          className="flex md:block items-center bg-blue-50 border-2 border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-44"
+                          className="flex md:block items-center bg-blue-50 border-2 border-blue-100 rounded-2xl shadow shadow-blue-50 p-4 first:ml-0 hover:bg-blue-100 transition duration-300 ease-in-out w-full md:h-40"
                         >
                           <h3
                             className={`text-lg font-bold leading-tight line-clamp-2 md:mb-1 ${course.title ? "text-blue-600" : " text-blue-400"}`}
                           >
                             {course.title ? course.title : "Untitled Course"}
                           </h3>
-                          <div className="hidden md:block">
-                            <span className="text-gray-600 line-clamp-4">
+                          <div className="hidden md:block mt-1 text-sm">
+                            <span className="text-gray-600 line-clamp-5">
                               {stripCourseDescription(course.description)}
                             </span>
                           </div>
