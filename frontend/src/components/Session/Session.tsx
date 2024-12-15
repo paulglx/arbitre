@@ -59,6 +59,13 @@ const Session = () => {
 
   useTitle(session?.title);
 
+  // Store session id in sessionStorage for Dashboard
+  useEffect(() => {
+    if (isOwner || isTutor) {
+      window.sessionStorage.setItem("last_visited_session", session_id)
+    }
+  }, [isOwner, isTutor, session_id])
+
   useEffect(() => {
     if (sessionIsSuccess) {
       if (session?.title === "" && session?.description === "") {
