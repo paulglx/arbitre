@@ -44,6 +44,7 @@ const DashboardSessionPicker = (props: any) => {
     // Set current session at first render
     useEffect(() => {
 
+        // If session in URL
         if (courses && urlSession) {
             const session = courses?.find((course: any) => course.sessions.some((session: any) => session.id === parseInt(urlSession)))?.sessions?.find((session: any) => session.id === parseInt(urlSession))
             if (session) {
@@ -51,6 +52,7 @@ const DashboardSessionPicker = (props: any) => {
                 setCurrentSessionTitle(session.title)
                 return
             } else {
+                // Incorrect session id
                 setCurrentSession(-1)
                 setCurrentSessionTitle('')
                 navigate(`./../`, { replace: true })
@@ -58,7 +60,23 @@ const DashboardSessionPicker = (props: any) => {
             }
         }
 
+        // If coming from "Dashboard button"
         if (courses && currentSession === -1) {
+
+            // Check for session storage
+            const lastVisitedSession = Number(window.sessionStorage.getItem("last_visited_session"));
+            if (lastVisitedSession) {
+                const session = courses?.map((course: any) => course.sessions)
+                    .flat()
+                    .find((session: { id: number, title: string }) => session?.id === lastVisitedSession)
+
+                if (session) {
+                    setCurrentSession(session?.id)
+                    setCurrentSessionTitle(session?.title)
+                    return
+                }
+            }
+
             if (courses?.every((course: any) => course.sessions.length === 0)) {
                 setCurrentSession(-1)
                 setCurrentSessionTitle('')

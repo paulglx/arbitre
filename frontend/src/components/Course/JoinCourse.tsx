@@ -142,7 +142,7 @@ const JoinCourse = ({ embedded }: { embedded?: boolean }) => {
               .map((_, i) => (
                 <input
                   type="text"
-                  placeholder="X"
+                  placeholder="·"
                   key={i}
                   autoFocus={i === 0}
                   className="font-mono w-8 mx-1 text-gray-700 placeholder-gray-300 border border-gray-300 rounded-md text-4xl text-center focus:placeholder:opacity-0 caret-transparent"
