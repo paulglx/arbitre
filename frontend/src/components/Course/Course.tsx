@@ -111,7 +111,6 @@ const Course = () => {
   }, [course, courseIsError, courseIsSuccess, dispatch, navigate]);
 
   useEffect(() => {
-    console.log(course);
     if (course?.title === "" && course?.description === "") {
       setEdit(true);
     }
