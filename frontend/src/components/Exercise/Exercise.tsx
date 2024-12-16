@@ -250,7 +250,7 @@ const Exercise = () => {
             { title: "Courses", link: "/course" },
             { title: course.title, link: "/course/" + course.id },
             { title: session.title, link: "/session/" + session.id },
-            { title: exercise.title, link: null },
+            { title: title, link: null },
           ]}
         />
 

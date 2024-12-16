@@ -96,14 +96,6 @@ const Course = () => {
     refetch: refetchCourse,
   } = useGetCourseQuery({ id });
 
-  const { data: groups, refetch: refetchGroups } =
-    useGetCourseStudentGroupsQuery(
-      { course_id: course?.id },
-      {
-        skip: !course?.id,
-      }
-    );
-
   useTitle(course?.title);
 
   useEffect(() => {
